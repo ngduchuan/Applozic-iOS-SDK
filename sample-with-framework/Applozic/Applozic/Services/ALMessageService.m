@@ -466,6 +466,7 @@ static ALMessageClientService *alMsgClientService;
         for (int i = messageArray.count - 1; i>=0; i--) {
             ALMessage * message = messageArray[i];
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
+                [ALMessageService isToResetUnreadCountAndUpdate:message];
                 [messageArray removeObjectAtIndex:i];
             }
             else if(![message isToIgnoreUnreadCountIncrement]) {
@@ -504,19 +505,21 @@ static ALMessageClientService *alMsgClientService;
 
 +(BOOL)incrementContactUnreadCount:(ALMessage*)message{
 
-    if(![ALMessageService isIncrementRequired:message]){
+    if(![ALMessageService isIncrementRequired:message]) {
+        [self isToResetUnreadCountAndUpdate:message];
         return NO;
     }
 
-    if(message.groupId){
+    if(message.groupId) {
 
         NSNumber * groupId = message.groupId;
         ALChannelDBService * channelDBService =[[ALChannelDBService alloc] init];
         ALChannel * channel = [channelDBService loadChannelByKey:groupId];
-        channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
-        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
-    }
-    else{
+        if(![self isToResetUnreadCountAndUpdate:message]) {
+            channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
+            [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
+        }
+    }else {
 
         NSString * contactId = message.contactIds;
         ALContactService * contactService=[[ALContactService alloc] init];
@@ -526,13 +529,23 @@ static ALMessageClientService *alMsgClientService;
         [contactService updateContact:contact];
     }
 
-    if(message.conversationId){
+    if(message.conversationId) {
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
         }];
     }
 
     return YES;
+}
+
++(BOOL)isToResetUnreadCountAndUpdate:(ALMessage*)message {
+
+    if([message isUnreadCountToReset]) {
+        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:0];
+        return YES;
+    }
+    return NO;
 }
 
 +(BOOL)isIncrementRequired:(ALMessage *)message{
