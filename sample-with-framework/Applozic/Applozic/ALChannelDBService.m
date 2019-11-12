@@ -946,6 +946,8 @@ dispatch_queue_t syncSerialBackgroundQueue;
    
     for(ALChannel *channelObject in channelArray)
     {
+        // Ingore inserting unread count in sync call
+        channelObject.unreadCount = 0;
         [self createChannel:channelObject];
         if(delegate){
             [delegate onChannelUpdated:channelObject];

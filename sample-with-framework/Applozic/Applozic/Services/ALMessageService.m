@@ -468,9 +468,10 @@ static ALMessageClientService *alMsgClientService;
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                 [ALMessageService isToResetUnreadCountAndUpdate:message];
                 [messageArray removeObjectAtIndex:i];
-            }
-            else if(![message isToIgnoreUnreadCountIncrement]) {
+            }else if(![message isToIgnoreUnreadCountIncrement]) {
                 [ALMessageService incrementContactUnreadCount:message];
+            }else {
+                [ALMessageService isToResetUnreadCountAndUpdate:message];
             }
 
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
