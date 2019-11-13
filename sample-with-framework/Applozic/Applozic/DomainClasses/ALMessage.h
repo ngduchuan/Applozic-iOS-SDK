@@ -144,6 +144,6 @@ typedef enum {
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder ;
 -(BOOL)isNotificationDisabled;
 -(BOOL)isLinkMessage;
--(BOOL) isUnreadCountToReset;
+-(BOOL) isResetUnreadCountMessage;
 
 @end

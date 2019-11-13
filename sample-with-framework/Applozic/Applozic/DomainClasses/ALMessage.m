@@ -250,7 +250,7 @@
     return (self.contentType == AV_CALL_CONTENT_THREE);
 }
 
--(BOOL)isUnreadCountToReset {
+-(BOOL)isResetUnreadCountMessage {
 
     if(self.groupId && self.contentType == ALMESSAGE_CHANNEL_NOTIFICATION
        && self.metadata && [self.metadata  valueForKey:ALResetUnreadCount] && [self.contactIds isEqualToString:ALUserDefaultsHandler.getUserId]) {

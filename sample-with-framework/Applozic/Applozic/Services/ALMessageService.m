@@ -466,12 +466,12 @@ static ALMessageClientService *alMsgClientService;
         for (int i = messageArray.count - 1; i>=0; i--) {
             ALMessage * message = messageArray[i];
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
-                [ALMessageService isToResetUnreadCountAndUpdate:message];
+                [self resetUnreadCountAndUpdate:message];
                 [messageArray removeObjectAtIndex:i];
             }else if(![message isToIgnoreUnreadCountIncrement]) {
-                [ALMessageService incrementContactUnreadCount:message];
+                [self resetUnreadCountAndUpdate:message];
             }else {
-                [ALMessageService isToResetUnreadCountAndUpdate:message];
+                [self resetUnreadCountAndUpdate:message];
             }
 
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -507,7 +507,8 @@ static ALMessageClientService *alMsgClientService;
 +(BOOL)incrementContactUnreadCount:(ALMessage*)message{
 
     if(![ALMessageService isIncrementRequired:message]) {
-        [self isToResetUnreadCountAndUpdate:message];
+        // This case is used for reseting count in case of hidden message comes
+        [self resetUnreadCountAndUpdate:message];
         return NO;
     }
 
@@ -516,7 +517,7 @@ static ALMessageClientService *alMsgClientService;
         NSNumber * groupId = message.groupId;
         ALChannelDBService * channelDBService =[[ALChannelDBService alloc] init];
         ALChannel * channel = [channelDBService loadChannelByKey:groupId];
-        if(![self isToResetUnreadCountAndUpdate:message]) {
+        if(![self resetUnreadCountAndUpdate:message]) {
             channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
             [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
         }
@@ -539,9 +540,9 @@ static ALMessageClientService *alMsgClientService;
     return YES;
 }
 
-+(BOOL)isToResetUnreadCountAndUpdate:(ALMessage*)message {
++(BOOL)resetUnreadCountAndUpdate:(ALMessage*)message {
 
-    if([message isUnreadCountToReset]) {
+    if([message isResetUnreadCountMessage]) {
         ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
         [channelDBService updateUnreadCountChannel:message.groupId unreadCount:0];
         return YES;
