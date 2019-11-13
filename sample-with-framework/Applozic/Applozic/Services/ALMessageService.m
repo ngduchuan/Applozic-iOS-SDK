@@ -469,7 +469,7 @@ static ALMessageClientService *alMsgClientService;
                 [self resetUnreadCountAndUpdate:message];
                 [messageArray removeObjectAtIndex:i];
             }else if(![message isToIgnoreUnreadCountIncrement]) {
-                [self resetUnreadCountAndUpdate:message];
+                [self incrementContactUnreadCount:message];
             }else {
                 [self resetUnreadCountAndUpdate:message];
             }
