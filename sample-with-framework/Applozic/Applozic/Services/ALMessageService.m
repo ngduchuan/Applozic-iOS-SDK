@@ -466,13 +466,11 @@ static ALMessageClientService *alMsgClientService;
         for (int i = messageArray.count - 1; i>=0; i--) {
             ALMessage * message = messageArray[i];
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
-                [self resetUnreadCountAndUpdate:message];
                 [messageArray removeObjectAtIndex:i];
             }else if(![message isToIgnoreUnreadCountIncrement]) {
                 [self incrementContactUnreadCount:message];
-            }else {
-                [self resetUnreadCountAndUpdate:message];
             }
+
 
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                 if ([message.metadata[@"action"] isEqual: @"4"]) {
@@ -482,6 +480,8 @@ static ALMessageClientService *alMsgClientService;
                 }
                 [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
             }
+
+            [self resetUnreadCountAndUpdate:message];
 
             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate) {
                 if([message.type isEqual: OUT_BOX]){
@@ -507,8 +507,6 @@ static ALMessageClientService *alMsgClientService;
 +(BOOL)incrementContactUnreadCount:(ALMessage*)message{
 
     if(![ALMessageService isIncrementRequired:message]) {
-        // This case is used for reseting count in case of hidden message comes
-        [self resetUnreadCountAndUpdate:message];
         return NO;
     }
 
@@ -517,7 +515,7 @@ static ALMessageClientService *alMsgClientService;
         NSNumber * groupId = message.groupId;
         ALChannelDBService * channelDBService =[[ALChannelDBService alloc] init];
         ALChannel * channel = [channelDBService loadChannelByKey:groupId];
-        if(![self resetUnreadCountAndUpdate:message]) {
+        if(![message isResetUnreadCountMessage]) {
             channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
             [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
         }
