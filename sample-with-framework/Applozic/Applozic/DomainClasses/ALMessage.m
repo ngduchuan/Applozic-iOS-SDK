@@ -252,8 +252,9 @@
 
 -(BOOL)isResetUnreadCountMessage {
 
-    if(self.groupId && self.isChannelContentTypeMessage
-       && self.metadata && [self.metadata  valueForKey:ALResetUnreadCount] && [self.contactIds isEqualToString:ALUserDefaultsHandler.getUserId]) {
+    if(self.groupId && self.isChannelContentTypeMessage && self.metadata
+       && [self.metadata  valueForKey:ALResetUnreadCount]
+       && [[self.metadata  valueForKey:ALResetUnreadCountForUser] isEqualToString:ALUserDefaultsHandler.getUserId]) {
         return ([ [self.metadata  valueForKey:ALResetUnreadCount] isEqualToString:@"true"]);
     }
     return NO;

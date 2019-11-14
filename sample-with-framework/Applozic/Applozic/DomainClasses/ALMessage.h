@@ -32,6 +32,7 @@
 #define IN_BOX  @"4"
 
 static NSString * const ALResetUnreadCount= @"resetUnreadCount";
+static NSString * const ALResetUnreadCountForUser= @"resetUnreadCountForUser";
 
 typedef enum {
     AL_NOT_A_REPLY,
