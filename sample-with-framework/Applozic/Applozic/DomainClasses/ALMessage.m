@@ -250,6 +250,11 @@
     return (self.contentType == AV_CALL_CONTENT_THREE);
 }
 
+-(BOOL)isResetUnreadCountMessage {
+    return (self.groupId && self.isChannelContentTypeMessage &&
+            self.metadata && [self.metadata  valueForKey:AL_RESET_UNREAD_COUNT]
+            && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
+}
 
 -(NSString*)getNotificationText
 {

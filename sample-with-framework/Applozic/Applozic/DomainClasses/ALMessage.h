@@ -31,6 +31,7 @@
 #define OUT_BOX @"5"
 #define IN_BOX  @"4"
 
+static NSString * const AL_RESET_UNREAD_COUNT = @"AL_RESET_UNREAD_COUNT";
 
 typedef enum {
     AL_NOT_A_REPLY,
@@ -143,5 +144,6 @@ typedef enum {
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder ;
 -(BOOL)isNotificationDisabled;
 -(BOOL)isLinkMessage;
+-(BOOL)isResetUnreadCountMessage;
 
 @end

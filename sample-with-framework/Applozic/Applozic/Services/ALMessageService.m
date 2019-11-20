@@ -467,9 +467,8 @@ static ALMessageClientService *alMsgClientService;
             ALMessage * message = messageArray[i];
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                 [messageArray removeObjectAtIndex:i];
-            }
-            else if(![message isToIgnoreUnreadCountIncrement]) {
-                [ALMessageService incrementContactUnreadCount:message];
+            }else if(![message isToIgnoreUnreadCountIncrement]) {
+                [self incrementContactUnreadCount:message];
             }
 
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -480,6 +479,8 @@ static ALMessageClientService *alMsgClientService;
                 }
                 [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
             }
+
+            [self resetUnreadCountAndUpdate:message];
 
             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate) {
                 if([message.type isEqual: OUT_BOX]){
@@ -504,19 +505,20 @@ static ALMessageClientService *alMsgClientService;
 
 +(BOOL)incrementContactUnreadCount:(ALMessage*)message{
 
-    if(![ALMessageService isIncrementRequired:message]){
+    if(![ALMessageService isIncrementRequired:message]) {
         return NO;
     }
 
-    if(message.groupId){
+    if(message.groupId) {
 
         NSNumber * groupId = message.groupId;
         ALChannelDBService * channelDBService =[[ALChannelDBService alloc] init];
         ALChannel * channel = [channelDBService loadChannelByKey:groupId];
-        channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
-        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
-    }
-    else{
+        if(![message isResetUnreadCountMessage]) {
+            channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
+            [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
+        }
+    }else {
 
         NSString * contactId = message.contactIds;
         ALContactService * contactService=[[ALContactService alloc] init];
@@ -526,13 +528,23 @@ static ALMessageClientService *alMsgClientService;
         [contactService updateContact:contact];
     }
 
-    if(message.conversationId){
+    if(message.conversationId) {
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
         }];
     }
 
     return YES;
+}
+
++(BOOL)resetUnreadCountAndUpdate:(ALMessage*)message {
+
+    if([message isResetUnreadCountMessage]) {
+        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:[NSNumber numberWithInt:0]];
+        return YES;
+    }
+    return NO;
 }
 
 +(BOOL)isIncrementRequired:(ALMessage *)message{
