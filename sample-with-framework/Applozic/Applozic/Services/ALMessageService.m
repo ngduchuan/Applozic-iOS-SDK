@@ -471,7 +471,6 @@ static ALMessageClientService *alMsgClientService;
                 [self incrementContactUnreadCount:message];
             }
 
-
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                 if ([message.metadata[@"action"] isEqual: @"4"]) {
                     [[NSNotificationCenter defaultCenter]
@@ -542,7 +541,7 @@ static ALMessageClientService *alMsgClientService;
 
     if([message isResetUnreadCountMessage]) {
         ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
-        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:0];
+        [channelDBService updateUnreadCountChannel:message.groupId unreadCount:[NSNumber numberWithInt:0]];
         return YES;
     }
     return NO;

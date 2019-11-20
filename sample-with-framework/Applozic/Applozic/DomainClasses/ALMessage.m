@@ -251,13 +251,9 @@
 }
 
 -(BOOL)isResetUnreadCountMessage {
-
-    if(self.groupId && self.isChannelContentTypeMessage && self.metadata
-       && [self.metadata  valueForKey:ALResetUnreadCount]
-       && [[self.metadata  valueForKey:ALResetUnreadCountForUser] isEqualToString:ALUserDefaultsHandler.getUserId]) {
-        return ([ [self.metadata  valueForKey:ALResetUnreadCount] isEqualToString:@"true"]);
-    }
-    return NO;
+    return (self.groupId && self.isChannelContentTypeMessage &&
+            self.metadata && [self.metadata  valueForKey:AL_RESET_UNREAD_COUNT]
+            && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
 }
 
 -(NSString*)getNotificationText
