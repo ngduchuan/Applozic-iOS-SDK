@@ -20,8 +20,8 @@ typedef enum
 
 typedef enum
 {
-    DEVELOPMENT = 0,
-    DISTRIBUTION = 1,
+    ALDEVELOPMENT = 0,
+    ALDISTRIBUTION = 1,
 
 } deviceApnsType;
 

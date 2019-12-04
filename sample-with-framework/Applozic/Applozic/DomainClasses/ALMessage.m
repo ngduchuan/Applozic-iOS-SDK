@@ -514,7 +514,7 @@
         
     }
     
-    return (([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE)
+    return (([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_DISABLE)
             
             || (_metadata && ([self isSilentNotification]
                               

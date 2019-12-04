@@ -5,11 +5,11 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#define NAVIGATION_TEXT_SIZE 20
-#define USER_NAME_LABEL_SIZE 18
-#define MESSAGE_LABEL_SIZE 14
-#define TIME_LABEL_SIZE 12
-#define IMAGE_NAME_LABEL_SIZE 14
+static CGFloat NAVIGATION_TEXT_SIZE = 20;
+static CGFloat USER_NAME_LABEL_SIZE = 18;
+static CGFloat MESSAGE_LABEL_SIZE = 14;
+static CGFloat TIME_LABEL_SIZE = 12;
+static CGFloat IMAGE_NAME_LABEL_SIZE = 14;
 
 #import "UIView+Toast.h"
 #import "TSMessageView.h"

@@ -22,9 +22,9 @@
     {
         return NO;
     }
-    if([ALUserDefaultsHandler getUserPricingPackage] == CLOSED
-       || [ALUserDefaultsHandler getUserPricingPackage] == BETA
-       || [ALUserDefaultsHandler getUserPricingPackage] == SUSPENDED)
+    if([ALUserDefaultsHandler getUserPricingPackage] == ALCLOSED
+       || [ALUserDefaultsHandler getUserPricingPackage] == ALBETA
+       || [ALUserDefaultsHandler getUserPricingPackage] == ALSUSPENDED)
     {
         return YES;
     }
@@ -37,7 +37,7 @@
     if(debugflag) {
         return NO;
     }
-    if([ALUserDefaultsHandler getUserPricingPackage] == STARTER) {
+    if([ALUserDefaultsHandler getUserPricingPackage] == ALSTARTER) {
         return YES;
     }
     return NO;

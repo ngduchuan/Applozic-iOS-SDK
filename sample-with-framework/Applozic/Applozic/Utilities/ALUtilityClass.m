@@ -217,7 +217,7 @@
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate
 {
     
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE ){
+    if([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_DISABLE ){
         return;
     }
     //3rd Party View is Opened.........
@@ -266,7 +266,7 @@
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler
 {
 
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE){
+    if([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_DISABLE){
         return;
     }
     //3rd Party View is Opened.........

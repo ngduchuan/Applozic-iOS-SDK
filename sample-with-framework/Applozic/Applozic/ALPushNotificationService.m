@@ -54,7 +54,7 @@
     {
         NSString * alertValue;
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-        alertValue = ([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE ? @"" : [[dictionary valueForKey:@"aps"] valueForKey:@"alert"]);
+        alertValue = ([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_DISABLE ? @"" : [[dictionary valueForKey:@"aps"] valueForKey:@"alert"]);
 
         self.alSyncCallService = [[ALSyncCallService alloc] init];
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];

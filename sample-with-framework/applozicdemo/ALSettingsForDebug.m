@@ -92,14 +92,14 @@
 }
 
 
--(void)fetchAllSettings{
+-(void)fetchAllSettings {
     //FETCHING
     environment = [ALUserDefaultsHandler getBASEURL];
     isContextChat = [ALApplozicSettings getContextualChatOption];
     isBackgroundWallpaperSet = (([[ALApplozicSettings getChatWallpaperImageName] isEqualToString:@"NULL"]
                                  ||[ALApplozicSettings getChatWallpaperImageName]== NULL ) ? NO : YES);
     isNotificationEnabled =
-    ([ALUserDefaultsHandler getNotificationMode]==NOTIFICATION_ENABLE
+    ([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_ENABLE
      ?YES:NO);
     
     

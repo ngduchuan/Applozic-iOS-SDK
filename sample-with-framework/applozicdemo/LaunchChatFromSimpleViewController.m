@@ -411,7 +411,7 @@
 
 - (IBAction)turnNotification:(id)sender
 {
-    short mode = (self.notificationSwitch.on ? NOTIFICATION_ENABLE : NOTIFICATION_DISABLE);
+    short mode = (self.notificationSwitch.on ? ALNOTIFICATION_ENABLE : ALNOTIFICATION_DISABLE);
     //    [ALUserDefaultsHandler setNotificationMode:mode];
     NSLog(@"NOTIFICATION MODE :: %hd",mode);
     [ALRegisterUserClientService updateNotificationMode:mode withCompletion:^(ALRegistrationResponse *response, NSError *error) {

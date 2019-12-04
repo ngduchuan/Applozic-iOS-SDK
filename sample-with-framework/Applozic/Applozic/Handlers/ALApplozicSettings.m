@@ -393,19 +393,19 @@
  NOTIFICATION_DISABLE = 2
  */
 +(void)enableNotificationSound{
-    [ALUserDefaultsHandler setNotificationMode:NOTIFICATION_ENABLE_SOUND];
+    [ALUserDefaultsHandler setNotificationMode:ALNOTIFICATION_ENABLE_SOUND];
 }
 
 +(void)disableNotificationSound{
-    [ALUserDefaultsHandler setNotificationMode:NOTIFICATION_DISABLE_SOUND];
+    [ALUserDefaultsHandler setNotificationMode:ALNOTIFICATION_DISABLE_SOUND];
 }
 
 +(void)enableNotification{
-    [ALUserDefaultsHandler setNotificationMode:NOTIFICATION_ENABLE];
+    [ALUserDefaultsHandler setNotificationMode:ALNOTIFICATION_ENABLE];
 }
 
 +(void)disableNotification{
-    [ALUserDefaultsHandler setNotificationMode:NOTIFICATION_DISABLE];
+    [ALUserDefaultsHandler setNotificationMode:ALNOTIFICATION_DISABLE];
 }
 
 +(void)setColorForSendButton:(UIColor *)color

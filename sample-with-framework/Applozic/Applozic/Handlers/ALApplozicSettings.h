@@ -6,105 +6,104 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#define USER_PROFILE_PROPERTY @"com.applozic.userdefault.USER_PROFILE_PROPERTY"
-#define SEND_MSG_COLOUR @"com.applozic.userdefault.SEND_MSG_COLOUR"
-#define RECEIVE_MSG_COLOUR @"com.applozic.userdefault.RECEIVE_MSG_COLOUR"
-#define NAVIGATION_BAR_COLOUR @"com.applozic.userdefault.NAVIGATION_BAR_COLOUR"
-#define NAVIGATION_BAR_ITEM_COLOUR @"com.applozic.userdefault.NAVIGATION_BAR_ITEM_COLOUR"
-#define REFRESH_BUTTON_VISIBILITY @"com.applozic.userdefault.REFRESH_BUTTON_VISIBILITY"
-#define CONVERSATION_TITLE @"com.applozic.userdefault.CONVERSATION_TITLE"
-#define BACK_BUTTON_TITLE @"com.applozic.userdefault.BACK_BUTTON_TITLE"
-#define FONT_FACE @"com.applozic.userdefault.FONT_FACE"
-#define CHAT_CELL_FONT_TEXT_STYLE @"com.applozic.userdefault.CHAT_CELL_FONT_TEXT_STYLE"
-#define CHAT_CHANNEL_CELL_FONT_TEXT_STYLE @"com.applozic.userdefault.CHAT_CHANNEL_CELL_FONT_TEXT_STYLE"
-#define NOTIFICATION_TITLE @"com.applozic.userdefault.NOTIFICATION_TITLE"
-#define IMAGE_COMPRESSION_FACTOR @"com.applozic.userdefault.IMAGE_COMPRESSION_FACTOR"
-#define IMAGE_UPLOAD_MAX_SIZE @"com.applozic.userdefault.IMAGE_UPLOAD_MAX_SIZE"
-#define GROUP_ENABLE @"com.applozic.userdefault.GROUP_ENABLE"
-#define GROUP_INFO_DISABLED @"com.applozic.userdefault.GROUP_INFO_DISABLED"
-#define GROUP_INFO_EDIT_DISABLED @"com.applozic.userdefault.GROUP_INFO_EDIT_DISABLED"
-#define MAX_SEND_ATTACHMENT @"com.applozic.userdefault.MAX_SEND_ATTACHMENT"
-#define FILTER_CONTACT @"com.applozic.userdefault.FILTER_CONTACT"
-#define FILTER_CONTACT_START_TIME @"com.applozic.userdefault.FILTER_CONTACT_START_TIME"
-#define WALLPAPER_IMAGE @"com.applozic.userdefault.WALLPAPER_IMAGE"
-#define CUSTOM_MSG_BACKGROUND_COLOR @"com.applozic.userdefault.CUSTOM_MSG_BACKGROUND_COLOR"
-#define CUSTOM_MSG_TEXT_COLOR @"com.applozic.userdefault.CUSTOM_MSG_TEXT_COLOR"
-#define ONLINE_CONTACT_LIMIT @"com.applozic.userdefault.ONLINE_CONTACT_LIMIT"
-#define GROUP_EXIT_BUTTON @"com.applozic.userdefault.GROUP_EXIT_BUTTON"
-#define GROUP_MEMBER_ADD_OPTION @"com.applozic.userdefault.GROUP_MEMBER_ADD_OPTION"
-#define GROUP_MEMBER_REMOVE_OPTION @"com.applozic.userdefault.GROUP_MEMBER_REMOVE_OPTION"
-#define THIRD_PARTY_VC_NAME @"com.applozic.userdefault.THIRD_PARTY_VC_NAME"
-#define THIRD_PARTY_DETAIL_VC_NOTIFICATION @"com.applozic.userdefault.THIRD_PARTY_DETAIL_VC_NOTIFICATION"
-#define CONTEXTUAL_CHAT_OPTION @"com.applozic.userdefault.CONTEXTUAL_CHAT_OPTION"
-#define USER_CALL_OPTION @"com.applozic.userdefault.USER_CALL_OPTION"
-#define SEND_BUTTON_BG_COLOR @"com.applozic.userdefault.SEND_BUTTON_BG_COLOR"
-#define TYPE_MSG_BG_COLOR @"com.applozic.userdefault.TYPE_MSG_BG_COLOR"
-#define TYPING_LABEL_BG_COLOR @"com.applozic.userdefault.TYPING_LABEL_BG_COLOR"
-#define TYPING_LABEL_TEXT_COLOR @"com.applozic.userdefault.TYPING_LABEL_TEXT_COLOR"
-#define EMPTY_CONVERSATION_TEXT @"com.applozic.userdefault.EMPTY_CONVERSATION_TEXT"
-#define NO_CONVERSATION_FLAG_CHAT_VC @"com.applozic.userdefault.NO_CONVERSATION_FLAG_CHAT_VC"
-#define ONLINE_INDICATOR_VISIBILITY @"com.applozic.userdefault.ONLINE_INDICATOR_VISIBILITY"
-#define BACK_BUTTON_TITLE_CHATVC @"com.applozic.userdefault.BACK_BUTTON_TITLE_CHATVC"
-#define NO_MORE_CONVERSATION_VISIBILITY @"com.applozic.userdefault.NO_MORE_CONVERSATION_VISIBILITY"
-#define CUSTOM_NAV_RIGHT_BUTTON_MSGVC @"com.applozic.userdefault.CUSTOM_NAV_RIGHT_BUTTON_MSGVC"
-#define TOAST_BG_COLOUR @"com.applozic.userdefault.TOAST_BG_COLOUR"
-#define TOAST_TEXT_COLOUR @"com.applozic.userdefault.TOAST_TEXT_COLOUR"
-#define SEND_MSG_TEXT_COLOUR @"com.applozic.userdefault.SEND_MSG_TEXT_COLOUR"
-#define RECEIVE_MSG_TEXT_COLOUR @"com.applozic.userdefault.RECEIVE_MSG_TEXT_COLOUR"
-#define MSG_TEXT_BG_COLOUR @"com.applozic.userdefault.MSG_TEXT_BG_COLOUR"
-#define PLACE_HOLDER_COLOUR @"com.applozic.userdefault.PLACE_HOLDER_COLOUR"
-#define UNREAD_COUNT_LABEL_BG_COLOUR @"com.applozic.userdefault.UNREAD_COUNT_LABEL_BG_COLOUR"
-#define STATUS_BAR_BG_COLOUR @"com.applozic.userdefault.STATUS_BAR_BG_COLOUR"
-#define STATUS_BAR_STYLE @"com.applozic.userdefault.STATUS_BAR_STYLE"
-#define MAX_TEXT_VIEW_LINES @"com.applozic.userdefault.MAX_TEXT_VIEW_LINES"
-#define ABUSE_WORDS_WARNING_TEXT @"com.applozic.userdefault.ABUSE_WORDS_WARNING_TEXT"
-#define ENABLE_MSGTEXT_ABUSE_CHECK @"com.applozic.userdefault.ENABLE_MSGTEXT_ABUSE_CHECK"
-#define MSG_DATE_COLOR @"com.applozic.userdefault.MSG_DATE_COLOR"
-#define MSG_SEPERATE_DATE_COLOR @"com.applozic.userdefault.MSG_SEPERATE_DATE_COLOR"
-#define ENABLE_RECEIVER_USER_PROFILE @"com.applozic.userdefault.ENABLE_RECEIVER_USER_PROFILE"
-#define CUSTOM_MSG_FONT_SIZE @"com.applozic.userdefault.CUSTOM_MSG_FONT_SIZE"
-#define CUSTOM_MSG_FONT @"com.applozic.userdefault.CUSTOM_MSG_FONT"
-#define FILTER_ONLY_CONTACT_TYPE_ID @"com.applozic.userdefault.FILTER_ONLY_CONTACT_TYPE_ID"
-#define CUSTOM_NAVIGATION_CLASS_NAME @"com.applozic.userdefault.NAVIGATION_CONTROLLER_CLASS_NAME"
-#define SUB_GROUP_LAUNCH @"com.applozic.userdefault.SUB_GROUP_LAUNCH"
-#define GROUP_OF_TWO_FLAG @"com.applozic.userdefault.GROUP_OF_TWO_FLAG"
-#define BROADCAST_GROUP_ENABLE @"com.applozic.userdefault.BROADCAST_GROUP_ENABLE"
-#define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
-#define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
-#define AUDIO_VIDEO_CLASS @"com.applozic.userdefault.AUDIO_VIDEO_CLASS"
-#define CLIENT_STORYBOARD @"com.applozic.userdefault.CLIENT_STORYBOARD"
-#define GROUP_DELETED_TITLE @"com.applozic.userdefault.GROUP_DELETED_TITLE"
-#define USER_DELETED_TEXT @"com.applozic.userdefault.USER_DELETED_TEXT"
-#define CHAT_LIST_TAB_ICON @"com.applozic.userdefault.CHAT_LIST_TAB_ICON"
-#define USER_PROFILE_TAB_ICON @"com.applozic.userdefault.USER_PROFILE_TAB_ICON"
-#define CHAT_LIST_TAB_TITLE @"com.applozic.userdefault.CHAT_LIST_TAB_TITLE"
-#define USER_PROFILE_TAB_TITLE @"com.applozic.userdefault.USER_PROFILE_TAB_TITLE"
-#define OPEN_CHAT_ON_USER_PROFILE_TAP @"com.applozic.userdefault.OPEN_CHAT_ON_USER_PROFILE_TAP"
-#define MESSAGE_REPLY_ENABLED @"com.applozic.userdefault.MESSAGE_REPLY_MESSAGE"
-#define AV_ENABLED @"com.applozic.userfefault.AV_ENABLED"
-#define CONTACTS_GROUP @"com.applozic.userdefault.CONTACTS_GROUP"
-#define CONTACTS_GROUP_ID @"com.applozic.userdefault.CONTACTS_GROUP_ID"
-#define FORWARD_OPTION @"com.applozic.userdefault.FORWARD_OPTION"
-#define SWIFT_FRAMEWORK @"com.applozic.userfefault.SWIFT_FRAMEWORK"
-#define DEDICATED_SERVER @"com.applozic.userfefault.DEDICATED_SERVER"
-#define HIDE_ATTACHMENT_OPTION @"com.applozic.HIDE_ATTACHMENT_OPTIONS"
-#define S3_STORAGE_SERVICE @"com.applozic.userdefault.S3_STORAGE_SERVICE"
-#define DEFAULT_GROUP_TYPE @"com.applozic.DEFAULT_GROUP_TYPE"
-#define CONTACTS_GROUP_ID_LIST @"com.applozic.userdefault.CONTACTS_GROUP_ID_LIST"
-#define SAVE_VIDEOS_TO_GALLERY @"com.applozic.userdefault.SAVE_VIDEOS_TO_GALLERY"
-#define ENABLE_QUICK_AUDIO_RECORDING @"com.applozic.userdefault.ENABLE_QUICK_AUDIO_RECORDING"
-#define AL_USER_ROLE_NAME @"com.applozic.userdefault.AL_USER_ROLE_NAME"
-#define AL_GROUP_CONVEERSATION_CLOSE @"com.applozic.userdefault.AL_GROUP_CONVEERSATION_CLOSE"
-#define DROP_IN_SHADOW_IN_NAVIGATION_BAR @"com.applozic.userdefault.DROP_IN_SHADOW_IN_NAVIGATION_BAR"
-#define APPLOZIC_LOCALIZABLE @"com.applozic.userdefault.APPLOZIC_LOCALIZABLE"
-#define AL_CATEGORY_NAME @"com.applozic.userdefault.AL_CATEGORY_NAME"
-#define DELETE_CONVERSATION_OPTION @"com.applozic.userdefault.DELETE_CONVERSATION_OPTION"
-#define GOOGLE_CLOUD_SERVICE_ENABLE @"com.applozic.userdefault.GOOGLE_CLOUD_SERVICE_ENABLE"
-#define TEMPLATE_MESSAGES @"com.applozic.TEMPLATE_MESSAGES"
-#define TEMPLATE_MESSAGE_VIEW @"com.applozic.TEMPLATE_MESSAGE_VIEW"
-#define AL_CONTACT_SEARCH @"com.applozic.AL_CONTACT_SEARCH"
-#define CHANNEL_MEMBER_INFO_IN_SUBTITLE @"com.applozic.CHANNEL_MEMBER_INFO_IN_SUBTITLE"
-
+static NSString *const USER_PROFILE_PROPERTY = @"com.applozic.userdefault.USER_PROFILE_PROPERTY";
+static NSString *const SEND_MSG_COLOUR = @"com.applozic.userdefault.SEND_MSG_COLOUR";
+static NSString *const RECEIVE_MSG_COLOUR = @"com.applozic.userdefault.RECEIVE_MSG_COLOUR";
+static NSString *const NAVIGATION_BAR_COLOUR = @"com.applozic.userdefault.NAVIGATION_BAR_COLOUR";
+static NSString *const NAVIGATION_BAR_ITEM_COLOUR = @"com.applozic.userdefault.NAVIGATION_BAR_ITEM_COLOUR";
+static NSString *const REFRESH_BUTTON_VISIBILITY = @"com.applozic.userdefault.REFRESH_BUTTON_VISIBILITY";
+static NSString *const CONVERSATION_TITLE = @"com.applozic.userdefault.CONVERSATION_TITLE";
+static NSString *const BACK_BUTTON_TITLE = @"com.applozic.userdefault.BACK_BUTTON_TITLE";
+static NSString *const FONT_FACE = @"com.applozic.userdefault.FONT_FACE";
+static NSString *const CHAT_CELL_FONT_TEXT_STYLE = @"com.applozic.userdefault.CHAT_CELL_FONT_TEXT_STYLE";
+static NSString *const CHAT_CHANNEL_CELL_FONT_TEXT_STYLE = @"com.applozic.userdefault.CHAT_CHANNEL_CELL_FONT_TEXT_STYLE";
+static NSString *const NOTIFICATION_TITLE = @"com.applozic.userdefault.NOTIFICATION_TITLE";
+static NSString *const IMAGE_COMPRESSION_FACTOR = @"com.applozic.userdefault.IMAGE_COMPRESSION_FACTOR";
+static NSString *const IMAGE_UPLOAD_MAX_SIZE = @"com.applozic.userdefault.IMAGE_UPLOAD_MAX_SIZE";
+static NSString *const GROUP_ENABLE = @"com.applozic.userdefault.GROUP_ENABLE";
+static NSString *const GROUP_INFO_DISABLED = @"com.applozic.userdefault.GROUP_INFO_DISABLED";
+static NSString *const GROUP_INFO_EDIT_DISABLED = @"com.applozic.userdefault.GROUP_INFO_EDIT_DISABLED";
+static NSString *const MAX_SEND_ATTACHMENT = @"com.applozic.userdefault.MAX_SEND_ATTACHMENT";
+static NSString *const FILTER_CONTACT = @"com.applozic.userdefault.FILTER_CONTACT";
+static NSString *const FILTER_CONTACT_START_TIME = @"com.applozic.userdefault.FILTER_CONTACT_START_TIME";
+static NSString *const WALLPAPER_IMAGE = @"com.applozic.userdefault.WALLPAPER_IMAGE";
+static NSString *const CUSTOM_MSG_BACKGROUND_COLOR = @"com.applozic.userdefault.CUSTOM_MSG_BACKGROUND_COLOR";
+static NSString *const CUSTOM_MSG_TEXT_COLOR = @"com.applozic.userdefault.CUSTOM_MSG_TEXT_COLOR";
+static NSString *const ONLINE_CONTACT_LIMIT = @"com.applozic.userdefault.ONLINE_CONTACT_LIMIT";
+static NSString *const GROUP_EXIT_BUTTON = @"com.applozic.userdefault.GROUP_EXIT_BUTTON";
+static NSString *const GROUP_MEMBER_ADD_OPTION = @"com.applozic.userdefault.GROUP_MEMBER_ADD_OPTION";
+static NSString *const GROUP_MEMBER_REMOVE_OPTION = @"com.applozic.userdefault.GROUP_MEMBER_REMOVE_OPTION";
+static NSString *const THIRD_PARTY_VC_NAME = @"com.applozic.userdefault.THIRD_PARTY_VC_NAME";
+static NSString *const THIRD_PARTY_DETAIL_VC_NOTIFICATION = @"com.applozic.userdefault.THIRD_PARTY_DETAIL_VC_NOTIFICATION";
+static NSString *const CONTEXTUAL_CHAT_OPTION = @"com.applozic.userdefault.CONTEXTUAL_CHAT_OPTION";
+static NSString *const USER_CALL_OPTION = @"com.applozic.userdefault.USER_CALL_OPTION";
+static NSString *const SEND_BUTTON_BG_COLOR = @"com.applozic.userdefault.SEND_BUTTON_BG_COLOR";
+static NSString *const TYPE_MSG_BG_COLOR = @"com.applozic.userdefault.TYPE_MSG_BG_COLOR";
+static NSString *const TYPING_LABEL_BG_COLOR = @"com.applozic.userdefault.TYPING_LABEL_BG_COLOR";
+static NSString *const TYPING_LABEL_TEXT_COLOR = @"com.applozic.userdefault.TYPING_LABEL_TEXT_COLOR";
+static NSString *const EMPTY_CONVERSATION_TEXT = @"com.applozic.userdefault.EMPTY_CONVERSATION_TEXT";
+static NSString *const NO_CONVERSATION_FLAG_CHAT_VC = @"com.applozic.userdefault.NO_CONVERSATION_FLAG_CHAT_VC";
+static NSString *const ONLINE_INDICATOR_VISIBILITY = @"com.applozic.userdefault.ONLINE_INDICATOR_VISIBILITY";
+static NSString *const BACK_BUTTON_TITLE_CHATVC = @"com.applozic.userdefault.BACK_BUTTON_TITLE_CHATVC";
+static NSString *const NO_MORE_CONVERSATION_VISIBILITY = @"com.applozic.userdefault.NO_MORE_CONVERSATION_VISIBILITY";
+static NSString *const CUSTOM_NAV_RIGHT_BUTTON_MSGVC = @"com.applozic.userdefault.CUSTOM_NAV_RIGHT_BUTTON_MSGVC";
+static NSString *const TOAST_BG_COLOUR = @"com.applozic.userdefault.TOAST_BG_COLOUR";
+static NSString *const TOAST_TEXT_COLOUR = @"com.applozic.userdefault.TOAST_TEXT_COLOUR";
+static NSString *const SEND_MSG_TEXT_COLOUR = @"com.applozic.userdefault.SEND_MSG_TEXT_COLOUR";
+static NSString *const RECEIVE_MSG_TEXT_COLOUR = @"com.applozic.userdefault.RECEIVE_MSG_TEXT_COLOUR";
+static NSString *const MSG_TEXT_BG_COLOUR = @"com.applozic.userdefault.MSG_TEXT_BG_COLOUR";
+static NSString *const PLACE_HOLDER_COLOUR = @"com.applozic.userdefault.PLACE_HOLDER_COLOUR";
+static NSString *const UNREAD_COUNT_LABEL_BG_COLOUR = @"com.applozic.userdefault.UNREAD_COUNT_LABEL_BG_COLOUR";
+static NSString *const STATUS_BAR_BG_COLOUR = @"com.applozic.userdefault.STATUS_BAR_BG_COLOUR";
+static NSString *const STATUS_BAR_STYLE = @"com.applozic.userdefault.STATUS_BAR_STYLE";
+static NSString *const MAX_TEXT_VIEW_LINES = @"com.applozic.userdefault.MAX_TEXT_VIEW_LINES";
+static NSString *const ABUSE_WORDS_WARNING_TEXT = @"com.applozic.userdefault.ABUSE_WORDS_WARNING_TEXT";
+static NSString *const ENABLE_MSGTEXT_ABUSE_CHECK = @"com.applozic.userdefault.ENABLE_MSGTEXT_ABUSE_CHECK";
+static NSString *const MSG_DATE_COLOR = @"com.applozic.userdefault.MSG_DATE_COLOR";
+static NSString *const MSG_SEPERATE_DATE_COLOR = @"com.applozic.userdefault.MSG_SEPERATE_DATE_COLOR";
+static NSString *const ENABLE_RECEIVER_USER_PROFILE = @"com.applozic.userdefault.ENABLE_RECEIVER_USER_PROFILE";
+static NSString *const CUSTOM_MSG_FONT_SIZE = @"com.applozic.userdefault.CUSTOM_MSG_FONT_SIZE";
+static NSString *const CUSTOM_MSG_FONT = @"com.applozic.userdefault.CUSTOM_MSG_FONT";
+static NSString *const FILTER_ONLY_CONTACT_TYPE_ID = @"com.applozic.userdefault.FILTER_ONLY_CONTACT_TYPE_ID";
+static NSString *const CUSTOM_NAVIGATION_CLASS_NAME = @"com.applozic.userdefault.NAVIGATION_CONTROLLER_CLASS_NAME";
+static NSString *const SUB_GROUP_LAUNCH = @"com.applozic.userdefault.SUB_GROUP_LAUNCH";
+static NSString *const GROUP_OF_TWO_FLAG = @"com.applozic.userdefault.GROUP_OF_TWO_FLAG";
+static NSString *const BROADCAST_GROUP_ENABLE = @"com.applozic.userdefault.BROADCAST_GROUP_ENABLE";
+static NSString *const VIEW_CONTROLLER_ARRAY = @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY";
+static NSString *const MSG_CONTAINER_VC = @"com.applozic.userdefault.MSG_CONTAINER_VC";
+static NSString *const AUDIO_VIDEO_CLASS = @"com.applozic.userdefault.AUDIO_VIDEO_CLASS";
+static NSString *const CLIENT_STORYBOARD = @"com.applozic.userdefault.CLIENT_STORYBOARD";
+static NSString *const GROUP_DELETED_TITLE = @"com.applozic.userdefault.GROUP_DELETED_TITLE";
+static NSString *const USER_DELETED_TEXT = @"com.applozic.userdefault.USER_DELETED_TEXT";
+static NSString *const CHAT_LIST_TAB_ICON = @"com.applozic.userdefault.CHAT_LIST_TAB_ICON";
+static NSString *const USER_PROFILE_TAB_ICON = @"com.applozic.userdefault.USER_PROFILE_TAB_ICON";
+static NSString *const CHAT_LIST_TAB_TITLE = @"com.applozic.userdefault.CHAT_LIST_TAB_TITLE";
+static NSString *const USER_PROFILE_TAB_TITLE = @"com.applozic.userdefault.USER_PROFILE_TAB_TITLE";
+static NSString *const OPEN_CHAT_ON_USER_PROFILE_TAP = @"com.applozic.userdefault.OPEN_CHAT_ON_USER_PROFILE_TAP";
+static NSString *const MESSAGE_REPLY_ENABLED = @"com.applozic.userdefault.MESSAGE_REPLY_MESSAGE";
+static NSString *const AV_ENABLED = @"com.applozic.userfefault.AV_ENABLED";
+static NSString *const CONTACTS_GROUP = @"com.applozic.userdefault.CONTACTS_GROUP";
+static NSString *const CONTACTS_GROUP_ID = @"com.applozic.userdefault.CONTACTS_GROUP_ID";
+static NSString *const FORWARD_OPTION = @"com.applozic.userdefault.FORWARD_OPTION";
+static NSString *const SWIFT_FRAMEWORK = @"com.applozic.userfefault.SWIFT_FRAMEWORK";
+static NSString *const DEDICATED_SERVER = @"com.applozic.userfefault.DEDICATED_SERVER";
+static NSString *const HIDE_ATTACHMENT_OPTION = @"com.applozic.HIDE_ATTACHMENT_OPTIONS";
+static NSString *const S3_STORAGE_SERVICE = @"com.applozic.userdefault.S3_STORAGE_SERVICE";
+static NSString *const DEFAULT_GROUP_TYPE = @"com.applozic.DEFAULT_GROUP_TYPE";
+static NSString *const CONTACTS_GROUP_ID_LIST = @"com.applozic.userdefault.CONTACTS_GROUP_ID_LIST";
+static NSString *const SAVE_VIDEOS_TO_GALLERY = @"com.applozic.userdefault.SAVE_VIDEOS_TO_GALLERY";
+static NSString *const ENABLE_QUICK_AUDIO_RECORDING = @"com.applozic.userdefault.ENABLE_QUICK_AUDIO_RECORDING";
+static NSString *const AL_USER_ROLE_NAME = @"com.applozic.userdefault.AL_USER_ROLE_NAME";
+static NSString *const AL_GROUP_CONVEERSATION_CLOSE = @"com.applozic.userdefault.AL_GROUP_CONVEERSATION_CLOSE";
+static NSString *const DROP_IN_SHADOW_IN_NAVIGATION_BAR = @"com.applozic.userdefault.DROP_IN_SHADOW_IN_NAVIGATION_BAR";
+static NSString *const APPLOZIC_LOCALIZABLE = @"com.applozic.userdefault.APPLOZIC_LOCALIZABLE";
+static NSString *const AL_CATEGORY_NAME = @"com.applozic.userdefault.AL_CATEGORY_NAME";
+static NSString *const DELETE_CONVERSATION_OPTION = @"com.applozic.userdefault.DELETE_CONVERSATION_OPTION";
+static NSString *const GOOGLE_CLOUD_SERVICE_ENABLE = @"com.applozic.userdefault.GOOGLE_CLOUD_SERVICE_ENABLE";
+static NSString *const TEMPLATE_MESSAGES = @"com.applozic.TEMPLATE_MESSAGES";
+static NSString *const TEMPLATE_MESSAGE_VIEW = @"com.applozic.TEMPLATE_MESSAGE_VIEW";
+static NSString *const AL_CONTACT_SEARCH = @"com.applozic.AL_CONTACT_SEARCH";
+static NSString *const CHANNEL_MEMBER_INFO_IN_SUBTITLE = @"com.applozic.CHANNEL_MEMBER_INFO_IN_SUBTITLE";
 static NSString *const TABBAR_BACKGROUND_COLOUR = @"com.applozic.TABBAR_BACKGROUND_COLOUR";
 static NSString *const TABBAR_SELECTED_ITEM_COLOUR = @"com.applozic.TABBAR_SELECTED_ITEM_COLOUR";
 static NSString *const TABBAR_UNSELECTED_ITEM_COLOUR = @"com.applozic.TABBAR_UNSELECTED_ITEM_COLOUR";

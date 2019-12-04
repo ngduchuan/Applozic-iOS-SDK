@@ -20,8 +20,8 @@
 #import "NSData+AES.h"
 #import "ALDataNetworkConnection.h"
 
-#define MQTT_TOPIC_STATUS @"status-v2"
-#define MQTT_ENCRYPTION_SUB_KEY @"encr-"
+static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
+static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 
 @implementation ALMQTTConversationService
