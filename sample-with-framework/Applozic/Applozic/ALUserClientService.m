@@ -177,6 +177,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if (theError)
         {
             ALSLog(ALLoggerSeverityError, @"theError");
+            completion(nil, theError);
         }
         else
         {
@@ -204,6 +205,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if (theError)
         {
             ALSLog(ALLoggerSeverityError, @"theError,%@",theError);
+            completion(nil, theError);
+            return;
         }
         else{
             completion((NSString *)theJson, nil);
