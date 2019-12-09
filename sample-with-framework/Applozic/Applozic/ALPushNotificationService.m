@@ -35,6 +35,9 @@
 -(BOOL) isApplozicNotification:(NSDictionary *)dictionary
 {
     NSString *type = (NSString *)[dictionary valueForKey:@"AL_KEY"];
+    if (!type) {
+        return NO;
+    }
     ALSLog(ALLoggerSeverityInfo, @"APNs GOT NEW MESSAGE & NOTIFICATION TYPE :: %@", type);
     BOOL prefixCheck = ([type hasPrefix:APPLOZIC_PREFIX]) || ([type hasPrefix:@"MT_"]);
     return (type != nil && ([ALPushNotificationService.ApplozicNotificationTypes containsObject:type] || prefixCheck));
