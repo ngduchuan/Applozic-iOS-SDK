@@ -29,6 +29,8 @@
 #import "ALVOIPNotificationHandler.h"
 #import "ALHTTPManager.h"
 
+static const int GROUP_CREATION = 1;
+
 @interface ALGroupCreationViewController ()
 
 @property (nonatomic,strong) UIImagePickerController * mImagePicker;

@@ -21,8 +21,6 @@ static CGFloat TYPING_LABEL_SIZE = 12.5;
 
 static CGFloat const sendTextViewCornerRadius = 15.0f;
 
-#define KEYBOARD_PADDING 85
-
 @interface ALBaseViewController ()
 
 @property (nonatomic,retain) UIButton * rightViewButton;

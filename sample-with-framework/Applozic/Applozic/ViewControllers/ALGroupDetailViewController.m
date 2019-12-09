@@ -20,6 +20,8 @@
 #import "ALChannelUser.h"
 #import "ALMessageClientService.h"
 
+const int GROUP_ADDITION = 2;
+
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate>
 {
     NSMutableOrderedSet *memberIds;

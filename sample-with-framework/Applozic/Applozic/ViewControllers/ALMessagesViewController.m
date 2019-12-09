@@ -5,11 +5,14 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-static CGFloat NAVIGATION_TEXT_SIZE = 20;
-static CGFloat USER_NAME_LABEL_SIZE = 18;
-static CGFloat MESSAGE_LABEL_SIZE = 14;
-static CGFloat TIME_LABEL_SIZE = 12;
-static CGFloat IMAGE_NAME_LABEL_SIZE = 14;
+static const CGFloat NAVIGATION_TEXT_SIZE = 20;
+static const CGFloat USER_NAME_LABEL_SIZE = 18;
+static const CGFloat MESSAGE_LABEL_SIZE = 14;
+static const CGFloat TIME_LABEL_SIZE = 12;
+static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
+static const int LAUNCH_GROUP_OF_TWO = 4;
+static const int REGULAR_CONTACTS = 0;
+static const int BROADCAST_GROUP_CREATION = 5;
 
 #import "UIView+Toast.h"
 #import "TSMessageView.h"
@@ -47,8 +50,8 @@ static CGFloat IMAGE_NAME_LABEL_SIZE = 14;
 #import "ALLogger.h"
 
 // Constants
-#define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
-#define DEFAULT_TOP_PORTRAIT_CONSTANT -64
+static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
+static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #define MQTT_MAX_RETRY 3
 
 //==============================================================================================================================================
@@ -1121,11 +1124,11 @@ static CGFloat IMAGE_NAME_LABEL_SIZE = 14;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone &&
         (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight))
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_LANDSCAPE_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_LANDSCAPE_CONSTANT;
     }
     else
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_PORTRAIT_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_PORTRAIT_CONSTANT;
     }
     [self.view layoutIfNeeded];
 }

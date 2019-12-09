@@ -407,7 +407,7 @@
 
     NSDictionary * metadataDictionary =  [dict valueForKey:@"messageMetaData"];
 
-    if( metadataDictionary && [metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] && [[metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] isEqualToString:CATEGORY_PUSHNNOTIFICATION] )
+    if( metadataDictionary && [metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] && [[metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] isEqualToString:ALCATEGORY_PUSHNNOTIFICATION])
     {
         ALSLog(ALLoggerSeverityInfo, @" Puhs notification with category, just open app %@",[metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY]);
         if([updateUI intValue] == APP_STATE_ACTIVE)

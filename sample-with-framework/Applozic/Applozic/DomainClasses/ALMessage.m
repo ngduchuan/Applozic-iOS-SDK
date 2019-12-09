@@ -357,13 +357,13 @@
 -(BOOL)isPushNotificationMessage
 {
   return (self.metadata && [self.metadata valueForKey:@"category"] &&
-   [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_PUSHNNOTIFICATION]);
+   [ [self.metadata valueForKey:@"category"] isEqualToString:ALCATEGORY_PUSHNNOTIFICATION]);
 }
 
 -(BOOL)isMessageCategoryHidden
 {
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
-            [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_HIDDEN]);
+            [ [self.metadata valueForKey:@"category"] isEqualToString:ALCATEGORY_HIDDEN]);
 }
 
 

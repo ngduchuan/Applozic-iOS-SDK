@@ -16,18 +16,21 @@
 #import "ALDataNetworkConnection.h"
 #import "ALMessageClientService.h"
 
-#define REPLY_VIEW_PADDING 5
-#define FONT_NAME @"Helvetica"
-#define FONT_SIZE 13
-#define ATTACHMENT_PREVIEW_WIDTH 60
+static CGFloat const REPLY_VIEW_PADDING = 5;
+static NSString *const FONT_NAME = @"Helvetica";
+static CGFloat const FONT_SIZE = 13;
+static CGFloat const ATTACHMENT_PREVIEW_WIDTH = 60;
 
-#define ATTACHMENT_TEXT_PHOTOS @"photo"
-#define ATTACHMENT_TEXT_AUDIO @"Audio"
-#define ATTACHMENT_TEXT_VIDEO #"Video"
+static CGFloat const MESSAGE_REPLY_WIDTH = 100;
+static CGFloat const MESSAGE_REPLY_SUPER_VIEW_PADDING = 10;
 
-#define ATTACHMENT_TEXT_CONATCT @"Conatct"
-#define ATTACHMENT_TEXT_DOCUMENT @"Attachment"
-#define SENT_MESSAGE_DISPLAY_NAME @"You"
+static NSString *const ATTACHMENT_TEXT_PHOTOS = @"photo";
+static NSString *const ATTACHMENT_TEXT_AUDIO = @"Audio";
+static NSString *const ATTACHMENT_TEXT_VIDEO = @"Video";
+
+static NSString *const ATTACHMENT_TEXT_CONATCT = @"Conatct";
+static NSString *const ATTACHMENT_TEXT_DOCUMENT = @"Attachment";
+static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
 
 
 @implementation MessageReplyView
