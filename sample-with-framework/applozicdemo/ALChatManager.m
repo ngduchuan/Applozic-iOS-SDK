@@ -59,13 +59,12 @@
         if(error)
         {
             NSLog(@"ERROR_USER_REGISTRATION :: %@",error);
-            [ALUtilityClass showAlertMessage:rResponse.message andTitle:@"Response"];
             return;
         }
         
         if(![rResponse isRegisteredSuccessfully])
         {
-            [ALUtilityClass showAlertMessage:rResponse.message andTitle:@"ALERT!!!"];
+            NSLog(@"ERROR_USER_REGISTRATION :: %@",rResponse.message);
             return;
         }
         
@@ -105,14 +104,12 @@
         if(error)
         {
             NSLog(@"ERROR_USER_REGISTRATION :: %@",error.description);
-            [ALUtilityClass showAlertMessage:rResponse.message andTitle:@"Response"];
             completion(nil, error);
             return;
         }
         
         if(![rResponse isRegisteredSuccessfully])
         {
-            [ALUtilityClass showAlertMessage:rResponse.message andTitle:@"ALERT!!!"];
             NSError *passError = [NSError errorWithDomain:rResponse.message code:0 userInfo:nil];
             completion(nil, passError);
             return;

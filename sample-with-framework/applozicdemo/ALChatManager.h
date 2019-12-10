@@ -12,7 +12,7 @@
 #import <Applozic/ALConversationService.h>
 #import <Applozic/ALRegisterUserClientService.h>
 
-#define APPLICATION_ID @"applozic-sample-app"
+#define APPLICATION_ID @"6ae0d00947e5226721a725e8d"
 
 
 @interface ALChatManager : NSObject
