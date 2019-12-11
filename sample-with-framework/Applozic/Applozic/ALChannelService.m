@@ -175,7 +175,7 @@
 +(void)closeGroupConverstion :(NSNumber *) groupId  withCompletion:(void(^)(NSError *error))completion {
 
     NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
-    [metadata setObject:@"CLOSE" forKey:CHANNEL_CONVERSATION_STATUS];
+    [metadata setObject:@"CLOSE" forKey:AL_CHANNEL_CONVERSATION_STATUS];
     
     ALChannelService *channelService = [ALChannelService new];
     [channelService updateChannel:groupId andNewName:nil
@@ -988,7 +988,7 @@
         
         [ALChannelClientService getChannelInformationResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, AlChannelFeedResponse *response) {
             
-            if(!error && [response.status isEqualToString: RESPONSE_SUCCESS] )
+            if(!error && [response.status isEqualToString: AL_RESPONSE_SUCCESS])
             {
                 ALChannelDBService *dbService = [[ALChannelDBService alloc] init];
                 [dbService createChannel:response.alChannel];

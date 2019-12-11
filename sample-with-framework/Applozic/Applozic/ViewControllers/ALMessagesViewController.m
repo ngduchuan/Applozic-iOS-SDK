@@ -52,7 +52,7 @@ static const int BROADCAST_GROUP_CREATION = 5;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
-#define MQTT_MAX_RETRY 3
+static int const MQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface

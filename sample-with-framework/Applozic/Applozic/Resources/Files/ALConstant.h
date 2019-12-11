@@ -7,25 +7,16 @@
 
 #import "ALUserDefaultsHandler.h"
 
-#define APPLOZIC_SDK_VERSION @"4.0.2"
-
 #define KBASE_URL ([ALUserDefaultsHandler getBASEURL])
 #define MQTT_URL ([ALUserDefaultsHandler getMQTTURL])
 #define KBASE_FILE_URL ([ALUserDefaultsHandler getFILEURL])
 #define MQTT_PORT ([ALUserDefaultsHandler getMQTTPort])
 
-#define GREY_COLOR ([UIColor colorWithWhite:0.7 alpha:0.1])
-#define TEXT_VIEW_TO_MESSAGE_VIEW_RATIO 1.4 // Proper scolling.... 
-
-#define FORWARD_STATUS @"5"
-#define REPLIED_STATUS @"4"
-#define DEFAULT_FONT_NAME @"Helvetica-Bold"
-
-#define APPLOZIC_TOPBAR_COLOR @"ApplozicTopbarColor"
-#define APPLOZIC_CHAT_BACKGROUND_COLOR @"ApplozicChatBackgroundColor"
-#define APPLOZIC_CHAT_FONTNAME @"ApplozicChatFontName"
-#define APPLOGIC_TOPBAR_TITLE_COLOR @"ApplozicTopbarTitleColor"
-#define APPLOGIC_IMAGEDOWNLOAD_BASEURL @"https://applozic.appspot.com/rest/ws/file"
+static NSString *const APPLOZIC_TOPBAR_COLOR = @"ApplozicTopbarColor";
+static NSString *const APPLOZIC_CHAT_BACKGROUND_COLOR = @"ApplozicChatBackgroundColor";
+static NSString *const APPLOZIC_CHAT_FONTNAME = @"ApplozicChatFontName";
+static NSString *const APPLOGIC_TOPBAR_TITLE_COLOR = @"ApplozicTopbarTitleColor";
+static NSString *const APPLOGIC_IMAGEDOWNLOAD_BASEURL = @"https://applozic.appspot.com/rest/ws/file";
 
 #define IS_OS_8_OR_LATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -40,16 +31,13 @@
 #define IS_OS_9_OR_LATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0)
 #define IS_OS_EARLIER_THAN_10 ([[[UIDevice currentDevice] systemVersion] floatValue] < 10.0)
 
-#define CONNECTION_TYPE_USER_IMG_UPLOAD @"CONNECTION_TYPE_USER_IMG_UPLOAD"
-#define CONNECTION_TYPE_GROUP_IMG_UPLOAD @"CONNECTION_TYPE_GROUP_UPLOAD"
-#define IMAGE_UPLOAD_URL @"/rest/ws/upload/file"
-#define IMAGE_UPLOAD_ENDPOINT @"/files/upload/"
-#define CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT @"/rest/ws/upload/image?aclsPrivate=true"
-#define GOOGLE_CLOUD_STORAGE_IMAGE_UPLOAD_ENDPOINT @"/rest/ws/upload/image"
-#define IMAGE_THUMBNAIL_ENDPOIT @"/files/"
-#define IMAGE_DOWNLOAD_ENDPOINT @"/files/get/"
-#define AL_EMPTY_JSON_STRING @"\"EMPTY_LIST\""
-
+static NSString *const AL_IMAGE_UPLOAD_URL = @"/rest/ws/upload/file";
+static NSString *const AL_IMAGE_UPLOAD_ENDPOINT = @"/files/upload/";
+static NSString *const AL_CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT = @"/rest/ws/upload/image?aclsPrivate=true";
+static NSString *const AL_GOOGLE_CLOUD_STORAGE_IMAGE_UPLOAD_ENDPOINT = @"/rest/ws/upload/image";
+static NSString *const AL_IMAGE_THUMBNAIL_ENDPOIT = @"/files/";
+static NSString *const AL_IMAGE_DOWNLOAD_ENDPOINT = @"/files/get/";
+static NSString *const AL_EMPTY_JSON_STRING = @"\"EMPTY_LIST\"";
 
 #define SOURCE_IOS 3
 

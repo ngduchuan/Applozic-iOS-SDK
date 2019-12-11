@@ -25,12 +25,6 @@ typedef enum
 
 } deviceApnsType;
 
-
-#define AV_FEATURE_ARRAY  [NSArray arrayWithObjects: @"101",@"102",nil]
-
-
-
-
 @interface ALUser : ALJson
 
 @property NSString *userId;

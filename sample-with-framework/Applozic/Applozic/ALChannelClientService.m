@@ -1016,7 +1016,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
             AlChannelFeedResponse *response = [[AlChannelFeedResponse alloc] initWithJSONString:theJson];
             
-            if([response.status isEqualToString: RESPONSE_SUCCESS] ){
+            if([response.status isEqualToString: AL_RESPONSE_SUCCESS] ){
                 NSMutableArray * members = response.alChannel.membersId;
                 ALContactService * contactService = [ALContactService new];
                 NSMutableArray* userNotPresentIds = [NSMutableArray new];

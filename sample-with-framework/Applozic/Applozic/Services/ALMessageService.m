@@ -956,7 +956,7 @@ static ALMessageClientService *alMsgClientService;
                     for(ALMessage * message in syncResponse.messagesList)
                     {
                         [messageDatabase updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
                     }
                 }
                 [ALUserDefaultsHandler setLastSyncTimeForMetaData:syncResponse.lastSyncTime];

@@ -50,7 +50,7 @@
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
-    [user setAppVersionCode: VERSION_CODE];
+    [user setAppVersionCode: AL_VERSION_CODE];
     [user setRegistrationId: [ALUserDefaultsHandler getApnDeviceToken]];
     [user setNotificationMode:[ALUserDefaultsHandler getNotificationMode]];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
@@ -65,7 +65,7 @@
     }
     if([ALApplozicSettings isAudioVideoEnabled])
     {
-        [user setFeatures:[NSMutableArray arrayWithArray:AV_FEATURE_ARRAY]];
+        [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
     
@@ -228,7 +228,7 @@
     [user setEmailVerified:true];
     [user setDeviceType:4];
     [user setDeviceApnsType:!isDevelopmentBuild()];
-    [user setAppVersionCode: VERSION_CODE];
+    [user setAppVersionCode: AL_VERSION_CODE];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
 
@@ -283,7 +283,7 @@
     [user setEmailVerified:true];
     [user setDeviceType:4];
     [user setDeviceApnsType:!isDevelopmentBuild()];
-    [user setAppVersionCode: VERSION_CODE];
+    [user setAppVersionCode: AL_VERSION_CODE];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
     
@@ -335,7 +335,7 @@
 
 -(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,LOGOUT_URL];
+    NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
     NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
     
     [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
@@ -392,7 +392,7 @@
 +(void)sendServerRequestForAppUpdate{
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
-    NSString * paramString = [NSString stringWithFormat:@"?appVersionCode=%@&deviceKey%@",VERSION_CODE,DEVICE_KEY_STRING];
+    NSString * paramString = [NSString stringWithFormat:@"?appVersionCode=%@&deviceKey%@",AL_VERSION_CODE,AL_DEVICE_KEY_STRING];
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
     [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {

@@ -6,10 +6,6 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-//groupNameInput
-//groupIcon
-#define DEFAULT_GROUP_ICON_IMAGE ([UIImage imageNamed:@"applozic_group_icon.png"])
-
 #import "ALGroupCreationViewController.h"
 #import "ALNewContactsViewController.h"
 #import "ALChatViewController.h"
@@ -109,7 +105,7 @@ static const int GROUP_CREATION = 1;
     }
     else
     {
-        [self.groupIconView setImage:DEFAULT_GROUP_ICON_IMAGE];
+        [self.groupIconView setImage:[UIImage imageNamed:@"applozic_group_icon.png"]];
     }
 }
 
@@ -336,7 +332,7 @@ static const int GROUP_CREATION = 1;
     [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
-        [self.groupIconView setImage:DEFAULT_GROUP_ICON_IMAGE];
+        [self.groupIconView setImage:[UIImage imageNamed:@"applozic_group_icon.png"]];
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     
@@ -352,7 +348,7 @@ static const int GROUP_CREATION = 1;
             return;
         }
         
-        NSString * uploadUrl = [KBASE_URL stringByAppendingString:IMAGE_UPLOAD_URL];
+        NSString * uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
         
         self.groupImageUploadURL = uploadUrl;
 

@@ -70,7 +70,7 @@
         completion(urlRequest, nil);
         return;
     }else if([ALApplozicSettings isStorageServiceEnabled]) {
-        NSString * theUrlString = [NSString stringWithFormat:@"%@%@%@",KBASE_FILE_URL,IMAGE_DOWNLOAD_ENDPOINT,blobKey];
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@%@",KBASE_FILE_URL,AL_IMAGE_DOWNLOAD_ENDPOINT,blobKey];
         completion(nil, theUrlString);
         return;
     }else {
@@ -314,13 +314,13 @@
 
 -(void) sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString * message, NSError *error)) completion {
     if(ALApplozicSettings.isStorageServiceEnabled) {
-        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, IMAGE_UPLOAD_ENDPOINT];
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(theUrlString, nil);
     }else if(ALApplozicSettings.isS3StorageServiceEnabled) {
-        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
         completion(theUrlString, nil);
     }else if(ALApplozicSettings.isGoogleCloudServiceEnabled){
-        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, IMAGE_UPLOAD_ENDPOINT];
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(theUrlString, nil);
     }else {
         NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/url",KBASE_FILE_URL];

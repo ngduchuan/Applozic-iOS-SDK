@@ -76,9 +76,8 @@
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
 
-static CGFloat const MQTT_MAX_RETRY = 3;
-#define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
-
+static int const MQTT_MAX_RETRY = 3;
+static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
 NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetailVCNotificationNavigationVC";
 NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";

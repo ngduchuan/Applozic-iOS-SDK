@@ -926,8 +926,8 @@ dispatch_queue_t syncSerialBackgroundQueue;
     ALChannel *channel = [ALChannel new];
     NSMutableDictionary *metadata =   [channel getMetaDataDictionary:dbChannel.metadata];
     
-    if( metadata && [metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] ){
-        return ([[metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
+    if( metadata && [metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] ){
+        return ([[metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;
 }

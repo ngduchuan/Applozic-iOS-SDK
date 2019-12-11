@@ -468,7 +468,7 @@
             return;
         }
         
-        NSString * uploadUrl = [KBASE_URL stringByAppendingString:IMAGE_UPLOAD_URL];
+        NSString * uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
 
         ALHTTPManager * manager = [[ALHTTPManager alloc]init];
         [manager uploadProfileImage:image withFilePath:self->mainFilePath uploadURL:uploadUrl withCompletion:^(NSData * _Nullable data, NSError *error) {
