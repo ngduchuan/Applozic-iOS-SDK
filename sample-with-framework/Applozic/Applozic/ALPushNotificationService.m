@@ -35,7 +35,7 @@
 -(BOOL) isApplozicNotification:(NSDictionary *)dictionary
 {
     NSString *type = (NSString *)[dictionary valueForKey:@"AL_KEY"];
-    if (!type) {
+    if (!type.length) {
         return NO;
     }
     ALSLog(ALLoggerSeverityInfo, @"APNs GOT NEW MESSAGE & NOTIFICATION TYPE :: %@", type);
