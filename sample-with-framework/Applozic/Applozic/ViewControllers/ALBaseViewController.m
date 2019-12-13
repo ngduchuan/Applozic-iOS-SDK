@@ -276,13 +276,13 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)checkPricingPackage
 {
     BOOL debugflag = [ALUtilityClass isThisDebugBuild];
-    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == ALBETA);
+    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == AL_BETA);
    
     if(debugflag)
     {
         return;
     }
-    if([ALUserDefaultsHandler getUserPricingPackage] == ALCLOSED)
+    if([ALUserDefaultsHandler getUserPricingPackage] == AL_CLOSED)
     {
         [self back:self];
         [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];

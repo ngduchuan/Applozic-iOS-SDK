@@ -111,7 +111,7 @@
     self.theMessage.key = [[NSUUID UUID] UUIDString];
     self.theMessage.delivered = NO;
     self.theMessage.fileMetaKey = nil;
-    self.theMessage.source = SOURCE_IOS;
+    self.theMessage.source = AL_SOURCE_IOS;
     [self launchContactScreen:self.theMessage];
 }
 

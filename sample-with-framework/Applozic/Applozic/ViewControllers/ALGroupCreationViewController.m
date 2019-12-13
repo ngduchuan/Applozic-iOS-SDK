@@ -26,6 +26,7 @@
 #import "ALHTTPManager.h"
 
 static const int GROUP_CREATION = 1;
+static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
 
 @interface ALGroupCreationViewController ()
 
@@ -105,7 +106,7 @@ static const int GROUP_CREATION = 1;
     }
     else
     {
-        [self.groupIconView setImage:[UIImage imageNamed:@"applozic_group_icon.png"]];
+        [self.groupIconView setImage:[UIImage imageNamed:DEFAULT_GROUP_ICON_NAME]];
     }
 }
 
@@ -332,7 +333,7 @@ static const int GROUP_CREATION = 1;
     [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
-        [self.groupIconView setImage:[UIImage imageNamed:@"applozic_group_icon.png"]];
+        [self.groupIconView setImage:[UIImage imageNamed:DEFAULT_GROUP_ICON_NAME]];
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     

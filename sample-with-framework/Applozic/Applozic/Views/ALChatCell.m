@@ -222,7 +222,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     {
         [self dateTextSetupForALMessage:alMessage withViewSize:viewSize andTheTextSize:theTextSize];
     }
-    else if ([alMessage.type isEqualToString:IN_BOX])
+    else if ([alMessage.type isEqualToString:AL_IN_BOX])
     {
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
         
@@ -496,11 +496,11 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
      UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
        UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
-    if ([self.mMessage.type isEqualToString:IN_BOX]){
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
 
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
 
-    }else if ([self.mMessage.type isEqualToString:OUT_BOX]){
+    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
 

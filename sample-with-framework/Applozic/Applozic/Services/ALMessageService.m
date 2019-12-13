@@ -483,7 +483,7 @@ static ALMessageClientService *alMsgClientService;
             [self resetUnreadCountAndUpdate:message];
 
             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate) {
-                if([message.type isEqual: OUT_BOX]){
+                if([message.type isEqual: AL_OUT_BOX]){
                     [delegate onMessageSent: message];
                 }else {
                     [delegate onMessageReceived: message];
@@ -895,7 +895,7 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
             if(delegate){
-                if([message.type  isEqual: OUT_BOX]){
+                if([message.type  isEqual: AL_OUT_BOX]){
                     [delegate onMessageSent: message];
                 }else{
                     [delegate onMessageReceived: message];

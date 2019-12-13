@@ -416,11 +416,11 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
-    if ([self.mMessage.type isEqualToString:IN_BOX]){
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
 
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
 
-    }else if ([self.mMessage.type isEqualToString:OUT_BOX]){
+    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
 
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];

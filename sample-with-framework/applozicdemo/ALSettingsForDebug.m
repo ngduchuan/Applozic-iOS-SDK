@@ -99,7 +99,7 @@
     isBackgroundWallpaperSet = (([[ALApplozicSettings getChatWallpaperImageName] isEqualToString:@"NULL"]
                                  ||[ALApplozicSettings getChatWallpaperImageName]== NULL ) ? NO : YES);
     isNotificationEnabled =
-    ([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_ENABLE
+    ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_ENABLE
      ?YES:NO);
     
     

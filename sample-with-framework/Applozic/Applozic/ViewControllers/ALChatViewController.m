@@ -2343,7 +2343,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     theMessage.contentType = ALMESSAGE_CONTENT_DEFAULT;
     theMessage.groupId = self.channelKey;
     theMessage.conversationId  = self.conversationId;
-    theMessage.source = SOURCE_IOS;
+    theMessage.source = AL_SOURCE_IOS;
 //    theMessage.metadata = [self getNewMetaDataDictionary]; // EXAMPLE FOR META DATA
 
     if(self.messageReplyId){
@@ -4460,7 +4460,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     }else{
 
-        if([message.type isEqualToString:OUT_BOX]){
+        if([message.type isEqualToString:AL_OUT_BOX]){
             self.replyUserName.text = @"You";
         }else{
             ALContactDBService  *aLContactDBService = [ALContactDBService new];

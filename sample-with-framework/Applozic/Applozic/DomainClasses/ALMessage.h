@@ -25,11 +25,11 @@ static int const ALMESSAGE_CONTENT_CAMERA_RECORDING = 9;
 static int const ALMESSAGE_CHANNEL_NOTIFICATION = 10;
 static int const ALMESSAGE_CONTENT_CUSTOM = 101;
 static int const ALMESSAGE_CONTENT_HIDDEN = 11;
-static NSString *const ALCATEGORY_PUSHNNOTIFICATION = @"PUSHNOTIFICATION";
-static NSString *const ALCATEGORY_HIDDEN = @"HIDDEN";
+static NSString *const AL_CATEGORY_PUSHNNOTIFICATION = @"PUSHNOTIFICATION";
+static NSString *const AL_CATEGORY_HIDDEN = @"HIDDEN";
 static NSString *const AL_MESSAGE_REPLY_KEY = @"AL_REPLY";
-static NSString *const OUT_BOX = @"5";
-static NSString *const IN_BOX = @"4";
+static NSString *const AL_OUT_BOX = @"5";
+static NSString *const AL_IN_BOX = @"4";
 static NSString * const AL_RESET_UNREAD_COUNT = @"AL_RESET_UNREAD_COUNT";
 
 typedef enum {

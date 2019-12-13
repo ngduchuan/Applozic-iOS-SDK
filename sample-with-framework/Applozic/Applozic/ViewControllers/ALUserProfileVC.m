@@ -150,7 +150,7 @@
     [self.mobileNotification setText:NSLocalizedStringWithDefaultValue(@"mobileNotificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mobile Notifications", @"")];
     
     
-    BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == ALNOTIFICATION_DISABLE);
+    BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE);
     [self.notificationToggle setOn:(!checkMode) animated:YES];
     
 }
