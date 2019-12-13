@@ -160,7 +160,6 @@
                 contact.metadata  =  response.metadata;
                 [alContactDBService addContact:contact];
 
-                //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
             }
 
             @catch (NSException *exception)
