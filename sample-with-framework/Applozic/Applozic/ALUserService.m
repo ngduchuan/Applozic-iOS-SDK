@@ -64,10 +64,10 @@
         return;
     }
     
-    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:[contactIdsArr array]];
+    NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArr array]];
     ALUserService * userService = [ALUserService new];
-    [userService fetchAndupdateUserDetails:mutableArray withCompletion:^(NSMutableArray *array, NSError *error) {
-        if(error || !array){
+    [userService fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+        if(error || !userDetailArray){
             completionMark();
             return;
         }
