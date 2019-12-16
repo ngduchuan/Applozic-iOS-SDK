@@ -72,5 +72,5 @@ typedef enum
 +(void)applicationEntersForeground;
 +(void)userSync;
 -(BOOL) checkForLaunchNotification:(NSDictionary *)dictionary;
--(NSString *)notificationWithType:(int)type;
+-(NSDictionary *)notificationTypes;
 @end

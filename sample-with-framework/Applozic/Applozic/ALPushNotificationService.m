@@ -31,7 +31,7 @@
     }
     ALSLog(ALLoggerSeverityInfo, @"APNs GOT NEW MESSAGE & NOTIFICATION TYPE :: %@", type);
     BOOL prefixCheck = ([type hasPrefix:APPLOZIC_PREFIX]) || ([type hasPrefix:@"MT_"]);
-    return (([ALPushNotificationService.ApplozicNotificationTypes containsObject:type] || prefixCheck));
+    return (type != nil && ([self.notificationTypes.allValues containsObject:type] || prefixCheck));
 }
 
 -(BOOL) processPushNotification:(NSDictionary *)dictionary updateUI:(NSNumber *)updateUI
@@ -61,7 +61,6 @@
         NSString *notificationMsg = [theMessageDict valueForKey:@"message"];
         NSDictionary * metadataDictionary =  [theMessageDict valueForKey:@"messageMetaData"];
 
-
         //CHECK for any special messages...
         if ([self processMetaData:theMessageDict withAlert:alertValue withUpdateUI:updateUI])
         {
@@ -74,10 +73,10 @@
         {
             ALSLog(ALLoggerSeverityInfo, @"Returning from ALPUSH because notificationId is already processed... %@",notificationId);
             BOOL isInactive = ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive);
-            if(isInactive && ([type isEqualToString:[self notificationWithType:AL_SYNC]] || [type isEqualToString:[self notificationWithType:AL_MESSAGE_SENT]]))
+            if(isInactive && ([type isEqualToString:self.notificationTypes[@(AL_SYNC)]] || [type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]]))
             {
                 ALSLog(ALLoggerSeverityInfo, @"ALAPNs : APP_IS_INACTIVE");
-                if([type isEqualToString:[self notificationWithType:AL_MESSAGE_SENT]] ){
+                if([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]] ){
                     if(([[notificationMsg componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]))
                     {
                         ALSLog(ALLoggerSeverityInfo, @"APNS: Sent by self-device ignore");
@@ -98,7 +97,7 @@
         }
         //TODO : check if notification is alreday received and processed...
 
-        if ([type isEqualToString:[self notificationWithType:AL_SYNC]]) // APPLOZIC_01 //
+        if ([type isEqualToString:self.notificationTypes[@(AL_SYNC)]]) // APPLOZIC_01 //
         {
             [ALUserDefaultsHandler setMsgSyncRequired:YES];
             [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
@@ -112,7 +111,7 @@
 
 
         }
-        else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:[self notificationWithType:AL_MESSAGE_SENT]])
+        else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]])
         {
 
             ALSLog(ALLoggerSeverityInfo, @"APNS: APPLOZIC_02 ARRIVED");
@@ -136,7 +135,7 @@
                 ALSLog(ALLoggerSeverityInfo, @"APPLOZIC_02 Sync Call Completed");
             }];
         }
-        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED"]||[type isEqualToString:[self notificationWithType:AL_DELIVERED]]){
+        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED"]||[type isEqualToString:self.notificationTypes[@(AL_DELIVERED)]]){
 
             NSArray *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -149,7 +148,7 @@
             }
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_DELIVERED" object:deliveryParts[0] userInfo:dictionary];
         }
-        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED_READ"]||[type isEqualToString:[self notificationWithType:AL_MESSAGE_DELIVERED_AND_READ]]){
+        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED_READ"]||[type isEqualToString:self.notificationTypes[@(AL_MESSAGE_DELIVERED_AND_READ)]]){
 
             NSArray  * deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -166,11 +165,11 @@
             }
         }
 
-        else if ([type isEqualToString:[self notificationWithType:AL_CONVERSATION_DELETED]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELETED)]]){
 
             [messageDBService deleteAllMessagesByContact:notificationMsg orChannelKey:nil];
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_DELETE_MESSAGE]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_DELETE_MESSAGE)]]){
 
             [messageDBService deleteMessageByKey: notificationMsg];
             if(self.realTimeUpdate){
@@ -181,7 +180,7 @@
              [[NSNotificationCenter defaultCenter] postNotificationName:@"NOTIFY_MESSAGE_DELETED" object:messageKey];
              */
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_CONVERSATION_DELIVERED_AND_READ]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]]){
 
             [self.alSyncCallService updateDeliveryStatusForContact:notificationMsg withStatus:DELIVERED_AND_READ];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_CONVERSATION_DELIVERED_READ" object:notificationMsg];
@@ -190,7 +189,7 @@
             }
 
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_USER_CONNECTED]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_USER_CONNECTED)]]){
 
             ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
             alUserDetail.userId = notificationMsg;
@@ -202,7 +201,7 @@
                 [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
             }
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_USER_DISCONNECTED]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DISCONNECTED)]]){
 
             NSArray *parts = [notificationMsg componentsSeparatedByString:@","];
 
@@ -222,7 +221,7 @@
             [channelService syncCallForChannel];
             // TODO HANDLE
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_CONVERSATION_DELETED_NEW]] || [type isEqualToString:@"CONVERSATION_DELETED"]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] || [type isEqualToString:@"CONVERSATION_DELETED"]){
 
             NSArray *parts = [notificationMsg componentsSeparatedByString:@","];
             NSString * contactID = parts[0];
@@ -235,7 +234,7 @@
                 [self.realTimeUpdate onConversationDelete:contactID withGroupId:0];
             }
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_GROUP_CONVERSATION_DELETED]] || [type isEqualToString:@"GROUP_CONVERSATION_DELETED"]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_CONVERSATION_DELETED)]] || [type isEqualToString:@"GROUP_CONVERSATION_DELETED"]){
 
             NSNumber * groupID = [NSNumber numberWithInt:[notificationMsg intValue]];
             [self.alSyncCallService updateTableAtConversationDeleteForContact:nil
@@ -245,7 +244,7 @@
                 [self.realTimeUpdate onConversationDelete:nil withGroupId:groupID];
             }
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_USER_BLOCK]]){
+        else if ([type isEqualToString:self.notificationTypes[@(AL_USER_BLOCK)]]){
             //            NSLog(@"BLOCKED / BLOCKED BY");
 
             if([self processUserBlockNotification:theMessageDict andUserBlockFlag:YES])
@@ -255,7 +254,7 @@
 
 
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_USER_UNBLOCK]])
+        else if ([type isEqualToString:self.notificationTypes[@(AL_USER_UNBLOCK)]])
         {
             //            NSLog(@"UNBLOCKED / UNBLOCKED BY");
             if([self processUserBlockNotification:theMessageDict andUserBlockFlag:NO])
@@ -264,11 +263,11 @@
             }
 
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_TEST_NOTIFICATION]])
+        else if ([type isEqualToString:self.notificationTypes[@(AL_TEST_NOTIFICATION)]])
         {
             ALSLog(ALLoggerSeverityInfo, @"Process Push Notification APPLOZIC_20");
         }
-        else if ([type isEqualToString:[self notificationWithType:AL_USER_DETAIL_CHANGED]] || [type isEqualToString:[self notificationWithType:AL_USER_DELETE_NOTIFICATION]])
+        else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DETAIL_CHANGED)]] || [type isEqualToString:self.notificationTypes[@(AL_USER_DELETE_NOTIFICATION)]])
         {
             NSString * userId = notificationMsg;
             if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
@@ -281,19 +280,19 @@
                 }];
             }
         }
-        else if([type isEqualToString:[self notificationWithType:AL_CONVERSATION_READ]]){
+        else if([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_READ)]]){
             //Conversation read for user
             ALUserService *channelService = [[ALUserService alloc]init];
             NSString * userId = [theMessageDict objectForKey:@"message"];
             [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
 
         }
-        else if([type isEqualToString:[self notificationWithType:AL_GROUP_CONVERSATION_READ]]){
+        else if([type isEqualToString:self.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]){
             //Conversation read for channel
             ALChannelService *channelService = [[ALChannelService alloc]init];
             NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
-        } else if([type isEqualToString:[self notificationWithType:AL_USER_MUTE_NOTIFICATION]]){
+        } else if([type isEqualToString:self.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]){
 
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
             NSString * userId = parts[0];
@@ -314,7 +313,7 @@
                 }];
             }
 
-        }else if([type isEqualToString:[self notificationWithType:AL_MESSAGE_METADATA_UPDATE]]){
+        }else if([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]){
             NSString* keyString;
             NSString* deviceKey;
             @try
@@ -500,56 +499,42 @@
 }
 
 -(NSDictionary *)notificationTypes {
-    NSDictionary * dictionary = @{[@(AL_SYNC) stringValue]:@"APPLOZIC_01",
-                                  [@(AL_MESSAGE_SENT) stringValue]:@"APPLOZIC_02",
-                                  [@(AL_DELIVERED) stringValue]:@"APPLOZIC_04",
-                                  [@(AL_DELETE_MESSAGE) stringValue]:@"APPLOZIC_05",
-                                  [@(AL_CONVERSATION_DELETED) stringValue]:@"APPLOZIC_06",
-                                  [@(AL_MESSAGE_READ) stringValue]:@"APPLOZIC_07",
-                                  [@(AL_MESSAGE_DELIVERED_AND_READ) stringValue]:@"APPLOZIC_08",
-                                  [@(AL_CONVERSATION_READ) stringValue]:@"APPLOZIC_09",
-                                  [@(AL_CONVERSATION_DELIVERED_AND_READ) stringValue]:@"APPLOZIC_10",
-                                  [@(AL_USER_CONNECTED) stringValue]: @"APPLOZIC_11",
-                                  [@(AL_USER_DISCONNECTED) stringValue]:@"APPLOZIC_12",
-                                  [@(AL_USER_BLOCK) stringValue]:@"APPLOZIC_16",
-                                  [@(AL_USER_UNBLOCK) stringValue]:@"APPLOZIC_17",
-                                  [@(AL_TEST_NOTIFICATION) stringValue]:@"APPLOZIC_20",
-                                  [@(AL_GROUP_CONVERSATION_READ) stringValue]:@"APPLOZIC_21",
-                                  [@(AL_USER_MUTE_NOTIFICATION) stringValue]:@"APPLOZIC_37",
-                                  [@(AL_USER_DETAIL_CHANGED) stringValue]:@"APPLOZIC_30",
-                                  [@(AL_USER_DELETE_NOTIFICATION) stringValue]:@"APPLOZIC_34",
-                                  [@(AL_GROUP_CONVERSATION_DELETED) stringValue]:@"APPLOZIC_23",
-                                  [@(AL_CONVERSATION_DELETED_NEW) stringValue]:@"APPLOZIC_27",
-                                  [@(AL_MESSAGE_METADATA_UPDATE) stringValue]:@"APPLOZIC_33",
-                                  [@(AL_MTEXTER_USER) stringValue]:@"MTEXTER_USER",
-                                  [@(AL_CONTACT_VERIFIED) stringValue]:@"MT_CONTACT_VERIFIED",
-                                  [@(AL_DEVICE_CONTACT_SYNC) stringValue]:@"MT_DEVICE_CONTACT_SYNC",
-                                  [@(AL_MT_EMAIL_VERIFIED) stringValue]:@"MT_EMAIL_VERIFIED",
-                                  [@(AL_DEVICE_CONTACT_MESSAGE) stringValue]:@"MT_DEVICE_CONTACT_MESSAGE",
-                                  [@(AL_CANCEL_CALL) stringValue]:@"MT_CANCEL_CALL",
-                                  [@(AL_MESSAGE) stringValue]:@"MT_MESSAGE",
-                                  [@(AL_DELETE_MULTIPLE_MESSAGE)stringValue]:@"MT_DELETE_MULTIPLE_MESSAGE",
-                                  [@(AL_SYNC_PENDING)stringValue]:@"MT_SYNC_PENDING"
-    };
-    return  dictionary;
-}
-
--(NSMutableArray *)applozicNotificationTypes {
-    static NSMutableArray *notificationTypes;
-    if (!notificationTypes)
+    static  NSDictionary * dictionary;
+    if (!dictionary)
     {
-        notificationTypes = [NSMutableArray new];
-        NSDictionary * notificationDictionary = [self notificationTypes];
-        for (int i = 0; i < notificationDictionary.count; i++) {
-            [notificationTypes addObject:[notificationDictionary objectForKey:[NSString stringWithFormat:@"%d", i]]];
-        }
+        dictionary = @{@(AL_SYNC):@"APPLOZIC_01",
+                       @(AL_MESSAGE_SENT):@"APPLOZIC_02",
+                       @(AL_DELIVERED):@"APPLOZIC_04",
+                       @(AL_DELETE_MESSAGE):@"APPLOZIC_05",
+                       @(AL_CONVERSATION_DELETED):@"APPLOZIC_06",
+                       @(AL_MESSAGE_READ):@"APPLOZIC_07",
+                       @(AL_MESSAGE_DELIVERED_AND_READ):@"APPLOZIC_08",
+                       @(AL_CONVERSATION_READ):@"APPLOZIC_09",
+                       @(AL_CONVERSATION_DELIVERED_AND_READ):@"APPLOZIC_10",
+                       @(AL_USER_CONNECTED): @"APPLOZIC_11",
+                       @(AL_USER_DISCONNECTED):@"APPLOZIC_12",
+                       @(AL_USER_BLOCK):@"APPLOZIC_16",
+                       @(AL_USER_UNBLOCK):@"APPLOZIC_17",
+                       @(AL_TEST_NOTIFICATION):@"APPLOZIC_20",
+                       @(AL_GROUP_CONVERSATION_READ):@"APPLOZIC_21",
+                       @(AL_USER_MUTE_NOTIFICATION):@"APPLOZIC_37",
+                       @(AL_USER_DETAIL_CHANGED):@"APPLOZIC_30",
+                       @(AL_USER_DELETE_NOTIFICATION):@"APPLOZIC_34",
+                       @(AL_GROUP_CONVERSATION_DELETED):@"APPLOZIC_23",
+                       @(AL_CONVERSATION_DELETED_NEW):@"APPLOZIC_27",
+                       @(AL_MESSAGE_METADATA_UPDATE):@"APPLOZIC_33",
+                       @(AL_MTEXTER_USER):@"MTEXTER_USER",
+                       @(AL_CONTACT_VERIFIED):@"MT_CONTACT_VERIFIED",
+                       @(AL_DEVICE_CONTACT_SYNC):@"MT_DEVICE_CONTACT_SYNC",
+                       @(AL_MT_EMAIL_VERIFIED):@"MT_EMAIL_VERIFIED",
+                       @(AL_DEVICE_CONTACT_MESSAGE):@"MT_DEVICE_CONTACT_MESSAGE",
+                       @(AL_CANCEL_CALL):@"MT_CANCEL_CALL",
+                       @(AL_MESSAGE):@"MT_MESSAGE",
+                       @(AL_DELETE_MULTIPLE_MESSAGE):@"MT_DELETE_MULTIPLE_MESSAGE",
+                       @(AL_SYNC_PENDING):@"MT_SYNC_PENDING"
+        };
     }
-    return notificationTypes;
-}
-
-- (NSString *) notificationWithType:(int)type {
-    NSDictionary * notificationTypes = [self notificationTypes];
-    return [notificationTypes valueForKey:[NSString stringWithFormat:@"%d", type]];
+    return  dictionary;
 }
 
 @end

@@ -216,7 +216,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
     }
     else
     {
-        if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_SYNC]])
+        if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_SYNC)]])
         {
 
             ALPushAssist* assistant = [[ALPushAssist alloc] init];
@@ -268,7 +268,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 }
             }
         }
-        else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_MESSAGE_SENT]])
+        else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_SENT)]])
         {
             NSDictionary * message = [theMessageDict objectForKey:@"message"];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
@@ -296,7 +296,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             [self.mqttConversationDelegate delivered:key contactId:contactID withStatus:SENT];
 
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_DELIVERED]]) {
+        else if ([type isEqualToString:@"MESSAGE_DELIVERED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELIVERED)]]) {
 
             NSArray *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -311,7 +311,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onMessageDelivered:message];
             }
         }
-        else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_DELETE_MESSAGE]])
+        else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELETE_MESSAGE)]])
         {
             NSString * messageKey = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@","][0];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NOTIFY_MESSAGE_DELETED" object:messageKey];
@@ -319,7 +319,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onMessageDeleted:messageKey];
             }
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_MESSAGE_DELIVERED_AND_READ]])
+        else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_DELIVERED_AND_READ)]])
         {
             NSArray  * deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -335,7 +335,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 }
             }
         }
-        else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_CONVERSATION_DELIVERED_AND_READ]])
+        else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]])
         {
             NSString *contactId = [theMessageDict objectForKey:@"message"];
             [self.alSyncCallService updateDeliveryStatusForContact: contactId withStatus:DELIVERED_AND_READ];
@@ -344,7 +344,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onAllMessagesRead:contactId];
             }
         }
-        else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString:[pushNotificationService notificationWithType:AL_USER_CONNECTED]])
+        else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_CONNECTED)]])
         {
             ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
             alUserDetail.userId = [theMessageDict objectForKey:@"message"];
@@ -356,7 +356,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
             }
         }
-        else if ([type isEqualToString:[pushNotificationService notificationWithType:AL_USER_DISCONNECTED]])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DISCONNECTED)]])
         {
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
 
@@ -376,7 +376,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             [channelService syncCallForChannel];
             // TODO HANDLE
         }
-        else if ([type isEqualToString:[pushNotificationService notificationWithType:AL_CONVERSATION_DELETED_NEW]] || [type isEqualToString:@"CONVERSATION_DELETED"]){
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] || [type isEqualToString:@"CONVERSATION_DELETED"]){
 
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * contactID = parts[0];
@@ -390,7 +390,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             }
 
         }
-        else if ([type isEqualToString:@"GROUP_CONVERSATION_DELETED"] || [type isEqualToString:[pushNotificationService notificationWithType:AL_GROUP_CONVERSATION_DELETED]]){
+        else if ([type isEqualToString:@"GROUP_CONVERSATION_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_DELETED)]]){
 
             NSNumber * groupID = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [self.alSyncCallService updateTableAtConversationDeleteForContact:nil
@@ -400,15 +400,15 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onConversationDelete:nil withGroupId:groupID];
             }
         }
-        else if ([type isEqualToString:[pushNotificationService notificationWithType:AL_USER_BLOCK]])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_BLOCK)]])
         {
             [self processUserBlockNotification:theMessageDict andUserBlockFlag:YES];
         }
-        else if ([type isEqualToString:[pushNotificationService notificationWithType:AL_USER_UNBLOCK]])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_UNBLOCK)]])
         {
             [self processUserBlockNotification:theMessageDict andUserBlockFlag:NO];
         }
-        else if ([type isEqualToString:[pushNotificationService notificationWithType:AL_USER_DETAIL_CHANGED]] || [type isEqualToString: [pushNotificationService notificationWithType:AL_USER_DELETE_NOTIFICATION]])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DETAIL_CHANGED)]] || [type isEqualToString: pushNotificationService.notificationTypes[@(AL_USER_DELETE_NOTIFICATION)]])
         {
             //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
             NSString * userId = [theMessageDict objectForKey:@"message"];
@@ -430,7 +430,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         {
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
         }
-        else if([type isEqualToString:[pushNotificationService notificationWithType:AL_MESSAGE_METADATA_UPDATE]]){ // MESSAGE_METADATA_UPDATE
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]){ // MESSAGE_METADATA_UPDATE
             NSString* keyString;
             NSString* deviceKey;
             @try
@@ -462,21 +462,21 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
         }
-        else if([type isEqualToString:[pushNotificationService notificationWithType:AL_CONVERSATION_READ]]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]){
             //Conversation read for user
             ALUserService *channelService = [[ALUserService alloc]init];
             NSString * userId = [theMessageDict objectForKey:@"message"];
             [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
             
         }
-        else if([type isEqualToString:[pushNotificationService notificationWithType:AL_GROUP_CONVERSATION_READ]]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]){
             //Conversation read for channel
             ALChannelService *channelService = [[ALChannelService alloc]init];
             NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         }
         
-        else if([type isEqualToString:[pushNotificationService notificationWithType:AL_USER_MUTE_NOTIFICATION]]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]){
             
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
             NSString * userId = parts[0];
