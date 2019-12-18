@@ -76,9 +76,8 @@
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
 
-#define MQTT_MAX_RETRY 3
-#define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
-
+static int const MQTT_MAX_RETRY = 3;
+static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
 NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetailVCNotificationNavigationVC";
 NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";
@@ -2344,7 +2343,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     theMessage.contentType = ALMESSAGE_CONTENT_DEFAULT;
     theMessage.groupId = self.channelKey;
     theMessage.conversationId  = self.conversationId;
-    theMessage.source = SOURCE_IOS;
+    theMessage.source = AL_SOURCE_IOS;
 //    theMessage.metadata = [self getNewMetaDataDictionary]; // EXAMPLE FOR META DATA
 
     if(self.messageReplyId){
@@ -4461,7 +4460,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     }else{
 
-        if([message.type isEqualToString:OUT_BOX]){
+        if([message.type isEqualToString:AL_OUT_BOX]){
             self.replyUserName.text = @"You";
         }else{
             ALContactDBService  *aLContactDBService = [ALContactDBService new];

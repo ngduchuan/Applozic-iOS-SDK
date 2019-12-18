@@ -483,7 +483,7 @@ static ALMessageClientService *alMsgClientService;
             [self resetUnreadCountAndUpdate:message];
 
             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate) {
-                if([message.type isEqual: OUT_BOX]){
+                if([message.type isEqual: AL_OUT_BOX]){
                     [delegate onMessageSent: message];
                 }else {
                     [delegate onMessageReceived: message];
@@ -895,7 +895,7 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
             if(delegate){
-                if([message.type  isEqual: OUT_BOX]){
+                if([message.type  isEqual: AL_OUT_BOX]){
                     [delegate onMessageSent: message];
                 }else{
                     [delegate onMessageReceived: message];
@@ -956,7 +956,7 @@ static ALMessageClientService *alMsgClientService;
                     for(ALMessage * message in syncResponse.messagesList)
                     {
                         [messageDatabase updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
                     }
                 }
                 [ALUserDefaultsHandler setLastSyncTimeForMetaData:syncResponse.lastSyncTime];

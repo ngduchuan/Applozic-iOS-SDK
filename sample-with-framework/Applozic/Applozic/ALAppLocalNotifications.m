@@ -328,7 +328,7 @@
     
     if(!pushAssistant.isOurViewOnTop)
     {
-        self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:APPLICATION_KEY];
+        self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
         [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
     }
 }

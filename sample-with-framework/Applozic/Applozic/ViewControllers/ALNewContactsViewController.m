@@ -32,11 +32,16 @@
 #import "ALMessageClientService.h"
 #import "ApplozicClient.h"
 
-
-#define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
-#define DEFAULT_TOP_PORTRAIT_CONSTANT -64
-
-
+const int DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
+const int DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
+static const int REGULAR_CONTACTS = 0;
+static const int GROUP_CREATION = 1;
+static const int GROUP_ADDITION = 2;
+static const int IMAGE_SHARE = 3;
+static const int LAUNCH_GROUP_OF_TWO = 4;
+static const int BROADCAST_GROUP_CREATION = 5;
+static const int SHOW_CONTACTS = 101;
+static const int SHOW_GROUP = 102;
 
 @interface ALNewContactsViewController ()<ApplozicAttachmentDelegate>
 
@@ -754,11 +759,11 @@
     if ([[UIDevice currentDevice]userInterfaceIdiom] == UIUserInterfaceIdiomPhone &&
         (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight))
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_LANDSCAPE_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_LANDSCAPE_CONSTANT;
     }
     else
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_PORTRAIT_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_PORTRAIT_CONSTANT;
     }
     [self.view layoutIfNeeded];
 }

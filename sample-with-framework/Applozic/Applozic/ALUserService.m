@@ -6,7 +6,7 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#define CONTACT_PAGE_SIZE 100
+static int CONTACT_PAGE_SIZE = 100;
 
 #import "ALUserService.h"
 #import "ALRequestHandler.h"
@@ -646,7 +646,7 @@
     } else {
         metadata = [[NSMutableDictionary alloc] init];
     }
-    [metadata setObject:[NSNumber numberWithBool:disable] forKey: DISABLE_USER_CHAT];
+    [metadata setObject:[NSNumber numberWithBool:disable] forKey: AL_DISABLE_USER_CHAT];
     ALUser *user = [[ALUser alloc] init];
     [user setMetadata: metadata];
     ALUserClientService *clientService = [[ALUserClientService alloc] init];
