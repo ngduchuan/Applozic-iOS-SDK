@@ -359,7 +359,8 @@
     [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"GetLatestMsg Error%@",error);
-            return ;
+            completion (nil, error);
+            return;
         }
         [self.delegate updateMessageList:messageArray];
 

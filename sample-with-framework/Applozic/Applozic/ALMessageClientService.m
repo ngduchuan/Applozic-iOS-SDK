@@ -428,6 +428,7 @@
         if (theError)
         {
             ALSLog(ALLoggerSeverityError, @"ERROR IN MESSAGE INFORMATION API RESPONSE : %@", theError);
+            completion(nil, theError);
         }
         else
         {

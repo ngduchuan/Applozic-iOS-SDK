@@ -69,6 +69,8 @@
         if(error)
         {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
+            completion(error, nil);
+            return;
         }
         else
         {
@@ -468,6 +470,8 @@
         if(error)
         {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_SYNCHRONIZATION SERVER CALL REQUEST %@", error);
+            completion(error, nil);
+            return;
         }
         else
         {
@@ -909,7 +913,6 @@
         {
             ALSLog(ALLoggerSeverityError, @"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);
             completion(error, nil);
-            
         }
         else
         {

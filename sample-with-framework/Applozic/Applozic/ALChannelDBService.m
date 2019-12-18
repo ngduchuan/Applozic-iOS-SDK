@@ -1190,7 +1190,9 @@ dispatch_queue_t syncSerialBackgroundQueue;
         {
             for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
             {
-                [memberList addObject:dbChannelUserX.userId];
+                if (dbChannelUserX.userId) {
+                    [memberList addObject:dbChannelUserX.userId];
+                }
             }
         }else{
             ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");

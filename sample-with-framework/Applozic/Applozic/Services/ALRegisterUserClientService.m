@@ -91,98 +91,100 @@
         }
         
         ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
-        
-        //Todo: figure out how to set country code
-        //mobiComUserPreference.setCountryCode(user.getCountryCode());
-        //mobiComUserPreference.setContactNumber(user.getContactNumber());
-        @try
-        {
-            [ALUserDefaultsHandler setUserId:user.userId];
-            [ALUserDefaultsHandler setEmailVerified: user.emailVerified];
-            [ALUserDefaultsHandler setDisplayName: user.displayName];
-            [ALUserDefaultsHandler setEmailId:user.email];
-            [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
-            [ALUserDefaultsHandler setUserKeyString:response.userKey];
-            [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
-            [ALUserDefaultsHandler setLastSyncTimeForMetaData:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
-            [ALUserDefaultsHandler setLastSyncTime:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
-            [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
+
+        // Only save the UserDefaults for successful register.
+        if([response isRegisteredSuccessfully]) {
+
+            @try
+            {
+                [ALUserDefaultsHandler setUserId:user.userId];
+                [ALUserDefaultsHandler setEmailVerified: user.emailVerified];
+                [ALUserDefaultsHandler setDisplayName: user.displayName];
+                [ALUserDefaultsHandler setEmailId:user.email];
+                [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
+                [ALUserDefaultsHandler setUserKeyString:response.userKey];
+                [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
+                [ALUserDefaultsHandler setLastSyncTimeForMetaData:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
+                [ALUserDefaultsHandler setLastSyncTime:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
+                [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
 
 
-            if(user.pushNotificationFormat){
-                [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
-            }
-        
-            if(response.roleType){
-                [ALUserDefaultsHandler setUserRoleType:response.roleType];
-            }
-            
-            if( response.notificationSoundFileName )
-            {
-                [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
-            }
-            if(response.imageLink)
-            {
-                [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
-            }
-            if(response.userEncryptionKey)
-            {
-                [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
-            }
-            
-            if(response.statusMessage)
-            {
-                [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];
-            }
-            if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
-            {
-                NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
-                NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_URL :: %@",MQTTURL);
-                [ALUserDefaultsHandler setMQTTURL:MQTTURL];
-            }
-            if(response.encryptionKey)
-            {
-                [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
+                if(user.pushNotificationFormat){
+                    [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
+                }
+
+                if(response.roleType){
+                    [ALUserDefaultsHandler setUserRoleType:response.roleType];
+                }
+
+                if( response.notificationSoundFileName )
+                {
+                    [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
+                }
+                if(response.imageLink)
+                {
+                    [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
+                }
+                if(response.userEncryptionKey)
+                {
+                    [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
+                }
+
+                if(response.statusMessage)
+                {
+                    [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];
+                }
+                if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
+                {
+                    NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
+                    NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
+                    ALSLog(ALLoggerSeverityInfo, @"MQTT_URL :: %@",MQTTURL);
+                    [ALUserDefaultsHandler setMQTTURL:MQTTURL];
+                }
+                if(response.encryptionKey)
+                {
+                    [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
+                }
+
+                if(response.message){
+                    [ALInternalSettings setRegistrationStatusMessage:response.message];
+                }
+
+                ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
+                ALContact *contact = [[ALContact alloc] init];
+                contact.userId = user.userId;
+                contact.displayName = response.displayName;
+                contact.contactImageUrl = response.imageLink;
+                contact.contactNumber  = response.contactNumber;
+                contact.roleType  =  [NSNumber numberWithShort:response.roleType];
+                contact.metadata  =  response.metadata;
+                [alContactDBService addContact:contact];
+
             }
 
-            if(response.message){
-                [ALInternalSettings setRegistrationStatusMessage:response.message];
+            @catch (NSException *exception)
+            {
+                ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
             }
-            
-            ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
-            ALContact *contact = [[ALContact alloc] init];
-            contact.userId = user.userId;
-            contact.displayName = response.displayName;
-            contact.contactImageUrl = response.imageLink;
-            contact.contactNumber  = response.contactNumber;
-            contact.roleType  =  [NSNumber numberWithShort:response.roleType];
-            contact.metadata  =  response.metadata;
-            [alContactDBService addContact:contact];
-            
-            //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
+
+            @finally
+            {
+                ALSLog(ALLoggerSeverityInfo, @"..");
+            }
+
+            [self connect];
+
+            completion(response,nil);
+
+            ALUserService * alUserService = [ALUserService new];
+            [alUserService updateUserApplicationInfo];
+
+            [alUserService getMutedUserListWithDelegate:nil withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+
+            }];
+        } else {
+            completion(response, nil);
         }
-        
-        @catch (NSException *exception)
-        {
-            ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
-        }
-        
-        @finally
-        {
-            ALSLog(ALLoggerSeverityInfo, @"..");
-        }
-        
-        [self connect];
-
-        completion(response,nil);
-
-        ALUserService * alUserService = [ALUserService new];
-        [alUserService updateUserApplicationInfo];
-        
-        [alUserService getMutedUserListWithDelegate:nil withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
-    
-        }];
     }];
 
 }
