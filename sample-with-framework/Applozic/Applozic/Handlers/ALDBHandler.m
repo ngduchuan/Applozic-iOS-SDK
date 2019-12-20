@@ -450,7 +450,7 @@
 }
 
 - (void)saveMainContext {
-    [self.managedObjectContext performBlock:^{
+    [self.managedObjectContext performBlockAndWait:^{
         NSError *error = nil;
         [self.managedObjectContext save:&error];
         if(error){

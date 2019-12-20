@@ -36,19 +36,74 @@
 
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
 
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+
     for(ALChannel *channel in alChannelFeed.channelFeedsList)
     {
+
+        dispatch_group_enter(group);
 
         if(channel.membersName == nil){
             channel.membersName = channel.membersId;
         }
-        [alChannelDBService saveDataInBackgroundWithContext:theDBHandler.privateContext withChannel: channel];
+        // As saveGroupUsersOfChannel:channel withContext:nsContext is running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
+        if(!ALUserDefaultsHandler.isLoggedIn){
+            return;
+        }
+
+        dispatch_group_async(group, queue,  ^{
+
+            NSManagedObjectContext * context = theDBHandler.privateContext;
+
+            [context performBlock:^{
+
+                int count = 0;
+                for(ALChannelUser * channelUser  in  channel.groupUsers)
+                {
+                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                    newChannelUserX.key = channel.key;
+                    if(channelUser.userId != nil){
+                        newChannelUserX.userKey = channelUser.userId;
+                    }
+                    if(channelUser.parentGroupKey != nil){
+                        newChannelUserX.parentKey = channelUser.parentGroupKey;
+                    }
+                    if(channelUser.role != nil){
+                        newChannelUserX.role = channelUser.role;
+                    }
+                    if(ALUserDefaultsHandler.isLoggedIn){
+                        [alChannelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
+                    }
+                    count++;
+                    if(count % 300 == 0){
+                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
+                    }else {
+                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
+                    }
+                }
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+
+                dispatch_group_leave(group);
+
+            }];
+
+        });
 
         [self processChildGroups:channel];
         [alChannelDBService addedMembersArray:channel.membersName andChannelKey:channel.key];
         [alChannelDBService removedMembersArray:channel.removeMembers andChannelKey:channel.key];
 
     }
+
+    dispatch_group_notify(group, queue, ^{
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CHANNEL_MEMBERS_CALL_COMPLETED" object:nil];
+        });
+
+    });
 
     //callForChannelProxy inserting in DB...
     ALConversationService *alConversationService = [[ALConversationService alloc] init];
