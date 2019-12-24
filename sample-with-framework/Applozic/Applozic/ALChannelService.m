@@ -38,7 +38,7 @@
     ALConversationService *alConversationService = [[ALConversationService alloc] init];
     [alConversationService addConversations:alChannelFeed.conversationProxyList];
 
-    [alChannelDBService saveDataInBackgroundWithChannelFeed:alChannelFeed.channelFeedsList calledFromMessageList:YES];
+    [alChannelDBService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
 
 }
 

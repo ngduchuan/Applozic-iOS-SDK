@@ -22,6 +22,7 @@
 
 @implementation ALChannelDBService
 
+dispatch_queue_t globalQueue;
 
 -(void)createChannel:(ALChannel *)channel
 {
@@ -31,59 +32,60 @@
 
     NSMutableArray *channelFeedArray = [[NSMutableArray alloc]init];
     [channelFeedArray addObject:channel];
-    [self saveDataInBackgroundWithChannelFeed:channelFeedArray calledFromMessageList:NO];
+    [self saveChannelUsersAndChannelDetails:channelFeedArray calledFromMessageList:NO];
 }
 
-- (void)saveDataInBackgroundWithChannelFeed:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
+- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
 
     if(!channelFeedsList.count){
         return;
     }
 
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    if (globalQueue == nil) {
+        globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    }
     dispatch_group_t group = dispatch_group_create();
 
     for(ALChannel *channel in channelFeedsList)
     {
-
         dispatch_group_enter(group);
 
         if(channel.membersName == nil){
             channel.membersName = channel.membersId;
         }
-        // As saveGroupUsersOfChannel:channel withContext:nsContext is running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
+        // As running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
         if(!ALUserDefaultsHandler.isLoggedIn){
+            dispatch_group_leave(group);
             return;
         }
         [self deleteMembers:channel.key];
 
-        dispatch_group_async(group, queue,  ^{
+        dispatch_group_async(group, globalQueue,^{
 
             NSManagedObjectContext * context = theDBHandler.privateContext;
 
             [context performBlock:^{
 
                 int count = 0;
-                for(ALChannelUser * channelUser  in  channel.groupUsers)
-                {
+                for(ALChannelUser * channelUser in channel.groupUsers) {
+
                     ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
                     newChannelUserX.key = channel.key;
-                    if(channelUser.userId != nil){
+                    if(channelUser.userId != nil) {
                         newChannelUserX.userKey = channelUser.userId;
                     }
-                    if(channelUser.parentGroupKey != nil){
+                    if(channelUser.parentGroupKey != nil) {
                         newChannelUserX.parentKey = channelUser.parentGroupKey;
                     }
-                    if(channelUser.role != nil){
+                    if(channelUser.role != nil) {
                         newChannelUserX.role = channelUser.role;
                     }
-                    if(ALUserDefaultsHandler.isLoggedIn){
+                    if(ALUserDefaultsHandler.isLoggedIn) {
                         [self createChannelUserXEntity:newChannelUserX  withContext:context];
                     }
                     count++;
-                    if(count % 100 == 0){
+                    if(count % 100 == 0) {
                         [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
                     }
                 }
@@ -97,7 +99,7 @@
 
         });
 
-        ALChannelService * channelService = [[ALChannelService alloc]init];
+        ALChannelService * channelService = [[ALChannelService alloc] init];
         [channelService processChildGroups:channel];
         [self addedMembersArray:channel.membersName andChannelKey:channel.key];
         [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
@@ -114,39 +116,6 @@
     });
 
 }
-
-
--(void)saveGroupUsersOfChannel:(ALChannel *)channel withContext:(NSManagedObjectContext *)context {
-    [context performBlock:^{
-
-        int count = 0;
-        for(ALChannelUser * channelUser  in  channel.groupUsers)
-        {
-            ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
-            newChannelUserX.key = channel.key;
-            if(channelUser.userId != nil){
-                newChannelUserX.userKey = channelUser.userId;
-            }
-            if(channelUser.parentGroupKey != nil){
-                newChannelUserX.parentKey = channelUser.parentGroupKey;
-            }
-            if(channelUser.role != nil){
-                newChannelUserX.role = channelUser.role;
-            }
-            if(ALUserDefaultsHandler.isLoggedIn){
-                [self createChannelUserXEntity:newChannelUserX  withContext:context];
-            }
-            count++;
-            if(count % 300 == 0){
-                [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-            }
-        }
-        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
-
-    }];
-}
-
 
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
