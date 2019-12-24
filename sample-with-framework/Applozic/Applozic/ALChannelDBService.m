@@ -106,7 +106,7 @@ dispatch_queue_t globalQueue;
 
     }
 
-    dispatch_group_notify(group, queue, ^{
+    dispatch_group_notify(group, globalQueue, ^{
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
