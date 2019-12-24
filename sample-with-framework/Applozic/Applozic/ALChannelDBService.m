@@ -80,16 +80,15 @@
                         newChannelUserX.role = channelUser.role;
                     }
                     if(ALUserDefaultsHandler.isLoggedIn){
-                        [self  createChannelUserXEntity:newChannelUserX  withContext:context];
+                        [self createChannelUserXEntity:newChannelUserX  withContext:context];
                     }
                     count++;
-                    if(count % 300 == 0){
-                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-                    }else {
+                    if(count % 100 == 0){
                         [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
                     }
                 }
 
+                [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
 
                 dispatch_group_leave(group);
