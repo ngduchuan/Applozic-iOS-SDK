@@ -14,6 +14,7 @@
 #import "ALContact.h"
 #import "ALChannelUser.h"
 #import "SearchResultCache.h"
+#import "ALChannelService.h"
 
 @interface ALChannelDBService ()
 
@@ -22,41 +23,95 @@
 @implementation ALChannelDBService
 
 
-dispatch_queue_t syncSerialBackgroundQueue;
-
-
 -(void)createChannel:(ALChannel *)channel
 {
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     [self createChannelEntity:channel];
     [theDBHandler.managedObjectContext save:nil];
 
-
-    if(channel.membersName == nil){
-        channel.membersName = channel.membersId;
-    }
-
-    [self deleteMembers:channel.key];
-
-    [self saveDataInBackgroundWithContext:theDBHandler.privateContext withChannel:channel];
-    [self addedMembersArray:channel.membersName andChannelKey:channel.key];
-    [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
-
+    NSMutableArray *channelFeedArray = [[NSMutableArray alloc]init];
+    [channelFeedArray addObject:channel];
+    [self saveDataInBackgroundWithChannelFeed:channelFeedArray calledFromMessageList:NO];
 }
 
-- (void)saveDataInBackgroundWithContext:(NSManagedObjectContext *) nsContext withChannel:(ALChannel *)channel
-{
+- (void)saveDataInBackgroundWithChannelFeed:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
 
-    if (syncSerialBackgroundQueue == NULL) {
-        syncSerialBackgroundQueue = dispatch_queue_create("ApplozicSyncSerialBackgroundQueue", 0);
-    }
-    // As saveGroupUsersOfChannel:channel withContext:nsContext is running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
-    if(!ALUserDefaultsHandler.isLoggedIn){
+    if(!channelFeedsList.count){
         return;
     }
 
-    dispatch_async(syncSerialBackgroundQueue, ^{
-        [self saveGroupUsersOfChannel:channel withContext:nsContext];
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+
+    for(ALChannel *channel in channelFeedsList)
+    {
+
+        dispatch_group_enter(group);
+
+        if(channel.membersName == nil){
+            channel.membersName = channel.membersId;
+        }
+        // As saveGroupUsersOfChannel:channel withContext:nsContext is running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
+        if(!ALUserDefaultsHandler.isLoggedIn){
+            return;
+        }
+        [self deleteMembers:channel.key];
+
+        dispatch_group_async(group, queue,  ^{
+
+            NSManagedObjectContext * context = theDBHandler.privateContext;
+
+            [context performBlock:^{
+
+                int count = 0;
+                for(ALChannelUser * channelUser  in  channel.groupUsers)
+                {
+                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                    newChannelUserX.key = channel.key;
+                    if(channelUser.userId != nil){
+                        newChannelUserX.userKey = channelUser.userId;
+                    }
+                    if(channelUser.parentGroupKey != nil){
+                        newChannelUserX.parentKey = channelUser.parentGroupKey;
+                    }
+                    if(channelUser.role != nil){
+                        newChannelUserX.role = channelUser.role;
+                    }
+                    if(ALUserDefaultsHandler.isLoggedIn){
+                        [self  createChannelUserXEntity:newChannelUserX  withContext:context];
+                    }
+                    count++;
+                    if(count % 300 == 0){
+                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
+                    }else {
+                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
+                    }
+                }
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+
+                dispatch_group_leave(group);
+
+            }];
+
+        });
+
+        ALChannelService * channelService = [[ALChannelService alloc]init];
+        [channelService processChildGroups:channel];
+        [self addedMembersArray:channel.membersName andChannelKey:channel.key];
+        [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
+
+    }
+
+    dispatch_group_notify(group, queue, ^{
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"AL_CHANNEL_MEMBER_CALL_COMPLETED" object:nil userInfo:messageListInfo];
+        });
+
     });
 
 }
