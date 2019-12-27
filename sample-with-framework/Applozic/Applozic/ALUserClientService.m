@@ -491,7 +491,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         } else {
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
             NSMutableArray * userDetailArray = [NSMutableArray new];
-            if([apiResponse.status isEqualToString:RESPONSE_SUCCESS]) {
+            if([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 NSDictionary * JSONDictionary = (NSDictionary *)apiResponse.response;
                 for (NSDictionary * theDictionary in JSONDictionary)
                 {
