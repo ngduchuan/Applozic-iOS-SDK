@@ -22,101 +22,6 @@
 
 @implementation ALChannelDBService
 
-dispatch_queue_t globalQueue;
-
--(void)createChannel:(ALChannel *)channel
-{
-    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    [self createChannelEntity:channel];
-    [theDBHandler.managedObjectContext save:nil];
-
-    NSMutableArray *channelFeedArray = [[NSMutableArray alloc]init];
-    [channelFeedArray addObject:channel];
-    [self saveChannelUsersAndChannelDetails:channelFeedArray calledFromMessageList:NO];
-}
-
-- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
-
-    if(!channelFeedsList.count){
-        return;
-    }
-
-    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    if (globalQueue == nil) {
-        globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    }
-    dispatch_group_t group = dispatch_group_create();
-
-    for(ALChannel *channel in channelFeedsList)
-    {
-        dispatch_group_enter(group);
-
-        if(channel.membersName == nil){
-            channel.membersName = channel.membersId;
-        }
-        // As running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
-        if(!ALUserDefaultsHandler.isLoggedIn){
-            dispatch_group_leave(group);
-            return;
-        }
-        [self deleteMembers:channel.key];
-
-        dispatch_group_async(group, globalQueue,^{
-
-            NSManagedObjectContext * context = theDBHandler.privateContext;
-
-            [context performBlock:^{
-
-                int count = 0;
-                for(ALChannelUser * channelUser in channel.groupUsers) {
-
-                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
-                    newChannelUserX.key = channel.key;
-                    if(channelUser.userId != nil) {
-                        newChannelUserX.userKey = channelUser.userId;
-                    }
-                    if(channelUser.parentGroupKey != nil) {
-                        newChannelUserX.parentKey = channelUser.parentGroupKey;
-                    }
-                    if(channelUser.role != nil) {
-                        newChannelUserX.role = channelUser.role;
-                    }
-                    if(ALUserDefaultsHandler.isLoggedIn) {
-                        [self createChannelUserXEntity:newChannelUserX  withContext:context];
-                    }
-                    count++;
-                    if(count % 100 == 0) {
-                        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-                    }
-                }
-
-                [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
-
-                dispatch_group_leave(group);
-
-            }];
-
-        });
-
-        ALChannelService * channelService = [[ALChannelService alloc] init];
-        [channelService processChildGroups:channel];
-        [self addedMembersArray:channel.membersName andChannelKey:channel.key];
-        [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
-
-    }
-
-    dispatch_group_notify(group, globalQueue, ^{
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"AL_CHANNEL_MEMBER_CALL_COMPLETED" object:nil userInfo:messageListInfo];
-        });
-
-    });
-
-}
-
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
     ALChannelUserX *newUserX = [[ALChannelUserX alloc] init];
@@ -963,23 +868,6 @@ dispatch_queue_t globalQueue;
     
     return (metadata && [[metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"]);
 }
-
-
--(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
-   
-    for(ALChannel *channelObject in channelArray)
-    {
-        // Ignore inserting unread count in sync call
-        channelObject.unreadCount = 0;
-        [self createChannel:channelObject];
-        if(delegate){
-            [delegate onChannelUpdated:channelObject];
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
-    }
-
-}
-
 
 //------------------------------------------
 #pragma mark AFTER LEAVE LOGOUT and LOGIN

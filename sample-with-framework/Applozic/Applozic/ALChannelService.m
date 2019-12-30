@@ -17,6 +17,11 @@
 
 @implementation ALChannelService
 
+static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
+
+dispatch_queue_t globalQueue;
+
+
 +(ALChannelService *)sharedInstance
 {
     static ALChannelService *sharedInstance = nil;
@@ -38,7 +43,7 @@
     ALConversationService *alConversationService = [[ALConversationService alloc] init];
     [alConversationService addConversations:alChannelFeed.conversationProxyList];
 
-    [alChannelDBService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
+     [self saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
 
 }
 
@@ -75,14 +80,13 @@
     }
     else
     {
-        [ALChannelClientService getChannelInfo:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALChannel *alChannel2) {
+        [ALChannelClientService getChannelInfo:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALChannel *channel) {
             
             if(!error)
             {
-                ALChannelDBService *dbService = [[ALChannelDBService alloc] init];
-                [dbService createChannel:alChannel2];
+                [self createChannelEntry:channel fromMessageList:NO];
             }
-            completion (alChannel2);
+            completion(channel);
         }];
     }
 }
@@ -345,8 +349,7 @@
                                       if(!error)
                                       {
                                           response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
-                                          ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                                          [channelDBService createChannel:response.alChannel];
+                                          [self createChannelEntry:response.alChannel fromMessageList:NO];
                                           completion(response.alChannel, error);
                                       }
                                       else
@@ -451,8 +454,7 @@
                                       if(!error)
                                       {
                                           response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
-                                          ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                                          [channelDBService createChannel:response.alChannel];
+                                          [self createChannelEntry:response.alChannel fromMessageList:NO];
                                           completion(response.alChannel, error);
                                       }
                                       else
@@ -723,8 +725,7 @@
 
         if([response.status isEqualToString:@"success"])
         {
-            ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-            [channelDBService createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
+            [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
         }
@@ -794,10 +795,9 @@
                                    withCompletion:^( NSMutableArray *channelInfoList, NSError *error)
      {
          
-         ALChannelDBService * dbService = [ALChannelDBService new];
          for(ALChannel * channel in channelInfoList )
          {
-             [dbService createChannel:channel];
+             [self createChannelEntry:channel fromMessageList:NO];
          }
          completion(channelInfoList,error);
      }];
@@ -816,7 +816,7 @@
          ALChannelDBService * dbService = [ALChannelDBService new];
          for(ALChannel * channel in channelInfoList )
          {
-             [dbService createChannel:channel];
+             [self createChannelEntry:channel fromMessageList:NO];
          }
          completion(channelInfoList,error);
      }];
@@ -829,10 +829,9 @@
     
     [clientService getAllChannelsForApplications:endTime withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
         
-        ALChannelDBService * dbService = [ALChannelDBService new];
         for(ALChannel * channel in channelInfoList )
         {
-            [dbService createChannel:channel];
+            [self createChannelEntry:channel fromMessageList:NO];
         }
         completion(channelInfoList,error);
     }];
@@ -869,8 +868,8 @@
             
             if(!error && channel)
             {
-                ALChannelDBService * dbService = [ALChannelDBService new];
-                [dbService createChannel:channel];
+                ALChannelService * channelService = [[ALChannelService alloc] init];
+                [channelService createChannelEntry:channel fromMessageList:NO];
                 completion(error,channel);
             }else{
                 completion(error,nil);
@@ -938,11 +937,10 @@
             {
                 for (ALChannel * channel in channels)
                 {
-                    ALChannelDBService * dbService = [ALChannelDBService new];
-                    [dbService createChannel:channel];
+                    ALChannelService * channelService = [[ALChannelService alloc] init];
+                    [channelService createChannelEntry:channel fromMessageList:NO];
                     [memberUserIds addObjectsFromArray:channel.membersId];
                 }
-                
                 
                 completion(nil,memberUserIds);
             }
@@ -976,8 +974,7 @@
             
             if(!error && [response.status isEqualToString: AL_RESPONSE_SUCCESS])
             {
-                ALChannelDBService *dbService = [[ALChannelDBService alloc] init];
-                [dbService createChannel:response.alChannel];
+                [self createChannelEntry:response.alChannel fromMessageList:NO];
                 completion (nil,response.alChannel,nil);
             }else{
                 completion (error,nil,response);
@@ -1038,8 +1035,7 @@
                                   if(!error)
                                   {
                                       response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
-                                      ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                                      [channelDBService createChannel:response.alChannel];
+                                      [self createChannelEntry:response.alChannel fromMessageList:NO];
                                       completion(response, error);
                                   }
                                   else
@@ -1061,5 +1057,119 @@
     NSDictionary *dict = @{@"channelKey":channelKey};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_unread_count" object:dict];
 }
+
+-(void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL) isFromMessageList
+{
+    ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    [channelDBService createChannelEntity:channel];
+    [theDBHandler.managedObjectContext save:nil];
+
+    NSMutableArray <ALChannel *> *channelFeedArray = [[NSMutableArray alloc] init];
+    [channelFeedArray addObject:channel];
+    [self saveChannelUsersAndChannelDetails:channelFeedArray  calledFromMessageList:isFromMessageList];
+}
+
+- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
+
+    if(!channelFeedsList.count){
+        return;
+    }
+
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+
+    if (globalQueue == nil) {
+        globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    }
+    dispatch_group_t group = dispatch_group_create();
+
+    for(ALChannel *channel in channelFeedsList)
+    {
+        dispatch_group_enter(group);
+
+        if(channel.membersName == nil){
+            channel.membersName = channel.membersId;
+        }
+        // As running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
+        if(!ALUserDefaultsHandler.isLoggedIn){
+            dispatch_group_leave(group);
+            return;
+        }
+        [channelDBService deleteMembers:channel.key];
+
+        dispatch_group_async(group, globalQueue,^{
+
+            NSManagedObjectContext * context = theDBHandler.privateContext;
+
+            [context performBlock:^{
+
+                int count = 0;
+                for(ALChannelUser * channelUser in channel.groupUsers) {
+
+                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                    newChannelUserX.key = channel.key;
+                    if(channelUser.userId != nil) {
+                        newChannelUserX.userKey = channelUser.userId;
+                    }
+                    if(channelUser.parentGroupKey != nil) {
+                        newChannelUserX.parentKey = channelUser.parentGroupKey;
+                    }
+                    if(channelUser.role != nil) {
+                        newChannelUserX.role = channelUser.role;
+                    }
+                    if(ALUserDefaultsHandler.isLoggedIn) {
+                        [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
+                    }
+
+                    count++;
+                    if(count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
+                        [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+
+                        }];
+                    }
+                }
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+
+                [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+                    dispatch_group_leave(group);
+                }];
+
+            }];
+
+        });
+
+        [channelDBService addedMembersArray:channel.membersName andChannelKey:channel.key];
+        [channelDBService removedMembersArray:channel.removeMembers andChannelKey:channel.key];
+        [self processChildGroups:channel];
+    }
+
+    dispatch_group_notify(group, globalQueue, ^{
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"AL_CHANNEL_MEMBER_CALL_COMPLETED" object:nil userInfo:messageListInfo];
+        });
+
+    });
+
+}
+
+-(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+
+    for(ALChannel *channelObject in channelArray)
+    {
+        // Ignore inserting unread count in sync call
+        channelObject.unreadCount = 0;
+        [self createChannelEntry:channelObject fromMessageList:NO];
+        if(delegate){
+            [delegate onChannelUpdated:channelObject];
+        }
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
+    }
+}
+
 
 @end

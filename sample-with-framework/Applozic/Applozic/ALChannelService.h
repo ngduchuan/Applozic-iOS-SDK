@@ -642,4 +642,6 @@ static NSString *const AL_DELETED_GROUP_MESSAGE = @"DELETED_GROUP_MESSAGE";
 
 -(void)createChannelWithChannelInfo:(ALChannelInfo*)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
+-(void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL) isFromMessageList;
+
 @end

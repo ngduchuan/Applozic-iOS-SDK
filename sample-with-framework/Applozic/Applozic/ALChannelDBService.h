@@ -19,8 +19,6 @@
 
 @interface ALChannelDBService : NSObject
 
--(void)createChannel:(ALChannel *)channel;
-
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
 
 -(void)insertChannel:(NSMutableArray *)channelList;
@@ -50,8 +48,6 @@
 -(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList isUpdatingMetaData:(BOOL)flag  orChannelUsers:(NSMutableArray *)channelUsers;
 
 -(void)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData;
-
--(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key;
 //New Added...
@@ -110,5 +106,6 @@
 
 -(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX  withContext:(NSManagedObjectContext *) context;
 
-- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
+-(void)deleteMembers:(NSNumber *)key;
+
 @end

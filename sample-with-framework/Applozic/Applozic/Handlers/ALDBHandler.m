@@ -14,6 +14,8 @@
 
 @implementation ALDBHandler
 
+dispatch_queue_t dispatchGlobalQueue;
+
 +(ALDBHandler *) sharedInstance
 {
     static ALDBHandler *sharedMyManager = nil;
@@ -439,27 +441,33 @@
     return result;
 }
 
-- (void)savePrivateAndMainContext:(NSManagedObjectContext *)context {
-    NSError *error;
-    if (context.hasChanges) {
-        if ([context save:&error]) {
-            [self saveMainContext];
-        } else{
-            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-        }
+- (void) savePrivateAndMainContext:(NSManagedObjectContext*)context
+                        completion:(void (^)(NSError*error))completion {
+    if (dispatchGlobalQueue == nil) {
+        dispatchGlobalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     }
-}
-
-- (void)saveMainContext {
-    if (self.managedObjectContext.hasChanges) {
-        [self.managedObjectContext performBlockAndWait:^{
-            NSError *error = nil;
-            [self.managedObjectContext save:&error];
-            if (error){
-                ALSLog(ALLoggerSeverityError, @"DB ERROR in saveMainContext :%@",error);
+    [context performBlock:^ {
+        NSError* error;
+        if (context.hasChanges && [context save:&error]) {
+            NSManagedObjectContext* parentContext = [context parentContext];
+            if (parentContext && parentContext.hasChanges) {
+                dispatch_async(dispatchGlobalQueue, ^{
+                    [self savePrivateAndMainContext:parentContext completion:completion];
+                });
+            } else {
+                if (completion) {
+                    completion(nil);
+                }
             }
-        }];
-    }
+        } else {
+            if (completion) {
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                }
+                completion(error);
+            }
+        }
+    }];
 }
 
 - (NSManagedObjectContext *)privateContext {
