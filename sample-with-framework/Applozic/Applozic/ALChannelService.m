@@ -813,7 +813,6 @@ dispatch_queue_t globalQueue;
     [clientService getChannelListForCategory:category                           withCompletion:^( NSMutableArray *channelInfoList, NSError *error)
      {
          
-         ALChannelDBService * dbService = [ALChannelDBService new];
          for(ALChannel * channel in channelInfoList )
          {
              [self createChannelEntry:channel fromMessageList:NO];
