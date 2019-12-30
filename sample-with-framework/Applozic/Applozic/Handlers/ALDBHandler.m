@@ -463,6 +463,7 @@ dispatch_queue_t dispatchGlobalQueue;
             if (completion) {
                 if (error) {
                     ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                    [context rollback];
                 }
                 completion(error);
             }
