@@ -1104,7 +1104,13 @@ dispatch_queue_t globalQueue;
             [context performBlock:^{
 
                 int count = 0;
+                __block BOOL isProccessFailed = NO;
                 for(ALChannelUser * channelUser in channel.groupUsers) {
+
+                    if (isProccessFailed) {
+                        ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
+                        break;
+                    }
 
                     ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
                     newChannelUserX.key = channel.key;
@@ -1119,12 +1125,17 @@ dispatch_queue_t globalQueue;
                     }
                     if(ALUserDefaultsHandler.isLoggedIn) {
                         [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
+                    } else {
+                        // User is not login will break from the inner loop.
+                        break;
                     }
 
                     count++;
-                    if(count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
+                    if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
                         [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-
+                            if (error) {
+                                isProccessFailed = YES;
+                            }
                         }];
                     }
                 }
@@ -1132,6 +1143,7 @@ dispatch_queue_t globalQueue;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
 
                 [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+                    // Will ignore error as this is not inside the for loop of member insert and will directly notify the dispatch group once complete
                     dispatch_group_leave(group);
                 }];
 
