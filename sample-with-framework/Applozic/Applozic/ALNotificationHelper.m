@@ -14,23 +14,12 @@
 -(BOOL)isApplozicViewControllerOnTop {
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
-
-    return ([alPushAssist.topViewController isKindOfClass:[ALMessagesViewController class]]
-            ||[alPushAssist.topViewController isKindOfClass:[ALChatViewController class]]
-            ||[alPushAssist.topViewController isKindOfClass:[ALGroupDetailViewController class]]
-            ||[alPushAssist.topViewController isKindOfClass:[ALNewContactsViewController class]]
-            ||[alPushAssist.topViewController isKindOfClass:[ALUserProfileVC class]]
-            ||[alPushAssist.topViewController isKindOfClass:[ALGroupCreationViewController class]]
-            ||[alPushAssist.topViewController isKindOfClass:NSClassFromString(@"Applozic.ALCustomPickerViewController")]
-            ||[alPushAssist.topViewController isKindOfClass:NSClassFromString(@"Applozic.ALPreviewPhotoViewController")]
-            ||[alPushAssist.topViewController isKindOfClass:NSClassFromString(@"Applozic.ALMessageInfoViewController")]
-            ||[alPushAssist.topViewController isKindOfClass:NSClassFromString(@"Applozic.ALMapViewController")]
-            ||[alPushAssist.topViewController isKindOfClass:NSClassFromString(@"CNContactPickerViewController")]
-            ||[alPushAssist.topViewController isKindOfClass:[ALAudioAttachmentViewController class]]);
-
-    return NO;
+    NSString* topViewControllerName = NSStringFromClass(alPushAssist.topViewController.class);
+    return ([topViewControllerName hasPrefix:@"AL"]
+            || [topViewControllerName hasPrefix:@"Applozic"]
+            ||[topViewControllerName isEqualToString:@"CNContactPickerViewController"]
+            || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]);
 }
-
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId {
 
@@ -62,21 +51,7 @@
     } else if ([alPushAssist.topViewController isKindOfClass:[ALChatViewController class]]) {
 
         ALChatViewController * viewController = (ALChatViewController*)alPushAssist.topViewController;
-
-        [viewController unSubscrbingChannel];
-        viewController.alChannel = nil;
-        viewController.alContact = nil;
-        if (self.groupId != nil) {
-            viewController.contactIds = nil;
-            viewController.conversationId = nil;
-            viewController.channelKey = self.groupId;
-        } else {
-            viewController.contactIds = self.userId;
-            viewController.conversationId = self.conversationId;
-            viewController.channelKey = nil;
-        }
-        [viewController subscrbingChannel];
-        [viewController refreshViewOnNotificationTap];
+        [viewController refreshViewOnNotificationTap:self.userId withChannelKey:self.groupId withConversationId:self.conversationId];
 
     } else {
         [self findViewController];
@@ -91,13 +66,11 @@
             [self findControllerInStack:pushAssit.topViewController withCompletion:^ {
                 [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
             }];
-
         } else {
             [pushAssit.topViewController dismissViewControllerAnimated:NO completion:nil];
         }
 
     });
-
 }
 
 

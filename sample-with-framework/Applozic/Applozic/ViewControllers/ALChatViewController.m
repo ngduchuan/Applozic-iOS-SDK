@@ -3483,9 +3483,18 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self showNoConversationLabel];
 }
 
--(void)refreshViewOnNotificationTap {
-
+-(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId {
+    
+    [self unSubscrbingChannel];
+    self.alChannel = nil;
+    self.alContact = nil;
+    self.contactIds = userId;
+    self.conversationId = conversationId;
+    self.channelKey = channelKey;
+    [self subscrbingChannel];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
+
         [self.mTableView setUserInteractionEnabled:NO];
         [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
         [self.mTableView reloadData];
@@ -3505,7 +3514,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         }
         [self markConversationRead];;
     });
-
 }
 
 -(void)reloadViewfor3rdParty

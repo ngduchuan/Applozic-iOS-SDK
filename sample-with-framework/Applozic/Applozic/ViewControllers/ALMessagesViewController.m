@@ -1221,36 +1221,27 @@ static int const MQTT_MAX_RETRY = 3;
 
     [self.detailChatViewController setRefresh: YES];
     
-    if ([self.detailChatViewController isVisible])
-    {
+    if ([self.detailChatViewController isVisible]) {
         [self.detailChatViewController syncCall:alMessage updateUI:[NSNumber numberWithInt:APP_STATE_ACTIVE] alertValue:alMessage.message];
-    } else if ([helper isApplozicViewControllerOnTop]){
+    } else if ([helper isApplozicViewControllerOnTop]) {
 
-        if(![alMessage.type isEqualToString:@"5"]) {
-
-            if (top.isMessageViewOnTop) {
-                [self updateMessageList:messageArray];
-            }
-
-            if ((alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden])
-            {
-                return;
-            }
-
-            ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                               withAlertMessage:alMessage.message];
-
-            [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
-                ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
-
-                if([helper isApplozicViewControllerOnTop]){
-
-                    [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId];
-                }
-            }];
+        if (top.isMessageViewOnTop) {
+            [self updateMessageList:messageArray];
         }
 
+        if ([alMessage isSentMessage] || (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden]) {
+            return;
+        }
+
+        ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                           withAlertMessage:alMessage.message];
+
+        [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId];
+        }];
     }
+
 }
 
 -(void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status
