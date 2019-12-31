@@ -17,7 +17,7 @@
     NSString* topViewControllerName = NSStringFromClass(alPushAssist.topViewController.class);
     return ([topViewControllerName hasPrefix:@"AL"]
             || [topViewControllerName hasPrefix:@"Applozic"]
-            ||[topViewControllerName isEqualToString:@"CNContactPickerViewController"]
+            || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
             || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]);
 }
 
@@ -36,15 +36,9 @@
 
         ALMessagesViewController* messagesViewController = (ALMessagesViewController*)alPushAssist.topViewController;
 
-        if (self.groupId) {
-            messagesViewController.channelKey = self.groupId;
-            messagesViewController.conversationId = nil;
-            messagesViewController.userIdToLaunch = nil;
-        } else {
-            messagesViewController.channelKey = nil;
-            messagesViewController.userIdToLaunch = self.userId;
-            messagesViewController.conversationId = self.conversationId;
-        }
+        messagesViewController.channelKey = self.groupId;
+        messagesViewController.userIdToLaunch = self.userId;
+        messagesViewController.conversationId = self.conversationId;
 
         [messagesViewController createDetailChatViewControllerWithUserId:messagesViewController.userIdToLaunch withGroupId:messagesViewController.channelKey withConversationId:messagesViewController.conversationId];
 
@@ -63,9 +57,12 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
         if (pushAssit.topViewController.navigationController.viewControllers != nil) {
-            [self findControllerInStack:pushAssit.topViewController withCompletion:^ {
-                [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
+            [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
+                if(handleClick) {
+                    [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
+                }
             }];
+
         } else {
             [pushAssit.topViewController dismissViewControllerAnimated:NO completion:nil];
         }
@@ -73,23 +70,25 @@
     });
 }
 
+-(void)checkControllerAndDismissIfRequired:(UIViewController*)viewController withCompletion:(void(^)(BOOL handleClick))completion {
 
--(void)findControllerInStack:(UIViewController*)viewController withCompletion:(void(^)(void))completion {
-
+    if(![self isApplozicViewControllerOnTop]){
+        completion(NO);
+    }
 
     if ([[ALMessagesViewController class] isKindOfClass:NSClassFromString(@"ALMessagesViewController")]
         || [[ALMessagesViewController class] isKindOfClass: NSClassFromString(@"ALChatViewController")]) {
-        completion();
+        completion(YES);
         return;
     }
 
     if (viewController.navigationController != nil
         && [viewController.navigationController popViewControllerAnimated:NO] != nil) {
-        completion();
+        completion(YES);
         return;
     }
     [viewController dismissViewControllerAnimated:NO completion:^ {
-        completion();
+        completion(YES);
     }];
 }
 @end
