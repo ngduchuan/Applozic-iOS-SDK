@@ -1237,7 +1237,6 @@ static int const MQTT_MAX_RETRY = 3;
                                                                            withAlertMessage:alMessage.message];
 
         [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
-            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
             [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId];
         }];
     }
