@@ -1078,9 +1078,6 @@ dispatch_queue_t globalQueue;
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
 
-    if (globalQueue == nil) {
-        globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    }
     dispatch_group_t group = dispatch_group_create();
 
     for(ALChannel *channel in channelFeedsList)
@@ -1091,72 +1088,73 @@ dispatch_queue_t globalQueue;
             channel.membersName = channel.membersId;
         }
         // As running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
-        if(!ALUserDefaultsHandler.isLoggedIn){
+        if(!ALUserDefaultsHandler.isLoggedIn) {
+            ALSLog(ALLoggerSeverityInfo, @"User is not login returing from channel");
             dispatch_group_leave(group);
             return;
         }
+
         [channelDBService deleteMembers:channel.key];
 
-        dispatch_group_async(group, globalQueue,^{
+        NSManagedObjectContext * context = theDBHandler.privateContext;
 
-            NSManagedObjectContext * context = theDBHandler.privateContext;
+        [context performBlock:^ {
 
-            [context performBlock:^{
+            int count = 0;
+            __block BOOL isProccessFailed = NO;
+            for(ALChannelUser * channelUser in channel.groupUsers) {
 
-                int count = 0;
-                __block BOOL isProccessFailed = NO;
-                for(ALChannelUser * channelUser in channel.groupUsers) {
-
-                    if (isProccessFailed) {
-                        ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
-                        break;
-                    }
-
-                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
-                    newChannelUserX.key = channel.key;
-                    if(channelUser.userId != nil) {
-                        newChannelUserX.userKey = channelUser.userId;
-                    }
-                    if(channelUser.parentGroupKey != nil) {
-                        newChannelUserX.parentKey = channelUser.parentGroupKey;
-                    }
-                    if(channelUser.role != nil) {
-                        newChannelUserX.role = channelUser.role;
-                    }
-                    if(ALUserDefaultsHandler.isLoggedIn) {
-                        [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
-                    } else {
-                        // User is not login will break from the inner loop.
-                        break;
-                    }
-
-                    count++;
-                    if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
-                        [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-                            if (error) {
-                                isProccessFailed = YES;
-                            }
-                        }];
-                    }
+                if (isProccessFailed) {
+                    ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
+                    break;
                 }
 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+                ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                newChannelUserX.key = channel.key;
+                if(channelUser.userId != nil) {
+                    newChannelUserX.userKey = channelUser.userId;
+                }
+                if(channelUser.parentGroupKey != nil) {
+                    newChannelUserX.parentKey = channelUser.parentGroupKey;
+                }
+                if(channelUser.role != nil) {
+                    newChannelUserX.role = channelUser.role;
+                }
+                if(ALUserDefaultsHandler.isLoggedIn) {
+                    [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
+                } else {
+                    // User is not login will break from the inner loop.
+                    break;
+                }
 
-                [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-                    // Will ignore error as this is not inside the for loop of member insert and will directly notify the dispatch group once complete
-                    dispatch_group_leave(group);
-                }];
+                count++;
+                if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
+                    [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
 
-            }];
+                        if (error) {
+                            isProccessFailed = YES;
+                        }
+                    }];
+                }
+            }
 
-        });
+        }];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+
+        [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+            // Will ignore error as this is not inside the for loop of member insert and will directly notify the dispatch group once complete
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_group_leave(group);
+            });
+        }];
 
         [channelDBService addedMembersArray:channel.membersName andChannelKey:channel.key];
         [channelDBService removedMembersArray:channel.removeMembers andChannelKey:channel.key];
         [self processChildGroups:channel];
     }
 
-    dispatch_group_notify(group, globalQueue, ^{
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
