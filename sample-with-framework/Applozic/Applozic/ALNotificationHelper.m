@@ -56,16 +56,11 @@
 -(void) findViewController {
     dispatch_async(dispatch_get_main_queue(), ^{
         ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
-        if (pushAssit.topViewController.navigationController.viewControllers != nil) {
-            [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
-                if(handleClick) {
-                    [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
-                }
-            }];
-
-        } else {
-            [pushAssit.topViewController dismissViewControllerAnimated:NO completion:nil];
-        }
+        [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
+            if(handleClick) {
+                [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
+            }
+        }];
 
     });
 }
