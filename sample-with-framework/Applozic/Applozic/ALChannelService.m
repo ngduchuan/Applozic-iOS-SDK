@@ -1139,12 +1139,12 @@ dispatch_queue_t globalQueue;
             }
 
         }];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
 
         [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
             // Will ignore error as this is not inside the for loop of member insert and will directly notify the dispatch group once complete
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
                 dispatch_group_leave(group);
             });
         }];
