@@ -111,10 +111,13 @@ public class ALBaseNavigationViewController: UINavigationController {
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: backImage, style: .plain, target: self , action: #selector(dismissAction(_:)))
         self.navigationController?.navigationBar.barTintColor = ALApplozicSettings.getColorForNavigation()
-        self.navigationController?.navigationBar.tintColor = ALApplozicSettings.getColorForNavigationItem()
+
+        guard let color = ALApplozicSettings.getColorForNavigationItem() else {
+            return
+        }
+        self.navigationController?.navigationBar.tintColor = color
         if let aSize = UIFont(name: "Helvetica-Bold", size: 18) {
-            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: ALApplozicSettings.getColorForNavigationItem(),
-                                                                            NSAttributedString.Key.font: aSize]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: color, NSAttributedString.Key.font: aSize]
         }
     }
 
@@ -148,6 +151,9 @@ public class ALBaseNavigationViewController: UINavigationController {
                     //whatever
                 }
             }
+        default:
+            print("Do nothing on default case")
+            break
         }
     }
 

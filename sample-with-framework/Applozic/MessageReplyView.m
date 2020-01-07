@@ -20,10 +20,6 @@ static CGFloat const REPLY_VIEW_PADDING = 5;
 static NSString *const FONT_NAME = @"Helvetica";
 static CGFloat const FONT_SIZE = 13;
 static CGFloat const ATTACHMENT_PREVIEW_WIDTH = 60;
-
-static CGFloat const MESSAGE_REPLY_WIDTH = 100;
-static CGFloat const MESSAGE_REPLY_SUPER_VIEW_PADDING = 10;
-
 static NSString *const ATTACHMENT_TEXT_PHOTOS = @"photo";
 static NSString *const ATTACHMENT_TEXT_AUDIO = @"Audio";
 static NSString *const ATTACHMENT_TEXT_VIDEO = @"Video";
@@ -297,7 +293,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
                     [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
                 }
             } else if (replyMessage.fileMeta.thumbnailUrl) {
-                [self setImage:replyMessage.fileMeta.thumbnailUrl];
+                [self setImage:[NSURL URLWithString:replyMessage.fileMeta.thumbnailUrl]];
             } else {
                 [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
             }

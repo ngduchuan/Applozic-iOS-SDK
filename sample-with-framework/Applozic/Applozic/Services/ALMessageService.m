@@ -222,7 +222,7 @@ static ALMessageClientService *alMsgClientService;
                        NSMutableArray<NSString *>* replyMessageKeys = [[NSMutableArray alloc] init];
 
                        ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-                       for (int i = messages.count - 1; i >= 0; i--) {
+                       for (int i = (int)messages.count - 1; i >= 0; i--) {
                            ALMessage * message = messages[i];
                            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                                [messages removeObjectAtIndex:i];
@@ -463,7 +463,7 @@ static ALMessageClientService *alMsgClientService;
                delegate:(id<ApplozicUpdatesDelegate>)delegate
          withCompletion:(void(^)(NSMutableArray *))completion {
     [ALUserService processContactFromMessages:messageArray withCompletion:^{
-        for (int i = messageArray.count - 1; i>=0; i--) {
+        for (int i = (int)messageArray.count - 1; i>=0; i--) {
             ALMessage * message = messageArray[i];
             if([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                 [messageArray removeObjectAtIndex:i];

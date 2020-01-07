@@ -119,8 +119,11 @@ import Foundation
             // mic access ok...
             isAllow = true
             break;
+        default:
+            print("Do nothing on default case")
+            break
         }
-        
+
         return isAllow
     }
     
@@ -220,6 +223,9 @@ import Foundation
                 delegate.cancelAudioRecord()
                 cancelAudioRecord()
             }
+        default:
+            print("Do nothing on default case")
+            break
         }
     }
 }

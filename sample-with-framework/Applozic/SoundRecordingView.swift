@@ -145,6 +145,9 @@ import Foundation
             // mic access ok...
             isAllow = true
             break;
+        default:
+            print("Do nothing on default")
+            break
         }
 
         return isAllow

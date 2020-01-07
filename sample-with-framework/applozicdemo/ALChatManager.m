@@ -145,7 +145,8 @@
             else
             {
                 //Create new one channel and launch:;;
-                [channelService createChannel:clientGroupId orClientChannelKey:clientGroupId andMembersList:@[userId]
+
+                [channelService createChannel:clientGroupId orClientChannelKey:clientGroupId andMembersList: [[NSMutableArray alloc]initWithObjects:userId, nil]
                                  andImageLink:nil channelType:GROUP_OF_TWO
                                   andMetaData:metadata withCompletion:^(ALChannel *alChannelInRespose, NSError *error) {
                                       NSLog(@" group of two id %@", alChannelInRespose.key);

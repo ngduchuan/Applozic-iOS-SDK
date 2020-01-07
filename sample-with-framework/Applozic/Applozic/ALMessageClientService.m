@@ -660,12 +660,12 @@
     NSMutableURLRequest* request = [ALRequestHandler createGETRequestWithUrlString: urlString paramString: paramString];
     [ALResponseHandler processRequest:request andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Fetching message error", (NSString *)theJson);
+            ALSLog(ALLoggerSeverityError, @"Fetching message error %@", (NSString *)theJson);
             completion(nil, theError);
             return;
         }
         ALAPIResponse* response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully %@", (NSString *)theJson);
         completion(response, nil);
     }];
 }
