@@ -75,6 +75,7 @@
 #import "ALUploadTask.h"
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
+#import "ALNotificationHelper.h"
 
 static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
@@ -3411,8 +3412,19 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         return;
     }
+
+
     ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage withAlertMessage:alertValue];
-    [alnotification nativeNotification:self];
+    [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+        ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+
+        if([helper isApplozicViewControllerOnTop]){
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId];
+        }
+
+    }];
 }
 
 //===============================================================================================================================================
@@ -3469,6 +3481,39 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self loadChatView];
     [self setCallButtonInNavigationBar];
     [self showNoConversationLabel];
+}
+
+-(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId {
+    
+    [self unSubscrbingChannel];
+    self.alChannel = nil;
+    self.alContact = nil;
+    self.contactIds = userId;
+    self.conversationId = conversationId;
+    self.channelKey = channelKey;
+    [self subscrbingChannel];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        [self.mTableView setUserInteractionEnabled:NO];
+        [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
+        [self.mTableView reloadData];
+        [self.mTableView setUserInteractionEnabled:YES];
+        [self setCallButtonInNavigationBar];
+        self.startIndex = 0;
+
+        NSString *chatId = self.channelKey != nil ? self.channelKey.stringValue : self.contactIds;
+
+        if ([ALUserDefaultsHandler isServerCallDoneForMSGList:chatId]) {
+            [self fetchMessageFromDB];
+            [self loadChatView];
+        } else {
+            [self showNoConversationLabel];
+            [self setTitle];
+            [self processLoadEarlierMessages:YES];
+        }
+        [self markConversationRead];;
+    });
 }
 
 -(void)reloadViewfor3rdParty
@@ -4204,6 +4249,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
         [self.mqttObject subscribeToConversation];
+        self.mqttObject.mqttConversationDelegate = self;
         [self subscrbingChannel];
         self.mqttRetryCount++;
     }

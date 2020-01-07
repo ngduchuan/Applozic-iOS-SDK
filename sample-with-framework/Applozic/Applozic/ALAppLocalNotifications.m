@@ -21,6 +21,7 @@
 #import "ALGroupDetailViewController.h"
 #import "ALConversationService.h"
 #import "ALApplozicSettings.h"
+#import "ALNotificationHelper.h"
 
 @implementation ALAppLocalNotifications
 
@@ -325,12 +326,16 @@
 {
     ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
     ALSLog(ALLoggerSeverityInfo, @"Chat Launch Contact ID: %@",self.contactId);
-    
-    if(!pushAssistant.isOurViewOnTop)
-    {
-        self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
-        [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
+
+    ALNotificationHelper * notificationHelper = [[ALNotificationHelper alloc]init];
+
+    if(notificationHelper.isApplozicViewControllerOnTop) {
+        [notificationHelper handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId];
+        return;
     }
+
+    self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
+    [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
 }
 
 -(void)transferVOIPMessage:(NSNotification *)notification
