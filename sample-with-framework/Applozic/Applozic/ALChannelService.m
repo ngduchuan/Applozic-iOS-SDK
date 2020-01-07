@@ -19,9 +19,6 @@
 
 static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
 
-dispatch_queue_t globalQueue;
-
-
 +(ALChannelService *)sharedInstance
 {
     static ALChannelService *sharedInstance = nil;
@@ -1141,10 +1138,11 @@ dispatch_queue_t globalQueue;
         }];
 
         [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-            // Will ignore error as this is not inside the for loop of member insert and will directly notify the dispatch group once complete
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+                if(!error){
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
+                }
                 dispatch_group_leave(group);
             });
         }];
