@@ -150,6 +150,7 @@ static NSString *const AL_SENT_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_SENT_
 static NSString *const AL_RECEIVED_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_RECEIVED_CONTACT_MSG_LABEL_COLOR";
 static NSString *const AL_IMAGE_PREVIEW_BACKGROUND_COLOR = @"com.applozic.AL_IMAGE_PREVIEW_BACKGROUND_COLOR";
 static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRICTED_MESSAGE_PATTERN";
+static NSString *const AL_DISABLE_NOTIFICATION_TAP = @"com.applozic.AL_DISABLE_NOTIFICATION_TAP";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -603,4 +604,6 @@ static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRI
 +(void)restrictedMessageRegexPattern:(NSString *)pattern;
 +(NSString *)getRestrictedMessageRegexPattern;
 
++(void)disableInAppNotificationTap:(BOOL)flag;
++(BOOL)isInAppNotificationTapDisabled;
 @end

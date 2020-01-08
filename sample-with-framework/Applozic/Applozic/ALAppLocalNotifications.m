@@ -250,7 +250,7 @@
     self.dict = notification.userInfo;
     NSNumber * updateUI = [self.dict valueForKey:@"updateUI"];
     NSString * alertValue = [self.dict valueForKey:@"alertValue"];
-    
+
     if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {
         ALSLog(ALLoggerSeverityInfo, @"App launched from Background....Directly opening view from %@",self.dict);
@@ -259,13 +259,13 @@
             ALConversationService * conversationService = [[ALConversationService alloc]init];
             [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
                 if(error == nil){
-                    [self thirdPartyNotificationTap1:self.contactId withGroupId:groupId withConversationId: conversationId]; //
+                    [self thirdPartyNotificationTap1:self.contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; //
                 }else{
                     ALSLog(ALLoggerSeverityInfo, @"Error in fetching conversation :: %@",error);
                 }
             }];
         }else{
-            [self thirdPartyNotificationTap1:self.contactId withGroupId:groupId withConversationId: conversationId]; // Directly launching Chat
+            [self thirdPartyNotificationTap1:self.contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; // Directly launching Chat
         }
         return;
     }
@@ -283,7 +283,7 @@
                 
                 [[ALChannelService new] getChannelInformation:groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
                     
-                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self];
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
 
                 }];
             }else{
@@ -291,7 +291,7 @@
                     ALConversationService * conversationService = [[ALConversationService alloc]init];
                     [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
                         if(error == nil){
-                            [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self];
+                            [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
 
                         }else{
                             ALSLog(ALLoggerSeverityInfo, @"Error in fetching conversation :: %@",error);
@@ -299,7 +299,7 @@
                     }];
 
                 }else{
-                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self];
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId withConversationId:conversationId delegate:self notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
                 }
             }
         }
@@ -322,7 +322,7 @@
     }
 }
 
--(void)thirdPartyNotificationTap1:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId
+-(void)thirdPartyNotificationTap1:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL) isTapActionDisabled
 {
     ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
     ALSLog(ALLoggerSeverityInfo, @"Chat Launch Contact ID: %@",self.contactId);
@@ -330,12 +330,14 @@
     ALNotificationHelper * notificationHelper = [[ALNotificationHelper alloc]init];
 
     if(notificationHelper.isApplozicViewControllerOnTop) {
-        [notificationHelper handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId];
+        [notificationHelper handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId notificationTapActionDisable:isTapActionDisabled];
         return;
     }
 
-    self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
-    [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
+    if (!isTapActionDisabled) {
+        self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
+        [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
+    }
 }
 
 -(void)transferVOIPMessage:(NSNotification *)notification

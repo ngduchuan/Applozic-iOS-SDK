@@ -214,7 +214,7 @@
 
 
 
-+(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate
++(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate notificationTapActionDisable:(BOOL) isTapActionDisabled
 {
     
     if([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE ){
@@ -256,7 +256,7 @@
                                        callback:^(void){
         
                                            
-                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID withConversationId: conversationId];
+                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID withConversationId: conversationId notificationTapActionDisable:isTapActionDisabled];
 
         
     }buttonTitle:nil buttonCallback:nil atPosition:TSMessageNotificationPositionTop canBeDismissedByUser:YES];

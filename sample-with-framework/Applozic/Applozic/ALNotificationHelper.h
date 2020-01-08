@@ -17,9 +17,11 @@
 
 @property (nonatomic, copy) NSNumber* conversationId;
 
+@property (nonatomic) BOOL isTapActionDisabled;
+
 -(BOOL)isApplozicViewControllerOnTop;
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId;
+-(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL) isTapActionDisabled;
 
 @end
 

@@ -7,6 +7,7 @@
 //
 
 #import "ALNotificationHelper.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALNotificationHelper
 
@@ -21,7 +22,14 @@
             || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]);
 }
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId {
+-(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
+
+    if (isTapActionDisabled) {
+        ALSLog(ALLoggerSeverityInfo, @"Notification tap is disabled");
+        return;
+    }
+
+    self.isTapActionDisabled = isTapActionDisabled;
 
     if (groupID != nil) {
         self.groupId = groupID;
@@ -58,7 +66,7 @@
         ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
         [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
             if(handleClick) {
-                [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
+                [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId notificationTapActionDisable:self.isTapActionDisabled];
             }
         }];
 
