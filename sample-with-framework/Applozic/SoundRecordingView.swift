@@ -140,13 +140,13 @@ import Foundation
         case AVAudioSession.RecordPermission.denied:
             // direct to settings...
             isAllow = false
-            break;
+            break
         case AVAudioSession.RecordPermission.granted:
             // mic access ok...
             isAllow = true
-            break;
-        default:
-            print("Do nothing on default")
+            break
+        @unknown default:
+            print("Unknown permission state in Microphone")
             break
         }
 
