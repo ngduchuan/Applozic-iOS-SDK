@@ -633,7 +633,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.customer.demo.ApplozicShare;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "ApplozicShare Development";
+				PROVISIONING_PROFILE_SPECIFIER = "ApplozicShare Distribution";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
