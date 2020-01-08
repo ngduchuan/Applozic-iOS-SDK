@@ -152,8 +152,8 @@ public class ALBaseNavigationViewController: UINavigationController {
                     //whatever
                 }
             }
-        default:
-            print("Do nothing on default case")
+      @unknown default:
+            print("Unknown permission state in PhotoLibrary")
             break
         }
     }

@@ -223,8 +223,8 @@ import Foundation
                 delegate.cancelAudioRecord()
                 cancelAudioRecord()
             }
-        default:
-            print("Do nothing on default case")
+        @unknown default:
+            print("Unknown permission state in UIGestureRecognizer")
             break
         }
     }
