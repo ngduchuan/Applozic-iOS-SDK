@@ -112,13 +112,14 @@ public class ALBaseNavigationViewController: UINavigationController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: backImage, style: .plain, target: self , action: #selector(dismissAction(_:)))
         self.navigationController?.navigationBar.barTintColor = ALApplozicSettings.getColorForNavigation()
 
-        guard let color = ALApplozicSettings.getColorForNavigationItem() else {
-            return
-        }
-        self.navigationController?.navigationBar.tintColor = color
+        let navigationItemColor = ALApplozicSettings.getColorForNavigationItem() ?? UIColor.white
+
+        self.navigationController?.navigationBar.tintColor = navigationItemColor
+
         if let aSize = UIFont(name: "Helvetica-Bold", size: 18) {
-            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: color, NSAttributedString.Key.font: aSize]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: navigationItemColor, NSAttributedString.Key.font: aSize]
         }
+
     }
 
     private func checkPhotoLibraryPermission() {
