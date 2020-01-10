@@ -443,30 +443,28 @@ dispatch_queue_t dispatchGlobalQueue;
 
 - (void) savePrivateAndMainContext:(NSManagedObjectContext*)context
                         completion:(void (^)(NSError*error))completion {
-    if (dispatchGlobalQueue == nil) {
-        dispatchGlobalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    }
-    [context performBlock:^ {
-        NSError* error;
-        if (context.hasChanges && [context save:&error]) {
-            NSManagedObjectContext* parentContext = [context parentContext];
-            if (parentContext && parentContext.hasChanges) {
-                dispatch_async(dispatchGlobalQueue, ^{
-                    [self savePrivateAndMainContext:parentContext completion:completion];
-                });
+    
+    NSError* error;
+    if (context.hasChanges && [context save:&error]) {
+        NSManagedObjectContext* parentContext = [context parentContext];
+        [parentContext performBlock:^ {
+            NSError* parentContextError;
+            if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
+                completion(nil);
             } else {
-                if (completion) {
-                    completion(nil);
+                if (parentContextError) {
+                    ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
                 }
+                completion(parentContextError);
             }
-        } else {
-            if (error) {
-                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-                [context rollback];
-            }
-            completion(error);
+        }];
+    } else {
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+            [context rollback];
         }
-    }];
+        completion(error);
+    }
 }
 
 - (NSManagedObjectContext *)privateContext {

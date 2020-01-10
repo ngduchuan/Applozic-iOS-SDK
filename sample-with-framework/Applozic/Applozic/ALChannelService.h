@@ -25,8 +25,13 @@ static NSString *const AL_DELETED_GROUP_MESSAGE = @"DELETED_GROUP_MESSAGE";
 #import "ALRealTimeUpdate.h"
 #import "ALChannelInfo.h"
 
-
 @interface ALChannelService : NSObject
+
+extern NSString *const AL_CHANNEL_MEMBER_SAVE_STATUS;
+extern NSString *const AL_Updated_Group_Members;
+extern NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED;
+extern NSString *const AL_MESSAGE_LIST;
+extern NSString *const AL_MESSAGE_SYNC;
 
 +(ALChannelService *)sharedInstance;
 

@@ -18,6 +18,13 @@
 @implementation ALChannelService
 
 static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
+NSString *const AL_CHANNEL_MEMBER_SAVE_STATUS = @"AL_CHANNEL_MEMBER_SAVE_STATUS";
+NSString *const AL_Updated_Group_Members = @"Updated_Group_Members";
+NSString *const AL_MESSAGE_LIST = @"AL_MESSAGE_LIST";
+NSString *const AL_MESSAGE_SYNC = @"AL_MESSAGE_SYNC";
+NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMPLETED";
+
+dispatch_queue_t channelUserbackgroundQueue;
 
 +(ALChannelService *)sharedInstance
 {
@@ -1077,6 +1084,10 @@ static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
 
     dispatch_group_t group = dispatch_group_create();
 
+    if (channelUserbackgroundQueue == NULL) {
+        channelUserbackgroundQueue = dispatch_queue_create("ApplozicChannelUsersBackgroundQueue", DISPATCH_QUEUE_CONCURRENT);
+    }
+
     for(ALChannel *channel in channelFeedsList)
     {
         dispatch_group_enter(group);
@@ -1093,74 +1104,73 @@ static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
 
         [channelDBService deleteMembers:channel.key];
 
-        NSManagedObjectContext * context = theDBHandler.privateContext;
+        dispatch_async(channelUserbackgroundQueue, ^{
 
-        [context performBlock:^ {
+            NSManagedObjectContext * context = theDBHandler.privateContext;
 
-            int count = 0;
-            __block BOOL isProccessFailed = NO;
-            for(ALChannelUser * channelUser in channel.groupUsers) {
+            [context performBlock:^ {
 
-                if (isProccessFailed) {
-                    ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
-                    break;
+                int count = 0;
+                __block BOOL isProccessFailed = NO;
+                for(ALChannelUser * channelUser in channel.groupUsers) {
+
+                    if (isProccessFailed) {
+                        ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
+                        break;
+                    }
+
+                    ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                    newChannelUserX.key = channel.key;
+                    if(channelUser.userId != nil) {
+                        newChannelUserX.userKey = channelUser.userId;
+                    }
+                    if(channelUser.parentGroupKey != nil) {
+                        newChannelUserX.parentKey = channelUser.parentGroupKey;
+                    }
+                    if(channelUser.role != nil) {
+                        newChannelUserX.role = channelUser.role;
+                    }
+                    if(ALUserDefaultsHandler.isLoggedIn) {
+                        [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
+                    } else {
+                        // User is not login will break from the inner loop.
+                        break;
+                    }
+
+                    count++;
+                    if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
+                        [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+
+                            if (error) {
+                                isProccessFailed = YES;
+                            }
+                        }];
+                    }
                 }
 
-                ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
-                newChannelUserX.key = channel.key;
-                if(channelUser.userId != nil) {
-                    newChannelUserX.userKey = channelUser.userId;
-                }
-                if(channelUser.parentGroupKey != nil) {
-                    newChannelUserX.parentKey = channelUser.parentGroupKey;
-                }
-                if(channelUser.role != nil) {
-                    newChannelUserX.role = channelUser.role;
-                }
-                if(ALUserDefaultsHandler.isLoggedIn) {
-                    [channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
-                } else {
-                    // User is not login will break from the inner loop.
-                    break;
-                }
+                [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+                    NSString *operationStatus  = @"Save operation success";
+                    if(error){
+                        operationStatus = @"Save operation failed";
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:AL_Updated_Group_Members
+                                                                        object:channel
+                                                                      userInfo: @{AL_CHANNEL_MEMBER_SAVE_STATUS : operationStatus}];
+                    dispatch_group_leave(group);
+                }];
+            }];
 
-                count++;
-                if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
-                    [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-
-                        if (error) {
-                            isProccessFailed = YES;
-                        }
-                    }];
-                }
-            }
-
-        }];
-
-        [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(!error){
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
-                }
-                dispatch_group_leave(group);
-            });
-        }];
+        });
 
         [channelDBService addedMembersArray:channel.membersName andChannelKey:channel.key];
         [channelDBService removedMembersArray:channel.removeMembers andChannelKey:channel.key];
         [self processChildGroups:channel];
     }
 
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSDictionary *messageListInfo = isFromMessageList ? @{@"AL_MESSAGE_LIST": @YES} : @{@"AL_MESSAGE_SYNC": @YES};
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"AL_CHANNEL_MEMBER_CALL_COMPLETED" object:nil userInfo:messageListInfo];
-        });
-
+    dispatch_group_notify(group, channelUserbackgroundQueue, ^{
+        NSDictionary *messageListInfo = isFromMessageList ? @{AL_MESSAGE_LIST: @YES} : @{AL_MESSAGE_SYNC: @YES};
+        [[NSNotificationCenter defaultCenter] postNotificationName:AL_CHANNEL_MEMBER_CALL_COMPLETED object:nil userInfo:messageListInfo];
     });
-
 }
 
 -(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate {

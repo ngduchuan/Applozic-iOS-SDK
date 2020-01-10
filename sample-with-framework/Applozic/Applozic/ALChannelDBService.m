@@ -97,7 +97,6 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:theDBHandler.managedObjectContext];
     [fetchRequest setEntity:entity];
-    
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", key];
     [fetchRequest setPredicate:predicate];
     
