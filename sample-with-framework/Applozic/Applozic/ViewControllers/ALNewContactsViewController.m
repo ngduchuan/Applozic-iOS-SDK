@@ -31,6 +31,7 @@
 #import "ALApplozicSettings.h"
 #import "ALMessageClientService.h"
 #import "ApplozicClient.h"
+#import "ALNotificationHelper.h"
 
 const int DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 const int DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -260,7 +261,12 @@ static const int SHOW_GROUP = 102;
     {
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        [alNotification nativeNotification:self];
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }];
     }
 }
 
@@ -307,7 +313,13 @@ static const int SHOW_GROUP = 102;
         
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        [alNotification nativeNotification:self];
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }];
+
     }
     else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {

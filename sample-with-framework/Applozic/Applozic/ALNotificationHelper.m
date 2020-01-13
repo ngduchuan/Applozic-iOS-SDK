@@ -7,9 +7,9 @@
 //
 
 #import "ALNotificationHelper.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALNotificationHelper
-
 
 -(BOOL)isApplozicViewControllerOnTop {
 
@@ -21,13 +21,16 @@
             || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]);
 }
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId {
+-(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
+
+    if (isTapActionDisabled) {
+        ALSLog(ALLoggerSeverityInfo, @"Notification tap is disabled");
+        return;
+    }
 
     if (groupID != nil) {
-        self.groupId = groupID;
-    } else if (contactId != nil) {
-        self.userId = contactId;
-        self.conversationId = conversationId;
+        contactId = nil;
+        conversationId = nil;
     }
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
@@ -36,33 +39,29 @@
 
         ALMessagesViewController* messagesViewController = (ALMessagesViewController*)alPushAssist.topViewController;
 
-        messagesViewController.channelKey = self.groupId;
-        messagesViewController.userIdToLaunch = self.userId;
-        messagesViewController.conversationId = self.conversationId;
+        messagesViewController.channelKey = groupID;
+        messagesViewController.userIdToLaunch = contactId;
+        messagesViewController.conversationId = conversationId;
 
         [messagesViewController createDetailChatViewControllerWithUserId:messagesViewController.userIdToLaunch withGroupId:messagesViewController.channelKey withConversationId:messagesViewController.conversationId];
 
     } else if ([alPushAssist.topViewController isKindOfClass:[ALChatViewController class]]) {
 
         ALChatViewController * viewController = (ALChatViewController*)alPushAssist.topViewController;
-        [viewController refreshViewOnNotificationTap:self.userId withChannelKey:self.groupId withConversationId:self.conversationId];
+        [viewController refreshViewOnNotificationTap:contactId withChannelKey:groupID withConversationId:conversationId];
 
     } else {
-        [self findViewController];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
+            [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
+                if(handleClick) {
+                    [self handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId notificationTapActionDisable:isTapActionDisabled];
+                }
+            }];
+
+        });
     }
 
-}
-
--(void) findViewController {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
-        [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
-            if(handleClick) {
-                [self handlerNotificationClick:self.userId withGroupId:self.groupId withConversationId:self.conversationId];
-            }
-        }];
-
-    });
 }
 
 -(void)checkControllerAndDismissIfRequired:(UIViewController*)viewController withCompletion:(void(^)(BOOL handleClick))completion {

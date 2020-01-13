@@ -248,8 +248,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                             [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
                             if(!assistant.isOurViewOnTop)
                             {
-                                [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:dict ofUser:alMessage.contactIds];
                                 [dict setObject:@"mqtt" forKey:@"Calledfrom"];
+                                [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:dict ofUser:alMessage.contactIds];
                             }
                             else
                             {
@@ -728,8 +728,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         ALSLog(ALLoggerSeverityInfo, @"ALMQTTConversationService SYNC CALL");
         if(!assistant.isOurViewOnTop)
         {
-            [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:nsMutableDictionary ofUser:alMessage.contactIds];
             [nsMutableDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
+            [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:nsMutableDictionary ofUser:alMessage.contactIds];
         }
         else
         {

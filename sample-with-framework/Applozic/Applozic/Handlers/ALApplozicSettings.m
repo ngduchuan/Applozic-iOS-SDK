@@ -1845,4 +1845,15 @@
     return [userDefaults valueForKey:AL_RESTRICTED_MESSAGE_PATTERN];
 }
 
++(void)disableInAppNotificationTap:(BOOL)flag {
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_DISABLE_NOTIFICATION_TAP];
+    [userDefaults synchronize];
+}
+
++(BOOL)isInAppNotificationTapDisabled {
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    return   [userDefaults boolForKey:AL_DISABLE_NOTIFICATION_TAP];
+}
+
 @end

@@ -3419,9 +3419,9 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
         ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
 
-        if([helper isApplozicViewControllerOnTop]){
+        if ([helper isApplozicViewControllerOnTop]) {
 
-            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId];
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
         }
 
     }];

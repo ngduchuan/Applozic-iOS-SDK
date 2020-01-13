@@ -11,15 +11,9 @@
 
 @interface ALNotificationHelper : NSObject
 
-@property (nonatomic, copy) NSString * userId;
-
-@property (nonatomic, copy) NSNumber* groupId;
-
-@property (nonatomic, copy) NSNumber* conversationId;
-
 -(BOOL)isApplozicViewControllerOnTop;
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId;
+-(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL) isTapActionDisabled;
 
 @end
 
