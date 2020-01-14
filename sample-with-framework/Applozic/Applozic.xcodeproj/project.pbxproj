@@ -25,6 +25,8 @@
 		1804731822C3C6CC0062CC52 /* ALContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804731622C3C6CC0062CC52 /* ALContactMessageCell.m */; };
 		1810D124215A79F600557E22 /* ALAttachmentService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1810D122215A79F600557E22 /* ALAttachmentService.h */; };
 		1810D125215A79F600557E22 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810D123215A79F600557E22 /* ALAttachmentService.m */; };
+		1836CCE923AB7E5100309234 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1836CCE723AB7E5100309234 /* ALNotificationHelper.h */; };
+		1836CCEA23AB7E5100309234 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1836CCE823AB7E5100309234 /* ALNotificationHelper.m */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
 		1860E01C2151395600119CD7 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 1860E01A2151395600119CD7 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -519,6 +521,8 @@
 		1808CE562260B251006BAEA3 /* AppLozic 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 12.xcdatamodel"; sourceTree = "<group>"; };
 		1810D122215A79F600557E22 /* ALAttachmentService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALAttachmentService.h; path = Applozic/ALAttachmentService.h; sourceTree = "<group>"; };
 		1810D123215A79F600557E22 /* ALAttachmentService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALAttachmentService.m; path = Applozic/ALAttachmentService.m; sourceTree = "<group>"; };
+		1836CCE723AB7E5100309234 /* ALNotificationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALNotificationHelper.h; path = Applozic/ALNotificationHelper.h; sourceTree = "<group>"; };
+		1836CCE823AB7E5100309234 /* ALNotificationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALNotificationHelper.m; path = Applozic/ALNotificationHelper.m; sourceTree = "<group>"; };
 		185430DF2224384B00D55795 /* AppLozic 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 11.xcdatamodel"; sourceTree = "<group>"; };
 		18587A7A2177A81E006AA149 /* ALImagePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALImagePreviewController.h; sourceTree = "<group>"; };
 		18587A7B2177A81E006AA149 /* ALImagePreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
@@ -1567,6 +1571,8 @@
 				6D77570D1D5B83660025560B /* TSMessageView.m */,
 				6D6DF0C01BC5364C00EBA00F /* ALPushNotificationService.h */,
 				6D6DF08A1BC5364C00EBA00F /* ALPushNotificationService.m */,
+				1836CCE723AB7E5100309234 /* ALNotificationHelper.h */,
+				1836CCE823AB7E5100309234 /* ALNotificationHelper.m */,
 			);
 			name = push;
 			sourceTree = "<group>";
@@ -2002,6 +2008,7 @@
 				187EEB8E2319539B008012BC /* SDImageCachesManagerOperation.h in Headers */,
 				18BC191621E4F3B8002B33C9 /* ALDocumentPickerHandler.h in Headers */,
 				6D1385781CA9B83C009E6F50 /* AlMultipleAttachmentCell.h in Headers */,
+				1836CCE923AB7E5100309234 /* ALNotificationHelper.h in Headers */,
 				187EEB422319539A008012BC /* SDWebImageOperation.h in Headers */,
 				187EEB952319539B008012BC /* SDWebImageDownloader.h in Headers */,
 				6D7757141D5B83660025560B /* TSMessage.h in Headers */,
@@ -2131,7 +2138,7 @@
 				TargetAttributes = {
 					6D6DF07C1BC535C800EBA00F = {
 						CreatedOnToolsVersion = 7.0;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 1110;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -2202,6 +2209,7 @@
 				6D6DF1851BC5364C00EBA00F /* DB_Message.m in Sources */,
 				29D6F86C1D193D9D00A75369 /* PSPDFTextView.m in Sources */,
 				6D7756D01D5B82000025560B /* ALAPIResponse.m in Sources */,
+				1836CCEA23AB7E5100309234 /* ALNotificationHelper.m in Sources */,
 				6D7757131D5B83660025560B /* TSBlurView.m in Sources */,
 				6D6DF17D1BC5364C00EBA00F /* ALSyncMessageFeed.m in Sources */,
 				187EEB7D2319539B008012BC /* SDWeakProxy.m in Sources */,
@@ -2596,7 +2604,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2629,7 +2637,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

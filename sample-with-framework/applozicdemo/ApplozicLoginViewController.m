@@ -189,7 +189,8 @@
     [ALUserDefaultsHandler setPassword:user.password];
     ALChatManager * chatManager = [[ALChatManager alloc] init];
     [chatManager connectUserWithCompletion:user withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
-        
+
+        [self.mActivityIndicator stopAnimating];
         if (!error)
         {
             UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
