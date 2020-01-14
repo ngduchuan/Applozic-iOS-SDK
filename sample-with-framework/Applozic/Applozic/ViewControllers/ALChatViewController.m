@@ -189,10 +189,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     // Setup quick recording if it's enabled in the settings
     if([ALApplozicSettings isQuickAudioRecordingEnabled]) {
-        if (@available(iOS 9.0, *) && [ALApplozicSettings isNewAudioDesignEnabled]) {
+        if ([ALApplozicSettings isNewAudioDesignEnabled]) {
             isNewAudioDesignEnabled = YES;
-        } else {
-            isNewAudioDesignEnabled = NO;
         }
         [self setUpSoundRecordingView];
         [self showMicButton];

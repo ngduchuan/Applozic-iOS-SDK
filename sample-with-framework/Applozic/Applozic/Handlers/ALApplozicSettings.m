@@ -139,7 +139,7 @@
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     NSData *barItemColourData = [userDefaults objectForKey:AL_NAVIGATION_BAR_ITEM_COLOUR];
     UIColor *barItemColour = [NSKeyedUnarchiver unarchiveObjectWithData:barItemColourData];
-    return barItemColour;
+    return barItemColour ? barItemColour : [UIColor whiteColor];
 }
 
 +(void)hideRefreshButton:(BOOL)state
