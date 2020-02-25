@@ -521,8 +521,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
 
-    ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
-
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil
                                                                             message:nil
                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
@@ -545,6 +543,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             [self openChatThreadFor:channelMemberID];
         }]];
     }
+
+    ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
     BOOL isLoginUserLeftChannel =  [self isThisChannelLeft:self.channelKeyID];
 
