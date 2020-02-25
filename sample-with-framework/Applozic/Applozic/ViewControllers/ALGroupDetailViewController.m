@@ -342,7 +342,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         {
 
             if([ALApplozicSettings getGroupMemberRemoveOption]){
-                [self chanelMemberAction:indexPath.row];
+                [self channelMemberAction:indexPath.row];
             }
         }break;
         case 2:{
@@ -516,7 +516,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 #pragma mark - Remove Memember (for admin)
 //=======================================
--(void)chanelMemberAction:(NSInteger)row
+-(void)channelMemberAction:(NSInteger)row
 {
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
