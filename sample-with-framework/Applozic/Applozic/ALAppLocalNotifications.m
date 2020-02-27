@@ -56,14 +56,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:AL_kReachabilityChangedNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundBase:)
-                                                 name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterBackground:)
-                                                  name:UIApplicationDidEnterBackgroundNotification
-                                                object:nil];
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
     
-   
+
     
     if([ALUserDefaultsHandler isLoggedIn]){
         
@@ -82,7 +82,7 @@
     
     self.googleReach.reachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Reachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Reachable(%@)", reachability.currentReachabilityString];
         // NSLog(@"%@", temp);
         
         // to update UI components from a block callback
@@ -93,7 +93,7 @@
     
     self.googleReach.unreachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Unreachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Unreachable(%@)", reachability.currentReachabilityString];
         //  NSLog(@"%@", temp);
         
         // to update UI components from a block callback
@@ -113,7 +113,7 @@
     
     self.localWiFiReach.reachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Reachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Reachable(%@)", reachability.currentReachabilityString];
         // NSLog(@"%@", temp);
         
         
@@ -121,7 +121,7 @@
     
     self.localWiFiReach.unreachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Unreachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Unreachable(%@)", reachability.currentReachabilityString];
         
         // NSLog(@"%@", temp);
         
@@ -135,13 +135,13 @@
     
     self.internetConnectionReach.reachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@" InternetConnection Says Reachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@" InternetConnection Says Reachable(%@)", reachability.currentReachabilityString];
         // NSLog(@"%@", temp);
     };
     
     self.internetConnectionReach.unreachableBlock = ^(ALReachability * reachability)
     {
-//        NSString * temp = [NSString stringWithFormat:@"InternetConnection Block Says Unreachable(%@)", reachability.currentReachabilityString];
+        //        NSString * temp = [NSString stringWithFormat:@"InternetConnection Block Says Unreachable(%@)", reachability.currentReachabilityString];
         //  NSLog(@"%@", temp);
     };
     
@@ -186,7 +186,7 @@
             ALMessageService *messageService = [[ALMessageService alloc]init];
             [messageService processPendingMessages];
 
-            ALUserService *userService = [ALUserService new]; 
+            ALUserService *userService = [ALUserService new];
             [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
 
         }
@@ -201,14 +201,14 @@
 
 -(void)proactivelyConnectMQTT
 {
-        ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
-        [alMqttConversationService  subscribeToConversation];
+    ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
+    [alMqttConversationService subscribeToConversation];
 }
 
 -(void)proactivelyDisconnectMQTT
 {
-        ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
-        [alMqttConversationService  unsubscribeToConversation];
+    ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
+    [alMqttConversationService unsubscribeToConversation];
 }
 
 -(void)appWillEnterBackground:(NSNotification *)notification
@@ -218,7 +218,7 @@
 }
 
 //receiver
-- (void)appWillEnterForegroundBase:(NSNotification *)notification
+- (void)onAppDidBecomeActive:(NSNotification *)notification
 {
     [self proactivelyConnectMQTT];
     [ALMessageService syncMessages];
