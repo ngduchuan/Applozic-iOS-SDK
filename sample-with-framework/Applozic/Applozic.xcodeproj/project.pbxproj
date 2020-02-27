@@ -25,7 +25,7 @@
 		1804731822C3C6CC0062CC52 /* ALContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1804731622C3C6CC0062CC52 /* ALContactMessageCell.m */; };
 		1810D124215A79F600557E22 /* ALAttachmentService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1810D122215A79F600557E22 /* ALAttachmentService.h */; };
 		1810D125215A79F600557E22 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810D123215A79F600557E22 /* ALAttachmentService.m */; };
-		1836CCE923AB7E5100309234 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1836CCE723AB7E5100309234 /* ALNotificationHelper.h */; };
+		1836CCE923AB7E5100309234 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1836CCE723AB7E5100309234 /* ALNotificationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1836CCEA23AB7E5100309234 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1836CCE823AB7E5100309234 /* ALNotificationHelper.m */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
