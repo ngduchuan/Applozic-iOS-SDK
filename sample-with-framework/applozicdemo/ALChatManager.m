@@ -506,8 +506,9 @@
     //   [ALUserDefaultsHandler setAppModuleName:@"<APP_MODULE_NAME>"];
     //   [ALUserDefaultsHandler setAppModuleName:@"SELLER"];
     /****************************************************************************************************************/
-    
-    
+
+    [ALApplozicSettings openChatOnTapUserProfile:YES];
+
     /*********************************************** CONTACT SETTINGS  **********************************************/
     
     [ALApplozicSettings setFilterContactsStatus:YES];                           /*  IF NEEDED ALL REGISTERED CONTACTS   */
