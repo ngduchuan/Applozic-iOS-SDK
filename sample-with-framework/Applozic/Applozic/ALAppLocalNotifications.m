@@ -75,76 +75,19 @@
             }
         }];
     }
-    
-    // create a Reachability object for www.google.com
-    
+
     self.googleReach = [ALReachability reachabilityWithHostname:@"www.google.com"];
     
-    self.googleReach.reachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Reachable(%@)", reachability.currentReachabilityString];
-        // NSLog(@"%@", temp);
-        
-        // to update UI components from a block callback
-        // you need to dipatch this to the main thread
-        // this uses NSOperationQueue mainQueue
-        
-    };
-    
-    self.googleReach.unreachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@"GOOGLE Block Says Unreachable(%@)", reachability.currentReachabilityString];
-        //  NSLog(@"%@", temp);
-        
-        // to update UI components from a block callback
-        // you need to dipatch this to the main thread
-        // this one uses dispatch_async they do the same thing (as above)
-        
-    };
-    
     [self.googleReach startNotifier];
-    
-    // create a reachability for the local WiFi
-    
+
     self.localWiFiReach = [ALReachability reachabilityForLocalWiFi];
     
-    // we ONLY want to be reachable on WIFI - cellular is NOT an acceptable connectivity
     self.localWiFiReach.reachableOnWWAN = NO;
-    
-    self.localWiFiReach.reachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Reachable(%@)", reachability.currentReachabilityString];
-        // NSLog(@"%@", temp);
-        
-        
-    };
-    
-    self.localWiFiReach.unreachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@"LocalWIFI Block Says Unreachable(%@)", reachability.currentReachabilityString];
-        
-        // NSLog(@"%@", temp);
-        
-    };
-    
+
     [self.localWiFiReach startNotifier];
-    
-    // create a Reachability object for the internet
-    
+
     self.internetConnectionReach = [ALReachability reachabilityForInternetConnection];
-    
-    self.internetConnectionReach.reachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@" InternetConnection Says Reachable(%@)", reachability.currentReachabilityString];
-        // NSLog(@"%@", temp);
-    };
-    
-    self.internetConnectionReach.unreachableBlock = ^(ALReachability * reachability)
-    {
-        //        NSString * temp = [NSString stringWithFormat:@"InternetConnection Block Says Unreachable(%@)", reachability.currentReachabilityString];
-        //  NSLog(@"%@", temp);
-    };
-    
+
     [self.internetConnectionReach startNotifier];
     
 }
