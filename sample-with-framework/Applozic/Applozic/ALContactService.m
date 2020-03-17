@@ -129,7 +129,6 @@
         contact.userId = contactId;
         contact.displayName = displayName;
         [self addContact:contact];
-        [ALUserService updateUserDisplayName:contact];
         return contact;
     }
     
