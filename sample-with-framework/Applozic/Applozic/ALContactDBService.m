@@ -177,7 +177,9 @@
         }
         
         userContact.roleType = contact.roleType;
-        userContact.metadata = contact.metadata.description;
+        
+        userContact.metadata = [self getUpdatedMetadata:userContact.metadata wittUserMetadata:contact.metadata].description;
+
         if(contact.notificationAfterTime && [contact.notificationAfterTime longValue]>0){
             userContact.notificationAfterTime = contact.notificationAfterTime;
         }
@@ -193,6 +195,25 @@
     }
     
     return success;
+}
+
+-(NSMutableDictionary *) getUpdatedMetadata:(NSString *) metadataString wittUserMetadata:(NSMutableDictionary *) userMetadata {
+
+    ALContact * contact = [[ALContact alloc] init];
+
+    NSMutableDictionary * existingMetadata = [contact getMetaDataDictionary:metadataString];
+
+    if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
+
+        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
+
+        if (!userMetadata) {
+            userMetadata = [[NSMutableDictionary alloc]init];
+        }
+
+        [userMetadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];
+    }
+    return userMetadata;
 }
 
 -(BOOL)setUnreadCountDB:(ALContact*)contact{
@@ -439,7 +460,7 @@
         dbContact.contactNumber = userDetail.contactNumber;
         dbContact.userStatus = userDetail.userStatus;
         dbContact.deletedAtTime = userDetail.deletedAtTime;
-        dbContact.metadata = userDetail.metadata.description;
+        dbContact.metadata =  [self getUpdatedMetadata:dbContact.metadata wittUserMetadata:userDetail.metadata].description;
         dbContact.roleType = userDetail.roleType;
         
         if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
@@ -792,5 +813,48 @@
     return userDetail;
 }
 
+-(BOOL)updatUserMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value {
+
+    BOOL isSuccess = NO;
+    if ([userId length] == 0) {
+        return isSuccess;
+    }
+
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CONTACT" inManagedObjectContext:dbHandler.managedObjectContext];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId = %@",userId];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+
+    NSError *fetchError = nil;
+
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+
+    if(result.count > 0) {
+        DB_CONTACT * dbContact = [result objectAtIndex:0];
+
+        NSString * metadataString = dbContact.metadata;
+        if (!metadataString) {
+            return NO;
+        }
+
+        ALContact * contact = [[ALContact alloc] init];
+        NSMutableDictionary * existingMetadata = [contact getMetaDataDictionary:metadataString];
+
+        if (existingMetadata) {
+            [existingMetadata setObject:value forKey:key];
+            dbContact.metadata = existingMetadata.description;
+            NSError *error = nil;
+            isSuccess = [dbHandler.managedObjectContext save:&error];
+            if (!isSuccess) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
+            }
+        }
+    }
+    return isSuccess;
+}
 
 @end

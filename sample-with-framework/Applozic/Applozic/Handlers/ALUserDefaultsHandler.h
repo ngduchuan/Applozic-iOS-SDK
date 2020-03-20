@@ -262,7 +262,4 @@ static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.u
 +(void)disableChat: (BOOL) disable;
 +(BOOL)isChatDisabled;
 
-+(void)setServerCallDoneForUserDisplayNameUpdate:(BOOL)flag forUser:(NSString *)userId;
-+(BOOL)isServerCallDoneForUserDisplayNameUpdate:(NSString *)userId;
-
 @end

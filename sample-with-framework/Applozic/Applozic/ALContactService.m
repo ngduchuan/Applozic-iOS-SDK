@@ -128,6 +128,9 @@
     {
         contact.userId = contactId;
         contact.displayName = displayName;
+        NSMutableDictionary * metadata = [[NSMutableDictionary alloc] init];
+        [metadata setObject:@"false" forKey:AL_DISPLAY_NAME_UPDATED];
+        contact.metadata = metadata;
         [self addContact:contact];
         return contact;
     }

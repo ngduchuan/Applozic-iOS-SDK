@@ -4912,13 +4912,17 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 -(void)updateUserDisplayNameWithMessage:(ALMessage *) message withDisplayName:(NSString *) displayName {
+    ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
 
-    if (displayName.length && !message.groupId && ![ALUserDefaultsHandler isServerCallDoneForUserDisplayNameUpdate:message.to]) {
-        [[ALUserService sharedInstance] updateDisplayNameWith:message.to withDisplayName:displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
-            if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                [ALUserDefaultsHandler setServerCallDoneForUserDisplayNameUpdate:true forUser:message.to];
-            }
-        }];
+    if (displayName.length && !message.groupId) {
+        ALContact * contact =  [contactDBService loadContactByKey:@"userId" value:message.to];
+        if (contact && [contact isDisplayNameUpdateRequired] ) {
+            [[ALUserService sharedInstance] updateDisplayNameWith:message.to withDisplayName:displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+                if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                    [contactDBService updatUserMetadataWithUserId:message.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
+                }
+            }];
+        }
     }
 }
 

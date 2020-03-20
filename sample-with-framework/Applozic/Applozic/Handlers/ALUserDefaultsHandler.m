@@ -869,23 +869,4 @@
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 
-+(void)setServerCallDoneForUserDisplayNameUpdate:(BOOL)flag forUser:(NSString *)userId {
-    if (!userId) {
-        return;
-    }
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString * key = [AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX stringByAppendingString:userId];
-    [userDefaults setBool:flag forKey:key];
-    [userDefaults synchronize];
-}
-
-+(BOOL)isServerCallDoneForUserDisplayNameUpdate:(NSString *)userId {
-    if(!userId) {
-        return false;
-    }
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString * key = [AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX stringByAppendingString:userId];
-    return [userDefaults boolForKey:key];
-}
-
 @end
