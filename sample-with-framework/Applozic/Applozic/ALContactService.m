@@ -116,8 +116,7 @@
 
 }
 
-#pragma mark fetching OR SAVE with Serevr call...
-
+#pragma mark fetching OR SAVE
 
 - (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *) contactId value:(NSString*) displayName{
     
@@ -134,11 +133,10 @@
         [self addContact:contact];
         return contact;
     }
-    
+
     contact.userId = dbContact.userId;
     contact.fullName = dbContact.fullName;
     contact.contactNumber = dbContact.contactNumber;
-    contact.displayName = dbContact.displayName;
     contact.contactImageUrl = dbContact.contactImageUrl;
     contact.email = dbContact.email;
     contact.localImageResourceName = dbContact.localImageResourceName;
@@ -149,7 +147,18 @@
     contact.deletedAtTime = dbContact.deletedAtTime;
     contact.roleType = dbContact.roleType;
     contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
-    
+
+    if (![displayName isEqualToString:dbContact.displayName]) { // Both display name are not same then update
+        [alContactDBService addOrUpdateMetadataWithUserId:contactId withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"false"];
+
+        if (contact.metadata != nil) {
+            [contact.metadata setObject:@"false" forKey:AL_DISPLAY_NAME_UPDATED];
+        }
+        contact.displayName = displayName;
+    } else {
+        contact.displayName = dbContact.displayName;
+    }
+
     return contact;
 }
 

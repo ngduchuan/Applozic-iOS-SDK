@@ -813,7 +813,7 @@
     return userDetail;
 }
 
--(BOOL)updatUserMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value {
+-(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value {
 
     BOOL isSuccess = NO;
     if ([userId length] == 0) {
@@ -838,7 +838,15 @@
 
         NSString * metadataString = dbContact.metadata;
         if (!metadataString) {
-            return NO;
+            NSMutableDictionary *metadata = [[NSMutableDictionary alloc]init];
+            [metadata setObject:value forKey:key];
+            dbContact.metadata = metadata.description;
+            NSError *error = nil;
+            isSuccess = [dbHandler.managedObjectContext save:&error];
+            if (!isSuccess) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in Add meta data :%@",error);
+            }
+            return isSuccess;
         }
 
         ALContact * contact = [[ALContact alloc] init];
@@ -850,7 +858,7 @@
             NSError *error = nil;
             isSuccess = [dbHandler.managedObjectContext save:&error];
             if (!isSuccess) {
-                ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in update meta data :%@",error);
             }
         }
     }

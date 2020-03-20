@@ -64,5 +64,5 @@
 -(void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
 -(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId;
 -(NSMutableArray *)addMuteUserDetailsWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withNSDictionary :(NSDictionary *)jsonNSDictionary;
--(BOOL)updatUserMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value;
+-(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value;
 @end

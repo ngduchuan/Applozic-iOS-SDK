@@ -693,7 +693,7 @@ static ALMessageClientService *alMsgClientService;
                     if (contact && [contact isDisplayNameUpdateRequired] ) {
                         [[ALUserService sharedInstance] updateDisplayNameWith:msg.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
                             if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                                [contactDBService updatUserMetadataWithUserId:msg.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
+                                [contactDBService addOrUpdateMetadataWithUserId:msg.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
                             }
                         }];
                     }
@@ -1044,7 +1044,7 @@ static ALMessageClientService *alMsgClientService;
         if (contact && [contact isDisplayNameUpdateRequired] ) {
             [[ALUserService sharedInstance] updateDisplayNameWith:alMessage.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
                 if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                    [contactDBService updatUserMetadataWithUserId:alMessage.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
+                    [contactDBService addOrUpdateMetadataWithUserId:alMessage.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
                 }
             }];
         }
