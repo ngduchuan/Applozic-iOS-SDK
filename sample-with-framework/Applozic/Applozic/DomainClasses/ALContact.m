@@ -101,4 +101,21 @@
     && [[_metadata objectForKey:AL_DISPLAY_NAME_UPDATED] isEqualToString:@"false"];
 }
 
+-(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+
+    NSMutableDictionary * existingMetadata = [self getMetaDataDictionary:metadataString];
+
+    if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
+
+        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
+
+        if (!_metadata) {
+            _metadata = [[NSMutableDictionary alloc]init];
+        }
+
+        [_metadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];
+    }
+    return _metadata;
+}
+
 @end

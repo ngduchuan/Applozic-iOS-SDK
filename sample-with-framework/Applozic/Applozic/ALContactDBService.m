@@ -177,8 +177,8 @@
         }
         
         userContact.roleType = contact.roleType;
-        
-        userContact.metadata = [self getUpdatedMetadata:userContact.metadata wittUserMetadata:contact.metadata].description;
+
+        userContact.metadata =  [contact appendMetadataIn:userContact.metadata].description;
 
         if(contact.notificationAfterTime && [contact.notificationAfterTime longValue]>0){
             userContact.notificationAfterTime = contact.notificationAfterTime;
@@ -195,25 +195,6 @@
     }
     
     return success;
-}
-
--(NSMutableDictionary *) getUpdatedMetadata:(NSString *) metadataString wittUserMetadata:(NSMutableDictionary *) userMetadata {
-
-    ALContact * contact = [[ALContact alloc] init];
-
-    NSMutableDictionary * existingMetadata = [contact getMetaDataDictionary:metadataString];
-
-    if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
-
-        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
-
-        if (!userMetadata) {
-            userMetadata = [[NSMutableDictionary alloc]init];
-        }
-
-        [userMetadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];
-    }
-    return userMetadata;
 }
 
 -(BOOL)setUnreadCountDB:(ALContact*)contact{
@@ -460,7 +441,7 @@
         dbContact.contactNumber = userDetail.contactNumber;
         dbContact.userStatus = userDetail.userStatus;
         dbContact.deletedAtTime = userDetail.deletedAtTime;
-        dbContact.metadata =  [self getUpdatedMetadata:dbContact.metadata wittUserMetadata:userDetail.metadata].description;
+        dbContact.metadata =  [userDetail appendMetadataIn:dbContact.metadata].description;
         dbContact.roleType = userDetail.roleType;
         
         if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
@@ -813,7 +794,7 @@
     return userDetail;
 }
 
--(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadatKey:(NSString *) key withMetadatValue:(NSString *) value {
+-(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadataKey:(NSString *) key withMetadataValue:(NSString *) value {
 
     BOOL isSuccess = NO;
     if ([userId length] == 0) {

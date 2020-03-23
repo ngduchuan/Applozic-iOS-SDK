@@ -4919,7 +4919,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if (contact && [contact isDisplayNameUpdateRequired] ) {
             [[ALUserService sharedInstance] updateDisplayNameWith:message.to withDisplayName:displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
                 if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                    [contactDBService addOrUpdateMetadataWithUserId:message.to withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"true"];
+                    [contactDBService addOrUpdateMetadataWithUserId:message.to withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"true"];
                 }
             }];
         }

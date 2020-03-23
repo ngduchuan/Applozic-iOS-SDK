@@ -149,7 +149,7 @@
     contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
 
     if (![displayName isEqualToString:dbContact.displayName]) { // Both display name are not same then update
-        [alContactDBService addOrUpdateMetadataWithUserId:contactId withMetadatKey:AL_DISPLAY_NAME_UPDATED withMetadatValue:@"false"];
+        [alContactDBService addOrUpdateMetadataWithUserId:contactId withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"false"];
 
         if (contact.metadata != nil) {
             [contact.metadata setObject:@"false" forKey:AL_DISPLAY_NAME_UPDATED];
