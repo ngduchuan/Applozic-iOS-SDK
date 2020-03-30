@@ -592,6 +592,7 @@
     [ALApplozicSettings setColorForAudioRecordingText:[UIColor redColor]];
     [ALApplozicSettings setColorForSlideToCancelText:[UIColor darkGrayColor]];
     [ALApplozicSettings setFontForAudioView:@"HelveticaNeue"];
+    [ALApplozicSettings disableGroupListingTab:NO];
 }
 
 -(void)getApplicationBaseURL
