@@ -3485,7 +3485,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 -(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId {
-    
+
+    if (![self isChatOpenForSameConversationWithUserId:userId withGroupId:channelKey]) {
+        self.displayName = nil;
+    }
+
     [self unSubscrbingChannel];
     self.alChannel = nil;
     self.alContact = nil;
@@ -3515,6 +3519,14 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         }
         [self markConversationRead];;
     });
+}
+
+-(BOOL)isChatOpenForSameConversationWithUserId:(NSString *) userId withGroupId:(NSNumber *) groupId{
+
+    return (self.channelKey != nil && groupId != nil &&
+            [groupId.stringValue isEqualToString:self.channelKey.stringValue]) ||
+    (self.channelKey == nil && self.contactIds != nil &&
+     userId != nil && [self.contactIds isEqualToString:userId]);
 }
 
 -(void)reloadViewfor3rdParty
