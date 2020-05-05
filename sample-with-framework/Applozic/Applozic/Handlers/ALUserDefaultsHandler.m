@@ -106,7 +106,7 @@
 
     SecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *passError;
-    [store removeValueFor:AL_USER_PASSWORD error:&passError];
+    [store removeValueFor:AL_STORE_USER_PASSWORD error:&passError];
     if (passError != nil) {
         ALSLog(ALLoggerSeverityError, @"Failed to remove password from the store : %@",
                [passError description]);
@@ -226,7 +226,7 @@
 {
     SecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *passError;
-    [store setValue:password for:AL_USER_PASSWORD error:&passError];
+    [store setValue:password for:AL_STORE_USER_PASSWORD error:&passError];
     if (passError != nil) {
         ALSLog(ALLoggerSeverityError, @"Failed to save password in the store : %@",
                [passError description]);
@@ -235,15 +235,22 @@
 
 +(NSString *)getPassword
 {
-    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
-    NSError *passError;
-    NSString *password = [store getValueFor:AL_USER_PASSWORD error:&passError];
-    if (passError != nil) {
-        ALSLog(ALLoggerSeverityError, @"Failed to get password from the store : %@",
-               [passError description]);
-        return nil;
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    NSString *passwordInDefaults = [userDefaults valueForKey:AL_USER_PASSWORD];
+    // For apps migrating from an old version
+    if (passwordInDefaults != nil) {
+        return passwordInDefaults;
+    } else {
+        SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+        NSError *passError;
+        NSString *passwordInStore = [store getValueFor:AL_STORE_USER_PASSWORD error:&passError];
+        if (passError != nil) {
+            ALSLog(ALLoggerSeverityError, @"Failed to get password from the store : %@",
+                   [passError description]);
+            return nil;
+        }
+        return passwordInStore;
     }
-    return password;
 }
 
 //last sync time

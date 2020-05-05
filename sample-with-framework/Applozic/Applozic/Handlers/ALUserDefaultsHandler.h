@@ -39,7 +39,7 @@ static NSString *const AL_MESSSAGE_LIST_LAST_TIME = @"com.applozic.userdefault.M
 static NSString *const AL_ALL_CONVERSATION_FETCHED = @"com.applozic.userdefault.ALL_CONVERSATION_FETCHED";
 static NSString *const AL_CONVERSATION_FETCH_PAGE_SIZE = @"com.applozic.userdefault.CONVERSATION_FETCH_PAGE_SIZE";
 static NSString *const AL_NOTIFICATION_MODE = @"com.applozic.userdefault.NOTIFICATION_MODE";
-static NSString *const AL_USER_PASSWORD = @"AL_USER_PASSW";
+static NSString *const AL_USER_PASSWORD = @"com.applozic.userdefault.USER_PASSWORD";
 static NSString *const AL_USER_AUTHENTICATION_TYPE_ID = @"com.applozic.userdefault.USER_AUTHENTICATION_TYPE_ID";
 static NSString *const AL_UNREAD_COUNT_TYPE = @"com.applozic.userdefault.UNREAD_COUNT_TYPE";
 static NSString *const AL_MSG_SYN_CALL = @"com.applozic.userdefault.MSG_SYN_CALL";
@@ -65,6 +65,7 @@ static NSString *const AL_NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
 static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.userdefault.AL_USER_DISPLAY_NAME_API_CALLED:";
 static NSString *const AL_STORE = @"AL_STORE";
+static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
 
 
 #import <Foundation/Foundation.h>
