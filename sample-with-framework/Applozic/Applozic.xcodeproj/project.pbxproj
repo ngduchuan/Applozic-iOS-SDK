@@ -503,6 +503,7 @@
 		8B170C212122CEFF003A14B3 /* ALCustomPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B170C1F2122CEFF003A14B3 /* ALCustomPickerViewController.swift */; };
 		8B1AD6992110809800AB2060 /* ALLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1AD6972110809800AB2060 /* ALLogger.m */; };
 		8B1AD69A2110809800AB2060 /* ALLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1AD6982110809800AB2060 /* ALLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B242ABC2459467300ED21AD /* SecureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B242ABB2459467300ED21AD /* SecureStore.swift */; };
 		8B6C119F1FC2D9AF007CFB54 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6C119E1FC2D9AF007CFB54 /* SoundRecordingView.swift */; };
 		C592EC8721624C190082D4FA /* ALVideoCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C592EC8621624C190082D4FA /* ALVideoCoder.swift */; };
 		C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1027,6 +1028,7 @@
 		8B170C1F2122CEFF003A14B3 /* ALCustomPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALCustomPickerViewController.swift; path = Applozic/ALCustomPickerViewController.swift; sourceTree = "<group>"; };
 		8B1AD6972110809800AB2060 /* ALLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALLogger.m; sourceTree = "<group>"; };
 		8B1AD6982110809800AB2060 /* ALLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALLogger.h; sourceTree = "<group>"; };
+		8B242ABB2459467300ED21AD /* SecureStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStore.swift; sourceTree = "<group>"; };
 		8B6C119E1FC2D9AF007CFB54 /* SoundRecordingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundRecordingView.swift; sourceTree = "<group>"; };
 		C592EC8621624C190082D4FA /* ALVideoCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALVideoCoder.swift; path = Applozic/ALVideoCoder.swift; sourceTree = "<group>"; };
 		C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
@@ -1722,6 +1724,7 @@
 				6D36F2071BFF3EE3003D46D3 /* ALApplozicSettings.m */,
 				18A2B2A62289D2A300CE93BC /* ALInternalSettings.h */,
 				18A2B2A72289D2A300CE93BC /* ALInternalSettings.m */,
+				8B242ABB2459467300ED21AD /* SecureStore.swift */,
 			);
 			name = prefrence;
 			sourceTree = "<group>";
@@ -2514,6 +2517,7 @@
 				6D6DF1591BC5364C00EBA00F /* ALChatViewController.m in Sources */,
 				1843C70C24530DA700967E7E /* SDInternalMacros.m in Sources */,
 				464F7D1A1E1D345300B68DCC /* ALChannelUser.m in Sources */,
+				8B242ABC2459467300ED21AD /* SecureStore.swift in Sources */,
 				18BD2D85225D142400B180A9 /* MQTTLog.m in Sources */,
 				1843C75C24530DA700967E7E /* SDWebImageTransition.m in Sources */,
 				6D6DF1491BC5364C00EBA00F /* ALRequestHandler.m in Sources */,
