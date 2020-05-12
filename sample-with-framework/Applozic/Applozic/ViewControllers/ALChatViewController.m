@@ -710,7 +710,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     if (self.alChannel && channel && channel.type != GROUP_OF_TWO
         && channel.key.intValue == self.alChannel.key.intValue) {
-        [self setChannelSubTitleWith:channel];
+        [self setChannelSubTitle:channel];
     }
 }
 
