@@ -22,6 +22,8 @@
 
 @implementation ALChannelDBService
 
+static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
+
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
     ALChannelUserX *newUserX = [[ALChannelUserX alloc] init];
@@ -502,7 +504,7 @@
     NSString *listString = @"";
     NSString *str = @"";
 
-    NSMutableArray * tempArray = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:key withLimit:5]];
+    NSMutableArray * tempArray = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:key withLimit:CHANNEL_MEMBER_FETCH_LMIT]];
 
     if(!tempArray ||  tempArray.count == 0)
     {
