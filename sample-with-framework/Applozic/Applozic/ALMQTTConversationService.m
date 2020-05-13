@@ -176,7 +176,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                         [subscribeTopicsDictionary setValue:@(MQTTQosLevelAtMostOnce) forKey:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
                     }
                     [subscribeTopicsDictionary setValue:@(MQTTQosLevelAtMostOnce) forKey:topic];
-                    // Subscribe to both the topics with encrption prefix and without encrption prefix
+                    /// Subscribe to both the topics with encr prefix and without encr prefix
                     [self.session subscribeToTopics:subscribeTopicsDictionary];
                     [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
                     [self.mqttConversationDelegate mqttDidConnected];
@@ -660,7 +660,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         }
 
         [topicsArray addObject:topic];
-        // Unsubscribe from both the topics with encrption prefix and without encrption prefix
+        /// Unsubscribe from both the topics with encr prefix and without encr prefix
         [self.session unsubscribeTopics: [topicsArray copy]];
 
         [self.session closeWithDisconnectHandler:^(NSError *error) {
