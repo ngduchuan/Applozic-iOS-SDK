@@ -98,7 +98,12 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             return;
         }
 
-        if (self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnecting || self.session.status == MQTTSessionStatusConnected)) {
+        if (self.session && self.session.status == MQTTSessionStatusConnecting ) {
+            NSError * sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connecting is still in progress" forKey:NSLocalizedDescriptionKey]];
+            completion(false, sessionConnectingError);
+        }
+
+        if (self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnected)) {
             ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING REQUEST, ALREADY CONNECTED");
             completion(true, nil);
             return;
@@ -134,17 +139,11 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             NSString * publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"1"] ;
 
             [self publishData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS];
-
-            [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
-            [self.mqttConversationDelegate mqttDidConnected];
-            if(self.realTimeUpdate){
-                [self.realTimeUpdate onMqttConnected];
-            }
             completion(true, nil);
         }];
     }
     @catch (NSException * e) {
-        ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_SUBSCRIBE :: %@", e.description);
+        ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_CONNECTION :: %@", e.description);
     }
 }
 
@@ -162,8 +161,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
             [self connectToMQTTWithCompletionHandler:^(BOOL isConnected, NSError * error) {
 
-                if (self.session && self.session.status == MQTTSessionStatusConnecting) {
-                    ALSLog(ALLoggerSeverityInfo, @"MQTT : Connection is still in process");
+                if (error != nil) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT : subscribe to conversation error :: %@", error.description);
                     return;
                 }
 
