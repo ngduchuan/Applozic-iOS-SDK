@@ -93,14 +93,15 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
     @try
     {
         if (![ALUserDefaultsHandler isLoggedIn]) {
-            NSError * userNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not login" forKey:NSLocalizedDescriptionKey]];
-            completion(false, userNotLoginErrror);
+            NSError * userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+            completion(false, userIsNotLoginErrror);
             return;
         }
 
         if (self.session && self.session.status == MQTTSessionStatusConnecting ) {
-            NSError * sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connecting is still in progress" forKey:NSLocalizedDescriptionKey]];
+            NSError * sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connection in progress" forKey:NSLocalizedDescriptionKey]];
             completion(false, sessionConnectingError);
+            return;
         }
 
         if (self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnected)) {
