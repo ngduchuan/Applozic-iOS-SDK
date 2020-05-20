@@ -50,7 +50,7 @@
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
-    [user setAppVersionCode: AL_VERSION_CODE];
+    [user setAppVersionCode:AL_VERSION_CODE];
     [user setRegistrationId: [ALUserDefaultsHandler getApnDeviceToken]];
     [user setNotificationMode:[ALUserDefaultsHandler getNotificationMode]];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
@@ -391,10 +391,11 @@
     
 }
 
-+(void)sendServerRequestForAppUpdate{
++(void)sendServerRequestForAppUpdate {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
-    NSString * paramString = [NSString stringWithFormat:@"?appVersionCode=%@&deviceKey%@",AL_VERSION_CODE,AL_DEVICE_KEY_STRING];
+    NSString * paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
+    NSLog(@"Sebdubga data to server sendServerRequestForAppUpdate ");
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
     [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
@@ -402,8 +403,6 @@
         }
         ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",theJson);
     }];
-    
-    
 }
 
 -(void)syncAccountStatus
