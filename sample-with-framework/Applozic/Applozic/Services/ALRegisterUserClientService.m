@@ -246,8 +246,11 @@
     [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
     [user setNotificationMode:alUser.notificationMode];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
+
     if (alUser.registrationId) {
         [user setRegistrationId:alUser.registrationId];
+    } else if ([ALUserDefaultsHandler getApnDeviceToken]) {
+        [user setRegistrationId:[ALUserDefaultsHandler getApnDeviceToken]];
     }
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setPrefContactAPI:2];
@@ -262,8 +265,15 @@
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
     [user setPushNotificationFormat:[ALUserDefaultsHandler getPushNotificationFormat]];
-    if ([ALUserDefaultsHandler getNotificationSoundFileName] != nil) {
+
+    if (alUser.notificationSoundFileName) {
+        [user setNotificationSoundFileName:alUser.notificationSoundFileName];
+    } else if ([ALUserDefaultsHandler getNotificationSoundFileName] != nil) {
         [user setNotificationSoundFileName:[ALUserDefaultsHandler getNotificationSoundFileName]];
+    }
+
+    if([ALApplozicSettings isAudioVideoEnabled]) {
+        [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
 
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
@@ -298,10 +308,14 @@
                 [ALInternalSettings setRegistrationStatusMessage:response.message];
             }
 
+            if (response.notificationSoundFileName) {
+                [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
+            }
+
             if(response.imageLink) {
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }
-
+            
             [ALUserDefaultsHandler setUserRoleType:response.roleType];
 
         }

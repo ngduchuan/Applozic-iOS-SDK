@@ -34,4 +34,5 @@ static NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 
 -(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion;
 
+-(void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion;
 @end

@@ -73,7 +73,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
 /**
  Calculates require width for rendering reply view
 
- @param alMessage Message details
+ @param replyMessage Message details
  @param viewSize  viewWidth
  @return returns total width required
  */
