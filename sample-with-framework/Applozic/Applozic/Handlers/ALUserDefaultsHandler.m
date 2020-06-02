@@ -892,7 +892,18 @@
     return [userDefaults boolForKey:AL_DISABLE_USER_CHAT];
 }
 
-+(NSUserDefaults *)getUserDefaults{
++(void)setAuthToken:(NSString*)authToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setValue:authToken forKey:AL_AUTHENTICATION_TOKEN];
+    [userDefaults synchronize];
+}
+
++(NSString*)getAuthToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN];
+}
+
++(NSUserDefaults *)getUserDefaults {
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 

@@ -66,7 +66,7 @@ static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.userdefault.AL_USER_DISPLAY_NAME_API_CALLED:";
 static NSString *const AL_STORE = @"AL_STORE";
 static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
-
+static NSString *const AL_AUTHENTICATION_TOKEN = @"com.applozic.userdefault.AUTHENTICATION_TOKEN";
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
@@ -263,5 +263,8 @@ static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
 
 +(void)disableChat: (BOOL) disable;
 +(BOOL)isChatDisabled;
+
++(void)setAuthToken:(NSString*)authToken;
++(NSString*)getAuthToken;
 
 @end
