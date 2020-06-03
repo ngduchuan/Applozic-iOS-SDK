@@ -111,6 +111,12 @@
         ALSLog(ALLoggerSeverityError, @"Failed to remove password from the store : %@",
                [passError description]);
     }
+    NSError *authTokenError;
+    [store removeValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to auth token from the store : %@",
+               [authTokenError description]);
+    }
 }
 
 +(void) setApnDeviceToken:(NSString *)apnDeviceToken
@@ -893,14 +899,25 @@
 }
 
 +(void)setAuthToken:(NSString*)authToken {
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:authToken forKey:AL_AUTHENTICATION_TOKEN];
-    [userDefaults synchronize];
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *authTokenError;
+    [store setValue:authToken for:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to save auth token in the store : %@",
+               [authTokenError description]);
+    }
 }
 
 +(NSString*)getAuthToken {
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN];
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *authTokenError;
+    NSString *authTokenInStore = [store getValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to get auth token from the store : %@",
+               [authTokenError description]);
+        return nil;
+    }
+    return authTokenInStore;
 }
 
 +(NSUserDefaults *)getUserDefaults {
