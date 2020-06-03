@@ -114,7 +114,7 @@
     NSError *authTokenError;
     [store removeValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
     if (authTokenError != nil) {
-        ALSLog(ALLoggerSeverityError, @"Failed to auth token from the store : %@",
+        ALSLog(ALLoggerSeverityError, @"Failed to remove auth token from the store : %@",
                [authTokenError description]);
     }
 }
