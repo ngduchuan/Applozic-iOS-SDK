@@ -116,6 +116,11 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
         NSString * willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
 
+        if ([ALUserDefaultsHandler getAuthToken]) {
+            self.session.userName = [ALUserDefaultsHandler getApplicationKey];
+            self.session.password = [ALUserDefaultsHandler getAuthToken];
+        }
+
         self.session.willFlag = YES;
         self.session.willTopic = MQTT_TOPIC_STATUS;
         self.session.willMsg = [willMsg dataUsingEncoding:NSUTF8StringEncoding];

@@ -111,6 +111,12 @@
         ALSLog(ALLoggerSeverityError, @"Failed to remove password from the store : %@",
                [passError description]);
     }
+    NSError *authTokenError;
+    [store removeValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to remove auth token from the store : %@",
+               [authTokenError description]);
+    }
 }
 
 +(void) setApnDeviceToken:(NSString *)apnDeviceToken
@@ -892,7 +898,29 @@
     return [userDefaults boolForKey:AL_DISABLE_USER_CHAT];
 }
 
-+(NSUserDefaults *)getUserDefaults{
++(void)setAuthToken:(NSString*)authToken {
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *authTokenError;
+    [store setValue:authToken for:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to save auth token in the store : %@",
+               [authTokenError description]);
+    }
+}
+
++(NSString*)getAuthToken {
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *authTokenError;
+    NSString *authTokenInStore = [store getValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    if (authTokenError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to get auth token from the store : %@",
+               [authTokenError description]);
+        return nil;
+    }
+    return authTokenInStore;
+}
+
++(NSUserDefaults *)getUserDefaults {
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 

@@ -150,6 +150,10 @@
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
 
+                if (response.authToken) {
+                    [ALUserDefaultsHandler setAuthToken:response.authToken];
+                }
+
                 ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
                 ALContact *contact = [[ALContact alloc] init];
                 contact.userId = user.userId;
@@ -314,6 +318,10 @@
 
             if(response.imageLink) {
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
+            }
+
+            if (response.authToken) {
+                [ALUserDefaultsHandler setAuthToken:response.authToken];
             }
             
             [ALUserDefaultsHandler setUserRoleType:response.roleType];
