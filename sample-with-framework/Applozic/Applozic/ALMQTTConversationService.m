@@ -20,6 +20,8 @@
 #import "NSData+AES.h"
 #import "ALDataNetworkConnection.h"
 #import "ALPushNotificationService.h"
+#import "ALRegisterUserClientService.h"
+#import "ALAuthService.h"
 
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
@@ -109,44 +111,54 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             completion(true, nil);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
-        self.session = [[MQTTSession alloc]init];
-        self.session.clientId = [NSString stringWithFormat:@"%@-%f",
-                                 [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
 
-        NSString * willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
+        ALAuthService * authService  = [[ALAuthService alloc] init];
+        [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
 
-        if ([ALUserDefaultsHandler getAuthToken]) {
-            self.session.userName = [ALUserDefaultsHandler getApplicationKey];
-            self.session.password = [ALUserDefaultsHandler getAuthToken];
-        }
-
-        self.session.willFlag = YES;
-        self.session.willTopic = MQTT_TOPIC_STATUS;
-        self.session.willMsg = [willMsg dataUsingEncoding:NSUTF8StringEncoding];
-        self.session.willQoS = MQTTQosLevelAtMostOnce;
-        [self.session setDelegate:self];
-
-        MQTTCFSocketTransport *transport = [[MQTTCFSocketTransport alloc] init];
-        transport.host = MQTT_URL;
-        transport.port = [MQTT_PORT intValue];
-        self.session.transport = transport;
-        ALSLog(ALLoggerSeverityInfo, @"MQTT : WAITING_FOR_CONNECT...");
-
-        [self.session connectWithConnectHandler:^(NSError *error) {
-
-            if (error != nil) {
+            if (error) {
                 completion(false, error);
                 return;
             }
 
-            ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTED");
+            ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
+            self.session = [[MQTTSession alloc]init];
+            self.session.clientId = [NSString stringWithFormat:@"%@-%f",
+                                     [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
 
-            NSString * publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"1"];
+            NSString * willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
 
-            [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+            if ([ALUserDefaultsHandler getAuthToken]) {
+                self.session.userName = [ALUserDefaultsHandler getApplicationKey];
+                self.session.password = [ALUserDefaultsHandler getAuthToken];
+            }
 
-            completion(true, nil);
+            self.session.willFlag = YES;
+            self.session.willTopic = MQTT_TOPIC_STATUS;
+            self.session.willMsg = [willMsg dataUsingEncoding:NSUTF8StringEncoding];
+            self.session.willQoS = MQTTQosLevelAtMostOnce;
+            [self.session setDelegate:self];
+
+            MQTTCFSocketTransport *transport = [[MQTTCFSocketTransport alloc] init];
+            transport.host = MQTT_URL;
+            transport.port = [MQTT_PORT intValue];
+            self.session.transport = transport;
+            ALSLog(ALLoggerSeverityInfo, @"MQTT : WAITING_FOR_CONNECT...");
+
+            [self.session connectWithConnectHandler:^(NSError *error) {
+
+                if (error != nil) {
+                    completion(false, error);
+                    return;
+                }
+
+                ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTED");
+
+                NSString * publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"1"];
+
+                [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+
+                completion(true, nil);
+            }];
         }];
     }
     @catch (NSException * e) {

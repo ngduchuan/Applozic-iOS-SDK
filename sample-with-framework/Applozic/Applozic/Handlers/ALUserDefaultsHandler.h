@@ -67,6 +67,9 @@ static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.u
 static NSString *const AL_STORE = @"AL_STORE";
 static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
 static NSString *const AL_AUTHENTICATION_TOKEN = @"AL_AUTHENTICATION_TOKEN";
+static NSString *const AL_AUTHENTICATION_TOKEN_CREATED_TIME = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_CREATED_TIME";
+static NSString *const AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_VALID_UPTO_MINS";
+
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
@@ -266,5 +269,10 @@ static NSString *const AL_AUTHENTICATION_TOKEN = @"AL_AUTHENTICATION_TOKEN";
 
 +(void)setAuthToken:(NSString*)authToken;
 +(NSString*)getAuthToken;
+
++(void)setAuthTokenCreatedAtTime:(NSNumber *) createdAtTime;
++(NSNumber *)getAuthTokenCreatedAtTime;
++(void)setAuthTokenValidUptoInMins:(NSNumber *) validUptoInMins;
++(NSNumber *)getAuthTokenValidUptoMins;
 
 @end
