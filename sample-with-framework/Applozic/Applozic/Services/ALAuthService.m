@@ -44,8 +44,11 @@
 
 }
 
--(void) validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
-    if (![self isAuthTokenValid]){
+-(void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
+    if([self isAuthTokenValid]){
+        completion(nil);
+        return;
+    } else {
         ALRegisterUserClientService * registerUserClientService = [[ALRegisterUserClientService alloc]init];
         [registerUserClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
             if (error) {
@@ -56,7 +59,6 @@
             return;
         }];
     }
-    completion(nil);
 }
 
 @end
