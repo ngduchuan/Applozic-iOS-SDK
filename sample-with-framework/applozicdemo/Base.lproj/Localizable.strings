@@ -305,4 +305,10 @@
 "YouDisabledChat" = "You have disabled chat";
 "UserDisabledChat" = "User has disabled his/her chat";
 
+"RetryButtonText" = "Retry";
+"RetryAlertMessage" = "Failed to subscribe conversation";
+"RetryAlertTitle" = "Error connecting";
+
+"RetryConnectionError" = "Failed to retry connection try again later";
+
 

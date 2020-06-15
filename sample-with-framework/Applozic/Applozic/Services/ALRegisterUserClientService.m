@@ -150,8 +150,8 @@
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
 
-                ALAuthService * authService = [[ALAuthService alloc]init];
-                [authService parseAuthToken:response.authToken];
+                ALAuthService * authService = [[ALAuthService alloc] init];
+                [authService decodeAndSaveToken:response.authToken];
 
                 ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
                 ALContact *contact = [[ALContact alloc] init];
@@ -515,11 +515,6 @@
                                                                                              forKey:NSLocalizedDescriptionKey]];
             completion(nil, reponseError);
             return;
-        }
-
-        if ([apiResponse.response isKindOfClass:[NSString class]]) {
-            ALAuthService * authService = [[ALAuthService alloc] init];
-            [authService parseAuthToken:(NSString *)apiResponse.response];
         }
         completion(apiResponse, nil);
     }];

@@ -1,4 +1,4 @@
-// JWTDecode.swift
+// ALJWTDecode.swift
 //
 // Copyright (c) 2015 Auth0 (http://auth0.com)
 //
@@ -25,7 +25,7 @@ import Foundation
 /**
  *  Protocol that defines what a decoded JWT token should be.
  */
-public protocol JWTProtocol {
+public protocol ALJWTProtocol {
     /// token header part contents
     var header: [String: Any] { get }
     /// token body part values or token claims
@@ -54,7 +54,7 @@ public protocol JWTProtocol {
     var expired: Bool { get }
 }
 
-public extension JWTProtocol {
+public extension ALJWTProtocol {
 
     /**
      Return a claim by it's name
@@ -63,9 +63,9 @@ public extension JWTProtocol {
 
      - returns: a claim of the JWT
      */
-    func claim(name: String) -> Claim {
+    func claim(name: String) -> ALJWTClaim {
         let value = self.body[name]
-        return Claim(value: value)
+        return ALJWTClaim(value: value)
     }
 }
 
@@ -79,11 +79,11 @@ public extension JWTProtocol {
 
  - returns: a decoded token as an instance of JWTProtocol
  */
-public func decode(jwt: String) throws -> JWTProtocol {
+public func decode(jwt: String) throws -> ALJWTProtocol {
     return try DecodedJWT(jwt: jwt)
 }
 
-struct DecodedJWT: JWTProtocol {
+struct DecodedJWT: ALJWTProtocol {
 
     let header: [String: Any]
     let body: [String: Any]
@@ -93,7 +93,7 @@ struct DecodedJWT: JWTProtocol {
     init(jwt: String) throws {
         let parts = jwt.components(separatedBy: ".")
         guard parts.count == 3 else {
-            throw DecodeError.invalidPartCount(jwt, parts.count)
+            throw ALJWTDecodeError.invalidPartCount(jwt, parts.count)
         }
 
         self.header = try decodeJWTPart(parts[0])
@@ -121,7 +121,7 @@ struct DecodedJWT: JWTProtocol {
 /**
  *  JWT Claim
  */
-public struct Claim {
+public struct ALJWTClaim {
 
     /// raw value of the claim
     let value: Any?
@@ -194,11 +194,11 @@ private func base64UrlDecode(_ value: String) -> Data? {
 
 private func decodeJWTPart(_ value: String) throws -> [String: Any] {
     guard let bodyData = base64UrlDecode(value) else {
-        throw DecodeError.invalidBase64Url(value)
+        throw ALJWTDecodeError.invalidBase64Url(value)
     }
 
     guard let json = try? JSONSerialization.jsonObject(with: bodyData, options: []), let payload = json as? [String: Any] else {
-        throw DecodeError.invalidJSON(value)
+        throw ALJWTDecodeError.invalidJSON(value)
     }
 
     return payload
@@ -211,7 +211,7 @@ private func decodeJWTPart(_ value: String) throws -> [String: Any] {
  - InvalidJSONValue:      when either the header or body decoded values is not a valid JSON object
  - InvalidPartCount:      when the token doesnt have the required amount of parts (header, body and signature)
  */
-public enum DecodeError: LocalizedError {
+public enum ALJWTDecodeError: LocalizedError {
     case invalidBase64Url(String)
     case invalidJSON(String)
     case invalidPartCount(String, Int)

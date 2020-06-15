@@ -10,7 +10,10 @@
 
 @implementation ALAuthService
 
--(void)parseAuthToken:(NSString *)authToken {
+static NSString *const CREATED_TIME = @"createdAtTime";
+static NSString *const VALID_UPTO = @"validUpto";
+
+-(void)decodeAndSaveToken:(NSString *)authToken {
 
     if (authToken){
         [ALUserDefaultsHandler setAuthToken:authToken];
@@ -19,8 +22,8 @@
 
         if (!jwtError && jwt.body) {
             NSDictionary * jwtBody = jwt.body;
-            NSNumber *createdAtTime = [jwtBody objectForKey:@"createdAtTime"];
-            NSNumber *validUptoInMins = [jwtBody objectForKey:@"validUpto"];
+            NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
+            NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
             if (createdAtTime) {
                 [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
@@ -41,11 +44,10 @@
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 
     return authTokenCreatedAtTime > 0 && authTokenValidUptoMins > 0 && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
-
 }
 
 -(void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
-    if([self isAuthTokenValid]){
+    if([self isAuthTokenValid]) {
         completion(nil);
         return;
     } else {
@@ -54,6 +56,9 @@
             if (error) {
                 completion(error);
                 return;
+            }
+            if ([apiResponse.response isKindOfClass:[NSString class]]) {
+                [self decodeAndSaveToken:(NSString *)apiResponse.response];
             }
             completion(nil);
             return;

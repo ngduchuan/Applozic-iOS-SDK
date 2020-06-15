@@ -171,10 +171,21 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 }
 
 -(void) subscribeToConversationWithTopic:(NSString *) topic {
+    [self subscribeToConversationWithTopic:topic withCompletionHandler:^(BOOL subscribed, NSError *error) {
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"MQTT : ERROR_IN_SUBSCRIBE :: %@", error.description);
+        }
+    }];
+}
+
+-(void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError * error))completion {
+
     dispatch_async(dispatch_get_main_queue (),^{
         @try
         {
             if (![ALUserDefaultsHandler isLoggedIn]) {
+                NSError * userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+                completion(false, userIsNotLoginErrror);
                 return;
             }
 
@@ -182,6 +193,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
                 if (error != nil) {
                     ALSLog(ALLoggerSeverityError, @"MQTT : subscribe to conversation error :: %@", error.description);
+                    completion(false, error);
                     return;
                 }
 
@@ -195,12 +207,21 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                     }
                     [subscribeTopicsDictionary setValue:@(MQTTQosLevelAtMostOnce) forKey:topic];
                     /// Subscribe to both the topics with encr prefix and without encr prefix
-                    [self.session subscribeToTopics:subscribeTopicsDictionary];
-                    [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
-                    [self.mqttConversationDelegate mqttDidConnected];
-                    if(self.realTimeUpdate){
-                        [self.realTimeUpdate onMqttConnected];
-                    }
+
+                    [self.session subscribeToTopics:subscribeTopicsDictionary subscribeHandler:^(NSError *error, NSArray<NSNumber *> *gQoss) {
+
+                        if (error) {
+                            completion(false, error);
+                            return;
+                        }
+
+                        [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
+                        [self.mqttConversationDelegate mqttDidConnected];
+                        if(self.realTimeUpdate){
+                            [self.realTimeUpdate onMqttConnected];
+                        }
+                        completion(true, nil);
+                    }];
                 }
             }];
         }

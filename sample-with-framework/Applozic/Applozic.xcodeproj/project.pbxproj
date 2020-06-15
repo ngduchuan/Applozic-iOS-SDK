@@ -203,7 +203,7 @@
 		18BDB35F21A7080A003B405D /* ALLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BDB35D21A7080A003B405D /* ALLinkCell.m */; };
 		18CAD6F922A967D000DE684C /* ALMyContactMessageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18CAD6F722A967D000DE684C /* ALMyContactMessageCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18CAD6FA22A967D000DE684C /* ALMyContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CAD6F822A967D000DE684C /* ALMyContactMessageCell.m */; };
-		18D34F0824915F42008C0106 /* JWTDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0424915F42008C0106 /* JWTDecode.swift */; };
+		18D34F0824915F42008C0106 /* ALJWTDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0424915F42008C0106 /* ALJWTDecode.swift */; };
 		18D34F0A24915F42008C0106 /* ALJWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0624915F42008C0106 /* ALJWT.swift */; };
 		18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D34F0B24917A16008C0106 /* ALAuthService.h */; };
 		18D34F0E24917A16008C0106 /* ALAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0C24917A16008C0106 /* ALAuthService.m */; };
@@ -728,7 +728,7 @@
 		18BDB35D21A7080A003B405D /* ALLinkCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALLinkCell.m; path = Applozic/Views/ALLinkCell.m; sourceTree = "<group>"; };
 		18CAD6F722A967D000DE684C /* ALMyContactMessageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMyContactMessageCell.h; path = Applozic/Views/ALMyContactMessageCell.h; sourceTree = "<group>"; };
 		18CAD6F822A967D000DE684C /* ALMyContactMessageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALMyContactMessageCell.m; path = Applozic/Views/ALMyContactMessageCell.m; sourceTree = "<group>"; };
-		18D34F0424915F42008C0106 /* JWTDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JWTDecode.swift; sourceTree = "<group>"; };
+		18D34F0424915F42008C0106 /* ALJWTDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALJWTDecode.swift; sourceTree = "<group>"; };
 		18D34F0624915F42008C0106 /* ALJWT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALJWT.swift; sourceTree = "<group>"; };
 		18D34F0B24917A16008C0106 /* ALAuthService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALAuthService.h; path = Applozic/Services/ALAuthService.h; sourceTree = "<group>"; };
 		18D34F0C24917A16008C0106 /* ALAuthService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALAuthService.m; path = Applozic/Services/ALAuthService.m; sourceTree = "<group>"; };
@@ -1106,7 +1106,7 @@
 			isa = PBXGroup;
 			children = (
 				18D34F0624915F42008C0106 /* ALJWT.swift */,
-				18D34F0424915F42008C0106 /* JWTDecode.swift */,
+				18D34F0424915F42008C0106 /* ALJWTDecode.swift */,
 			);
 			path = JWT;
 			sourceTree = "<group>";
@@ -2545,7 +2545,7 @@
 				1843C75C24530DA700967E7E /* SDWebImageTransition.m in Sources */,
 				6D6DF1491BC5364C00EBA00F /* ALRequestHandler.m in Sources */,
 				6D7757181D5B83660025560B /* TSMessageView.m in Sources */,
-				18D34F0824915F42008C0106 /* JWTDecode.swift in Sources */,
+				18D34F0824915F42008C0106 /* ALJWTDecode.swift in Sources */,
 				6D6DF17B1BC5364C00EBA00F /* ALRegistrationResponse.m in Sources */,
 				1843C70E24530DA700967E7E /* UIImage+ForceDecode.m in Sources */,
 				6D77568B1D5B7FBE0025560B /* ALConversationDBService.m in Sources */,

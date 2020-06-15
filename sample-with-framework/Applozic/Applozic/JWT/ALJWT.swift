@@ -26,9 +26,9 @@ import Foundation
 @objc(ALJWT)
 public class _JWT: NSObject {
 
-    var jwt: JWTProtocol
+    var jwt: ALJWTProtocol
 
-    init(jwt: JWTProtocol) {
+    init(jwt: ALJWTProtocol) {
         self.jwt = jwt
     }
 

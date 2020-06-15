@@ -68,4 +68,6 @@
 +(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path;
 +(NSData *)compressImage:(NSData *) data;
 +(UIImage *)getImageFromFilePath:(NSString *)filePath;
+
++(void)showRetryUIAlertControllerWithButtonClickCompletionHandler:(void (^)(BOOL clicked)) completion;
 @end
