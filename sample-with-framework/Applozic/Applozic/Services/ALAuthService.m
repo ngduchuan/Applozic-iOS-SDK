@@ -7,6 +7,7 @@
 //
 
 #import "ALAuthService.h"
+#import "ALAuthClientService.h"
 
 @implementation ALAuthService
 
@@ -51,19 +52,31 @@ static NSString *const VALID_UPTO = @"validUpto";
         completion(nil);
         return;
     } else {
-        ALRegisterUserClientService * registerUserClientService = [[ALRegisterUserClientService alloc]init];
-        [registerUserClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        [self refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
             if (error) {
                 completion(error);
                 return;
-            }
-            if ([apiResponse.response isKindOfClass:[NSString class]]) {
-                [self decodeAndSaveToken:(NSString *)apiResponse.response];
             }
             completion(nil);
             return;
         }];
     }
+}
+
+-(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
+
+    ALAuthClientService * authClientService = [[ALAuthClientService alloc] init];
+    [authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        if ([apiResponse.response isKindOfClass:[NSString class]]) {
+            [self decodeAndSaveToken:(NSString *)apiResponse.response];
+        }
+        completion(apiResponse, nil);
+        return;
+    }];
 }
 
 @end

@@ -17,4 +17,6 @@
 
 -(void) validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion;
 
+-(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+
 @end

@@ -441,7 +441,6 @@
     }];
 }
 
-
 -(ALRegistrationResponse *) getLoginRegistrationResponse{
     ALRegistrationResponse * registrationResponse = [[ALRegistrationResponse alloc]init];
     registrationResponse.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
@@ -473,51 +472,6 @@
     NSData * userData = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
     NSString *logParamString = [[NSString alloc] initWithData:userData encoding:NSUTF8StringEncoding];
     return logParamString;
-}
-
--(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
-
-    if (![ALUserDefaultsHandler isLoggedIn] || ![ALUserDefaultsHandler getApplicationKey]) {
-        NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in or applicationId is nil"
-                                                                                      forKey:NSLocalizedDescriptionKey]];
-        completion(nil, reponseError);
-        return;
-    }
-
-    NSMutableDictionary *dictionary = [NSMutableDictionary new];
-    [dictionary setObject:[ALUserDefaultsHandler getUserId] forKey:@"userId"];
-    [dictionary setObject:[ALUserDefaultsHandler getApplicationKey] forKey:@"applicationId"];
-
-    NSError *error;
-    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/refresh/token", KBASE_URL];
-
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-
-    [ALResponseHandler processRequest:theRequest andTag:@"REFRESH_AUTH_TOKEN_OF_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if(theError){
-            ALSLog(ALLoggerSeverityError, @"Error in refreshing a auth token for user  : %@", theError);
-            completion(nil, theError);
-            return;
-        }
-
-        NSString *responseString  = (NSString *)theJson;
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REFRESH_AUTH_TOKEN_OF_USER : %@",responseString);
-
-        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
-
-        if([apiResponse.status isEqualToString:@"error"]) {
-            NSError * reponseError =
-            [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR REFRESH AUTH TOKEN"
-                                                                                             forKey:NSLocalizedDescriptionKey]];
-            completion(nil, reponseError);
-            return;
-        }
-        completion(apiResponse, nil);
-    }];
 }
 
 static BOOL isDevelopmentBuild(void) {
