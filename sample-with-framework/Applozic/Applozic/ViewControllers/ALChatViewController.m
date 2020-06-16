@@ -2807,7 +2807,17 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         DB_Message *dbMessage = (DB_Message*)[msgdbService getMessageByKey:@"key" value:theMessage.key];
         dbMessage.inProgress = [NSNumber numberWithBool:YES];
         dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-        [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+
+        NSError * error = [[ALDBHandler sharedInstance] saveContext];
+
+        if (error) {
+            imageCell.progresLabel.alpha = 0;
+            imageCell.mDowloadRetryButton.alpha = 1;
+            imageCell.downloadRetryView.alpha = 1;
+            imageCell.sizeLabel.alpha = 1;
+            [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
+            return;
+        }
 
         // post image
         ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];

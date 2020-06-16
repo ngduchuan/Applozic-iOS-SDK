@@ -655,10 +655,6 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
         [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
 
-        if ([ALUserDefaultsHandler getUserEncryptionKey]) {
-            [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
-        }
-
         NSMutableArray<NSString *> *topicsArray = [[NSMutableArray alloc] init];
 
         if ([ALUserDefaultsHandler getUserEncryptionKey]) {
