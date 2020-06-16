@@ -292,8 +292,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_Message" inManagedObjectContext:dbHandler.managedObjectContext];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %@",key,value];
-    //    NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"deletedFlag == NO"];
-    NSPredicate * resultPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]];//,predicate3]];
+    NSPredicate * resultPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]];
 
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:resultPredicate];
@@ -305,7 +304,6 @@
 
         return message;
     } else {
-        //  NSLog(@"message not found with this key");
         return nil;
     }
 }

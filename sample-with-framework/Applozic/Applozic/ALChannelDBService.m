@@ -31,7 +31,6 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     newUserX.userKey = userId;
     
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    //    DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity: newUserX];
     [self createChannelUserXEntity: newUserX];
 
     NSError *error = [theDBHandler saveContext];

@@ -162,7 +162,7 @@ dispatch_queue_t dispatchGlobalQueue;
 
 #pragma mark - Core Data Saving support
 
-- NSError *)saveContext {
+- (NSError *)saveContext {
 
     NSError *error = nil;
 
