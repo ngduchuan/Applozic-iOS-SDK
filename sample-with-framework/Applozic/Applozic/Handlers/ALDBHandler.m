@@ -468,11 +468,11 @@ dispatch_queue_t dispatchGlobalQueue;
                         completion:(void (^)(NSError*error))completion {
     
     NSError* error;
-    if (context.hasChanges && [context save:&error]) {
-        NSManagedObjectContext* parentContext = [context parentContext];
-        [parentContext performBlock:^ {
-            NSError* parentContextError;
-            if ([self isProtectedDataAvailable]) {
+    if ([self isProtectedDataAvailable]) {
+        if (context.hasChanges && [context save:&error]) {
+            NSManagedObjectContext* parentContext = [context parentContext];
+            [parentContext performBlock:^ {
+                NSError* parentContextError;
                 if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
                     completion(nil);
                 } else {
@@ -481,19 +481,19 @@ dispatch_queue_t dispatchGlobalQueue;
                     }
                     completion(parentContextError);
                 }
-            } else {
-                NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
-                                                                code:1
-                                                            userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
-                completion(dataAccessError);
+            }];
+        } else {
+            if (error) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                [context rollback];
             }
-        }];
-    } else {
-        if (error) {
-            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-            [context rollback];
+            completion(error);
         }
-        completion(error);
+    } else {
+        NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
+                                                        code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
+        completion(dataAccessError);
     }
 }
 
