@@ -36,7 +36,7 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@",AL_AUTH_TOKEN_REFRESH_URL, KBASE_URL];
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
 
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 

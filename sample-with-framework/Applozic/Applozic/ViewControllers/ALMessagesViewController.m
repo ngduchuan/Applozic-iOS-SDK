@@ -160,7 +160,7 @@ static int const MQTT_MAX_RETRY = 3;
                 if (clicked){
                     [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
                         if (!connected) {
-                            NSString * errorMessage = NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to retry connection try again later", @"");
+                            NSString * errorMessage = NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to reconnect. Please try again later.", @"");
 
                             [TSMessage showNotificationWithTitle:errorMessage type:TSMessageNotificationTypeError];                        }
                     }];

@@ -785,7 +785,7 @@
 
     NSString *alertTitle = NSLocalizedStringWithDefaultValue(@"RetryAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Error connecting" , @"");
 
-    NSString *alertMessage = NSLocalizedStringWithDefaultValue(@"RetryAlertMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Failed to subscribe conversation" , @"");
+    NSString *alertMessage = NSLocalizedStringWithDefaultValue(@"RetryAlertMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Failed to connect." , @"");
 
     UIAlertController * uiAlertController = [UIAlertController
                                              alertControllerWithTitle:alertTitle
