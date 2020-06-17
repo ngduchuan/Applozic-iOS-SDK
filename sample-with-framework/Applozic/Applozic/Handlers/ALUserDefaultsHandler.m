@@ -920,6 +920,29 @@
     return authTokenInStore;
 }
 
++(void)setAuthTokenCreatedAtTime:(NSNumber *) createdAtTime {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setDouble:[createdAtTime doubleValue] forKey:AL_AUTHENTICATION_TOKEN_CREATED_TIME];
+    [userDefaults synchronize];
+}
+
++(NSNumber *)getAuthTokenCreatedAtTime {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN_CREATED_TIME];
+}
+
++(void)setAuthTokenValidUptoInMins:(NSNumber *) validUptoInMins {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setDouble:[validUptoInMins doubleValue] forKey:AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS];
+    [userDefaults synchronize];
+}
+
++(NSNumber *)getAuthTokenValidUptoMins {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS];
+}
+
+
 +(NSUserDefaults *)getUserDefaults {
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }

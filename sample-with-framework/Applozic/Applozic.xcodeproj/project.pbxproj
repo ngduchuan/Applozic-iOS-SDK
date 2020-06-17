@@ -201,8 +201,14 @@
 		18BD2D8A225D142400B180A9 /* MQTTProperties.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BD2D7F225D142400B180A9 /* MQTTProperties.h */; };
 		18BDB35E21A7080A003B405D /* ALLinkCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BDB35C21A7080A003B405D /* ALLinkCell.h */; };
 		18BDB35F21A7080A003B405D /* ALLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BDB35D21A7080A003B405D /* ALLinkCell.m */; };
+		18C926CB2497E09600232576 /* ALAuthClientService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C926C92497E09600232576 /* ALAuthClientService.h */; };
+		18C926CC2497E09600232576 /* ALAuthClientService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C926CA2497E09600232576 /* ALAuthClientService.m */; };
 		18CAD6F922A967D000DE684C /* ALMyContactMessageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18CAD6F722A967D000DE684C /* ALMyContactMessageCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18CAD6FA22A967D000DE684C /* ALMyContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CAD6F822A967D000DE684C /* ALMyContactMessageCell.m */; };
+		18D34F0824915F42008C0106 /* ALJWTDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0424915F42008C0106 /* ALJWTDecode.swift */; };
+		18D34F0A24915F42008C0106 /* ALJWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0624915F42008C0106 /* ALJWT.swift */; };
+		18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D34F0B24917A16008C0106 /* ALAuthService.h */; };
+		18D34F0E24917A16008C0106 /* ALAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0C24917A16008C0106 /* ALAuthService.m */; };
 		18EFA99E22FC8CF700E9AC2A /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EFA99D22FC8CF700E9AC2A /* ALPreviewPhotoViewController.swift */; };
 		18F400652265E2ED0070CBB7 /* ALDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F400612265E2EC0070CBB7 /* ALDownloadTask.m */; };
 		18F400662265E2ED0070CBB7 /* ALUploadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F400622265E2EC0070CBB7 /* ALUploadTask.m */; };
@@ -722,8 +728,14 @@
 		18BD2D7F225D142400B180A9 /* MQTTProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTProperties.h; path = Applozic/MQTT/MQTTProperties.h; sourceTree = "<group>"; };
 		18BDB35C21A7080A003B405D /* ALLinkCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALLinkCell.h; path = Applozic/Views/ALLinkCell.h; sourceTree = "<group>"; };
 		18BDB35D21A7080A003B405D /* ALLinkCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALLinkCell.m; path = Applozic/Views/ALLinkCell.m; sourceTree = "<group>"; };
+		18C926C92497E09600232576 /* ALAuthClientService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALAuthClientService.h; path = Applozic/Services/ALAuthClientService.h; sourceTree = "<group>"; };
+		18C926CA2497E09600232576 /* ALAuthClientService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALAuthClientService.m; path = Applozic/Services/ALAuthClientService.m; sourceTree = "<group>"; };
 		18CAD6F722A967D000DE684C /* ALMyContactMessageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMyContactMessageCell.h; path = Applozic/Views/ALMyContactMessageCell.h; sourceTree = "<group>"; };
 		18CAD6F822A967D000DE684C /* ALMyContactMessageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALMyContactMessageCell.m; path = Applozic/Views/ALMyContactMessageCell.m; sourceTree = "<group>"; };
+		18D34F0424915F42008C0106 /* ALJWTDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALJWTDecode.swift; sourceTree = "<group>"; };
+		18D34F0624915F42008C0106 /* ALJWT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALJWT.swift; sourceTree = "<group>"; };
+		18D34F0B24917A16008C0106 /* ALAuthService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALAuthService.h; path = Applozic/Services/ALAuthService.h; sourceTree = "<group>"; };
+		18D34F0C24917A16008C0106 /* ALAuthService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALAuthService.m; path = Applozic/Services/ALAuthService.m; sourceTree = "<group>"; };
 		18EFA99D22FC8CF700E9AC2A /* ALPreviewPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALPreviewPhotoViewController.swift; sourceTree = "<group>"; };
 		18F400612265E2EC0070CBB7 /* ALDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALDownloadTask.m; path = Applozic/ALDownloadTask.m; sourceTree = "<group>"; };
 		18F400622265E2EC0070CBB7 /* ALUploadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUploadTask.m; path = Applozic/ALUploadTask.m; sourceTree = "<group>"; };
@@ -1094,6 +1106,15 @@
 			name = ViewModel;
 			sourceTree = "<group>";
 		};
+		18D34F0124915DFA008C0106 /* JWT */ = {
+			isa = PBXGroup;
+			children = (
+				18D34F0624915F42008C0106 /* ALJWT.swift */,
+				18D34F0424915F42008C0106 /* ALJWTDecode.swift */,
+			);
+			path = JWT;
+			sourceTree = "<group>";
+		};
 		2934460E1D4F4229007BD1B4 /* Share Image */ = {
 			isa = PBXGroup;
 			children = (
@@ -1244,6 +1265,7 @@
 		6D6DF07F1BC535C800EBA00F /* Applozic */ = {
 			isa = PBXGroup;
 			children = (
+				18D34F0124915DFA008C0106 /* JWT */,
 				6D6DF0801BC535C800EBA00F /* Applozic.h */,
 			);
 			path = Applozic;
@@ -1652,6 +1674,10 @@
 				6D6DF0D21BC5364C00EBA00F /* ALRegistrationResponse.m */,
 				6D6DF0A11BC5364C00EBA00F /* ALRegisterUserClientService.m */,
 				6D6DF0A01BC5364C00EBA00F /* ALRegisterUserClientService.h */,
+				18D34F0B24917A16008C0106 /* ALAuthService.h */,
+				18D34F0C24917A16008C0106 /* ALAuthService.m */,
+				18C926C92497E09600232576 /* ALAuthClientService.h */,
+				18C926CA2497E09600232576 /* ALAuthClientService.m */,
 			);
 			name = account;
 			sourceTree = "<group>";
@@ -2090,6 +2116,7 @@
 				6D4FE48F1D7411F70044A7E6 /* NSData+AES.h in Headers */,
 				18BD2D80225D142400B180A9 /* MQTTStrict.h in Headers */,
 				6D7756AB1D5B80DF0025560B /* ALChannelClientService.h in Headers */,
+				18C926CB2497E09600232576 /* ALAuthClientService.h in Headers */,
 				29CBF2021C0303A700BE6A20 /* ALColorUtility.h in Headers */,
 				6D3A4E051C76ED6C0067A4C8 /* ALAudioAttachmentViewController.h in Headers */,
 				6D77572A1D5B845C0025560B /* Applozic_Prefix.pch in Headers */,
@@ -2136,6 +2163,7 @@
 				6D0D107A1D4CD7B6009853FB /* ALImagePickerController.h in Headers */,
 				6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */,
 				1843C6D924530DA700967E7E /* UIImageView+WebCache.h in Headers */,
+				18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */,
 				2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */,
 				294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */,
 				1843C72E24530DA700967E7E /* MKAnnotationView+WebCache.h in Headers */,
@@ -2436,6 +2464,7 @@
 				6D7757481D5B85100025560B /* ALLocationCell.m in Sources */,
 				1804731822C3C6CC0062CC52 /* ALContactMessageCell.m in Sources */,
 				6D7756B01D5B80DF0025560B /* ALChannelDBService.m in Sources */,
+				18D34F0E24917A16008C0106 /* ALAuthService.m in Sources */,
 				1843C75624530DA700967E7E /* SDWebImageCompat.m in Sources */,
 				18A2BA2220C44E5400AD47A2 /* ALTemplateMessagesView.swift in Sources */,
 				186885A220ECC5FE00919802 /* ALMessageBuilder.m in Sources */,
@@ -2451,6 +2480,7 @@
 				1843C6FB24530DA700967E7E /* SDWebImageDefine.m in Sources */,
 				C75576EF1E27A5B300358D9B /* ALMuteRequest.m in Sources */,
 				1843C73824530DA700967E7E /* SDImageAPNGCoder.m in Sources */,
+				18D34F0A24915F42008C0106 /* ALJWT.swift in Sources */,
 				1843C71024530DA700967E7E /* SDImageIOAnimatedCoder.m in Sources */,
 				6D7757281D5B841B0025560B /* ALMessageInfoViewController.m in Sources */,
 				1843C71224530DA700967E7E /* UIImage+GIF.m in Sources */,
@@ -2473,6 +2503,7 @@
 				1843C73524530DA700967E7E /* SDImageCachesManagerOperation.m in Sources */,
 				4612E90E1E13882D0022DB23 /* MQTTSessionSynchron.m in Sources */,
 				6D6DF17F1BC5364C00EBA00F /* ALUser.m in Sources */,
+				18C926CC2497E09600232576 /* ALAuthClientService.m in Sources */,
 				4612E9161E13882D0022DB23 /* MQTTSSLSecurityPolicyTransport.m in Sources */,
 				10C89FBF1FD9A5CF001C2FFC /* MessageReplyView.m in Sources */,
 				6D6DF1731BC5364C00EBA00F /* ALFileMetaInfo.m in Sources */,
@@ -2522,6 +2553,7 @@
 				1843C75C24530DA700967E7E /* SDWebImageTransition.m in Sources */,
 				6D6DF1491BC5364C00EBA00F /* ALRequestHandler.m in Sources */,
 				6D7757181D5B83660025560B /* TSMessageView.m in Sources */,
+				18D34F0824915F42008C0106 /* ALJWTDecode.swift in Sources */,
 				6D6DF17B1BC5364C00EBA00F /* ALRegistrationResponse.m in Sources */,
 				1843C70E24530DA700967E7E /* UIImage+ForceDecode.m in Sources */,
 				6D77568B1D5B7FBE0025560B /* ALConversationDBService.m in Sources */,

@@ -20,7 +20,7 @@
 #import "ALUserService.h"
 #import "ALContactDBService.h"
 #import "ALInternalSettings.h"
-
+#import "ALAuthService.h"
 
 @implementation ALRegisterUserClientService
 
@@ -150,9 +150,8 @@
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
 
-                if (response.authToken) {
-                    [ALUserDefaultsHandler setAuthToken:response.authToken];
-                }
+                ALAuthService * authService = [[ALAuthService alloc] init];
+                [authService decodeAndSaveToken:response.authToken];
 
                 ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
                 ALContact *contact = [[ALContact alloc] init];
@@ -441,7 +440,6 @@
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
 }
-
 
 -(ALRegistrationResponse *) getLoginRegistrationResponse{
     ALRegistrationResponse * registrationResponse = [[ALRegistrationResponse alloc]init];
