@@ -8,6 +8,7 @@
 
 #import "ALAuthService.h"
 #import "ALAuthClientService.h"
+#import <Applozic/Applozic-Swift.h>
 
 @implementation ALAuthService
 

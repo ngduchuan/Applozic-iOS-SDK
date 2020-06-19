@@ -207,7 +207,7 @@
 		18CAD6FA22A967D000DE684C /* ALMyContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CAD6F822A967D000DE684C /* ALMyContactMessageCell.m */; };
 		18D34F0824915F42008C0106 /* ALJWTDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0424915F42008C0106 /* ALJWTDecode.swift */; };
 		18D34F0A24915F42008C0106 /* ALJWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0624915F42008C0106 /* ALJWT.swift */; };
-		18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D34F0B24917A16008C0106 /* ALAuthService.h */; };
+		18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D34F0B24917A16008C0106 /* ALAuthService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18D34F0E24917A16008C0106 /* ALAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D34F0C24917A16008C0106 /* ALAuthService.m */; };
 		18EFA99E22FC8CF700E9AC2A /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EFA99D22FC8CF700E9AC2A /* ALPreviewPhotoViewController.swift */; };
 		18F400652265E2ED0070CBB7 /* ALDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F400612265E2EC0070CBB7 /* ALDownloadTask.m */; };
@@ -1959,6 +1959,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */,
 				1843C72524530DA700967E7E /* SDImageIOAnimatedCoder.h in Headers */,
 				10C89FBE1FD9A5CF001C2FFC /* MessageReplyView.h in Headers */,
 				18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */,
@@ -2163,7 +2164,6 @@
 				6D0D107A1D4CD7B6009853FB /* ALImagePickerController.h in Headers */,
 				6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */,
 				1843C6D924530DA700967E7E /* UIImageView+WebCache.h in Headers */,
-				18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */,
 				2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */,
 				294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */,
 				1843C72E24530DA700967E7E /* MKAnnotationView+WebCache.h in Headers */,
@@ -2720,7 +2720,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.6.0;
+				MARKETING_VERSION = 7.7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2755,7 +2755,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.6.0;
+				MARKETING_VERSION = 7.7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

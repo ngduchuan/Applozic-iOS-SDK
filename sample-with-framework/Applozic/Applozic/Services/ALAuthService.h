@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "ALUserDefaultsHandler.h"
-#import <Applozic/Applozic-Swift.h>
 #import "ALRegisterUserClientService.h"
 
 @interface ALAuthService : NSObject
