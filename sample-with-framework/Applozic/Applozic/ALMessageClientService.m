@@ -282,10 +282,9 @@
                                                                          andWithUserId:messageListRequest.userId
                                                                           andWithGroup:messageListRequest.channelKey];
         
-        if(!isOpenGroup){
-            ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
-            [almessageDBService addMessageList:messageListResponse.messageList];
-        }
+        ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
+        [almessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
+
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         

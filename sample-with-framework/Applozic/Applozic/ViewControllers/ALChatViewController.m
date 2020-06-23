@@ -418,10 +418,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         hidden = YES;
     } else if (![self isGroup]) { // Else show for one-to-one chat
         hidden = NO;
-    } else {
-        ALChannelService * alChannelService  = [[ALChannelService alloc] init];
-        ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
-        hidden = (alChannel && alChannel.type == OPEN); // Else hide for open group only.
     }
     self.attachmentOutlet.hidden = hidden;
     self.nsLayoutconstraintAttachmentWidth.constant = hidden ? 0 : 40;

@@ -26,13 +26,16 @@
 @implementation ALMessageDBService
 
 //Add message APIS
--(NSMutableArray *) addMessageList:(NSMutableArray*) messageList
+-(NSMutableArray *) addMessageList:(NSMutableArray*) messageList skipAddingMessageInDb:(BOOL)skip
 {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
     for (ALMessage * theMessage in messageList) {
 
+        if (skip && !theMessage.fileMeta) {
+            continue;
+        }
         NSManagedObject *message = [self getMessageByKey:@"key" value:theMessage.key];
         if(message==nil && ![theMessage isPushNotificationMessage] )
         {
@@ -338,7 +341,7 @@
 
         if (success) {
             // save data into the db
-            [self addMessageList:theArray];
+            [self addMessageList:theArray skipAddingMessageInDb:NO];
             // set yes to userdefaults
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             // add default contacts
@@ -890,7 +893,7 @@
             return;
         }
 
-        [self addMessageList:theArray];
+        [self addMessageList:theArray skipAddingMessageInDb:NO];
         [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
         [self fetchConversationsGroupByContactId];
 
@@ -1002,7 +1005,7 @@
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:theArray];
+                [self addMessageList:theArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
@@ -1046,7 +1049,7 @@
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:theArray];
+                [self addMessageList:theArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
