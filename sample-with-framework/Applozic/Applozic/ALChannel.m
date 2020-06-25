@@ -166,6 +166,10 @@
     return  self.type == BROADCAST;
 }
 
+-(BOOL)isOpenGroup {
+    return  self.type == OPEN;
+}
+
 -(BOOL)isPartOfCategory:(NSString*)category{
     
     if( _metadata && [_metadata  valueForKey:AL_CATEGORY] ){

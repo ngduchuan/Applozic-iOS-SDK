@@ -90,7 +90,7 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 
 -(void) syncCall:(ALMessage*)AlMessage  updateUI:(NSNumber *)updateUI alertValue: (NSString *)alertValue;
 -(void)serverCallForLastSeen;
--(void)processLoadEarlierMessages:(BOOL)isScrollToBottom;
+-(void)loadMessagesWithLoadFromStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom;
 -(NSString*)formatDateTime:(ALUserDetail*)alUserDetail  andValue:(double)value;
 -(void)checkUserBlockStatus;
 -(void)updateChannelSubscribing:(NSNumber *)oldChannelKey andNewChannel:(NSNumber *)newChannelKey;

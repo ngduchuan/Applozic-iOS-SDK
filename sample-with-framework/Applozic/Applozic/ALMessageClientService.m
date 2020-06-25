@@ -265,14 +265,15 @@
             completion(nil, theError, nil);
             return;
         }
-        if(messageListRequest.channelKey && !(messageListRequest.channelType == OPEN))
-        {
-            [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
+
+        if (!(messageListRequest.channelType == OPEN)) {
+            if(messageListRequest.channelKey) {
+                [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
+            } else {
+                [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
+            }
         }
-        else
-        {
-            [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
-        }
+
         if(messageListRequest.conversationId)
         {
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
@@ -283,8 +284,7 @@
                                                                           andWithGroup:messageListRequest.channelKey];
         
         ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
-        [almessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
-
+        messageListResponse.messageList = [almessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         
