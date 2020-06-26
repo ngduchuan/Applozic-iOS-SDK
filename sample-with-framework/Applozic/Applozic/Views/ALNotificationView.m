@@ -443,7 +443,7 @@
     if (self.conversationId) {
         class1.conversationId = self.conversationId;
         [[class1.alMessageWrapper messageArray] removeAllObjects];
-        [class1 loadMessagesWithLoadFromStarting:YES WithScrollToBottom:YES];
+        [class1 loadMessagesWithStarting:YES WithScrollToBottom:YES];
     }
     else
     {

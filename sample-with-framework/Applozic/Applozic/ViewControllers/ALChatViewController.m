@@ -128,7 +128,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 
 - (IBAction)loadEarlierButtonAction:(id)sender;
--(void)loadMessagesWithLoadFromStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)flag;
+-(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)flag;
 -(void)markConversationRead;
 -(void)fetchAndRefresh:(BOOL)flag;
 -(void)serverCallForLastSeen;
@@ -680,7 +680,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
 
-    if (self.alChannel) {
+    if ([self isGroup]
+        && (![self.alChannel isGroupOfTwo]
+            && ![self.alChannel isOpenGroup])) {
         if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
             ALChannelService * alChannelService  = [[ALChannelService alloc] init];
             [self.label setText:[alChannelService stringFromChannelUserList:channel.key]];
@@ -697,7 +699,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     self.comingFromBackground = YES;
     [self subscrbingChannel];
     if ([self isOpenGroup]) {
-        [self loadMessagesWithLoadFromStarting:NO WithScrollToBottom:YES];
+        [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
     } else {
         [self markConversationRead];
     }
@@ -707,7 +709,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     if ([self isOpenGroup]) {
         [self reloadView];
-        [self loadMessagesWithLoadFromStarting:NO WithScrollToBottom:YES];
+        [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
         return;
     }
 
@@ -716,7 +718,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self reloadView];
         [self markConversationRead];
     } else {
-        [self loadMessagesWithLoadFromStarting:YES WithScrollToBottom:NO];
+        [self loadMessagesWithStarting:YES WithScrollToBottom:NO];
     }
 }
 
@@ -1141,7 +1143,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     self.alChannel = [channelService getChannelByKey:self.channelKey];
     [titleLabelButton setTitle:self.alChannel.name forState:UIControlStateNormal];
     if([self.alChannel isConversationClosed]){
-      [self freezeView:YES];
+        [self freezeView:YES];
     }
     if(self.alChannel.type == GROUP_OF_TWO)
     {
@@ -1154,17 +1156,18 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)didTapTitleView:(id)sender
 {
-    if(self.contactIds && !self.channelKey)
-    {
+    if(self.contactIds && !self.channelKey) {
         [self getUserInformation];
-    }
-    else if (![ALApplozicSettings isGroupInfoDisabled] && (self.alChannel.type != GROUP_OF_TWO) && ![ALChannelService isChannelDeleted:self.channelKey] && ![ALChannelService isConversationClosed:self.channelKey])
-    {
+    } else if (![ALApplozicSettings isGroupInfoDisabled]
+               && (![self.alChannel isGroupOfTwo])
+               && ![ALChannelService isChannelDeleted:self.channelKey]
+               && ![ALChannelService isConversationClosed:self.channelKey]
+               && ![self.alChannel isOpenGroup]) {
         if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
 
             [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                             ThirdPartyDetailVCNotificationChannelKey : self.channelKey
-                                                                                                                            }];
+            }];
         } else {
 
             UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
@@ -2226,7 +2229,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
         if(![ALUserDefaultsHandler isServerCallDoneForMSGList:[self.conversationId stringValue]])
         {
-           [self loadMessagesWithLoadFromStarting:NO WithScrollToBottom:YES];
+           [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
         }
         else
         {
@@ -3405,7 +3408,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 -(void)reloadView
 {
     [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
-    [self.mTableView reloadData];
     self.startIndex = 0;
     [self fetchMessageFromDB];
     [self loadChatView];
@@ -3473,10 +3475,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(IBAction)loadEarlierButtonAction:(id)sender
 {
-    [self loadMessagesWithLoadFromStarting:NO WithScrollToBottom:NO];
+    [self loadMessagesWithStarting:NO WithScrollToBottom:NO];
 }
 
--(void)loadMessagesWithLoadFromStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom
+-(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom
 {
     if (loadFromStart) {
         [[self.alMessageWrapper getUpdatedMessageArray]removeAllObjects];

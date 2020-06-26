@@ -167,7 +167,11 @@
 }
 
 -(BOOL)isOpenGroup {
-    return  self.type == OPEN;
+    return self.type == OPEN;
+}
+
+-(BOOL)isGroupOfTwo {
+    return self.type == GROUP_OF_TWO;
 }
 
 -(BOOL)isPartOfCategory:(NSString*)category{
