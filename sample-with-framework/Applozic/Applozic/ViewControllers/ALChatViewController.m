@@ -2651,6 +2651,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     theMessage.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
     //theMessage.fileMetas.thumbnailUrl = filePath.lastPathComponent;
 
+    theMessage.inProgress = YES;
+    theMessage.isUploadFailed = NO;
+
     // save msg to db
     theMessage.msgDBObjectId = [self saveMessageToDatabase:theMessage];
 
@@ -2674,56 +2677,15 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     if (theMessage.fileMeta && [theMessage.type isEqualToString:@"5"])
     {
         NSDictionary * userInfo = [theMessage dictionary];
-//        [self.sendMessageTextView setText:nil];
         self.mTotalCount = self.mTotalCount+1;
         self.startIndex = self.startIndex + 1;
 
-        ALMediaBaseCell* imageCell = [self getCell:theMessage.key];
-
-        if(!imageCell)
-        {
-            ALSLog(ALLoggerSeverityInfo, @" not able to find the image cell for upload....");
-            return;
-        }
-
-        imageCell.progresLabel.alpha = 1;
-        imageCell.mMessage.fileMeta.progressValue = 0;
-        imageCell.mDowloadRetryButton.alpha = 0;
-        imageCell.downloadRetryView.alpha = 0;
-        imageCell.sizeLabel.alpha = 0;
-
-        imageCell.mMessage.inProgress = YES;
-        if([theMessage.fileMeta.contentType hasPrefix:@"audio"])
-        {
-           [imageCell hidePlayButtonOnUploading];
-        }
-        ALMessageDBService  * msgdbService = [[ALMessageDBService alloc] init];
-        DB_Message *dbMessage = (DB_Message*)[msgdbService getMessageByKey:@"key" value:theMessage.key];
-        dbMessage.inProgress = [NSNumber numberWithBool:YES];
-        dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-
-        NSError * error = [[ALDBHandler sharedInstance] saveContext];
-
-        if (error) {
-            imageCell.progresLabel.alpha = 0;
-            imageCell.mDowloadRetryButton.alpha = 1;
-            imageCell.downloadRetryView.alpha = 1;
-            imageCell.sizeLabel.alpha = 1;
-            [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
-            return;
-        }
-
-        // post image
         ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
         [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
             if (error)
             {
                 ALSLog(ALLoggerSeverityError, @"%@",error);
-                imageCell.progresLabel.alpha = 0;
-                imageCell.mDowloadRetryButton.alpha = 1;
-                imageCell.downloadRetryView.alpha = 1;
-                imageCell.sizeLabel.alpha = 1;
                 [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
                 return;
             }
