@@ -162,10 +162,12 @@ static ALMessageClientService *alMsgClientService;
                        ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
                        for (int i = (int)messages.count - 1; i >= 0; i--) {
                            ALMessage * message = messages[i];
+
                            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                                [messages removeObjectAtIndex:i];
                            }
-                           if (![contactService isContactExist:message.to]) {
+
+                           if (message.to && ![contactService isContactExist:message.to]) {
                                [userNotPresentIds addObject:message.to];
                            }
                            /// If its a reply message add the reply message key to array
@@ -188,7 +190,7 @@ static ALMessageClientService *alMsgClientService;
                        [self fetchReplyMessages: replyMessageKeys withCompletion:^(NSMutableArray<ALMessage *> *replyMessages) {
                            if (replyMessages && replyMessages.count > 0) {
                                for (int i = 0; i < replyMessages.count; i++) {
-                                   if (![contactService isContactExist:replyMessages[i].to]) {
+                                   if (replyMessages[i].to && ![contactService isContactExist:replyMessages[i].to]) {
                                        [userNotPresentIds addObject: replyMessages[i].to];
                                    }
                                }

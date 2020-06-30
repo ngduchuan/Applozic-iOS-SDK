@@ -415,7 +415,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         
     }
     
-    if (![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
+    if ([alMessage isSentMessage]  && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName;
