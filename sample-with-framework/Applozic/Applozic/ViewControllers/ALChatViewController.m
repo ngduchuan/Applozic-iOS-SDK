@@ -679,10 +679,13 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
+    if ([self.alChannel isOpenGroup] ) {
+        [self.label setText:@""];
+        return;
+    }
 
     if ([self isGroup]
-        && (![self.alChannel isGroupOfTwo]
-            && ![self.alChannel isOpenGroup])) {
+        && (![self.alChannel isGroupOfTwo])) {
         if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
             ALChannelService * alChannelService  = [[ALChannelService alloc] init];
             [self.label setText:[alChannelService stringFromChannelUserList:channel.key]];
@@ -2755,9 +2758,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 }
 
 
-
-
-
 -(void) showActionAlert
 {
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -2772,7 +2772,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
             [self openCamera];
         }]];
     }
-    if(![ALApplozicSettings isLocationOptionHidden]){
+    if(![ALApplozicSettings isLocationOptionHidden] && ![self isOpenGroup]){
         [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"currentLocationOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Current location", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             [self openLocationView];
@@ -3401,6 +3401,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.startIndex = 0;
 
         [self setTitle];
+        [self setChannelSubTitle:self.alChannel];
         [self prepareViewController];
 
     });
