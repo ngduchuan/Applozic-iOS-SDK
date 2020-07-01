@@ -722,7 +722,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self reloadView];
         [self markConversationRead];
     } else {
-        [self loadMessagesWithStarting:YES WithScrollToBottom:NO withNextPage:NO];
+        [self loadMessagesWithStarting:YES WithScrollToBottom:YES withNextPage:NO];
     }
 }
 
@@ -3556,7 +3556,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             //self.startIndex = self.startIndex + messages.count;
             [self.mActivityIndicator stopAnimating];
             CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
-            [self.mTableView reloadData];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mTableView reloadData];
+            });
 
             if(isScrollToBottom)
             {
