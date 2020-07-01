@@ -1124,9 +1124,11 @@ static int const MQTT_MAX_RETRY = 3;
     ALMessage * theLatestMessage = theFilteredArray.firstObject;
     if (theLatestMessage != nil && ![theMessage.createdAtTime isEqualToNumber: theLatestMessage.createdAtTime])
     {
-        [self.mContactsMessageListArray removeObject:theLatestMessage];
-        [self.mContactsMessageListArray insertObject:theMessage atIndex:0];
-        [self.mTableView reloadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mContactsMessageListArray removeObject:theLatestMessage];
+            [self.mContactsMessageListArray insertObject:theMessage atIndex:0];
+            [self.mTableView reloadData];
+        });
     }
 }
 

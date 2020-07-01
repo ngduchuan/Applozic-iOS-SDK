@@ -128,7 +128,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 
 - (IBAction)loadEarlierButtonAction:(id)sender;
--(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)flag;
 -(void)markConversationRead;
 -(void)fetchAndRefresh:(BOOL)flag;
 -(void)serverCallForLastSeen;
@@ -672,10 +671,12 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(void)onChannelMemberUpdate:(NSNotification *)notifyObj {
     ALChannel *channel = (ALChannel *)notifyObj.object;
 
-    if (self.alChannel && channel && channel.type != GROUP_OF_TWO
-        && channel.key.intValue == self.alChannel.key.intValue) {
-        [self setChannelSubTitle:channel];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.alChannel && channel && channel.type != GROUP_OF_TWO
+            && channel.key.intValue == self.alChannel.key.intValue) {
+            [self setChannelSubTitle:channel];
+        }
+    });
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
@@ -702,7 +703,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     self.comingFromBackground = YES;
     [self subscrbingChannel];
     if ([self isOpenGroup]) {
-        [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
+        [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
     } else {
         [self markConversationRead];
     }
@@ -712,7 +713,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     if ([self isOpenGroup]) {
         [self reloadView];
-        [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
+        [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
         return;
     }
 
@@ -721,7 +722,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self reloadView];
         [self markConversationRead];
     } else {
-        [self loadMessagesWithStarting:YES WithScrollToBottom:NO];
+        [self loadMessagesWithStarting:YES WithScrollToBottom:NO withNextPage:NO];
     }
 }
 
@@ -2232,7 +2233,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
         if(![ALUserDefaultsHandler isServerCallDoneForMSGList:[self.conversationId stringValue]])
         {
-           [self loadMessagesWithStarting:NO WithScrollToBottom:YES];
+           [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
         }
         else
         {
@@ -3438,10 +3439,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(IBAction)loadEarlierButtonAction:(id)sender
 {
-    [self loadMessagesWithStarting:NO WithScrollToBottom:NO];
+    [self loadMessagesWithStarting:NO WithScrollToBottom:NO withNextPage:YES];
 }
 
--(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom
+-(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom withNextPage:(BOOL)isNextPage
 {
     if (loadFromStart) {
         [[self.alMessageWrapper getUpdatedMessageArray]removeAllObjects];
@@ -3460,7 +3461,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     MessageListRequest * messageListRequest = [[MessageListRequest alloc] init];
     messageListRequest.userId = self.contactIds;
     messageListRequest.channelKey = self.channelKey;
-    if (time) {
+    if ([self.alChannel isOpenGroup]) {
+        if (isNextPage){
+            messageListRequest.endTimeStamp = time;
+        }
+    } else {
         messageListRequest.endTimeStamp = time;
     }
 
@@ -3513,10 +3518,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 if([self.alMessageWrapper getUpdatedMessageArray].count > 0)
                 {
                     ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-                    if(msg1.createdAtTime.doubleValue <= msg.createdAtTime.doubleValue) {
-                        ALSLog(ALLoggerSeverityInfo, @"ignoring as coming message has grater time..continue....");
-                        continue;
-                    }
 
                     if([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime])
                     {
@@ -3531,7 +3532,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
                 if( ![msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
                 {
-                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
+
+                    NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
+                    if (!theFilteredArray.count) {
+                        [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
+                    }
                     [self.noConLabel setHidden:YES];
                 }
             }
@@ -3541,6 +3546,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 NSString * dateTxt = [self.alMessageWrapper msgAtTop:message];
                 ALMessage * lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
                 [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
+            }
+
+            NSArray *sortedArray = [self getSortedMessages];
+            [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
+            if (sortedArray.count) {
+                [[self.alMessageWrapper messageArray] setArray:sortedArray];
             }
             //self.startIndex = self.startIndex + messages.count;
             [self.mActivityIndicator stopAnimating];
@@ -3566,6 +3577,16 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ALSLog(ALLoggerSeverityError, @"some error");
         }
     }];
+}
+
+-(NSArray *)getSortedMessages {
+    NSArray *sortedArray = nil;
+    if ([self.alMessageWrapper getUpdatedMessageArray].count) {
+        NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
+          NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
+        sortedArray = [[self.alMessageWrapper getUpdatedMessageArray] sortedArrayUsingDescriptors:descriptors];
+    }
+    return sortedArray;
 }
 
 -(void) enableOrDisableChat:(BOOL)disable {
