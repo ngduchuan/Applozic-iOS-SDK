@@ -357,9 +357,6 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.mUserProfileImageView.alpha = 0;
         self.mUserProfileImageView.frame = CGRectMake(viewSize.width - 53, 0, 0, 45);
         
-        self.mMessageStatusImageView.hidden = NO;
-        
-        
         CGFloat requiredBubbleWidth = theTextSize.width + BUBBLE_PADDING_X_OUTBOX;
         CGFloat requiredBubbleHeight =  theTextSize.height + BUBBLE_PADDING_HEIGHT;
         
@@ -418,7 +415,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         
     }
     
-    if ([alMessage isSentMessage] && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
+    if ([alMessage isSentMessage]  && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName;
