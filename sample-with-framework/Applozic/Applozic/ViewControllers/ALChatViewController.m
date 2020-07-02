@@ -711,6 +711,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)prepareViewController {
 
+  if (self.isSearch) {
+      [self loadSearchMessagesWithNextPage:YES];
+  } else {
     if ([self isOpenGroup]) {
         [self reloadView];
         [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
@@ -724,6 +727,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     } else {
         [self loadMessagesWithStarting:YES WithScrollToBottom:YES withNextPage:NO];
     }
+  }
+
 }
 
 //====================================================================================================================================
@@ -1774,7 +1779,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
     else if (theMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        
+
         if([theMessage isSentMessage]){
             ALMyContactMessageCell *theCell = (ALMyContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"MyContactMessageCell"];
             theCell.tag = indexPath.row;
@@ -2469,7 +2474,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(void)downloadRetryButtonActionDelegate:(int)index andMessage:(ALMessage *)message
 {
 
-    if(message.msgDBObjectId){
         ALMediaBaseCell *imageCell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         imageCell.progresLabel.alpha = 1;
         imageCell.mMessage.fileMeta.progressValue = 0;
@@ -2502,9 +2506,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
             manager.attachmentProgressDelegate = self;
             [manager processDownloadForMessage:message isAttachmentDownload:YES];
         }
-    }else{
-        ALSLog(ALLoggerSeverityInfo, @"Message is not in db ");
-    }
 
 }
 
@@ -2548,12 +2549,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
 }
 
--(void) thumbnailDownload:(NSString *) key{
-
-    ALMessageDBService * messageDBService = [[ALMessageDBService alloc]init];
+-(void) thumbnailDownloadWithMessageObject:(ALMessage *) message {
     ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
-    [manager processDownloadForMessage:[messageDBService getMessageByKey:key] isAttachmentDownload:NO];
+    [manager processDownloadForMessage:message isAttachmentDownload:NO];
 }
 
 -(CGFloat)bytesConvertsToDegree:(CGFloat)totalBytesExpectedToWrite comingBytes:(CGFloat)totalBytesWritten
@@ -3391,7 +3390,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     self.conversationId = conversationId;
     self.channelKey = channelKey;
     [self subscrbingChannel];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
 
         [self.mTableView setUserInteractionEnabled:NO];
@@ -3439,7 +3438,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(IBAction)loadEarlierButtonAction:(id)sender
 {
-    [self loadMessagesWithStarting:NO WithScrollToBottom:NO withNextPage:YES];
+    if (self.isSearch) {
+        [self loadSearchMessagesWithNextPage:YES];
+    } else {
+      [self loadMessagesWithStarting:NO WithScrollToBottom:NO withNextPage:YES];
+    }
 }
 
 -(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom withNextPage:(BOOL)isNextPage
@@ -3488,101 +3491,144 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             self.loadEarlierAction.hidden = YES;
             [self enableLoadMoreOption:(messages.count > 0)];
 
-            if(messages.count == 0)
-            {
-                if(self.conversationId && [ALApplozicSettings getContextualChatOption])
-                {
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:[self.conversationId stringValue]];
-                }
-                else
-                {
-                    NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:IDs];
-                }
+            if (messages.count == 0) {
                 [self.mActivityIndicator stopAnimating];
-                return;
+                [self showNoConversationLabel];
             }
 
-            NSMutableArray * array = [self.alMessageWrapper getUpdatedMessageArray];
+            [self updateMessagesInArray:messages];
 
-            if([array firstObject])
-            {
-                ALMessage *messgae = [array firstObject];
-                if([messgae.type isEqualToString:@"100"])
-                {
-                    [array removeObjectAtIndex:0];
-                }
-            }
-            for (ALMessage * msg in messages)
-            {
-                if([msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
-                {
-                    continue;
-                }
-                if([self.alMessageWrapper getUpdatedMessageArray].count > 0)
-                {
-                    ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-
-                    if([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime])
-                    {
-                        ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
-                        /// Checking if data message is already exist with same date in list
-                        NSArray * filteredDateArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = %@ AND message = %@",@"100", dateCell.message]];
-
-                        ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-                        if(![msg3.type isEqualToString:@"100"] && ![msg3 isVOIPNotificationMessage] && !filteredDateArray.count)
-                        {
-                            [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
-                        }
-                    }
-                }
-                NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
-                if (!theFilteredArray.count) {
-                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
-                }
-                [self.noConLabel setHidden:YES];
-
-            }
-            ALMessage * message = [array firstObject];
-            if(message)
-            {
-                NSString *dateTxt = [self.alMessageWrapper msgAtTop:message];
-                ALMessage *lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
-                [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
-            }
-
-            NSArray *sortedArray = [self getSortedMessages];
-            [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
-            if (sortedArray.count) {
-                [[self.alMessageWrapper messageArray] setArray:sortedArray];
-            }
-
-            [self.mActivityIndicator stopAnimating];
-
+            CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
             dispatch_async(dispatch_get_main_queue(), ^{
-                CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
+                [self.mActivityIndicator stopAnimating];
                 [self.mTableView reloadData];
-
-                if(isScrollToBottom)
-                {
-                    [self scrollTableViewToBottomWithAnimation:NO];
-                }
-                else
-                {
-                    CGFloat newTableViewHeight = self.mTableView.contentSize.height;
-                    self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
-                }
             });
-            [self markConversationRead];
-        }
-        else
-        {
+            if (isScrollToBottom) {
+                [self scrollTableViewToBottomWithAnimation:NO];
+            } else {
+                CGFloat newTableViewHeight = self.mTableView.contentSize.height;
+                self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
+            }
+        } else {
             [self.mActivityIndicator stopAnimating];
             [self showNoConversationLabel];
             self.loadEarlierAction.hidden = YES;
             ALSLog(ALLoggerSeverityError, @"some error");
         }
     }];
+}
+
+-(void)loadSearchMessagesWithNextPage:(BOOL)isNextPage {
+
+    [self.mActivityIndicator startAnimating];
+
+    NSNumber *time;
+    if([self.alMessageWrapper getUpdatedMessageArray].count > 1 && [self.alMessageWrapper getUpdatedMessageArray] != nil)
+    {
+        ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][1];
+        time = theMessage.createdAtTime;
+    }
+
+    MessageListRequest * messageListRequest = [[MessageListRequest alloc] init];
+
+    messageListRequest.userId = self.contactIds;
+    messageListRequest.channelKey = self.channelKey;
+    messageListRequest.conversationId = self.conversationId;
+
+    if (time) {
+        messageListRequest.endTimeStamp = time;
+    }
+
+    ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+    [messageClientService getMessageListForUser:messageListRequest isSearch:YES withCompletion:^(NSMutableArray<ALMessage *> * messages, NSError * error) {
+
+        if (error == nil) {
+            self.loadEarlierAction.hidden = YES;
+            [self enableLoadMoreOption:(messages.count > 0)];
+            if (messages.count == 0) {
+                [self.mActivityIndicator stopAnimating];
+                [self showNoConversationLabel];
+            }
+
+            [self updateMessagesInArray:messages];
+
+            [self.mActivityIndicator stopAnimating];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
+                [self.mTableView reloadData];
+                
+                if (!isNextPage){
+                    [self scrollTableViewToBottomWithAnimation:NO];
+                } else {
+                    CGFloat newTableViewHeight = self.mTableView.contentSize.height;
+                    self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
+                }
+            });
+            [self markConversationRead];
+        } else {
+            [self.mActivityIndicator stopAnimating];
+            [self showNoConversationLabel];
+            self.loadEarlierAction.hidden = YES;
+        }
+    }];
+}
+
+-(void)updateMessagesInArray:(NSMutableArray *)messages {
+
+    NSMutableArray * array = [self.alMessageWrapper getUpdatedMessageArray];
+
+    if([array firstObject]) {
+        ALMessage *messgae = [array firstObject];
+        if([messgae.type isEqualToString:@"100"])
+        {
+            [array removeObjectAtIndex:0];
+        }
+    }
+
+    for (ALMessage * msg in messages) {
+        if ([msg isHiddenMessage]) { // Filters Hidden Messages
+            continue;
+        }
+
+        if ([self.alMessageWrapper getUpdatedMessageArray].count > 0) {
+            ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
+
+            if ([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime]) {
+                ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
+                /// Checking if data message is already exist with same date in list
+                NSArray * filteredDateArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = %@ AND message = %@",@"100", dateCell.message]];
+
+                ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
+                if (![msg3.type isEqualToString:@"100"] &&
+                    ![msg3 isVOIPNotificationMessage] &&
+                    !filteredDateArray.count) {
+                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
+                }
+            }
+        }
+
+        if ([msg isHiddenMessage]) {
+            NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
+            if (!theFilteredArray.count) {
+                [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
+            }
+            [self.noConLabel setHidden:YES];
+        }
+    }
+
+    ALMessage * message = [[self.alMessageWrapper getUpdatedMessageArray] firstObject];
+    if (message) {
+        NSString * dateTxt = [self.alMessageWrapper msgAtTop:message];
+        ALMessage * lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
+        [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
+    }
+
+    NSArray *sortedArray = [self getSortedMessages];
+    [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
+    if (sortedArray.count) {
+        [[self.alMessageWrapper messageArray] setArray:sortedArray];
+    }
 }
 
 -(NSArray *)getSortedMessages {

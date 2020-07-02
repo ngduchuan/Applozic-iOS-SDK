@@ -49,6 +49,7 @@ static const int BROADCAST_GROUP_CREATION = 5;
 #import "ALMessageClientService.h"
 #import "ALLogger.h"
 #import "ALNotificationHelper.h"
+#import <Applozic/Applozic-Swift.h>
 
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
@@ -59,11 +60,7 @@ static int const MQTT_MAX_RETRY = 3;
 // Private interface
 //==============================================================================================================================================
 
-@interface ALMessagesViewController ()<UITableViewDataSource, UITableViewDelegate, ALMessagesDelegate, ALMQTTConversationDelegate>
-
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *navigationRightButton;
-
--(IBAction)navigationRightButtonAction:(id)sender;
+@interface ALMessagesViewController ()<UITableViewDataSource, UITableViewDelegate, ALMessagesDelegate, ALMQTTConversationDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 - (IBAction)backButtonAction:(id)sender;
@@ -86,6 +83,10 @@ static int const MQTT_MAX_RETRY = 3;
 @property (strong, nonatomic) UIBarButtonItem *refreshButton;
 
 @property (nonatomic, strong) ALMessageDBService *dBService;
+
+@property (strong, nonatomic) UISearchController *searchController;
+
+@property (strong, nonatomic) ALSearchViewController *searchResultVC;
 
 @end
 
@@ -136,14 +137,56 @@ static int const MQTT_MAX_RETRY = 3;
     [self.view addSubview:self.emptyConversationText];
     self.emptyConversationText.hidden = YES;
     
-    self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
-    
-    if((self.channelKey || self.userIdToLaunch)){
+     if((self.channelKey || self.userIdToLaunch)){
         [self createAndLaunchChatView ];
     }
     [_mTableView setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
-    [_navigationRightButton setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
+}
+
+-(void)setupNavigationButtons {
+
+    if (self.navigationItem.titleView == nil) {
+        UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
+
+        NSMutableArray * array = [[NSMutableArray alloc] init];
+
+        if(![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
+
+
+            UIBarButtonItem * startNewButton  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                              target:self
+                                                                                              action:@selector(navigationRightButtonAction)];
+            [startNewButton setTintColor:itemColor];
+            [array addObject: startNewButton];
+
+        }
+
+        UIBarButtonItem * searchButton =   [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                         target:self
+                                                                                         action:@selector(searchButtonAction)];
+
+        [searchButton setTintColor:itemColor];
+        [array addObject: searchButton];
+
+        if([ALApplozicSettings getCustomNavRightButtonMsgVC])
+        {
+            self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                               target:self
+                                                                               action:@selector(refreshMessageList)];
+            [self.refreshButton setTintColor:itemColor];
+            [array addObject: self.refreshButton];
+        }
+
+        if (array && array.count) {
+            [self.navigationItem setRightBarButtonItems:array];
+        }
+
+        if (![ALUserDefaultsHandler isBackButtonHidden]) {
+            self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
+            [self.navigationItem setLeftBarButtonItem:self.barButtonItem];
+        }
+    }
 }
 
 -(void)loadMessages:(NSNotification *)notification
@@ -174,7 +217,6 @@ static int const MQTT_MAX_RETRY = 3;
     }
 
     [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
-    [self.navigationItem setLeftBarButtonItem:self.barButtonItem];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if ([self.detailChatViewController refreshMainView])
@@ -188,24 +230,11 @@ static int const MQTT_MAX_RETRY = 3;
         [self.detailChatViewController setRefreshMainView:FALSE];
         [self.mTableView reloadData];
     }
-    
-    if([ALUserDefaultsHandler isNavigationRightButtonHidden])
-    {
-        [self.navigationItem setRightBarButtonItems:nil];
-    }
-    
-    if([ALApplozicSettings getCustomNavRightButtonMsgVC])
-    {
-        self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                        target:self
-                                                                                        action:@selector(refreshMessageList)];
-        [self.navigationItem setRightBarButtonItem:self.refreshButton];
-    }
-    
-    if([ALUserDefaultsHandler isBackButtonHidden])
-    {
-        [self.navigationItem setLeftBarButtonItems:nil];
-    }
+
+    [self setupSearchViewController];
+
+    [self setupNavigationButtons];
+
 
     //register for notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];    
@@ -358,8 +387,7 @@ static int const MQTT_MAX_RETRY = 3;
 #pragma mark - NAVIGATION RIGHT BUTTON ACTION + CONTACT LAUNCH FOR USER/SUB GROUP
 //==============================================================================================================================================
 
--(IBAction)navigationRightButtonAction:(id)sender
-{
+-(void)navigationRightButtonAction {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
@@ -394,6 +422,46 @@ static int const MQTT_MAX_RETRY = 3;
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"REFRESH MSG VC");
+    }];
+}
+
+-(void)setupSearchViewController {
+
+    if (self.navigationItem.titleView == nil) {
+
+        _searchResultVC = [[ALSearchViewController alloc] init];
+        self.searchController = [[UISearchController alloc] initWithSearchResultsController:_searchResultVC];
+        self.searchController.searchBar.delegate = self;
+        self.searchController.searchBar.autocapitalizationType =  UITextAutocapitalizationTypeNone;
+        self.searchController.hidesNavigationBarDuringPresentation = NO;
+        self.searchController.searchBar.tintColor = [ALApplozicSettings getColorForNavigationItem];
+
+        UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
+
+        NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
+
+        self.searchController.searchBar.placeholder = searchLabel;
+
+        if (@available(iOS 13.0, *)) {
+            self.searchController.searchBar.searchTextField.textColor = UIColor.whiteColor;
+            self.searchController.searchBar.searchTextField.leftView.tintColor = itemColor;
+            self.searchController.searchBar.searchTextField.tintColor = itemColor;
+            self.searchController.automaticallyShowsCancelButton = YES;
+        } else {
+            [[UILabel appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTextColor:UIColor.whiteColor];
+            self.searchController.searchBar.showsCancelButton = YES;
+        }
+        self.definesPresentationContext = YES;
+    }
+}
+
+-(void)searchButtonAction {
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.navigationItem setRightBarButtonItems:nil];
+        [self.navigationItem setLeftBarButtonItem:nil];
+        self.navigationItem.titleView = self.searchController.searchBar;
+    } completion:^(BOOL finished) {
+        [self.searchController.searchBar becomeFirstResponder];
     }];
 }
 
@@ -1727,6 +1795,26 @@ static int const MQTT_MAX_RETRY = 3;
         [self.mActivityIndicator stopAnimating];
         [self.mTableView setUserInteractionEnabled:YES];
     }
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    if (searchBar.text.length) {
+        [self.searchResultVC searchWithKey:searchBar.text];
+    }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+
+    if ([searchText isEqual: @""]) {
+        [self.searchResultVC clearAndShowEmptyView];
+    }
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+
+    [self.searchResultVC clearAndShowEmptyView];
+    self.navigationItem.titleView = nil;
+    [self setupNavigationButtons];
 }
 
 @end

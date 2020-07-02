@@ -225,17 +225,11 @@
                                 <action selector="backButtonAction:" destination="BYZ-38-t0r" id="vWD-0a-q4j"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="3pR-ud-INa">
-                            <connections>
-                                <action selector="navigationRightButtonAction:" destination="BYZ-38-t0r" id="tds-rS-yDu"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="backButton" destination="sTB-Ym-PL1" id="gaD-RU-uDt"/>
                         <outlet property="mActivityIndicator" destination="dlR-eX-vMZ" id="iW8-EO-GId"/>
                         <outlet property="mTableView" destination="S0P-A8-QJi" id="faw-jS-ahn"/>
-                        <outlet property="navigationRightButton" destination="3pR-ud-INa" id="eZH-B4-U0M"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

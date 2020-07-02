@@ -100,5 +100,5 @@
 
 -(void) updateMessageMetadataOfKey:(NSString*)messageKey withMetadata:(NSMutableDictionary*) metadata ;
 
--(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessageKey:(NSString *)messageKey withFileFlag:(BOOL)isFile;
+-(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
 @end
