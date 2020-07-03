@@ -421,18 +421,21 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         NSString * imageName;
         
         switch (alMessage.status.intValue) {
-            case DELIVERED_AND_READ :{
+            case DELIVERED_AND_READ :
                 imageName = @"ic_action_read.png";
-            }break;
-            case DELIVERED:{
+                break;
+            case READ :
+                imageName =  @"ic_action_read.png";
+                break;
+            case DELIVERED:
                 imageName = @"ic_action_message_delivered.png";
-            }break;
-            case SENT:{
+                break;
+            case SENT:
                 imageName = @"ic_action_message_sent.png";
-            }break;
-            default:{
+                break;
+            default:
                 imageName = @"ic_action_about.png";
-            }break;
+                break;
         }
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
