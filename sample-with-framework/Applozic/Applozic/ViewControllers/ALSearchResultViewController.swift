@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc public class ALSearchViewController : UITableViewController {
+@objc public class ALSearchResultViewController : UITableViewController {
 
     enum EmptyLabelInfoText {
         static let searchInfoText =  NSLocalizedString("SearchInfoText", tableName: ALApplozicSettings.getLocalizableName(), bundle: Bundle.main, value: "Press search button to start searching...", comment: "")
@@ -146,6 +146,7 @@ import Foundation
             }
         } else {
             chatView.contactIds = message.to
+            chatView.modalPresentationStyle = .fullScreen
             presentingViewController?.navigationController?.pushViewController(chatView, animated: true)
         }
     }

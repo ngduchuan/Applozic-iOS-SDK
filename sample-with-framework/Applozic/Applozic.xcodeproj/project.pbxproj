@@ -176,7 +176,7 @@
 		1863584F20E2480800B75802 /* ApplozicClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1863584D20E2480800B75802 /* ApplozicClient.m */; };
 		186885A120ECC5FE00919802 /* ALMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1868859F20ECC5FE00919802 /* ALMessageBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		186885A220ECC5FE00919802 /* ALMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 186885A020ECC5FE00919802 /* ALMessageBuilder.m */; };
-		1868E8D024A6582A008DABC7 /* ALSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8CF24A6582A008DABC7 /* ALSearchViewController.swift */; };
+		1868E8D024A6582A008DABC7 /* ALSearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8CF24A6582A008DABC7 /* ALSearchResultViewController.swift */; };
 		1868E8D424AA2C4B008DABC7 /* ALConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8D324AA2C4B008DABC7 /* ALConversationCell.swift */; };
 		1868E8E324AD46A4008DABC7 /* ALSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */; };
 		1868F12C21B570ED00B237B3 /* ALGroupDetailsMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */; };
@@ -705,7 +705,7 @@
 		1863584D20E2480800B75802 /* ApplozicClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplozicClient.m; path = Applozic/ApplozicClient.m; sourceTree = "<group>"; };
 		1868859F20ECC5FE00919802 /* ALMessageBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMessageBuilder.h; path = Applozic/ALMessageBuilder.h; sourceTree = "<group>"; };
 		186885A020ECC5FE00919802 /* ALMessageBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALMessageBuilder.m; path = Applozic/ALMessageBuilder.m; sourceTree = "<group>"; };
-		1868E8CF24A6582A008DABC7 /* ALSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALSearchViewController.swift; sourceTree = "<group>"; };
+		1868E8CF24A6582A008DABC7 /* ALSearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALSearchResultViewController.swift; sourceTree = "<group>"; };
 		1868E8D324AA2C4B008DABC7 /* ALConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ALConversationCell.swift; path = Applozic/Views/ALConversationCell.swift; sourceTree = "<group>"; };
 		1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ALSearchViewModel.swift; path = Applozic/ALSearchViewModel.swift; sourceTree = "<group>"; };
 		1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALGroupDetailsMemberCell.m; path = Applozic/Views/ALGroupDetailsMemberCell.m; sourceTree = "<group>"; };
@@ -1349,7 +1349,7 @@
 				C76366071DF82B500087221C /* ALNavigationController.m */,
 				18587A7A2177A81E006AA149 /* ALImagePreviewController.h */,
 				18587A7B2177A81E006AA149 /* ALImagePreviewController.m */,
-				1868E8CF24A6582A008DABC7 /* ALSearchViewController.swift */,
+				1868E8CF24A6582A008DABC7 /* ALSearchResultViewController.swift */,
 			);
 			name = ViewControllers;
 			path = Applozic/ViewControllers;
@@ -2344,7 +2344,7 @@
 				1863584F20E2480800B75802 /* ApplozicClient.m in Sources */,
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				6D36F2091BFF3EE3003D46D3 /* ALApplozicSettings.m in Sources */,
-				1868E8D024A6582A008DABC7 /* ALSearchViewController.swift in Sources */,
+				1868E8D024A6582A008DABC7 /* ALSearchResultViewController.swift in Sources */,
 				322B304B1EF9537600DB01FC /* AlApplicationInfoFeed.m in Sources */,
 				8B170C212122CEFF003A14B3 /* ALCustomPickerViewController.swift in Sources */,
 				4612E8F51E13882D0022DB23 /* MQTTCFSocketDecoder.m in Sources */,

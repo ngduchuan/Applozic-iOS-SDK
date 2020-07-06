@@ -542,7 +542,7 @@
              ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
              [messages addObject: message];
          }
-         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
+         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: theJson];
          [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
          completion(messages, nil);
          return;
@@ -601,7 +601,7 @@
              ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
              [messages addObject: message];
          }
-         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
+         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: theJson];
          [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
          completion(messages, nil);
          return;
@@ -641,6 +641,13 @@
         }
         [[SearchResultCache shared] saveUserDetails: userDetails];
 
+        ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:theJson];
+
+        ALConversationService *alConversationService = [[ALConversationService alloc] init];
+        [alConversationService addConversations:alChannelFeed.conversationProxyList];
+
+        ALChannelService * channelService = [[ALChannelService alloc] init];
+        [channelService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
         completion(messages, nil);
     }];
 }

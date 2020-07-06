@@ -86,7 +86,7 @@ static int const MQTT_MAX_RETRY = 3;
 
 @property (strong, nonatomic) UISearchController *searchController;
 
-@property (strong, nonatomic) ALSearchViewController *searchResultVC;
+@property (strong, nonatomic) ALSearchResultViewController *searchResultVC;
 
 @end
 
@@ -231,10 +231,9 @@ static int const MQTT_MAX_RETRY = 3;
         [self.mTableView reloadData];
     }
 
-    [self setupSearchViewController];
-
     [self setupNavigationButtons];
 
+    [self setupSearchViewController];
 
     //register for notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];    
@@ -429,13 +428,12 @@ static int const MQTT_MAX_RETRY = 3;
 
     if (self.navigationItem.titleView == nil) {
 
-        _searchResultVC = [[ALSearchViewController alloc] init];
+        _searchResultVC = [[ALSearchResultViewController alloc] init];
         self.searchController = [[UISearchController alloc] initWithSearchResultsController:_searchResultVC];
         self.searchController.searchBar.delegate = self;
         self.searchController.searchBar.autocapitalizationType =  UITextAutocapitalizationTypeNone;
         self.searchController.hidesNavigationBarDuringPresentation = NO;
         self.searchController.searchBar.tintColor = [ALApplozicSettings getColorForNavigationItem];
-
         UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
 
         NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");

@@ -40,7 +40,7 @@ class ALSearchViewModel: NSObject {
     func searchMessage(with key: String,
                        _ completion: @escaping ((_ result: Bool) -> Void)) {
         searchMessages(with: key) { messages, error in
-            guard let messages = messages, error == nil else {
+            guard let messages = messages, messages.count > 0,  error == nil else {
                 print("Error \(String(describing: error)) while searching messages")
                 completion(false)
                 return
