@@ -17,7 +17,7 @@ static NSString *const VALID_UPTO = @"validUpto";
 
 -(void)decodeAndSaveToken:(NSString *)authToken {
 
-    if (authToken){
+    if (authToken) {
         [ALUserDefaultsHandler setAuthToken:authToken];
         NSError * jwtError;
         ALJWT * jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
@@ -77,9 +77,9 @@ static NSString *const VALID_UPTO = @"validUpto";
             [self decodeAndSaveToken:(NSString *)apiResponse.response];
             completion(apiResponse, nil);
         } else {
-          NSError *error = [NSError errorWithDomain:@"Applozic"
-                                                         code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to refresh auth token"}];
+            NSError *error = [NSError errorWithDomain:@"Applozic"
+                                                 code:1
+                                             userInfo:@{NSLocalizedDescriptionKey : @"Failed to refresh auth token"}];
             completion(nil, error);
         }
     }];

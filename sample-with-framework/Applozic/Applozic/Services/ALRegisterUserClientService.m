@@ -264,6 +264,18 @@
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
 
+    if (alUser.displayName) {
+        user.displayName = alUser.displayName;
+    }
+
+    if (alUser.contactNumber) {
+        user.contactNumber = alUser.contactNumber;
+    }
+
+    if (alUser.email) {
+        user.email = alUser.email;
+    }
+    
     if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
@@ -295,45 +307,45 @@
         }
 
         [ALResponseHandler processRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
-              ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
+            ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
 
-              NSString *statusStr = (NSString *)theJson;
-              if (theError) {
-                  completion(nil,theError);
-                  return ;
-              }
-              ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
+            NSString *statusStr = (NSString *)theJson;
+            if (theError) {
+                completion(nil,theError);
+                return ;
+            }
+            ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
 
-              if (response && response.isRegisteredSuccessfully) {
+            if (response && response.isRegisteredSuccessfully) {
 
-                  if (response.displayName) {
-                      [ALUserDefaultsHandler setDisplayName: response.displayName];
-                  }
+                if (response.displayName) {
+                    [ALUserDefaultsHandler setDisplayName: response.displayName];
+                }
 
-                  [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
+                [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
 
-                  if (response.message) {
-                      [ALInternalSettings setRegistrationStatusMessage:response.message];
-                  }
+                if (response.message) {
+                    [ALInternalSettings setRegistrationStatusMessage:response.message];
+                }
 
-                  if (response.notificationSoundFileName) {
-                      [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
-                  }
+                if (response.notificationSoundFileName) {
+                    [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
+                }
 
-                  if(response.imageLink) {
-                      [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
-                  }
+                if(response.imageLink) {
+                    [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
+                }
 
-                  if (response.authToken) {
-                      [ALUserDefaultsHandler setAuthToken:response.authToken];
-                  }
+                if (response.authToken) {
+                    [ALUserDefaultsHandler setAuthToken:response.authToken];
+                }
 
-                  [ALUserDefaultsHandler setUserRoleType:response.roleType];
+                [ALUserDefaultsHandler setUserRoleType:response.roleType];
 
-              }
-              completion(response, error);
+            }
+            completion(response, error);
 
-          }];
+        }];
     }];
 }
 
@@ -362,15 +374,9 @@
     //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
 }
 
--(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
-{
+-(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
     [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
-
-        if (error) {
-            completion(nil, error);
-            return;
-        }
 
         [ALResponseHandler processRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 
@@ -429,32 +435,43 @@
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
     NSString * paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
-    NSLog(@"Sebdubga data to server sendServerRequestForAppUpdate ");
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
-    [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"error:%@",theError);
+    NSLog(@"sending data to server from sendServerRequestForAppUpdate ");
+
+    [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Error while updating app version :%@",error);
+            return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",theJson);
+        [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
+            if (theError) {
+                ALSLog(ALLoggerSeverityError, @"error:%@",theError);
+            }
+            ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",theJson);
+        }];
     }];
 }
 
--(void)syncAccountStatus
-{
+-(void)syncAccountStatus {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
     NSString * paramString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
-    [ALResponseHandler processRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if (theError)
-        {
-            ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
+    [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", error.description);
+            return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
+        [ALResponseHandler processRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            if (theError) {
+                ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
+            }
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
+        }];
     }];
 }
 
--(ALRegistrationResponse *) getLoginRegistrationResponse{
+-(ALRegistrationResponse *) getLoginRegistrationResponse {
     ALRegistrationResponse * registrationResponse = [[ALRegistrationResponse alloc]init];
     registrationResponse.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     registrationResponse.userKey = [ALUserDefaultsHandler getUserKeyString];
@@ -477,8 +494,7 @@
     return registrationResponse;
 }
 
--(NSString *)getUserParamTextForLogging:(ALUser *)user
-{
+-(NSString *)getUserParamTextForLogging:(ALUser *)user {
     NSString *passwordText = user.password ? @"***":@"";
     [user setPassword: passwordText];
     NSError * error;
