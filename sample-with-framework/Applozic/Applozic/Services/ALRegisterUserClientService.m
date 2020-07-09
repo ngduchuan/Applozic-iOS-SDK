@@ -77,8 +77,8 @@
     NSString *logParamText = [self getUserParamTextForLogging:user];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrl:theUrlString paramString:theParamString withAuthToken:nil ofUserId:nil];
+
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSString *statusStr = (NSString *)theJson;
@@ -287,47 +287,53 @@
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
-        ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
-
-        NSString *statusStr = (NSString *)theJson;
-        if (theError) {
-            completion(nil,theError);
-            return ;
+        if (error) {
+            completion(nil, error);
+            return;
         }
-        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
 
-        if (response && response.isRegisteredSuccessfully) {
+        [ALResponseHandler processRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
+              ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
 
-            if (response.displayName) {
-                [ALUserDefaultsHandler setDisplayName: response.displayName];
-            }
+              NSString *statusStr = (NSString *)theJson;
+              if (theError) {
+                  completion(nil,theError);
+                  return ;
+              }
+              ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
 
-            [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
-            
-            if (response.message) {
-                [ALInternalSettings setRegistrationStatusMessage:response.message];
-            }
+              if (response && response.isRegisteredSuccessfully) {
 
-            if (response.notificationSoundFileName) {
-                [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
-            }
+                  if (response.displayName) {
+                      [ALUserDefaultsHandler setDisplayName: response.displayName];
+                  }
 
-            if(response.imageLink) {
-                [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
-            }
+                  [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
 
-            if (response.authToken) {
-                [ALUserDefaultsHandler setAuthToken:response.authToken];
-            }
-            
-            [ALUserDefaultsHandler setUserRoleType:response.roleType];
+                  if (response.message) {
+                      [ALInternalSettings setRegistrationStatusMessage:response.message];
+                  }
 
-        }
-        completion(response, error);
+                  if (response.notificationSoundFileName) {
+                      [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
+                  }
 
+                  if(response.imageLink) {
+                      [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
+                  }
+
+                  if (response.authToken) {
+                      [ALUserDefaultsHandler setAuthToken:response.authToken];
+                  }
+
+                  [ALUserDefaultsHandler setUserRoleType:response.roleType];
+
+              }
+              completion(response, error);
+
+          }];
     }];
 }
 
@@ -359,30 +365,37 @@
 -(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
 {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
-    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
-    
-    [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
+    [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
-        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-
-        NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
-        BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
-        ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
-
-        [ALUserDefaultsHandler clearAll];
-        [ALApplozicSettings clearAll];
-
-        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-        [messageDBService deleteAllObjectsInCoreData];
-
-        if(error) {
-            ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
-            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+        if (error) {
+            completion(nil, error);
+            return;
         }
-        
-        completion(response,error);
+
+        [ALResponseHandler processRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
+
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
+            ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+
+            NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
+            BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+            ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
+
+            [ALUserDefaultsHandler clearAll];
+            [ALApplozicSettings clearAll];
+
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllObjectsInCoreData];
+
+            if(error) {
+                ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
+                [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+            }
+
+            completion(response,error);
+        }];
     }];
+
 }
 
 +(BOOL)isAppUpdated{

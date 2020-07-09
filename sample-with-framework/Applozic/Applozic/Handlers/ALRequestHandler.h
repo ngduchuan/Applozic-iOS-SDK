@@ -14,11 +14,16 @@
 
 +(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString ofUserId:(NSString *)userId;
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString ofUserId:(NSString *)userId;
++(void ) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString ofUserId:(NSString *)userId withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString;
++(void) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
 
 +(NSMutableURLRequest *) createGETRequestWithUrlStringWithoutHeader:(NSString *) urlString paramString:(NSString *) paramString;
 
 +(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString;
+
++(NSMutableURLRequest *) createPOSTRequestWithUrl:(NSString *)urlString
+                                      paramString:(NSString *)paramString
+                                    withAuthToken: (NSString *)authToken
+                                         ofUserId:(NSString *)userId;
 @end

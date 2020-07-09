@@ -11,18 +11,20 @@
 #import "NSString+Encode.h"
 #import "ALUser.h"
 #import "NSData+AES.h"
+#import "ALAuthService.h"
 
 static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
 @implementation ALRequestHandler
 
-+(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString
-{
++(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString
+                                           paramString:(NSString *) paramString {
     return [self createGETRequestWithUrlString:urlString paramString:paramString ofUserId:nil];
 }
 
-+(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString ofUserId:(NSString *) userId
-{
++(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString
+                                           paramString:(NSString *) paramString
+                                              ofUserId:(NSString *) userId {
     NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] init];
     NSURL * theUrl = nil;
     if (paramString != nil) {
@@ -34,17 +36,40 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     [theRequest setURL:theUrl];
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"GET"];
-    [self addGlobalHeader:theRequest ofUserId:userId];
+    [self addGlobalHeader:theRequest ofUserId:userId withAuthToken:[ALUserDefaultsHandler getAuthToken]];
     return theRequest;
 }
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString
-{
-    return [self createPOSTRequestWithUrlString:urlString paramString:paramString ofUserId:nil];
++(void) createPOSTRequestWithUrlString:(NSString *) urlString
+                           paramString:(NSString *) paramString withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+    [self createPOSTRequestWithUrlString:urlString paramString:paramString ofUserId:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+        completion(theRequest, error);
+    }];
 }
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString ofUserId:(NSString *)userId
-{
++(void) createPOSTRequestWithUrlString:(NSString *) urlString
+                           paramString:(NSString *) paramString
+                              ofUserId:(NSString *)userId withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+
+
+    ALAuthService * authService = [[ALAuthService alloc] init];
+    [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
+
+        if (error){
+            completion(nil, error);
+            return;
+        }
+        NSMutableURLRequest * theRequest = [self createPOSTRequestWithUrl:urlString
+                                                              paramString:paramString withAuthToken:[ALUserDefaultsHandler getAuthToken] ofUserId:userId];
+        completion(theRequest, nil);
+    }];
+}
+
++(NSMutableURLRequest *) createPOSTRequestWithUrl:(NSString *)urlString
+                                      paramString:(NSString *) paramString
+                                    withAuthToken: (NSString *) authToken
+                                         ofUserId:(NSString *)userId {
+
     NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"POST"];
@@ -61,13 +86,12 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
         [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
     }
     ALSLog(ALLoggerSeverityInfo, @"POST_URL :: %@", urlString);
-    [self addGlobalHeader:theRequest ofUserId:userId];
+    [self addGlobalHeader:theRequest ofUserId:userId withAuthToken:authToken];
     return theRequest;
-
 }
 
-+(NSMutableURLRequest *) createGETRequestWithUrlStringWithoutHeader:(NSString *) urlString paramString:(NSString *) paramString
-{
++(NSMutableURLRequest *) createGETRequestWithUrlStringWithoutHeader:(NSString *) urlString
+                                                        paramString:(NSString *) paramString {
     NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] init];
     NSURL * theUrl = nil;
     if (paramString != nil) {
@@ -84,59 +108,54 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
-+(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString
-{
++(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *) urlString
+                                             paramString:(NSString *) paramString {
     NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 
     NSURL * theUrl = nil;
     if (paramString != nil) {
         theUrl =
-            [NSURL URLWithString: [NSString stringWithFormat:@"%@?%@", urlString, paramString]];
+        [NSURL URLWithString: [NSString stringWithFormat:@"%@?%@", urlString, paramString]];
     } else {
         theUrl = [NSURL URLWithString: urlString];
     }
     [theRequest setURL:theUrl];
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"PATCH"];
-    [self addGlobalHeader:theRequest ofUserId:nil];
+    [self addGlobalHeader:theRequest ofUserId:nil withAuthToken:[ALUserDefaultsHandler getAuthToken]];
     ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", theUrl);
     return theRequest;
 }
 
-
-+(void) addGlobalHeader: (NSMutableURLRequest*) request ofUserId:(NSString *)userId
-{
++(void) addGlobalHeader:(NSMutableURLRequest*) request ofUserId:(NSString *)userId withAuthToken:(NSString *)authToken {
+    
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:[ALUserDefaultsHandler getPassword] forHTTPHeaderField:@"Access-Token"];
-    [request addValue:[ALUserDefaultsHandler getAppModuleName]
-    forHTTPHeaderField:@"App-Module-Name"];
-    [request addValue:[ALUserDefaultsHandler getDeviceKeyString] forHTTPHeaderField:@"Device-Key"];
+
+    NSString * appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    if (appMoudle) {
+        [request addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
+    }
+
+    NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    if (deviceKeyString) {
+        [request addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
+    }
 
     if (userId) {
         [request setValue:[userId urlEncodeUsingNSUTF8StringEncoding] forHTTPHeaderField:@"Of-User-Id"];
     }
 
+    if (authToken) {
+        [request addValue:authToken forHTTPHeaderField:@"X-Authorization"];
+    }
+
     if ([ALUserDefaultsHandler getUserRoleType] == 8 && userId != nil) {
         [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Apz-AppId"];
-        NSString *product = @"true";
-        [request setValue:product forHTTPHeaderField:@"Apz-Product-App"];
-        NSString *authStr = [NSString stringWithFormat:@"%@:%@",[ALUserDefaultsHandler getUserId], [ALUserDefaultsHandler getPassword]];
-        NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
-        NSString *authString = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
-        [request setValue:authString forHTTPHeaderField:@"Apz-Token"];
-        ALSLog(ALLoggerSeverityInfo, @"Basic string...%@",authString);
     } else {
         [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
-        [request addValue:@"true" forHTTPHeaderField:@"UserId-Enabled"];
-        [request addValue:@"1" forHTTPHeaderField:@"Source"];
-        NSString *authStr = [NSString stringWithFormat:@"%@:%@",[ALUserDefaultsHandler getUserId], [ALUserDefaultsHandler getDeviceKeyString]];
-        NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
-        NSString *authString = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
-        [request setValue:authString forHTTPHeaderField:@"Authorization"];
-        [request setValue:authString forHTTPHeaderField:@"Application-User"];
-        ALSLog(ALLoggerSeverityInfo, @"Basic string...%@",authString);
     }
 }
+
 
 @end
 

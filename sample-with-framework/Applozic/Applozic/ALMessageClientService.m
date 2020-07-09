@@ -402,17 +402,22 @@
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/send",KBASE_URL];
     NSString * theParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
     
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if (theError) {
-            completion(nil,theError);
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil, error);
             return;
         }
-        completion(theJson,nil);
-    }];
 
+        [ALResponseHandler processRequest:theRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            if (theError) {
+                completion(nil,theError);
+                return;
+            }
+            completion(theJson,nil);
+        }];
+    }];
 }
 
 -(void)getCurrentMessageInformation:(NSString *)messageKey withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion
@@ -487,16 +492,24 @@
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:messageMetadata options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Error while updating message metadata: %@", theError);
-            completion(nil,theError);
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil,error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", theJson);
-        completion(theJson,nil);
+
+        [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
+            if (theError) {
+                ALSLog(ALLoggerSeverityError, @"Error while updating message metadata: %@", theError);
+                completion(nil,theError);
+                return;
+            }
+            ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", theJson);
+            completion(theJson,nil);
+        }];
+
     }];
 }
 

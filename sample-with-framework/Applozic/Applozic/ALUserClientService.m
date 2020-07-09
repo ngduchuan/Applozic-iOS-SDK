@@ -255,12 +255,20 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:channelDictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"MULTI_USER_SEND" WithCompletionHandler:^(id theJson, NSError *theError) {
-        completion(theJson,theError);
-        
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        if (error == nil) {
+            [ALResponseHandler processRequest:theRequest andTag:@"MULTI_USER_SEND" WithCompletionHandler:^(id theJson, NSError *theError) {
+                completion(theJson,theError);
+
+            }];
+        }
     }];
+
 }
 
 -(void)getListOfRegisteredUsers:(NSNumber *)startTime andPageSize:(NSUInteger)pageSize
@@ -414,22 +422,26 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)theJson);
-        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
-        if([apiResponse.status isEqualToString:@"error"])
-        {
-            NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
-                                                                                          forKey:NSLocalizedDescriptionKey]];
-            completionHandler(theJson, reponseError);
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completionHandler(nil, error);
             return;
         }
-        completionHandler(theJson, theError);
-        
+        [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)theJson);
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
+            if([apiResponse.status isEqualToString:@"error"])
+            {
+                NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                         userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
+                                                                                              forKey:NSLocalizedDescriptionKey]];
+                completionHandler(theJson, reponseError);
+                return;
+            }
+            completionHandler(theJson, theError);
+        }];
     }];
 }
 
@@ -447,26 +459,31 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler
-                                        createPOSTRequestWithUrlString:theUrlString
-                                        paramString:theParamString
-                                        ofUserId:userId];
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString
+                                         paramString:theParamString
+                                            ofUserId:userId withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id theJson, NSError *theError) {
-        ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)theJson);
-        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
-        if([apiResponse.status isEqualToString:@"error"])
-        {
-            NSError * reponseError =
-            [NSError errorWithDomain:@"Applozic"
-                                code:1
-                            userInfo: [NSDictionary
-                                       dictionaryWithObject:@"error updating user"
-                                       forKey:NSLocalizedDescriptionKey]];
-            completion(nil, reponseError);
+        if (error) {
+            completion(nil, error);
             return;
         }
-        completion(apiResponse.response, theError);
+        [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id theJson, NSError *theError) {
+            ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)theJson);
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
+            if([apiResponse.status isEqualToString:@"error"])
+            {
+                NSError * reponseError =
+                [NSError errorWithDomain:@"Applozic"
+                                    code:1
+                                userInfo: [NSDictionary
+                                           dictionaryWithObject:@"error updating user"
+                                           forKey:NSLocalizedDescriptionKey]];
+                completion(nil, reponseError);
+                return;
+            }
+            completion(apiResponse.response, theError);
+        }];
+
     }];
 }
 
@@ -482,13 +499,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     ALSLog(ALLoggerSeverityInfo, @"PARAM_POST_CALL : %@",paramString);
     
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"USERS_DETAILS_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
         if (error) {
             completionMark(nil,error);
-        } else {
+            return;
+        }
+        [ALResponseHandler processRequest:theRequest andTag:@"USERS_DETAILS_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            if (error) {
+                completionMark(nil,error);
+                return;
+            }
+
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
             NSMutableArray * userDetailArray = [NSMutableArray new];
             if([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
@@ -505,7 +528,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                                                                               forKey:NSLocalizedDescriptionKey]];
                 completionMark(nil, reponseError);
             }
-        }
+        }];
     }];
 
 }
@@ -522,25 +545,29 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:applicationInfoDeatils.dictionary options:0 error:&error];
     NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
     
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_APPLICATION_INFO" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        ALSLog(ALLoggerSeverityInfo, @"Update Application Info reponse  :: %@",(NSString *)theJson);
-        NSString * jsonString  = (NSString *)theJson;
-        
-        if(jsonString != nil  && [jsonString isEqualToString:@"/success/"] ){
-            completion(theJson, theError);
-        }else{
-            NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR UPDATEING THE APPLICATION INFO"
-                                                                                          forKey:NSLocalizedDescriptionKey]];
-            completion(theJson, reponseError);
-            return ;
+   [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil, error);
+            return;
         }
-        
+        [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_APPLICATION_INFO" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            ALSLog(ALLoggerSeverityInfo, @"Update Application Info reponse  :: %@",(NSString *)theJson);
+            NSString * jsonString  = (NSString *)theJson;
+
+            if(jsonString != nil  && [jsonString isEqualToString:@"/success/"] ){
+                completion(theJson, theError);
+            }else{
+                NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                         userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR UPDATEING THE APPLICATION INFO"
+                                                                                              forKey:NSLocalizedDescriptionKey]];
+                completion(theJson, reponseError);
+                return ;
+            }
+
+        }];
     }];
-    
 }
 
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
@@ -612,52 +639,61 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute?userId=%@&notificationAfterTime=%@",KBASE_URL,[alMuteRequest.userId urlEncodeUsingNSUTF8StringEncoding],alMuteRequest.notificationAfterTime];
 
-    
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"MUTE_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if (theError)
-        {
-            ALSLog(ALLoggerSeverityError, @"Error in mute user  : %@", theError);
-            completion(nil, theError);
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil, error);
             return;
         }
-        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-        completion(response, nil);
-        
+
+        [ALResponseHandler processRequest:theRequest andTag:@"MUTE_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            if (theError) {
+                ALSLog(ALLoggerSeverityError, @"Error in mute user  : %@", theError);
+                completion(nil, theError);
+                return;
+            }
+            ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+            completion(response, nil);
+        }];
     }];
-    
+
 }
 
 
 -(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
 
     if(messageKey == nil){
-       NSError * error =  [NSError errorWithDomain:ApplozicDomain
-                            code:MessageKeyNotPresent
-                        userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
+        NSError * error =  [NSError errorWithDomain:ApplozicDomain
+                                               code:MessageKeyNotPresent
+                                           userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
         completion(nil,error);
         return;
     }
 
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/report?messageKey=%@", KBASE_URL, messageKey];
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
-
-    [ALResponseHandler processRequest:theRequest andTag:@"REPORT_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if(theError){
-            ALSLog(ALLoggerSeverityError, @"Error in reporting  user  : %@", theError);
-            completion(nil, theError);
+    [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+        
+        if (error) {
+            completion(nil, error);
             return;
         }
-
-        NSString *responseString  = (NSString *)theJson;
-
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
-
-        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
-        completion(apiResponse, theError);
+        
+        [ALResponseHandler processRequest:theRequest andTag:@"REPORT_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+            if(theError){
+                ALSLog(ALLoggerSeverityError, @"Error in reporting  user  : %@", theError);
+                completion(nil, theError);
+                return;
+            }
+            
+            NSString *responseString  = (NSString *)theJson;
+            
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
+            
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
+            completion(apiResponse, theError);
+        }];
     }];
 
 }
