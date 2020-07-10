@@ -76,7 +76,7 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     ALAuthService * authService = [[ALAuthService alloc] init];
     [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
         
-        if (error){
+        if (error) {
             completion(nil, error);
             return;
         }
@@ -97,8 +97,7 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     
     if (paramString != nil) {
         NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
-        if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) // ENCRYPTING DATA WITH KEY
-        {
+        if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
             NSData *postData = [thePostData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
             NSData *base64Encoded = [postData base64EncodedDataWithOptions:0];
             thePostData = base64Encoded;
@@ -128,12 +127,12 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 }
 
 +(void) createPatchRequestWithUrlString:(NSString *) urlString
-                                             paramString:(NSString *) paramString withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+                            paramString:(NSString *) paramString withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
 
     ALAuthService * authService = [[ALAuthService alloc] init];
     [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
 
-        if (error){
+        if (error) {
             completion(nil, error);
             return;
         }

@@ -63,7 +63,8 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
     }];
 }
 
--(NSMutableURLRequest *)createPostRequestWithURL:(NSString *)urlString withParamString:(NSString *)paramString {
+-(NSMutableURLRequest *)createPostRequestWithURL:(NSString *)urlString
+                                 withParamString:(NSString *)paramString {
 
     NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
     [theRequest setTimeoutInterval:600];

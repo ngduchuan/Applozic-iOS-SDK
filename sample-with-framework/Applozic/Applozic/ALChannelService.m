@@ -350,23 +350,20 @@ dispatch_queue_t channelUserbackgroundQueue;
         [ALChannelClientService createChannel:channelName andParentChannelKey:nil orClientChannelKey:(NSString *)clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:(short)type
                                   andMetaData:metaData adminUser:adminUserId withGroupUsers:groupRoleUsers withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
                                       
-                                      if(!error)
-                                      {
+                                      if (!error) {
                                           response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
                                           [self createChannelEntry:response.alChannel fromMessageList:NO];
                                           completion(response.alChannel, error);
-                                      }
-                                      else
-                                      {
+                                      } else {
                                           ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
                                           completion(nil, error);
                                       }
                                   }];
-    }
-    else
-    {
+    } else {
+
+        NSError * failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Channel name is nil" forKey:NSLocalizedDescriptionKey]];
         ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
-        return;
+        completion(nil, failError);
     }
 }
 

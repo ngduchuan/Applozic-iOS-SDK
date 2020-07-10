@@ -32,7 +32,8 @@
                                                         paramString:(NSString *)paramString;
 
 +(void) createPatchRequestWithUrlString:(NSString *)urlString
-                                             paramString:(NSString *)paramString withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
+                                             paramString:(NSString *)paramString
+                         withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
 
 +(NSMutableURLRequest *) createPOSTRequestWithUrl:(NSString *)urlString
                                       paramString:(NSString *)paramString

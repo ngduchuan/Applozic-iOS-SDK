@@ -136,29 +136,25 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [channelDictionary setObject:memberArray forKey:@"groupMemberList"];
     [channelDictionary setObject:[NSString stringWithFormat:@"%i", type] forKey:@"type"];
     
-    if(metaData)
-    {
+    if (metaData) {
         [channelDictionary setObject:metaData forKey:@"metadata"];
     }
     
-    if(imageLink)
-    {
+    if (imageLink) {
         [channelDictionary setObject:imageLink forKey:@"imageUrl"];
     }
     
-    if(clientChannelKey)
-    {
+    if (clientChannelKey) {
         [channelDictionary setObject:clientChannelKey forKey:@"clientGroupId"];
     }
-    if(parentChannelKey)
-    {
+    if (parentChannelKey) {
         [channelDictionary setObject:parentChannelKey forKey:@"parentKey"];
     }
-    if(adminUserId){
+    if (adminUserId) {
         [channelDictionary setObject:adminUserId forKey:@"admin"];
     }
     
-    if(groupRoleUsers.count){
+    if (groupRoleUsers.count) {
         [channelDictionary setObject:groupRoleUsers forKey:@"users"];
     }
     
@@ -357,40 +353,35 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
       orChannelUsers:(NSMutableArray *)channelUsers
        andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     NSString * theUrlString;
-    if(imageURL && [imageURL isEqualToString:@""]){
+    if (imageURL && [imageURL isEqualToString:@""]) {
         theUrlString =   [NSString stringWithFormat:@"%@%@?resetGroupImageUrl=true", KBASE_URL, UPDATE_CHANNEL_URL];
-    }else{
+    } else{
         theUrlString =  [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
     }
 
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
     
-    if(newName.length)
-    {
+    if (newName.length) {
         [dictionary setObject:newName forKey:@"newName"];
     }
-    if(clientChannelKey.length)
-    {
+    if (clientChannelKey.length) {
         [dictionary setObject:clientChannelKey forKey:@"clientGroupId"];
-    }
-    else
-    {
+    } else {
         [dictionary setObject:channelKey forKey:@"groupId"];
     }
     
-    if(imageURL){
+    if (imageURL){
         [dictionary setObject:imageURL forKey:@"imageUrl"];
     }
     
-    if (metaData)
-    {
+    if (metaData) {
         [dictionary setObject:metaData forKey:@"metadata"];
     }
     
-    if(childKeysList.count) {
+    if (childKeysList.count) {
         [dictionary setObject:childKeysList forKey:@"childKeys"];
     }
-    if(channelUsers.count){
+    if (channelUsers.count) {
         [dictionary setObject:channelUsers forKey:@"users"];
         
     }
@@ -516,7 +507,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                         completion(error, response);
                     }];
                 } else {
-
                     completion(error, response);
                 }
             }
@@ -530,8 +520,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,ADD_MULTIPLE_SUB_GROUP];
     
     NSString * tempString = @"";
-    for(NSNumber *subGroupKey in childKeyList)
-    {
+    for (NSNumber *subGroupKey in childKeyList) {
         tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&subGroupIds=%@",subGroupKey]];
     }
     
@@ -557,12 +546,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+(void)removeChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey withCompletion:(void (^)(id json, NSError * error))completion
-{
++(void)removeChildKeyList:(NSMutableArray *)childKeyList
+             andParentKey:(NSNumber *)parentKey
+           withCompletion:(void (^)(id json, NSError * error))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,REMOVE_MULTIPLE_SUB_GROUP];
     
     NSString * tempString = @"";
-    for(NSNumber *subGroupKey in childKeyList) {
+    for (NSNumber *subGroupKey in childKeyList) {
         tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&subGroupIds=%@",subGroupKey]];
     }
     
@@ -591,14 +581,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark ADD/REMOVING VIA CLIENT KEYS
 //=================================================
 
-+(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
-              withCompletion:(void (^)(id json, NSError * error))completion
-{
++(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
+          andClientParentKey:(NSString *)clientParentKey
+              withCompletion:(void (^)(id json, NSError * error))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,ADD_MULTIPLE_SUB_GROUP];
     
     NSString * tempString = @"";
-    for(NSString *subGroupKey in clientChildKeyList)
-    {
+    for (NSString *subGroupKey in clientChildKeyList) {
         tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&clientSubGroupIds=%@",subGroupKey]];
     }
     
@@ -614,8 +603,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         [ALResponseHandler processRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id theJson, NSError *theError) {
 
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)theJson);
-            if (theError)
-            {
+            if (theError) {
                 ALSLog(ALLoggerSeverityError, @"ERROR ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", theError);
                 completion(nil, theError);
                 return;
@@ -626,14 +614,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
-                 withCompletion:(void (^)(id json, NSError * error))completion
-{
++(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
+             andClientParentKey:(NSString *)clientParentKey
+                 withCompletion:(void (^)(id json, NSError * error))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,REMOVE_MULTIPLE_SUB_GROUP];
     
     NSString * tempString = @"";
-    for(NSString *subGroupKey in clientChildKeyList)
-    {
+    for (NSString *subGroupKey in clientChildKeyList) {
         tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&clientSubGroupIds=%@",subGroupKey]];
     }
     
@@ -664,7 +651,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                withCompletion:(void (^)(NSString *, NSError *))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString * theParamString;
-    if(channelKey) {
+    if (channelKey) {
         theParamString = [NSString stringWithFormat:@"groupId=%@",channelKey];
     }
     [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
@@ -720,9 +707,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 -(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
                    orClinetChannelIds:(NSMutableArray*) clientChannelIds
-                       withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
-
-{
+                       withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_INFO_ON_IDS];
     NSString * theParamString=nil ;
@@ -730,8 +715,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     //For client groupId
     if (clientChannelIds) {
         
-        for(NSString * clientId in clientChannelIds) {
-            if(theParamString) {
+        for (NSString * clientId in clientChannelIds) {
+            if (theParamString) {
                 theParamString = [theParamString stringByAppendingString: [NSString stringWithFormat:@"&clientGroupIds=%@",clientId ]];
                 
             } else {
@@ -749,7 +734,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
-            if(error) {
+            if (error) {
                 ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
                 completion(nil,error);
                 return;
@@ -759,7 +744,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
             NSMutableArray * array = (NSMutableArray*)response.response;
 
-            for ( NSMutableDictionary *dic  in array) {
+            for (NSMutableDictionary *dic  in array) {
                 ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];
                 [channelinfoList addObject:channel];
             }
@@ -1009,7 +994,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 +(void) removeMemberFromContactGroupOfType:(NSString*) contactsGroupId
                              withGroupType:(short) groupType withUserId :(NSString*) userId  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion {
     
-    if (userId == nil){
+    if (userId == nil) {
         completion(nil, nil);
     }
     
@@ -1017,7 +1002,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSString * theParamString = nil;
     
-    if(groupType != 0 ) {
+    if  (groupType != 0 ) {
         theParamString = [NSString stringWithFormat:@"userId=%@&groupType=%i",userId, groupType];
     }
     
@@ -1065,7 +1050,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
                 AlChannelFeedResponse *response = [[AlChannelFeedResponse alloc] initWithJSONString:theJson];
 
-                if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]){
+                if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]) {
                     NSMutableArray * members = response.alChannel.membersId;
                     ALContactService * contactService = [ALContactService new];
                     NSMutableArray* userNotPresentIds = [NSMutableArray new];

@@ -255,7 +255,8 @@ static dispatch_semaphore_t semaphore;
 
 }
 
--(void) processDownloadForMessage:(ALMessage *) alMessage isAttachmentDownload:(BOOL) attachmentDownloadFlag {
+-(void) processDownloadForMessage:(ALMessage *) alMessage
+             isAttachmentDownload:(BOOL) attachmentDownloadFlag {
 
     ALDownloadTask * downloadTask = [[ALDownloadTask alloc]init];
     downloadTask.isThumbnail = !attachmentDownloadFlag;
@@ -264,16 +265,16 @@ static dispatch_semaphore_t semaphore;
 
     NSMutableArray * nsURLSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
-    for(NSURLSession *session in nsURLSessionArray){
+    for (NSURLSession *session in nsURLSessionArray) {
         NSURLSessionConfiguration *config = session.configuration;
         NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-        if(array && array.count>1){
+        if (array && array.count>1) {
             //Check if the currently  its called for file download or THUMBNAIL with messageKey
             if(attachmentDownloadFlag && [array[0] isEqualToString:@"FILE"] &&
                [array[1] isEqualToString:alMessage.key]){
                 ALSLog(ALLoggerSeverityInfo, @"Already present in file Download Queue returing for  key %@",alMessage.key);
                 return;
-            }else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && [array[1] isEqualToString:alMessage.key]){
+            } else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && [array[1] isEqualToString:alMessage.key]) {
                 ALSLog(ALLoggerSeverityInfo, @"Already present in Download Thumbnail download Queue returing for  key %@",alMessage.key);
                 return;
             }
@@ -321,10 +322,9 @@ static dispatch_semaphore_t semaphore;
         });
     }else{
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-            if(attachmentDownloadFlag){
+            if (attachmentDownloadFlag) {
                 [messageClientService downloadImageUrl:alMessage.fileMeta.blobKey withCompletion:^(NSString *fileURL, NSError *error) {
-                    if(error)
-                    {
+                    if (error) {
                         ALSLog(ALLoggerSeverityError, @"ERROR GETTING DOWNLOAD URL : %@", error);
                         if(self.attachmentProgressDelegate){
                             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -337,8 +337,7 @@ static dispatch_semaphore_t semaphore;
 
                     [self createcreateGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
-                        if(error)
-                        {
+                        if (error) {
                             if(self.attachmentProgressDelegate){
                                 dispatch_async(dispatch_get_main_queue(), ^(void){
                                     [self.attachmentProgressDelegate onDownloadFailed:alMessage];
@@ -368,17 +367,17 @@ static dispatch_semaphore_t semaphore;
                         NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"THUMBNAIL,%@", alMessage.key]];
                         config.HTTPMaximumConnectionsPerHost = 2;
 
-                        if(ALApplozicSettings.getShareExtentionGroup){
+                        if (ALApplozicSettings.getShareExtentionGroup) {
                             config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                         }
 
                         NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
 
                         [self startSession: session withRequest:urlRequest];
-                    }else{
+                    } else {
                         ALSLog(ALLoggerSeverityError, @"ERROR  DOWNLOAD Thumbnail : %@", error.description);
-                        if(self.attachmentProgressDelegate){
-                            dispatch_async(dispatch_get_main_queue(), ^(void){
+                        if (self.attachmentProgressDelegate) {
+                            dispatch_async(dispatch_get_main_queue(), ^(void) {
                                 [self.attachmentProgressDelegate onDownloadFailed:alMessage];
                             });
                         }
@@ -390,7 +389,8 @@ static dispatch_semaphore_t semaphore;
     }
 }
 
--(void) startSession: (NSURLSession *) session withRequest: (NSURLRequest *) urlRequest {
+-(void) startSession: (NSURLSession *) session
+         withRequest: (NSURLRequest *) urlRequest {
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
@@ -402,7 +402,8 @@ static dispatch_semaphore_t semaphore;
     }
 }
 
--(void)uploadProfileImage:(UIImage *)profileImage withFilePath:(NSString *)filePath uploadURL:(NSString *)uploadURL withCompletion:(void(^)(NSData * data,NSError *error)) completion{
+-(void)uploadProfileImage:(UIImage *)profileImage
+             withFilePath:(NSString *)filePath uploadURL:(NSString *)uploadURL withCompletion:(void(^)(NSData * data,NSError *error))completion {
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         NSError *fileError = [NSError errorWithDomain:@"Applozic"
@@ -419,7 +420,7 @@ static dispatch_semaphore_t semaphore;
             return;
         }
 
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
             //Create boundary, it can be anything
             NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
             // set Content-Type in HTTP header
@@ -432,8 +433,7 @@ static dispatch_semaphore_t semaphore;
             ALSLog(ALLoggerSeverityInfo, @"IMAGE_DATA :: %f",imageData.length/1024.0);
 
             //Assuming data is not nil we add this to the multipart form
-            if (imageData)
-            {
+            if (imageData) {
 
                 [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
                 [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant, @"imge_123_profile"] dataUsingEncoding:NSUTF8StringEncoding]];

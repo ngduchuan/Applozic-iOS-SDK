@@ -24,10 +24,10 @@
 
 @implementation ALRegisterUserClientService
 
--(void) initWithCompletion:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
-{
+-(void) initWithCompletion:(ALUser *)user
+            withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
 
-    if([ALUserDefaultsHandler isLoggedIn]){
+    if ([ALUserDefaultsHandler isLoggedIn]) {
         ALSLog(ALLoggerSeverityInfo, @"User is already login to applozic with userId %@",ALUserDefaultsHandler.getUserId);
         ALRegistrationResponse *registrationResponse = [self getLoginRegistrationResponse];
         completion(registrationResponse,nil);
@@ -59,12 +59,10 @@
     [user setDeviceApnsType:!isDevelopmentBuild()];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
-    if([ALUserDefaultsHandler getAppModuleName] != NULL)
-    {
+    if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
-    if([ALApplozicSettings isAudioVideoEnabled])
-    {
+    if ([ALApplozicSettings isAudioVideoEnabled]) {
         [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
@@ -84,8 +82,7 @@
         NSString *statusStr = (NSString *)theJson;
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", statusStr);
         
-        if (theError)
-        {
+        if (theError) {
             completion(nil, theError);
             return;
         }
@@ -109,44 +106,38 @@
                 [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
 
 
-                if(user.pushNotificationFormat){
+                if (user.pushNotificationFormat) {
                     [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
                 }
 
-                if(response.roleType){
+                if (response.roleType) {
                     [ALUserDefaultsHandler setUserRoleType:response.roleType];
                 }
 
-                if( response.notificationSoundFileName )
-                {
+                if (response.notificationSoundFileName ) {
                     [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
                 }
-                if(response.imageLink)
-                {
+                if (response.imageLink) {
                     [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
                 }
-                if(response.userEncryptionKey)
-                {
+                if (response.userEncryptionKey) {
                     [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
                 }
 
-                if(response.statusMessage)
-                {
+                if (response.statusMessage) {
                     [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];
                 }
-                if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
-                {
+                if (response.brokerURL && ![response.brokerURL isEqualToString:@""]) {
                     NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
                     NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
                     ALSLog(ALLoggerSeverityInfo, @"MQTT_URL :: %@",MQTTURL);
                     [ALUserDefaultsHandler setMQTTURL:MQTTURL];
                 }
-                if(response.encryptionKey)
-                {
+                if (response.encryptionKey) {
                     [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
                 }
 
-                if(response.message){
+                if (response.message) {
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
 
@@ -239,7 +230,8 @@
     }];
 }
 
--(void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
+-(void)updateUser:(ALUser *)alUser
+   withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
 
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
 
@@ -349,8 +341,7 @@
     }];
 }
 
--(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
-{
+-(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:ALUserDefaultsHandler.getNotificationMode];
     [user setRegistrationId:ALUserDefaultsHandler.getApnDeviceToken];
@@ -421,11 +412,9 @@
         [defaults setObject:currentAppVersion forKey:@"appVersion"];
         [defaults synchronize];
         return NO;
-    }
-    else if ([previousVersion isEqualToString:currentAppVersion]) {
+    } else if ([previousVersion isEqualToString:currentAppVersion]) {
         return NO;
-    }
-    else {
+    } else {
         ALSLog(ALLoggerSeverityInfo, @"App was updated since last run");
         
         [ALRegisterUserClientService sendServerRequestForAppUpdate];

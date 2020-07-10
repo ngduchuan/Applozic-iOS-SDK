@@ -40,14 +40,11 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
         [ALResponseHandler processRequest:theRequest andTag:@"USER_LAST_SEEN_NEW" WithCompletionHandler:^(id theJson, NSError *theError) {
-            if (theError)
-            {
+            if (theError) {
                 ALSLog(ALLoggerSeverityError, @"ERROR IN LAST SEEN %@", theError);
                 completionMark(nil);
                 return;
-            }
-            else
-            {
+            } else {
                 NSNumber * generatedAt =  [theJson  valueForKey:@"generatedAt"];
                 [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
                 ALLastSeenSyncFeed  * responseFeed =  [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)theJson];
@@ -71,14 +68,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         }
 
         [ALResponseHandler processRequest:theRequest andTag:@"USER_LAST_SEEN" WithCompletionHandler:^(id theJson, NSError *theError) {
-            if (theError)
-            {
+            if (theError) {
                 ALSLog(ALLoggerSeverityError, @"ERROR IN LAST SEEN %@", theError);
                 completionMark(nil);
                 return;
             }
 
-            if(((NSArray*)theJson).count > 0) {
+            if (((NSArray*)theJson).count > 0) {
                 ALSLog(ALLoggerSeverityInfo, @"SERVER RESPONSE FROM JSON : %@", (NSString *)theJson);
                 ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
                 [userDetailObject userDetail];
@@ -107,8 +103,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         [ALResponseHandler processRequest:theRequest andTag:@"USER_DISPLAY_NAME_UPDATE" WithCompletionHandler:^(id theJson, NSError *theError) {
 
             if (theError) {
-                completion(nil,theError);
-                return ;
+                completion(nil, theError);
+                return;
             } else {
                 ALSLog(ALLoggerSeverityInfo, @"Response of USER_DISPLAY_NAME_UPDATE : %@", (NSString *)theJson);
                 completion((NSString *)theJson, nil);
@@ -131,12 +127,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         }
         [ALResponseHandler processRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
             if (theError) {
-                completion(nil,theError);
+                completion(nil, theError);
                 ALSLog(ALLoggerSeverityError, @"theError");
                 return;
             }
             ALSLog(ALLoggerSeverityInfo, @"Response: %@", (NSString *)theJson);
-            completion((NSString *)theJson,nil);
+            completion((NSString *)theJson, nil);
         }];
     }];
 }
@@ -161,7 +157,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         [ALResponseHandler processRequest:theRequest andTag:@"USER_BLOCKED" WithCompletionHandler:^(id theJson, NSError *theError) {
 
             ALSLog(ALLoggerSeverityInfo, @"USER_BLOCKED RESPONSE JSON: %@", (NSString *)theJson);
-            if (theError){
+            if (theError) {
                 ALSLog(ALLoggerSeverityError, @"theError %@",theError);
                 completion(nil, theError);
                 return;
@@ -250,10 +246,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             if (theError) {
                 completion(nil,theError);
                 ALSLog(ALLoggerSeverityError, @"theError");
-                return ;
+                return;
             }
             ALSLog(ALLoggerSeverityInfo, @"markMessageAsRead %@",theJson);
-            completion((NSString *)theJson,nil);
+            completion((NSString *)theJson, nil);
         }];
     }];
 }
@@ -342,7 +338,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             if (theError) {
                 completion(nil, theError);
                 ALSLog(ALLoggerSeverityError, @"ERROR_IN_CONTACT_FETCH_WITH_LIMIT : %@",theError);
-                return ;
+                return;
             }
 
             NSString * JSONString = (NSString *)theJson;
@@ -376,7 +372,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
                 ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_FOR_ONLINE_CONTACT_LIMIT_JSON : %@", (NSString *)theJson);
                 NSArray * jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
-                if(jsonArray.count) {
+                if (jsonArray.count) {
                     NSMutableArray * ALLUserDetailArray = [NSMutableArray new];
                     NSDictionary * JSONDictionary = (NSDictionary *)theJson;
                     for (NSDictionary * theDictionary in JSONDictionary) {
@@ -385,7 +381,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                         [ALLUserDetailArray addObject:userDetail];
                     }
                     completionMark(ALLUserDetailArray, theError);
-                }else{
+                } else {
                     completionMark(nil, theError);
                 }
             }];
@@ -415,13 +411,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         [ALResponseHandler processRequest:theRequest andTag:@"RESETTING_UNREAD_COUNT" WithCompletionHandler:^(id theJson, NSError * theError) {
 
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)theJson);
-            if(theError)
-            {
-                completion(nil,theError);
+            if (theError) {
+                completion(nil, theError);
                 ALSLog(ALLoggerSeverityError, @"ERROR : RESETTING UNREAD COUNT :: %@",theError.description);
                 return;
             }
-            completion((NSString *)theJson,nil);
+            completion((NSString *)theJson, nil);
         }];
 
     }];
@@ -541,13 +536,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
         if (error) {
-            completionMark(nil,error);
+            completionMark(nil, error);
             return;
         }
         [ALResponseHandler processRequest:theRequest andTag:@"USERS_DETAILS_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
 
             if (error) {
-                completionMark(nil,error);
+                completionMark(nil, error);
                 return;
             }
 
@@ -555,8 +550,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             NSMutableArray * userDetailArray = [NSMutableArray new];
             if ([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 NSDictionary * JSONDictionary = (NSDictionary *)apiResponse.response;
-                for (NSDictionary * theDictionary in JSONDictionary)
-                {
+                for (NSDictionary * theDictionary in JSONDictionary) {
                     ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
                     [userDetailArray addObject:userDetail];
                 }
@@ -626,7 +620,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         }
         [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_USER_PASSWORD" WithCompletionHandler:^(id theJson, NSError *theError) {
             ALAPIResponse *apiResponse = nil;
-            if(!theError){
+            if (!theError){
                 apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
             }
             completion(apiResponse, theError);
