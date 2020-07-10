@@ -275,7 +275,7 @@
     if (alUser.email) {
         user.email = alUser.email;
     }
-    
+
     if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
@@ -377,6 +377,11 @@
 -(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
     [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+
+        if (error) {
+            completion(nil, error);
+            return;
+        }
 
         [ALResponseHandler processRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 

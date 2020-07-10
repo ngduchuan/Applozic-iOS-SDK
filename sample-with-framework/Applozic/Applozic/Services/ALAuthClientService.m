@@ -69,6 +69,11 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"POST"];
 
+    if (paramString != nil) {
+        NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        [theRequest setHTTPBody:thePostData];
+        [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
+    }
     [theRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     NSString * appMoudle = [ALUserDefaultsHandler getAppModuleName];
     if (appMoudle) {

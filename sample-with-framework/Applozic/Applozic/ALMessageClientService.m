@@ -102,6 +102,12 @@
 
 -(void) createURLRequestForThumbnail:(NSString *)blobKey
                       withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+
+    if (!blobKey) {
+        /// If blobKey is nil will take the url string
+        completion(nil, nil);
+        return;
+    }
     if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
         NSString * theUrlString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
         NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
@@ -132,6 +138,11 @@
                        completion:(void (^)(NSString *, NSError *))completion {
     [self createURLRequestForThumbnail:blobKey withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+
         if (theRequest) {
             [ALResponseHandler processRequest:theRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
                 if (theError)
@@ -148,7 +159,6 @@
         }
     }];
 }
-
 
 -(void) downloadImageThumbnailUrl:(ALMessage *) message
                    withCompletion:(void(^)(NSString * fileURL, NSError *error)) completion {

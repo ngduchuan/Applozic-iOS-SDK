@@ -72,16 +72,10 @@ static NSString *const VALID_UPTO = @"validUpto";
             completion(nil, error);
             return;
         }
-        if (apiResponse.status == AL_RESPONSE_SUCCESS
-            && [apiResponse.response isKindOfClass:[NSString class]]) {
+        if ([apiResponse.response isKindOfClass:[NSString class]]) {
             [self decodeAndSaveToken:(NSString *)apiResponse.response];
-            completion(apiResponse, nil);
-        } else {
-            NSError *error = [NSError errorWithDomain:@"Applozic"
-                                                 code:1
-                                             userInfo:@{NSLocalizedDescriptionKey : @"Failed to refresh auth token"}];
-            completion(nil, error);
         }
+        completion(apiResponse, nil);
     }];
 }
 

@@ -799,7 +799,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
 
             ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
-            if (response.status == AL_RESPONSE_SUCCESS) {
+            if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 NSMutableArray * array = (NSMutableArray*)response.response;
 
                 for ( NSMutableDictionary *dic  in array) {
@@ -1144,7 +1144,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
                 if (userNotPresentIds.count>0) {
                     ALSLog(ALLoggerSeverityInfo, @"CALLING user deatils for the users..");
-                    
+
                     ALUserService *alUserService = [ALUserService new];
                     [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                         ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
