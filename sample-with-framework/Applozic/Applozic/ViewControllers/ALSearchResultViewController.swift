@@ -98,6 +98,7 @@ import Foundation
             DispatchQueue.main.async {
                 self.activityIndicator.stopAnimating()
                 if (result) {
+                    self.removeEmpty()
                     self.tableView.reloadData()
                 } else {
                     self.showEmptyViewInfo(searchInfo: EmptyLabelInfoText.noSearchResultFound)
@@ -126,7 +127,6 @@ import Foundation
 
     func removeEmpty() {
         self.tableView.backgroundView = nil
-        self.tableView.separatorStyle = .singleLine
     }
 
     func launchChat(message: ALMessage){
