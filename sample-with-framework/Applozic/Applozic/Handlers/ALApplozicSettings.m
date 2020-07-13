@@ -1874,4 +1874,15 @@
     return [userDefaults boolForKey:AL_GROUPS_LIST_TAB];
 }
 
++(void)enableMessageSearch:(BOOL)flag {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_MESSAGE_SEARCH];
+    [userDefaults synchronize];
+}
+
++(BOOL)isMessageSearchEnabled {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    return [userDefaults boolForKey:AL_MESSAGE_SEARCH];
+}
+
 @end

@@ -3913,7 +3913,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     else
     {
         NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-        if(self.alChannel && self.alChannel.type == OPEN){
+
+        if((self.alChannel && self.alChannel.type == OPEN) || self.isSearch){
             doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]);
         }else{
             doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]

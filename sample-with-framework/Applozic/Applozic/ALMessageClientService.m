@@ -527,7 +527,7 @@
              completion(nil, error);
              return;
          }
-         NSDictionary *response = [theJson valueForKey: @"response"];
+         NSString *response = [theJson valueForKey: @"response"];
          if (response == nil) {
              ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
              NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
@@ -542,7 +542,7 @@
              ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
              [messages addObject: message];
          }
-         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: theJson];
+         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
          [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
          completion(messages, nil);
          return;
@@ -587,7 +587,7 @@
              completion(nil, error);
              return;
          }
-         NSDictionary *response = [theJson valueForKey: @"response"];
+         NSString *response = [theJson valueForKey: @"response"];
          if (response == nil) {
              ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
              NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
@@ -601,7 +601,7 @@
              ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
              [messages addObject: message];
          }
-         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: theJson];
+         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
          [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
          completion(messages, nil);
          return;

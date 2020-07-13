@@ -8,6 +8,7 @@
 
 #import "ALNotificationHelper.h"
 #import "ALApplozicSettings.h"
+#import <Applozic/Applozic-Swift.h>
 
 @implementation ALNotificationHelper
 
@@ -35,15 +36,11 @@
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
 
-    if ([alPushAssist.topViewController isKindOfClass:[ALMessagesViewController class]]) {
+    if ([alPushAssist.topViewController isKindOfClass:[ALMessagesViewController class]]
+        || ([alPushAssist.topViewController isKindOfClass:[ALSearchResultViewController class]]
+        && [alPushAssist.topViewController presentingViewController])) {
 
-        ALMessagesViewController* messagesViewController = (ALMessagesViewController*)alPushAssist.topViewController;
-
-        messagesViewController.channelKey = groupID;
-        messagesViewController.userIdToLaunch = contactId;
-        messagesViewController.conversationId = conversationId;
-
-        [messagesViewController createDetailChatViewControllerWithUserId:messagesViewController.userIdToLaunch withGroupId:messagesViewController.channelKey withConversationId:messagesViewController.conversationId];
+        [self openConversationViewFromListVC:contactId withGroupId:groupID withConversationId:conversationId];
 
     } else if ([alPushAssist.topViewController isKindOfClass:[ALChatViewController class]]) {
 
@@ -52,8 +49,7 @@
 
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            ALPushAssist *pushAssit = [[ALPushAssist alloc] init];
-            [self checkControllerAndDismissIfRequired:pushAssit.topViewController withCompletion:^(BOOL handleClick) {
+            [self checkControllerAndDismissIfRequired:alPushAssist.topViewController withCompletion:^(BOOL handleClick) {
                 if(handleClick) {
                     [self handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId notificationTapActionDisable:isTapActionDisabled];
                 }
@@ -61,6 +57,21 @@
 
         });
     }
+
+}
+
+-(void)openConversationViewFromListVC:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId {
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        ALPushAssist *alPushAssist = [[ALPushAssist alloc] init];
+        ALMessagesViewController* messagesViewController = (ALMessagesViewController*)alPushAssist.topViewController;
+
+        messagesViewController.channelKey = groupID;
+        messagesViewController.userIdToLaunch = contactId;
+        messagesViewController.conversationId = conversationId;
+
+        [messagesViewController createDetailChatViewControllerWithUserId:messagesViewController.userIdToLaunch withGroupId:messagesViewController.channelKey withConversationId:messagesViewController.conversationId];
+    });
 
 }
 

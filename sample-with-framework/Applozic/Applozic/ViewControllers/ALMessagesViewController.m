@@ -113,6 +113,7 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+
     self.mqttRetryCount = 0;
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
@@ -162,12 +163,14 @@ static int const MQTT_MAX_RETRY = 3;
 
         }
 
-        UIBarButtonItem * searchButton =   [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                         target:self
-                                                                                         action:@selector(searchButtonAction)];
+        if (ALApplozicSettings.isMessageSearchEnabled) {
+            UIBarButtonItem * searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                             target:self
+                                                                                             action:@selector(searchButtonAction)];
 
-        [searchButton setTintColor:itemColor];
-        [array addObject: searchButton];
+            [searchButton setTintColor:itemColor];
+            [array addObject: searchButton];
+        }
 
         if([ALApplozicSettings getCustomNavRightButtonMsgVC])
         {
@@ -254,7 +257,11 @@ static int const MQTT_MAX_RETRY = 3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:) name:@"USER_DETAILS_UPDATE_CALL" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keybordDidHideNotification)
+                                                    name:UIKeyboardDidHideNotification
+                                                  object:nil];
+
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -279,6 +286,7 @@ static int const MQTT_MAX_RETRY = 3;
 
     [self callLastSeenStatusUpdate];
 }
+
 
 -(void)intializeSubgroupMessages
 {
@@ -324,7 +332,6 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     self.userIdToLaunch = nil;
     self.channelKey = nil;
     if(self.detailChatViewController){
@@ -348,6 +355,8 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [self.navigationController.view setNeedsLayout];
+    [self.navigationController.view layoutIfNeeded];
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     //unregister for notification
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
@@ -433,19 +442,19 @@ static int const MQTT_MAX_RETRY = 3;
         self.searchController.searchBar.delegate = self;
         self.searchController.searchBar.autocapitalizationType =  UITextAutocapitalizationTypeNone;
         self.searchController.hidesNavigationBarDuringPresentation = NO;
-        self.searchController.searchBar.tintColor = [ALApplozicSettings getColorForNavigationItem];
-        UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
-
         NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
+
+        if (@available(iOS 11.0, *)) {
+            [self.searchController.searchBar.heightAnchor constraintEqualToConstant:44].active = YES;
+        }
 
         self.searchController.searchBar.placeholder = searchLabel;
 
         if (@available(iOS 13.0, *)) {
-            self.searchController.searchBar.searchTextField.textColor = UIColor.whiteColor;
-            self.searchController.searchBar.searchTextField.leftView.tintColor = itemColor;
-            self.searchController.searchBar.searchTextField.tintColor = itemColor;
+            self.searchController.searchBar.searchTextField.backgroundColor = [UIColor whiteColor];
             self.searchController.automaticallyShowsCancelButton = YES;
         } else {
+            self.searchController.searchBar.tintColor = [ALApplozicSettings getColorForNavigationItem];
             [[UILabel appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTextColor:UIColor.whiteColor];
             self.searchController.searchBar.showsCancelButton = YES;
         }
@@ -1428,6 +1437,15 @@ static int const MQTT_MAX_RETRY = 3;
     }
 }
 
+-(void)keybordDidHideNotification {
+
+    if ([self.navigationController.visibleViewController isKindOfClass:self.class]
+        && [ALApplozicSettings isMessageSearchEnabled]
+        && [self.searchController.searchBar.text isEqualToString:@""]) {
+        self.navigationItem.titleView = nil;
+        [self setupNavigationButtons];
+    }
+}
 -(void)callLastSeenStatusUpdate
 {
     [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray * userDetailArray)
