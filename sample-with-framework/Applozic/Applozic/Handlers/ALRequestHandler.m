@@ -178,6 +178,8 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     }
     
     if ([ALUserDefaultsHandler getUserRoleType] == 8 && userId != nil) {
+        NSString *product = @"true";
+        [request setValue:product forHTTPHeaderField:@"Apz-Product-App"];
         [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Apz-AppId"];
     } else {
         [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
