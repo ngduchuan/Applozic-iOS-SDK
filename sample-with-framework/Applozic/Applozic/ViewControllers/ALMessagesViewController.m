@@ -88,6 +88,8 @@ static int const MQTT_MAX_RETRY = 3;
 
 @property (strong, nonatomic) ALSearchResultViewController *searchResultVC;
 
+@property (strong, nonatomic) ALCustomSearchBar *customSearchBar;
+
 @end
 
 // $$$$$$$$$$$$$$$$$$ Class Extension for solving Constraints Issues.$$$$$$$$$$$$$$$$$$$$
@@ -113,6 +115,7 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    self.extendedLayoutIncludesOpaqueBars = true;
 
     self.mqttRetryCount = 0;
     [self setUpTableView];
@@ -442,20 +445,16 @@ static int const MQTT_MAX_RETRY = 3;
         self.searchController.searchBar.delegate = self;
         self.searchController.searchBar.autocapitalizationType =  UITextAutocapitalizationTypeNone;
         self.searchController.hidesNavigationBarDuringPresentation = NO;
+
+        self.customSearchBar = [[ALCustomSearchBar alloc] initWithSearchBar:self.searchController.searchBar];
+
         NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
 
-        if (@available(iOS 11.0, *)) {
-            [self.searchController.searchBar.heightAnchor constraintEqualToConstant:44].active = YES;
-        }
-
         self.searchController.searchBar.placeholder = searchLabel;
-
         if (@available(iOS 13.0, *)) {
             self.searchController.searchBar.searchTextField.backgroundColor = [UIColor whiteColor];
             self.searchController.automaticallyShowsCancelButton = YES;
         } else {
-            self.searchController.searchBar.tintColor = [ALApplozicSettings getColorForNavigationItem];
-            [[UILabel appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTextColor:UIColor.whiteColor];
             self.searchController.searchBar.showsCancelButton = YES;
         }
         self.definesPresentationContext = YES;
@@ -466,9 +465,10 @@ static int const MQTT_MAX_RETRY = 3;
     [UIView animateWithDuration:0.5 animations:^{
         [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setLeftBarButtonItem:nil];
-        self.navigationItem.titleView = self.searchController.searchBar;
+        self.navigationItem.titleView = self.customSearchBar;
+        [self.customSearchBar show:YES];
     } completion:^(BOOL finished) {
-        [self.searchController.searchBar becomeFirstResponder];
+        [self.customSearchBar becomeFirstResponder];
     }];
 }
 
@@ -1829,6 +1829,8 @@ static int const MQTT_MAX_RETRY = 3;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 
     [self.searchResultVC clearAndShowEmptyView];
+    [self.customSearchBar show:NO];
+    [self.customSearchBar resignFirstResponder];
     self.navigationItem.titleView = nil;
     [self setupNavigationButtons];
 }
