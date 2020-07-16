@@ -16,7 +16,8 @@ import UIKit
         self.searchBar = searchBar
         super.init(frame: CGRect(x: 0, y: 0, width: searchBar.frame.width, height: 44))
         backgroundColor = .clear
-        self.searchBar.barTintColor = .lightGray
+        
+        self.searchBar.barTintColor = ALApplozicSettings.getColorForNavigation()
         for view in searchBar.subviews[0].subviews {
             if let cancelButton = view as? UIButton {
                 cancelButton.setTitleColor(.gray, for: .normal)
