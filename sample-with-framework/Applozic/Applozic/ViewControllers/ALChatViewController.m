@@ -3555,11 +3555,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
             if (sortedArray.count) {
                 [[self.alMessageWrapper messageArray] setArray:sortedArray];
-                /// Remove the date message if added at bottom
-                ALMessage *lastMessage = [self.alMessageWrapper messageArray].lastObject;
-                if (lastMessage && [lastMessage.type isEqualToString:@"100"]) {
-                    [[self.alMessageWrapper messageArray]removeLastObject];
-                }
             }
 
             [self.mActivityIndicator stopAnimating];
@@ -3594,10 +3589,19 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     NSArray *sortedArray = nil;
     if ([self.alMessageWrapper getUpdatedMessageArray].count) {
         NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
-          NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
+        NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
         sortedArray = [[self.alMessageWrapper getUpdatedMessageArray] sortedArrayUsingDescriptors:descriptors];
     }
-    return sortedArray;
+    NSMutableArray * sortedMessages = [[NSMutableArray alloc]init];
+    if (sortedArray.count) {
+        [sortedMessages addObjectsFromArray:sortedArray];
+        /// Remove the date message if added at bottom
+        ALMessage *lastMessage = sortedMessages.lastObject;
+        if (lastMessage && [lastMessage.type isEqualToString:@"100"]) {
+            [sortedMessages removeLastObject];
+        }
+    }
+    return [sortedMessages mutableCopy];
 }
 
 -(void) enableOrDisableChat:(BOOL)disable {

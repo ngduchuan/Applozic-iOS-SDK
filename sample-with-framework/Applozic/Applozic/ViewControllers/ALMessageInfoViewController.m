@@ -209,8 +209,6 @@
     self.firstAlphabet = (UILabel *)[contactCell viewWithTag:505];
     self.userImage = (UIImageView *)[contactCell viewWithTag:504];
     self.userName = (UILabel *)[contactCell viewWithTag:503];
-    self.dateLabel = (UILabel *)[contactCell viewWithTag:502];
-    [self.dateLabel setHidden:YES];
     [self.firstAlphabet setTextColor:[UIColor whiteColor]];
     self.userImage.layer.cornerRadius = self.userImage.frame.size.width/2;
     self.userImage.layer.masksToBounds = YES;
