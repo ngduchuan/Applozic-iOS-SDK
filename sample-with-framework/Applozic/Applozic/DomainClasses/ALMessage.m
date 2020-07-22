@@ -13,7 +13,6 @@
 #import "ALChannelService.h"
 #import "ALContactDBService.h"
 #import "ALUserDefaultsHandler.h"
-#import "ALContactService.h"
 
 @implementation ALMessage
 

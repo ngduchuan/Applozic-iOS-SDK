@@ -8,37 +8,32 @@
 
 import Foundation
 
-class ALSearchViewModel: NSObject {
+@objc public class ALSearchViewModel: NSObject {
+    @objc public override init() { }
+    static let forCellReuseIdentifier = "ContactCell"
     var messageList = [ALMessage]()
 
-    func numberOfSections() -> Int {
+    @objc public func numberOfSections() -> Int {
         return 1
     }
 
-    func numberOfRowsInSection() -> Int {
+    @objc public func numberOfRowsInSection() -> Int {
         return messageList.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.row < messageList.count && messageList.count > 1 ,
-            let cell = tableView.dequeueReusableCell(withIdentifier: ALConversationCell.forCellReuseIdentifier, for: indexPath) as? ALConversationCell else { return UITableViewCell()
-        }
-        return cell
-    }
-
-    func clear(){
+    @objc public func clear() {
         messageList.removeAll()
     }
 
-    func messageAtIndexPath(indexPath: IndexPath) -> ALMessage? {
+    @objc public func messageAtIndexPath(indexPath: IndexPath) -> ALMessage? {
         guard indexPath.row < messageList.count && messageList.count > 1 else {
             return nil
         }
         return messageList[indexPath.row] as ALMessage
     }
 
-    func searchMessage(with key: String,
-                       _ completion: @escaping ((_ result: Bool) -> Void)) {
+    @objc public func searchMessage(with key: String,
+                                    _ completion: @escaping ((_ result: Bool) -> Void)) {
         searchMessages(with: key) { messages, error in
             guard let messages = messages, messages.count > 0,  error == nil else {
                 print("Error \(String(describing: error)) while searching messages")
@@ -76,4 +71,5 @@ class ALSearchViewModel: NSObject {
             completion(messages, error)
         }
     }
+
 }
