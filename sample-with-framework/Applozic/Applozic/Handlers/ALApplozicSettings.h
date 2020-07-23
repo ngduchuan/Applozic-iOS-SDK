@@ -303,8 +303,8 @@ static NSString *const AL_MESSAGE_SEARCH = @"com.applozic.AL_MESSAGE_SEARCH";
 +(BOOL)getVisibilityForNoMoreConversationMsgVC;
 +(void)setVisibilityForNoMoreConversationMsgVC:(BOOL)flag;
 
-+(BOOL)getCustomNavRightButtonMsgVC;
-+(void)setCustomNavRightButtonMsgVC:(BOOL)flag;
++(BOOL)isRefreshChatButtonEnabledInMsgVc;
++(void)enableRefreshChatButtonInMsgVc:(BOOL)flag;
 
 +(UIColor *)getColorForToastText;
 +(void)setColorForToastText:(UIColor *)toastTextColor;

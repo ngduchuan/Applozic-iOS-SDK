@@ -1,5 +1,5 @@
 //
-//  ALm
+//  ALContactCell.m
 //  ChatApp
 //
 //  Copyright (c) 2015 AppLozic. All rights reserved.

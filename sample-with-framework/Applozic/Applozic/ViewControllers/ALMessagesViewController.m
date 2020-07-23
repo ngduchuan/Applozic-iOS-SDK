@@ -150,7 +150,7 @@ static int const MQTT_MAX_RETRY = 3;
     if (self.navigationItem.titleView == nil) {
         UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
 
-        NSMutableArray * array = [[NSMutableArray alloc] init];
+        NSMutableArray * rightSideNavItems = [[NSMutableArray alloc] init];
 
         if(![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
 
@@ -159,7 +159,7 @@ static int const MQTT_MAX_RETRY = 3;
                                                                                               target:self
                                                                                               action:@selector(navigationRightButtonAction)];
             [startNewButton setTintColor:itemColor];
-            [array addObject: startNewButton];
+            [rightSideNavItems addObject: startNewButton];
 
         }
 
@@ -169,20 +169,20 @@ static int const MQTT_MAX_RETRY = 3;
                                                                                              action:@selector(searchButtonAction)];
 
             [searchButton setTintColor:itemColor];
-            [array addObject: searchButton];
+            [rightSideNavItems addObject: searchButton];
         }
 
-        if([ALApplozicSettings getCustomNavRightButtonMsgVC])
+        if([ALApplozicSettings isRefreshChatButtonEnabledInMsgVc])
         {
             self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                target:self
                                                                                action:@selector(refreshMessageList)];
             [self.refreshButton setTintColor:itemColor];
-            [array addObject: self.refreshButton];
+            [rightSideNavItems addObject: self.refreshButton];
         }
 
-        if (array && array.count) {
-            [self.navigationItem setRightBarButtonItems:array];
+        if (rightSideNavItems && rightSideNavItems.count) {
+            [self.navigationItem setRightBarButtonItems:rightSideNavItems];
         }
 
         if (![ALUserDefaultsHandler isBackButtonHidden]) {

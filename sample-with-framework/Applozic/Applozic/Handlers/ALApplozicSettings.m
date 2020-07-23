@@ -524,13 +524,13 @@
     return   [userDefaults boolForKey:AL_NO_MORE_CONVERSATION_VISIBILITY];
 }
 
-+(void)setCustomNavRightButtonMsgVC:(BOOL)flag
++(void)enableRefreshChatButtonInMsgVc:(BOOL)flag
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     [userDefaults setBool:flag forKey:AL_CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
     [userDefaults synchronize];
 }
 
-+(BOOL)getCustomNavRightButtonMsgVC
++(BOOL)isRefreshChatButtonEnabledInMsgVc
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     return   [userDefaults boolForKey:AL_CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
 }
