@@ -629,7 +629,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                 completion(nil, error);
                 return;
             }
-            NSDictionary *response = [theJson valueForKey: @"response"];
+            NSString *response = [theJson valueForKey: @"response"];
             if (response == nil) {
                 ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
                 NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
@@ -697,7 +697,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                 completion(nil, error);
                 return;
             }
-            NSDictionary *response = [theJson valueForKey: @"response"];
+            NSString *response = [theJson valueForKey: @"response"];
             if (response == nil) {
                 ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
                 NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];

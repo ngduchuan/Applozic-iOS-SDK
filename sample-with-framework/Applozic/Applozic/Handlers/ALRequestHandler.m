@@ -150,6 +150,7 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
         [theRequest setHTTPMethod:@"PATCH"];
         [self addGlobalHeader:theRequest ofUserId:nil withAuthToken:[ALUserDefaultsHandler getAuthToken]];
         ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", theUrl);
+        completion(theRequest, nil);
     }];
 }
 
