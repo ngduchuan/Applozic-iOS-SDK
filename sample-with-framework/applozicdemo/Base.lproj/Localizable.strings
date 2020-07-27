@@ -311,4 +311,9 @@
 
 "RetryConnectionError" = "Failed to reconnect. Please try again later.";
 
+// Serach controller
+"SearchLabelText" = "Search...";
+"NoSearchResultFound" = "No results found";
+"SearchInfoText" = "Press search button to start searching...";
+
 

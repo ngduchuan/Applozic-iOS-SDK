@@ -1185,47 +1185,59 @@
     return message;
 }
 
--(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessageKey:(NSString *)messageKey withFileFlag:(BOOL)isFile{
+-(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile {
+    ALMessage * messageObject = message;
+    DB_Message *messageEntity = (DB_Message*)[self getMessageByKey:@"key" value:messageObject.key];
 
-    DB_Message * messageEntity = (DB_Message*)[self getMessageByKey:@"key" value:messageKey];
     NSData *imageData;
-    if (![messageEntity.fileMetaInfo.contentType hasPrefix:@"image"]) {
+    if (![messageObject.fileMeta.contentType hasPrefix:@"image"]) {
         imageData = data;
     } else {
         imageData = [ALUtilityClass compressImage: data];
     }
 
     NSString * docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSArray *componentsArray = [messageEntity.fileMetaInfo.name componentsSeparatedByString:@"."];
+    NSArray *componentsArray = [messageObject.fileMeta.name componentsSeparatedByString:@"."];
     NSString *fileExtension = [componentsArray lastObject];
-
     NSString * filePath;
 
-    if(isFile){
-
-        filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@",messageKey,fileExtension]];
+    if (isFile) {
+        filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@",messageEntity.key,fileExtension]];
 
         // If 'save video to gallery' is enabled then save to gallery
         if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
             UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, nil, nil);
         }
 
-        messageEntity.inProgress = [NSNumber numberWithBool:NO];
-        messageEntity.isUploadFailed=[NSNumber numberWithBool:NO];
-        messageEntity.filePath = [NSString stringWithFormat:@"%@_local.%@",messageKey,fileExtension];
-    }else{
-        filePath  = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_thumbnail_local.%@",messageKey,fileExtension]];
+        NSString * fileName = [NSString stringWithFormat:@"%@_local.%@",messageEntity.key,fileExtension];
+        if (messageEntity) {
+            messageEntity.inProgress = [NSNumber numberWithBool:NO];
+            messageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
+            messageEntity.filePath = fileName;
+        } else {
+            messageObject.inProgress = NO;
+            messageObject.isUploadFailed = NO;
+            messageObject.imageFilePath = fileName;
+        }
+    } else {
 
-        messageEntity.fileMetaInfo.thumbnailFilePath = [NSString stringWithFormat:@"%@_thumbnail_local.%@",messageKey,fileExtension];
+        filePath  = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_thumbnail_local.%@",message.key,fileExtension]];
+
+        NSString * fileName =  [NSString stringWithFormat:@"%@_thumbnail_local.%@",message.key, fileExtension];
+        if (messageEntity) {
+            messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
+        } else {
+            messageObject.fileMeta.thumbnailFilePath = fileName;
+        }
     }
 
     [imageData writeToFile:filePath atomically:YES];
 
-    [[ALDBHandler sharedInstance] saveContext];
-
-    ALMessage * almessage = [[ALMessageDBService new ] createMessageEntity:messageEntity];
-
-    return almessage;
+    if (messageEntity) {
+        [[ALDBHandler sharedInstance] saveContext];
+        return [[ALMessageDBService new] createMessageEntity:messageEntity];
+    }
+    return messageObject;
 }
 
 
