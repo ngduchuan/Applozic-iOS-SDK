@@ -738,8 +738,7 @@ static const int SHOW_GROUP = 102;
         contact.email = dbContact.email;
         contact.localImageResourceName = dbContact.localImageResourceName;
         contact.contactType = dbContact.contactType;
-        
-        
+        contact.status = dbContact.status;
         [self.contactList addObject:contact];
     }
     

@@ -172,6 +172,7 @@
         if(contact.notificationAfterTime && [contact.notificationAfterTime longValue]>0){
             userContact.notificationAfterTime = contact.notificationAfterTime;
         }
+        userContact.status = contact.status;
     }
     
     NSError *error = [dbHandler saveContext];
@@ -266,7 +267,7 @@
     contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
     contact.roleType = dbContact.roleType;
     contact.notificationAfterTime = dbContact.notificationAfterTime;
-    
+    contact.status = dbContact.status;
     return contact;
 }
 
@@ -398,7 +399,7 @@
         if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
             dbContact.notificationAfterTime = userDetail.notificationAfterTime;
         }
-        
+        dbContact.status = userDetail.status;
     }
     else
     {
@@ -419,6 +420,7 @@
         if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
             contact.notificationAfterTime = userDetail.notificationAfterTime;
         }
+        contact.status = userDetail.status;
         [self addContact:contact];
     }
     
@@ -645,11 +647,10 @@
         contact.roleType = dbContact.roleType;
         contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
         contact.notificationAfterTime =  dbContact.notificationAfterTime;
+        contact.status = dbContact.status;
         [contactList addObject:contact];
     }
-
     return contactList;
-    
 }
 
 -(NSNumber *)getOverallUnreadCountForContactsFromDB
@@ -692,6 +693,7 @@
     if(updatedContact.notificationAfterTime && [updatedContact.notificationAfterTime longValue]>0){
         originalContact.notificationAfterTime = updatedContact.notificationAfterTime;
     }
+    originalContact.status = updatedContact.status;
     return originalContact;
 }
 
@@ -737,6 +739,7 @@
     userDetail.deletedAtTime = dbContact.deletedAtTime;
     userDetail.roleType = dbContact.roleType;
     userDetail.notificationAfterTime =  dbContact.notificationAfterTime;
+    userDetail.status = dbContact.status;
     return userDetail;
 }
 
