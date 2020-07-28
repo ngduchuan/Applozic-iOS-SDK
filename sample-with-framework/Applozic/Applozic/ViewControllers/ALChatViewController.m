@@ -3513,21 +3513,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (messages.count == 0) {
                 [self.mActivityIndicator stopAnimating];
                 [self showNoConversationLabel];
+                return;
             }
 
             [self updateMessagesInArray:messages];
 
-            CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
             dispatch_async(dispatch_get_main_queue(), ^{
+                CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
                 [self.mActivityIndicator stopAnimating];
                 [self.mTableView reloadData];
+
+                if (isScrollToBottom) {
+                    [self scrollTableViewToBottomWithAnimation:NO];
+                } else {
+                    CGFloat newTableViewHeight = self.mTableView.contentSize.height;
+                    self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
+                }
             });
-            if (isScrollToBottom) {
-                [self scrollTableViewToBottomWithAnimation:NO];
-            } else {
-                CGFloat newTableViewHeight = self.mTableView.contentSize.height;
-                self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
-            }
+            [self markConversationRead];
         } else {
             [self.mActivityIndicator stopAnimating];
             [self showNoConversationLabel];
@@ -3567,6 +3570,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (messages.count == 0) {
                 [self.mActivityIndicator stopAnimating];
                 [self showNoConversationLabel];
+                return;
             }
 
             [self updateMessagesInArray:messages];
@@ -4836,16 +4840,13 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 - (void)onDownloadCompleted:(ALMessage *)alMessage {
 
-    if(alMessage)
-    {
-
+    if (alMessage) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSIndexPath * path = [self getIndexPathForMessage:alMessage.key];
-            if(path.row < [self.alMessageWrapper getUpdatedMessageArray].count){
+            if ([self isValidIndexPath:path]) {
                 [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-                [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
+                [self.mTableView reloadSections:[NSIndexSet indexSetWithIndex:path.section] withRowAnimation:UITableViewRowAnimationNone];
             }
-
         });
     }
 }
@@ -4879,12 +4880,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey{
 
-    if(alMessage != nil){
-
+    if (alMessage != nil) {
         NSIndexPath * path = [self getIndexPathForMessage:oldMessageKey];
-        if(path.row < [self.alMessageWrapper getUpdatedMessageArray].count){
+        if([self isValidIndexPath:path]){
             [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-            [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
+            [self.mTableView reloadSections:[NSIndexSet indexSetWithIndex:path.section] withRowAnimation:UITableViewRowAnimationNone];
         }
         [self updateUserDisplayNameWithMessage:alMessage withDisplayName:self.displayName];
     }
@@ -4911,6 +4911,13 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             }];
         }
     }
+}
+
+-(BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
+    return self.mTableView &&
+    indexPath.section < [self.mTableView numberOfSections] &&
+    indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section] &&
+    indexPath.row < [self.alMessageWrapper getUpdatedMessageArray].count;
 }
 
 @end
