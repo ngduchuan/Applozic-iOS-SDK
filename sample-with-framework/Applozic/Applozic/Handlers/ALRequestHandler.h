@@ -10,33 +10,24 @@
 
 @interface ALRequestHandler : NSObject
 
-+(void) createGETRequestWithUrlString:(NSString *)urlString
-                          paramString:(NSString *)paramString
-                       withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
++(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *)urlString
+                                           paramString:(NSString *)paramString;
 
-+(void) createGETRequestWithUrlString:(NSString *)urlString
-                          paramString:(NSString *)paramString
-                             ofUserId:(NSString *)userId
-                       withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
++(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *)urlString
+                                           paramString:(NSString *)paramString
+                                              ofUserId:(NSString *)userId;
 
-+(void ) createPOSTRequestWithUrlString:(NSString *)urlString
-                            paramString:(NSString *)paramString
-                               ofUserId:(NSString *)userId
-                         withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
++(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *)urlString
+                                            paramString:(NSString *)paramString
+                                               ofUserId:(NSString *)userId;
 
-+(void) createPOSTRequestWithUrlString:(NSString *)urlString
-                           paramString:(NSString *)paramString
-                        withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
++(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *)urlString
+                                            paramString:(NSString *)paramString;
 
 +(NSMutableURLRequest *) createGETRequestWithUrlStringWithoutHeader:(NSString *)urlString
                                                         paramString:(NSString *)paramString;
 
-+(void) createPatchRequestWithUrlString:(NSString *)urlString
-                                             paramString:(NSString *)paramString
-                         withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion;
++(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *)urlString
+                                             paramString:(NSString *)paramString;
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrl:(NSString *)urlString
-                                      paramString:(NSString *)paramString
-                                    withAuthToken:(NSString *)authToken
-                                         ofUserId:(NSString *)userId;
 @end

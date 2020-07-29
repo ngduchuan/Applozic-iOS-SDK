@@ -161,7 +161,9 @@ static dispatch_semaphore_t semaphore;
     }
 
     ALSLog(ALLoggerSeverityInfo, @"FILE_PATH : %@",filePath);
-    [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil withCompletion:^(NSMutableURLRequest *request, NSError *error) {
+    NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
+
+    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
 
         if (error) {
             if(self.attachmentProgressDelegate){
@@ -180,7 +182,7 @@ static dispatch_semaphore_t semaphore;
                 NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
                 // set Content-Type in HTTP header
                 NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-                [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+                [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
                 // post body
                 NSMutableData *body = [NSMutableData data];
                 //Populate a dictionary with all the regular values you would like to send.
@@ -213,9 +215,9 @@ static dispatch_semaphore_t semaphore;
                 //Close off the request with the boundary
                 [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
                 // setting the body of the post to the request
-                [request setHTTPBody:body];
+                [urlRequest setHTTPBody:body];
                 // set URL
-                [request setURL:[NSURL URLWithString:uploadURL]];
+                [urlRequest setURL:[NSURL URLWithString:uploadURL]];
 
                 NSMutableArray * nsURLSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
@@ -238,7 +240,7 @@ static dispatch_semaphore_t semaphore;
                 }
 
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-                [self startSession: session withRequest: request];
+                [self startSession: session withRequest: urlRequest];
             });
         }else{
             ALSLog(ALLoggerSeverityError, @"<<< ERROR >>> :: FILE DO NOT EXIT AT GIVEN PATH");
@@ -413,7 +415,9 @@ static dispatch_semaphore_t semaphore;
         completion(nil, fileError);
         return;
     }
-    [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil withCompletion:^(NSMutableURLRequest *request, NSError *error) {
+    NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
+
+    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
 
         if (error) {
             completion(nil, error);
@@ -425,7 +429,7 @@ static dispatch_semaphore_t semaphore;
             NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
             // set Content-Type in HTTP header
             NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-            [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+            [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
             // post body
             NSMutableData *body = [NSMutableData data];
             NSString *FileParamConstant = @"file";
@@ -445,14 +449,14 @@ static dispatch_semaphore_t semaphore;
             //Close off the request with the boundary
             [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
             // setting the body of the post to the request
-            [request setHTTPBody:body];
+            [urlRequest setHTTPBody:body];
             // set URL
-            [request setURL:[NSURL URLWithString:uploadURL]];
+            [urlRequest setURL:[NSURL URLWithString:uploadURL]];
 
             NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
 
-            NSURLSessionDataTask *nsurlSessionDataTask  = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSURLSessionDataTask *nsurlSessionDataTask  = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     completion(data,error);
                 });
@@ -493,13 +497,13 @@ static dispatch_semaphore_t semaphore;
         theRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
         completion(theRequest, nil);
     } else {
-        [ALRequestHandler createGETRequestWithUrlString: fileURL paramString:nil withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
-
+        NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString: fileURL paramString:nil];
+        [ALResponseHandler authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
             if (error) {
                 completion(nil, error);
                 return;
             }
-            completion(theRequest, nil);
+            completion(urlRequest, nil);
         }];
     }
 }
