@@ -1661,6 +1661,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return [[UITableViewCell alloc]init];
+    }
 
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
 
@@ -1824,6 +1827,11 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.sendMessageTextView resignFirstResponder];
+
+    if (self.alMessageWrapper.messageArray.count == 0) {
+        return nil;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"])
     {
