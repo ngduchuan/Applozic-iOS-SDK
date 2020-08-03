@@ -862,8 +862,14 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         };
         req.resultType = NSUpdatedObjectsCountResultType;
         ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-        NSBatchUpdateResult *res = (NSBatchUpdateResult *)[dbHandler.managedObjectContext executeRequest:req error:nil];
-        ALSLog(ALLoggerSeverityInfo, @"%@ objects updated", res.result);
+
+        NSError * fetchError = nil;
+
+        NSBatchUpdateResult *batchUpdateResult = (NSBatchUpdateResult *)[dbHandler executeRequestForNSBatchUpdateResult:req withError:&fetchError];
+
+        if (batchUpdateResult) {
+            ALSLog(ALLoggerSeverityInfo, @"%@ markConversationAsRead updated rows", batchUpdateResult.result);
+        }
     }
     return messages.count;
 }

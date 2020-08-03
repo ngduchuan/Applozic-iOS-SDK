@@ -246,7 +246,6 @@ dispatch_queue_t dispatchGlobalQueue;
     return nil;
 }
 
-
 -(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
 
     if (self.managedObjectContext != nil) {
@@ -292,4 +291,13 @@ dispatch_queue_t dispatchGlobalQueue;
     }
     return nil;
 }
+
+-(NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError {
+    NSBatchUpdateResult *batchUpdateResult = nil;
+    if (self.managedObjectContext) {
+        batchUpdateResult = (NSBatchUpdateResult *)[self.managedObjectContext executeRequest:updateRequest error:fetchError];
+    }
+    return batchUpdateResult;
+}
+
 @end
