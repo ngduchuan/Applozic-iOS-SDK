@@ -32,22 +32,9 @@ dispatch_queue_t dispatchGlobalQueue;
 }
 
 - (id)init {
-    
     if (self = [super init]) {
 
 
-    }
-
-    if (@available(iOS 10.0, *)) {
-        NSPersistentContainer * container = [[NSPersistentContainer alloc] initWithName:@"AppLozic" managedObjectModel:self.managedObjectModel];
-
-        [container loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription* store, NSError * error) {
-            ALSLog(ALLoggerSeverityInfo, @"pers url: %@",container.persistentStoreCoordinator.persistentStores.firstObject.URL);
-            if(error != nil) {
-                ALSLog(ALLoggerSeverityError, @"%@", error);
-            }
-        }];
-        self.persistentContainer = container;
     }
     return self;
 }

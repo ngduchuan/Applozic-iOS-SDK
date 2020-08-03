@@ -512,22 +512,26 @@
     //Runs at Opening AND Leaving ChatVC AND Opening MessageList..
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_Message" inManagedObjectContext:dbHandler.managedObjectContext];
-    
-    NSPredicate *predicate;
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"status != %i AND type==%@ ",DELIVERED_AND_READ,@"4"];
-    
-    if (contactId) {
-        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"%K=%@",@"contactId",contactId];
-        NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"groupId==%d OR groupId==%@",0,NULL];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
-    } else {
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate2]];
+
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
+
+    if (entity) {
+        NSPredicate *predicate;
+        NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"status != %i AND type==%@ ",DELIVERED_AND_READ,@"4"];
+
+        if (contactId) {
+            NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"%K=%@",@"contactId",contactId];
+            NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"groupId==%d OR groupId==%@",0,NULL];
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
+        } else {
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate2]];
+        }
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        return [dbHandler executeFetchRequest:fetchRequest withError:nil];
     }
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:nil];
-    return result;
+
+    return nil;
 }
 
 -(BOOL)setBlockUser:(NSString *)userId andBlockedState:(BOOL)flag

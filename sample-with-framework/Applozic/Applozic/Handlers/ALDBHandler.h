@@ -21,8 +21,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (strong, nonatomic) NSPersistentContainer *persistentContainer;
-
 - (NSManagedObjectContext *)privateContext;
 
 - (NSError *)saveContext;
