@@ -81,20 +81,18 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iD = %@",Id];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-    if (result.count)
-    {
-        DB_ConversationProxy *proxy = [result objectAtIndex:0];
-        return proxy;
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iD = %@",Id];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        if (result.count) {
+            DB_ConversationProxy *proxy = [result objectAtIndex:0];
+            return proxy;
+        }
     }
-    else
-    {
-        return nil;
-    }
+    return nil;
 }
 
 -(NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId {
@@ -117,13 +115,13 @@
         NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
         if (result.count) {
             return result;
-
         }
     }
     return nil;
 }
 
--(NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId andTopicId:(NSString*)topicId{
+-(NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId
+                                        andTopicId:(NSString*)topicId {
     
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -140,10 +138,8 @@
         NSError *fetchError = nil;
 
         NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        if (result.count){
+        if (result.count) {
             return result;
-        } else{
-            return nil;
         }
     }
     return nil;
@@ -155,19 +151,20 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 
-    NSPredicate *predicate;
-    if (channelKey) {
-        predicate = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
+    if (entity) {
+        NSPredicate *predicate;
+        if (channelKey) {
+            predicate = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
+        }
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        if (result.count) {
+            return result;
+        }
     }
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-    if (result.count){
-        return result;
-    } else {
-        return nil;
-    }
+    return nil;
 }
 
 @end
