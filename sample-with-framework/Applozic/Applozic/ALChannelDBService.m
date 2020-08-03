@@ -31,9 +31,11 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     newUserX.userKey = userId;
     
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    [self createChannelUserXEntity: newUserX];
-
-    NSError *error = [theDBHandler saveContext];
+    DB_CHANNEL_USER_X * channelUserX =  [self createChannelUserXEntity: newUserX];
+    NSError *error = nil;
+    if (channelUserX) {
+        error = [theDBHandler saveContext];
+    }
 
     if(error) {
         ALSLog(ALLoggerSeverityError, @"ERROR IN Add member to channel  %@",error);
@@ -63,27 +65,31 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     if(!theChannelEntity)
     {
-        theChannelEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DB_CHANNEL" inManagedObjectContext:theDBHandler.managedObjectContext];
+        theChannelEntity = (DB_CHANNEL *)[theDBHandler insertNewObjectForEntityForName:@"DB_CHANNEL"];
     }
-    theChannelEntity.channelDisplayName = channel.name;
-    theChannelEntity.channelKey = channel.key;
-    theChannelEntity.clientChannelKey = channel.clientChannelKey;
-    if(channel.userCount)
-    {
-        theChannelEntity.userCount = channel.userCount;
+
+    if (theChannelEntity) {
+        theChannelEntity.channelDisplayName = channel.name;
+        theChannelEntity.channelKey = channel.key;
+        theChannelEntity.clientChannelKey = channel.clientChannelKey;
+        if(channel.userCount)
+        {
+            theChannelEntity.userCount = channel.userCount;
+        }
+        theChannelEntity.notificationAfterTime = channel.notificationAfterTime;
+        theChannelEntity.deletedAtTime = channel.deletedAtTime;
+        theChannelEntity.parentGroupKey = channel.parentKey;
+        theChannelEntity.parentClientGroupKey = channel.parentClientKey;
+        theChannelEntity.channelImageURL = channel.channelImageURL;
+        theChannelEntity.type = channel.type;
+        theChannelEntity.adminId = channel.adminKey;
+        if(channel.unreadCount != nil && [channel.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
+            theChannelEntity.unreadCount = channel.unreadCount;
+        }
+        theChannelEntity.metadata = channel.metadata.description;
+        theChannelEntity.category = channel.category;
     }
-    theChannelEntity.notificationAfterTime = channel.notificationAfterTime;
-    theChannelEntity.deletedAtTime = channel.deletedAtTime;
-    theChannelEntity.parentGroupKey = channel.parentKey;
-    theChannelEntity.parentClientGroupKey = channel.parentClientKey;
-    theChannelEntity.channelImageURL = channel.channelImageURL;
-    theChannelEntity.type = channel.type;
-    theChannelEntity.adminId = channel.adminKey;
-    if(channel.unreadCount != nil && [channel.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
-        theChannelEntity.unreadCount = channel.unreadCount;
-    }
-    theChannelEntity.metadata = channel.metadata.description;
-    theChannelEntity.category = channel.category;
+
     return theChannelEntity;
 }
 
@@ -91,22 +97,26 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:theDBHandler.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", key];
-    [fetchRequest setPredicate:predicate];
     
-    NSError *error = nil;
-    NSArray *array = [theDBHandler.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSEntityDescription *entity = [theDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
     
-    if(array.count)
-    {
-        for(NSManagedObject *manageOBJ in array)
+    if (entity) {
+        [fetchRequest setEntity:entity];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", key];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [theDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if(result.count)
         {
-            [theDBHandler.managedObjectContext deleteObject:manageOBJ];
+            for(NSManagedObject *manageOBJ in result)
+            {
+                [theDBHandler deleteObject:manageOBJ];
+            }
+            [theDBHandler saveContext];
         }
     }
-    [theDBHandler saveContext];
 }
 
 -(void)insertChannelUserX:(NSMutableArray *)channelUserXList
@@ -131,37 +141,39 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
--(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX  withContext:(NSManagedObjectContext *) context{
+-(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX  withContext:(NSManagedObjectContext *)context {
 
-    DB_CHANNEL_USER_X * theChannelUserXEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:context];
+    ALDBHandler * helper = [ALDBHandler sharedInstance];
 
-    if(channelUserX)
+    DB_CHANNEL_USER_X * theChannelUserXEntity = (DB_CHANNEL_USER_X *)[helper insertNewObjectForEntityForName:@"DB_CHANNEL_USER_X" withManagedObjectContext:context];
+
+    if(channelUserX && theChannelUserXEntity)
     {
         theChannelUserXEntity.channelKey = channelUserX.key;
         theChannelUserXEntity.userId = channelUserX.userKey;
         if(channelUserX.parentKey != nil){
             theChannelUserXEntity.parentGroupKey = channelUserX.parentKey;
         }
-
+        
         if(channelUserX.role != nil){
             theChannelUserXEntity.role = channelUserX.role;
         }
     }
-
+    
     return theChannelUserXEntity;
 }
 
 -(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX
 {
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    DB_CHANNEL_USER_X * theChannelUserXEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:theDBHandler.managedObjectContext];
     
-    if(channelUserX)
+    DB_CHANNEL_USER_X * theChannelUserXEntity = (DB_CHANNEL_USER_X *)[theDBHandler insertNewObjectForEntityForName:@"DB_CHANNEL_USER_X"];
+    
+    if(channelUserX && theChannelUserXEntity)
     {
         theChannelUserXEntity.channelKey = channelUserX.key;
         theChannelUserXEntity.userId = channelUserX.userKey;
         theChannelUserXEntity.parentGroupKey = channelUserX.parentKey;
-        //        theChannelUserXEntity.status = channelUserX.status;
     }
     
     return theChannelUserXEntity;
@@ -171,33 +183,29 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    NSManagedObjectContext * managedObjectContext = theDBHandler.managedObjectContext;
-
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:managedObjectContext];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:@"userId"]];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
-    [fetchRequest setPredicate:predicate];
-
-    NSError *error = nil;
-    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (error)
-    {
-        ALSLog(ALLoggerSeverityError, @"ERROR IN FETCH MEMBER LIST");
-    }
-    else
-    {
-
-        NSMutableArray* users = [NSMutableArray arrayWithArray:fetchedObjects];
-
-        for (NSDictionary * theDictionary in users)
-        {
-            [memberList addObject:[theDictionary valueForKey:@"userId"]];
+    
+    NSEntityDescription *entity = [theDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
+    
+    if (entity) {
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:@"userId"]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [theDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count) {
+            NSMutableArray* users = [NSMutableArray arrayWithArray:result];
+            
+            for (NSDictionary * theDictionary in users)
+            {
+                [memberList addObject:[theDictionary valueForKey:@"userId"]];
+            }
         }
     }
-
     return memberList;
 }
 
@@ -209,12 +217,12 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
     DB_CHANNEL *dbChannel = [self getChannelByKey:key];
     ALChannel *alChannel = [[ALChannel alloc] init];
-
+    
     if (!dbChannel)
     {
         return nil;
     }
-
+    
     alChannel.parentKey = dbChannel.parentGroupKey;
     alChannel.parentClientKey = dbChannel.parentClientGroupKey;
     alChannel.key = dbChannel.channelKey;
@@ -240,24 +248,27 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        return dbChannel;
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count)
+        {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            return dbChannel;
+        }
+        else
+        {
+            return nil;
+        }
     }
-    else
-    {
-        return nil;
-    }
+    return nil;
 }
 
 
@@ -269,29 +280,35 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 -(DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
     
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelDisplayName = %@",channelName];
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"type = %i", CONTACT_GROUP];
-    NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
-    
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate: combinePredicate];
-    
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        return dbChannel;
+    if (entity) {
+        
+        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelDisplayName = %@",channelName];
+        NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"type = %i", CONTACT_GROUP];
+        NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
+        
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate: combinePredicate];
+        
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:nil];
+        
+        if (result.count)
+        {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            return dbChannel;
+        }
+        else
+        {
+            return nil;
+        }
     }
-    else
-    {
-        return nil;
-    }
+    
+    return nil;
+    
 }
 
 -(ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
@@ -320,50 +337,56 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey == %@ AND userId == %@", channelKey, userId];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
-        return dbChannelUserX;
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey == %@ AND userId == %@", channelKey, userId];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count > 0 ) {
+            DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
+            return dbChannelUserX;
+        } else {
+            return nil;
+        }
     }
-    else
-    {
-        return nil;
-    }
+    
+    return nil;
 }
 
 
 -(DB_CHANNEL_USER_X *)getChannelUserX:channelKey{
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
-        return dbChannelUserX;
+    if (entity) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count)
+        {
+            DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
+            return dbChannelUserX;
+        }
+        else
+        {
+            return nil;
+        }
     }
-    else
-    {
-        return nil;
-    }
+    return nil;
 }
-
 
 
 -(ALChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId{
@@ -390,59 +413,64 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     
     DB_CHANNEL_USER_X *channelUserX =  [self getChannelUserXByUserId:channelKey andUserId:userId];
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-    
-    channelUserX.parentGroupKey = parentKey;
-    [dbHandler saveContext];
+    if (channelUserX) {
+        ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+        channelUserX.parentGroupKey = parentKey;
+        [dbHandler saveContext];
+    }
 }
 
 -(void)updateRoleInChannelUserX:(NSNumber *)channelKey andUserId:(NSString *)userId withRoleType:(NSNumber*)role
 {
     
     DB_CHANNEL_USER_X *channelUserX = [self getChannelUserXByUserId:channelKey andUserId:userId];
-    
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-    
-    channelUserX.role = role;
-    [dbHandler saveContext];
+
+    if (channelUserX) {
+        ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+        channelUserX.role = role;
+        [dbHandler saveContext];
+    }
 }
 
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key {
-
+    
     return [self getListOfAllUsersInChannel:key withLimit:0];
 }
 
 
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key withLimit:(NSUInteger) fetchLimit {
-
+    
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     if (fetchLimit > 0) {
         fetchRequest.fetchLimit = fetchLimit;
     }
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X"
-                                              inManagedObjectContext:dbHandler.managedObjectContext];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-
-    NSError *fetchError = nil;
-    NSArray *resultArray = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-
-    if (resultArray.count) {
-        for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
-        {
-            NSString * memberUserId = dbChannelUserX.userId;
-            if (memberUserId != nil) {
-                [memberList addObject:memberUserId];
+    
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
+    
+    if (entity) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        NSArray *resultArray = [dbHandler executeFetchRequest:fetchRequest withError:nil];
+        
+        if (resultArray.count) {
+            for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
+            {
+                NSString * memberUserId = dbChannelUserX.userId;
+                if (memberUserId != nil) {
+                    [memberList addObject:memberUserId];
+                }
             }
+            return memberList;
+        } else {
+            return nil;
         }
-        return memberList;
-    } else {
-        return nil;
     }
+    
+    return nil;
 }
 
 -(NSUInteger)getCountOfNumberOfUsers:(NSNumber *)channelKey {
@@ -452,12 +480,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     [theRequest setIncludesSubentities:NO];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
     [theRequest setPredicate:predicate];
-    NSError *err;
-    NSUInteger count = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:&err];
-    if (err == nil) {
-        return count;
-    }
-    return 0;
+    NSUInteger count = [theDbHandler countForFetchRequest:theRequest];
+    return count;
 }
 
 //------------------------------------------
@@ -486,36 +510,39 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     NSString *listString = @"";
     NSString *str = @"";
+    NSMutableArray *listOfUsersinChannel = [self getListOfAllUsersInChannel:key withLimit:CHANNEL_MEMBER_FETCH_LMIT];
 
-    NSMutableArray * tempArray = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:key withLimit:CHANNEL_MEMBER_FETCH_LMIT]];
+    if (listOfUsersinChannel.count) {
+        NSMutableArray * tempArray = [NSMutableArray arrayWithArray:listOfUsersinChannel];
 
-    if(!tempArray ||  tempArray.count == 0)
-    {
-        return @"";
-    }
-    NSMutableArray * listArray = [NSMutableArray new];
-    ALContactDBService *contactDB = [ALContactDBService new];
-    for(NSString *userID in tempArray)
-    {
-        ALContact *contact = [contactDB loadContactByKey:@"userId" value:userID];
-        [listArray addObject: [contact getDisplayName]];
-    }
-    if(listArray.count == 1)
-    {
-        listString = listArray[0];
-    }
-    else if(listArray.count == 2)
-    {
-        listString = [NSString stringWithFormat:@"%@, %@", listArray[0], listArray[1]];
-    }
-    else if(listArray.count > 2)
-    {
-        NSInteger countOfUsers = [self getCountOfNumberOfUsers:key];
+        if(!tempArray ||  tempArray.count == 0)
+        {
+            return @"";
+        }
+        NSMutableArray * listArray = [NSMutableArray new];
+        ALContactDBService *contactDB = [ALContactDBService new];
+        for(NSString *userID in tempArray)
+        {
+            ALContact *contact = [contactDB loadContactByKey:@"userId" value:userID];
+            [listArray addObject: [contact getDisplayName]];
+        }
+        if(listArray.count == 1)
+        {
+            listString = listArray[0];
+        }
+        else if(listArray.count == 2)
+        {
+            listString = [NSString stringWithFormat:@"%@, %@", listArray[0], listArray[1]];
+        }
+        else if(listArray.count > 2)
+        {
+            NSInteger countOfUsers = [self getCountOfNumberOfUsers:key];
 
-        if (countOfUsers > 2) {
-            int counter = (int)countOfUsers - 2;
-            str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
-            listString = [NSString stringWithFormat:@"%@, %@, %@", listArray[0], listArray[1], str];
+            if (countOfUsers > 2) {
+                int counter = (int)countOfUsers - 2;
+                str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
+                listString = [NSString stringWithFormat:@"%@, %@, %@", listArray[0], listArray[1], str];
+            }
         }
     }
 
@@ -554,27 +581,24 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X"
-                                              inManagedObjectContext:theDBHandler.managedObjectContext];
-    [fetchRequest setEntity:entity];
+    NSEntityDescription *entity = [theDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
     
-    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"userId = %@", userId];
-    NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
-    [fetchRequest setPredicate: combinePredicate];
-    
-    NSError *error = nil;
-    NSArray *array = [theDBHandler.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if(array.count)
-    {
-        NSManagedObject *manageOBJ = [array objectAtIndex:0];
-        [theDBHandler.managedObjectContext deleteObject:manageOBJ];
-        [theDBHandler saveContext];
-    }
-    else
-    {
-        ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+    if (entity) {
+        [fetchRequest setEntity:entity];
+        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
+        NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"userId = %@", userId];
+        NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
+        [fetchRequest setPredicate: combinePredicate];
+        
+        NSError *error = nil;
+        NSArray *memberArray = [theDBHandler executeFetchRequest:fetchRequest withError:&error];
+        if (memberArray.count) {
+            NSManagedObject *manageOBJ = [memberArray objectAtIndex:0];
+            [theDBHandler deleteObject:manageOBJ];
+            [theDBHandler saveContext];
+        } else {
+            ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+        }
     }
 }
 
@@ -583,31 +607,32 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     //Delete channel
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL"
-                                              inManagedObjectContext:theDBHandler.managedObjectContext];
-    [fetchRequest setEntity:entity];
+    NSEntityDescription *entity = [theDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
-    [fetchRequest setPredicate: predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [theDBHandler.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    //    NSLog(@"CHANEL KEY = %@", channelKey);
-    //    NSLog(@"ARRAY COUNT = %lu", (unsigned long)array.count);
-    if(array.count)
-    {
-        NSManagedObject *manageOBJ = [array objectAtIndex:0];
-        [theDBHandler.managedObjectContext deleteObject:manageOBJ];
-        [theDBHandler saveContext];
-
-        // Delete all members
-        [self deleteMembers:channelKey];
+    if (entity) {
+        [fetchRequest setEntity:entity];
         
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
+        [fetchRequest setPredicate: predicate];
+        
+        NSError *error = nil;
+        NSArray *array = [theDBHandler executeFetchRequest:fetchRequest withError:&error];
+        if(array.count)
+        {
+            NSManagedObject *manageOBJ = [array objectAtIndex:0];
+            [theDBHandler deleteObject:manageOBJ];
+            [theDBHandler saveContext];
+            
+            // Delete all members
+            [self deleteMembers:channelKey];
+            
+        }
+        else
+        {
+            ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
+        }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
-    }
+    
 }
 
 #pragma mark- Fetch All Channels
@@ -617,42 +642,43 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL"
-                                              inManagedObjectContext:theDBHandler.managedObjectContext];
-    [fetchRequest setEntity:entity];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type != %i",CONTACT_GROUP];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [theDBHandler.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSEntityDescription *entity = [theDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     NSMutableArray * alChannels = [[NSMutableArray alloc] init];
-    if(array.count)
-    {
-        for(DB_CHANNEL * dbChannel in array)
+    
+    if (entity) {
+        [fetchRequest setEntity:entity];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type != %i",CONTACT_GROUP];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSArray *resultArray = [theDBHandler executeFetchRequest:fetchRequest withError:nil];
+        if(resultArray.count)
         {
-            ALChannel* channel = [[ALChannel alloc] init];
-            channel.parentKey = dbChannel.parentGroupKey;
-            channel.parentClientKey = dbChannel.parentClientGroupKey;
-            channel.key = dbChannel.channelKey;
-            channel.clientChannelKey = dbChannel.clientChannelKey;
-            channel.name = dbChannel.channelDisplayName;
-            channel.adminKey = dbChannel.adminId;
-            channel.type = dbChannel.type;
-            channel.unreadCount = dbChannel.unreadCount;
-            channel.channelImageURL = dbChannel.channelImageURL;
-            channel.deletedAtTime = dbChannel.deletedAtTime;
-            channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
-            channel.userCount = dbChannel.userCount;
-            channel.category = dbChannel.category;
-            [alChannels addObject:channel];
+            for(DB_CHANNEL * dbChannel in resultArray)
+            {
+                ALChannel* channel = [[ALChannel alloc] init];
+                channel.parentKey = dbChannel.parentGroupKey;
+                channel.parentClientKey = dbChannel.parentClientGroupKey;
+                channel.key = dbChannel.channelKey;
+                channel.clientChannelKey = dbChannel.clientChannelKey;
+                channel.name = dbChannel.channelDisplayName;
+                channel.adminKey = dbChannel.adminId;
+                channel.type = dbChannel.type;
+                channel.unreadCount = dbChannel.unreadCount;
+                channel.channelImageURL = dbChannel.channelImageURL;
+                channel.deletedAtTime = dbChannel.deletedAtTime;
+                channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+                channel.userCount = dbChannel.userCount;
+                channel.category = dbChannel.category;
+                [alChannels addObject:channel];
+            }
+        } else {
+            ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
         }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
-    }
+    
     return alChannels;
 }
 
@@ -661,11 +687,14 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     NSNumber * unreadCount;
     int count = 0;
     NSMutableArray * channelArray = [NSMutableArray arrayWithArray:[self getAllChannelKeyAndName]];
-    for(ALChannel *alChannel in channelArray)
-    {
-        count = count + [alChannel.unreadCount intValue];
+    if (channelArray.count) {
+        for(ALChannel *alChannel in channelArray)
+        {
+            count = count + [alChannel.unreadCount intValue];
+        }
+        unreadCount = [NSNumber numberWithInt:count];
     }
-    unreadCount = [NSNumber numberWithInt:count];
+
     return unreadCount;
 }
 
@@ -674,83 +703,92 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        if(newName.length) {
-            dbChannel.channelDisplayName = newName;
-        }
+    if (entity) {
         
-        if (!flag){
-            dbChannel.channelImageURL = imageURL;
-        }
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
         
-        if(childKeysList.count) {
-            for(NSNumber * childKey in childKeysList) {
-                [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
-            }
-        }
-        for(NSDictionary * chUserDict in channelUsers)
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count)
         {
-            ALChannelUser * channelUser = [[ALChannelUser alloc] initWithDictonary:chUserDict];
-            if(channelUser.parentGroupKey)
-            {
-                [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            if(newName.length) {
+                dbChannel.channelDisplayName = newName;
             }
             
-            if(channelUser.role)
-            {
-                [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
+            if (!flag){
+                dbChannel.channelImageURL = imageURL;
             }
             
+            if(childKeysList.count) {
+                for(NSNumber * childKey in childKeysList) {
+                    [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
+                }
+            }
+            for(NSDictionary * chUserDict in channelUsers)
+            {
+                ALChannelUser * channelUser = [[ALChannelUser alloc] initWithDictonary:chUserDict];
+                if(channelUser.parentGroupKey)
+                {
+                    [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
+                }
+                
+                if(channelUser.role)
+                {
+                    [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
+                }
+                
+            }
+            
+            [dbHandler saveContext];
         }
-
-        [dbHandler saveContext];
+        else
+        {
+            ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
+        }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
-    }
+    
 }
 
 -(void)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData{
     
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        if(newMetaData!=nil) {
-            dbChannel.metadata = newMetaData.description;
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count)
+        {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            if(newMetaData!=nil) {
+                dbChannel.metadata = newMetaData.description;
+                
+                // Update conversation status from metadata
+                dbChannel.category = [ALChannel getConversationCategory:newMetaData];
+            }
             
-            // Update conversation status from metadata
-            dbChannel.category = [ALChannel getConversationCategory:newMetaData];
+            [dbHandler saveContext];
         }
-
-        [dbHandler saveContext];
+        else
+        {
+            ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
+        }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
-    }
+    
 }
 
 -(void) updateChannelParentKey:(NSNumber *)channelKey andWithParentKey:(NSNumber *)channelParentKey isAdding:(BOOL)flag
@@ -759,18 +797,20 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     DB_CHANNEL *childChannel = [self getChannelByKey:channelKey];
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
-    if(flag)
-    {
-        childChannel.parentGroupKey = parentChannel.channelKey;
-        childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
+    if (childChannel && childChannel) {
+        if(flag)
+        {
+            childChannel.parentGroupKey = parentChannel.channelKey;
+            childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
+        }
+        else
+        {
+            childChannel.parentGroupKey = nil;
+            childChannel.parentClientGroupKey = nil;
+        }
+        
+        [dbHandler saveContext];
     }
-    else
-    {
-        childChannel.parentGroupKey = nil;
-        childChannel.parentClientGroupKey = nil;
-    }
-
-    [dbHandler saveContext];
 }
 
 -(void)updateClientChannelParentKey:(NSString *)clientChildKey andWithClientParentKey:(NSString *)clientParentKey isAdding:(BOOL)flag
@@ -779,43 +819,50 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     DB_CHANNEL *childChannel = [self getChannelByClientChannelKey:clientChildKey];
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
-    if(flag)
-    {
-        childChannel.parentGroupKey = parentChannel.channelKey;
-        childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
-    }
-    else
-    {
-        childChannel.parentGroupKey = nil;
-        childChannel.parentClientGroupKey = nil;
+    if (parentChannel &&  childChannel) {
+        if(flag)
+        {
+            childChannel.parentGroupKey = parentChannel.channelKey;
+            childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
+        }
+        else
+        {
+            childChannel.parentGroupKey = nil;
+            childChannel.parentClientGroupKey = nil;
+        }
+        
+        [dbHandler saveContext];
     }
     
-    [dbHandler saveContext];
 }
 
 -(void)updateUnreadCountChannel:(NSNumber *)channelKey unreadCount:(NSNumber *)unreadCount
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count && unreadCount!=nil)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        dbChannel.unreadCount = unreadCount;
-        [dbHandler saveContext];
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count && unreadCount!=nil)
+        {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            dbChannel.unreadCount = unreadCount;
+            [dbHandler saveContext];
+        }
+        else
+        {
+            ALSLog(ALLoggerSeverityError, @"NO CHANNEL FOUND");
+        }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityError, @"NO CHANNEL FOUND");
-    }
+    
 }
 
 -(void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)groupId
@@ -931,22 +978,26 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     //Runs at Opening AND Leaving ChatVC AND Opening MessageList..
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_Message" inManagedObjectContext:dbHandler.managedObjectContext];
+    NSArray *result = nil;
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
     
-    NSPredicate *predicate;
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"status != %i AND type==%@ ",DELIVERED_AND_READ,@"4"];
+    if (entity) {
+        NSPredicate *predicate;
+        NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"status != %i AND type==%@ ",DELIVERED_AND_READ,@"4"];
+        
+        if (groupId) {
+            NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"%K=%d",@"groupId",groupId.intValue];
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
+        } else {
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate2]];
+        }
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+    }
     
-    if (groupId) {
-        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"%K=%d",@"groupId",groupId.intValue];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
-    }
-    else {
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate2]];
-    }
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
     return result;
 }
 
@@ -954,25 +1005,25 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"clientChannelKey = %@",clientChannelKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
     
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (result.count)
-    {
-        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        return dbChannel;
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"clientChannelKey = %@",clientChannelKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count)
+        {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            return dbChannel;
+        }
     }
-    else
-    {
-        ALSLog(ALLoggerSeverityError, @"CHANNEL_NOT_FOUND :: %@",clientChannelKey);
-        return nil;
-    }
+    ALSLog(ALLoggerSeverityError, @"CHANNEL_NOT_FOUND :: %@",clientChannelKey);
+    return nil;
 }
 
 -(ALChannel *)loadChannelByClientChannelKey:(NSString *)clientChannelKey
@@ -1008,35 +1059,40 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentGroupKey = %@",parentGroupKey];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-    
-    NSError *fetchError = nil;
-    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    ALSLog(ALLoggerSeverityInfo, @"CHILD CHANNEL FOUND : %lu WITH PARENT KEY : %@",(unsigned long)result.count, parentGroupKey);
-    ALSLog(ALLoggerSeverityError, @"ERROR (IF-ANY) : %@",fetchError.description);
-    
-    for(DB_CHANNEL *dbChannel in result)
-    {
-        ALChannel *alChannel = [[ALChannel alloc] init];
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
+    if (entity) {
         
-        alChannel.parentKey = dbChannel.parentGroupKey;
-        alChannel.parentClientKey = dbChannel.parentClientGroupKey;
-        alChannel.key = dbChannel.channelKey;
-        alChannel.clientChannelKey = dbChannel.clientChannelKey;
-        alChannel.name = dbChannel.channelDisplayName;
-        alChannel.unreadCount = dbChannel.unreadCount;
-        alChannel.adminKey = dbChannel.adminId;
-        alChannel.type = dbChannel.type;
-        alChannel.channelImageURL = dbChannel.channelImageURL;
-        alChannel.deletedAtTime = dbChannel.deletedAtTime;
-        alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
-        alChannel.userCount = dbChannel.userCount;
-        alChannel.category = dbChannel.category;
-        [childArray addObject:alChannel];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentGroupKey = %@",parentGroupKey];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        
+        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count > 0) {
+            ALSLog(ALLoggerSeverityInfo, @"CHILD CHANNEL FOUND : %lu WITH PARENT KEY : %@",(unsigned long)result.count, parentGroupKey);
+            ALSLog(ALLoggerSeverityError, @"ERROR (IF-ANY) : %@",fetchError.description);
+            
+            for(DB_CHANNEL *dbChannel in result)
+            {
+                ALChannel *alChannel = [[ALChannel alloc] init];
+                alChannel.parentKey = dbChannel.parentGroupKey;
+                alChannel.parentClientKey = dbChannel.parentClientGroupKey;
+                alChannel.key = dbChannel.channelKey;
+                alChannel.clientChannelKey = dbChannel.clientChannelKey;
+                alChannel.name = dbChannel.channelDisplayName;
+                alChannel.unreadCount = dbChannel.unreadCount;
+                alChannel.adminKey = dbChannel.adminId;
+                alChannel.type = dbChannel.type;
+                alChannel.channelImageURL = dbChannel.channelImageURL;
+                alChannel.deletedAtTime = dbChannel.deletedAtTime;
+                alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
+                alChannel.userCount = dbChannel.userCount;
+                alChannel.category = dbChannel.category;
+                [childArray addObject:alChannel];
+            }
+        }
     }
     
     return childArray;
@@ -1047,54 +1103,55 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
-    dbChannel.notificationAfterTime = notificationAfterTime;
-    [dbHandler saveContext];
+    if (dbChannel) {
+        dbChannel.notificationAfterTime = notificationAfterTime;
+        [dbHandler saveContext];
+    }
 }
 
 -(NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key {
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X"
-                                              inManagedObjectContext:dbHandler.managedObjectContext];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setPredicate:predicate];
-
-    NSError *fetchError = nil;
-    NSArray *resultArray = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-
-    if (resultArray.count)
-    {
-        for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
+    
+    NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
+    
+    if (entity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        
+        NSArray *resultArray = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (resultArray.count)
         {
-            [memberList addObject:dbChannelUserX];
+            for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
+            {
+                [memberList addObject:dbChannelUserX];
+            }
+            return memberList;
         }
-
-        return memberList;
     }
-    else
-    {
-        return nil;
-    }
+    return memberList;
 }
 
 
 -(void)fetchChannelMembersAsyncWithChannelKey:(NSNumber*)channelKey witCompletion:(void(^)(NSMutableArray *membersArray))completion{
-
+    
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
-
+    
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DB_CHANNEL_USER_X"];
-
+    
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-
+    
     [fetchRequest setPredicate:predicate];
-
+    
     NSAsynchronousFetchRequest *asynchronousFetchRequest = [[NSAsynchronousFetchRequest alloc] initWithFetchRequest:fetchRequest completionBlock:^(NSAsynchronousFetchResult *result) {
-
+        
         NSArray *resultArray =   result.finalResult;
-
+        
         if (resultArray && resultArray.count)
         {
             for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
@@ -1108,19 +1165,24 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         }
         completion(memberList);
     }];
-
+    
     NSManagedObjectContext *managedObjectContext =  [[ALDBHandler sharedInstance] managedObjectContext];
-    [managedObjectContext performBlock:^{
-        [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
-    }];
+
+    if (managedObjectContext != nil) {
+        [managedObjectContext performBlock:^{
+            [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
+        }];
+    } else {
+        completion(nil);
+    }
 }
 
 -(void) getUserInSupportGroup:(NSNumber *) channelKey withCompletion:(void(^)(NSString *userId)) completion {
-
+    
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DB_CHANNEL_USER_X"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@ AND role = %@", channelKey, @3];
     [fetchRequest setPredicate:predicate];
-
+    
     NSAsynchronousFetchRequest *asynchronousFetchRequest = [[NSAsynchronousFetchRequest alloc] initWithFetchRequest:fetchRequest completionBlock:^(NSAsynchronousFetchResult *result) {
         NSArray *resultArray =   result.finalResult;
         if (resultArray && resultArray.count) {
@@ -1131,11 +1193,15 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             completion(nil);
         }
     }];
-
+    
     NSManagedObjectContext *managedObjectContext = [[ALDBHandler sharedInstance] managedObjectContext];
-    [managedObjectContext performBlock:^{
-        [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
-    }];
+    if (managedObjectContext != nil) {
+        [managedObjectContext performBlock:^{
+            [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
+        }];
+    } else {
+        completion(nil);
+    }
 }
 
 @end

@@ -103,6 +103,7 @@ dispatch_queue_t dispatchGlobalQueue;
 
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
             ALSLog(ALLoggerSeverityError, @"Failed to setup the persistentStoreCoordinator %@, %@", error, [error userInfo]);
+            return nil;
         } else {
             sourceStore = [_persistentStoreCoordinator persistentStoreForURL:storeURL];
             if (sourceStore != nil && groupURL){
@@ -111,6 +112,7 @@ dispatch_queue_t dispatchGlobalQueue;
                 destinationStore = [_persistentStoreCoordinator migratePersistentStore:sourceStore toURL:groupURL options:options withType:NSSQLiteStoreType error:&error];
                 if (destinationStore == nil){
                     ALSLog(ALLoggerSeverityError, @"Failed to migratePersistentStore");
+                    return nil;
                 } else {
 
                     NSFileCoordinator *coord = [[NSFileCoordinator alloc]initWithFilePresenter:nil];
@@ -233,9 +235,74 @@ dispatch_queue_t dispatchGlobalQueue;
 }
 
 - (NSManagedObjectContext *)privateContext {
-    NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    [managedObjectContext setParentContext:self.managedObjectContext];
-    return managedObjectContext;
+    NSManagedObjectContext *privateManagedObjectContext = nil;
+    if (self.managedObjectContext) {
+        privateManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        [privateManagedObjectContext setParentContext:self.managedObjectContext];
+    }
+    return privateManagedObjectContext;
 }
 
+-(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError: (NSError **)fetchError {
+    NSArray * fetchResultArray = nil;
+    if (self.managedObjectContext != nil) {
+        fetchResultArray = [self.managedObjectContext executeFetchRequest:fetchrequest
+                                                                    error:fetchError];
+    }
+    return fetchResultArray;
+}
+
+-(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
+    if (self.managedObjectContext != nil) {
+        return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
+    }
+    return nil;
+}
+
+
+-(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
+
+    if (self.managedObjectContext != nil) {
+        NSError *fetchError = nil;
+        NSUInteger fetchCount = [self.managedObjectContext countForFetchRequest:fetchrequest error:&fetchError];
+        if (fetchError) {
+            return 0;
+        }
+        return fetchCount;
+    }
+    return 0;
+}
+
+-(NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID {
+    NSManagedObject* managedObject = nil;
+    if (self.managedObjectContext) {
+        NSError *managedObjectError = nil;
+        managedObject = [self.managedObjectContext existingObjectWithID:objectID
+                                                                  error:&managedObjectError];
+        if (managedObjectError) {
+            ALSLog(ALLoggerSeverityError, @"Error while fetching NSManagedObject %@", managedObjectError);
+            return nil;
+        }
+    }
+    return managedObject;
+}
+
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName {
+    if (self.managedObjectContext) {
+        return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.managedObjectContext];
+    }
+    return nil;
+}
+
+-(void)deleteObject:(NSManagedObject *) managedObject {
+    if (self.managedObjectContext) {
+        [self.managedObjectContext deleteObject:managedObject];
+    }
+}
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *) context {
+    if (context) {
+        return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+    }
+    return nil;
+}
 @end

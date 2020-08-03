@@ -30,8 +30,7 @@
 -(void)fetchConversationsGroupByContactId;
 -(void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
--(NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID
-                             error:(NSError **)error;
+-(NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID;
 - (NSManagedObject *)getMessageByKey:(NSString *) key value:(NSString*) value;
 
 -(NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest;
@@ -50,7 +49,7 @@
  * @return An array containing the list of messages.
  */
 -(NSArray *)getMessageList:(int)messageCount
-                               messageTypeOnlyReceived:(BOOL)received;
+   messageTypeOnlyReceived:(BOOL)received;
 
 //update Message APIS
 -(void)updateMessageDeliveryReport:(NSString*)messageKeyString withStatus:(int)status;
@@ -59,8 +58,6 @@
 -(void)updateFileMetaInfo:(ALMessage *) almessage;
 
 //Delete Message APIS
-
--(void) deleteMessage;
 -(void) deleteMessageByKey:(NSString*) keyString;
 -(void) deleteAllMessagesByContact: (NSString*) contactId orChannelKey:(NSNumber *)key;
 
