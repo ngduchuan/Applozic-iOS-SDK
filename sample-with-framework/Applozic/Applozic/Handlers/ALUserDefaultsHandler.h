@@ -69,7 +69,7 @@ static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
 static NSString *const AL_AUTHENTICATION_TOKEN = @"AL_AUTHENTICATION_TOKEN";
 static NSString *const AL_AUTHENTICATION_TOKEN_CREATED_TIME = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_CREATED_TIME";
 static NSString *const AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_VALID_UPTO_MINS";
-
+static NSString *const AL_INITIAL_LATEST_MESSAGES_SERVER_CALL = @"com.applozic.userdefault.AL_INITIAL_LATEST_MESSAGES_SERVER_CALL";
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
@@ -274,5 +274,8 @@ static NSString *const AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS = @"com.applozic.
 +(NSNumber *)getAuthTokenCreatedAtTime;
 +(void)setAuthTokenValidUptoInMins:(NSNumber *) validUptoInMins;
 +(NSNumber *)getAuthTokenValidUptoMins;
+
++(void)setInitialLastestMessagesServerCallFlag:(BOOL)flag;
++(BOOL)getInitialLastestMessagesServerCallFlag;
 
 @end

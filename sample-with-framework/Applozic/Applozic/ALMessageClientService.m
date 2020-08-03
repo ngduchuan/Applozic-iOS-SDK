@@ -205,7 +205,7 @@
         ALSLog(ALLoggerSeverityInfo, @"message list response THE JSON %@",theJson);
 
         if (theJson) {
-
+            [ALUserDefaultsHandler setInitialLastestMessagesServerCallFlag:YES];
             if (messageListResponse.userDetailsList) {
                 ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
                 [alContactDBService addUserDetails:messageListResponse.userDetailsList];
@@ -503,7 +503,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        paramString: paramString];
 
     [ALResponseHandler
-     processRequest: urlRequest
+     authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
         if (theError) {
@@ -565,7 +565,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        paramString: paramString];
 
     [ALResponseHandler
-     processRequest: urlRequest
+     authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
         if (theError) {
