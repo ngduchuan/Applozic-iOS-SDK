@@ -71,10 +71,6 @@
     self.conversationPxyList = conversationProxyList;
     self.userDetailsList = theUserDetailArray;
 
-     if (!self.groupId && !self.userId) {
-        ALMessage * lastMessage = (ALMessage *)[theMessagesArray lastObject];
-        [ALUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
-    }
 }
 
 @end

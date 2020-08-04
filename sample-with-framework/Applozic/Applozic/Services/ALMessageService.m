@@ -54,7 +54,7 @@ static ALMessageClientService *alMsgClientService;
 {
     ALMessageClientService * almessageClientService = [[ALMessageClientService alloc] init];
 
-    NSNumber *startTime = [ALUserDefaultsHandler getInitialLastestMessagesServerCallFlag] ? [ALUserDefaultsHandler getLastMessageListTime] : nil;
+    NSNumber *startTime = [ALUserDefaultsHandler isInitialMessageListCallDone] ? [ALUserDefaultsHandler getLastMessageListTime] : nil;
 
     [almessageClientService getLatestMessageGroupByContact:[ALUserDefaultsHandler getFetchConversationPageSize]
                                                  startTime:startTime withCompletion:^(ALMessageList *alMessageList, NSError *error) {

@@ -319,7 +319,7 @@
 
 -(void)getMessages:(NSMutableArray *)subGroupList
 {
-    if ([self isMessageTableEmpty] || [ALApplozicSettings getCategoryName] || ![ALUserDefaultsHandler getInitialLastestMessagesServerCallFlag])  // db is not synced
+    if ([self isMessageTableEmpty] || [ALApplozicSettings getCategoryName] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
     {
         [self fetchAndRefreshFromServer:subGroupList];
     }
@@ -984,7 +984,7 @@
 
     if(!isNextPage){
 
-        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler getInitialLastestMessagesServerCallFlag])  // db is not synced
+        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
         {
             [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray * theArray,NSError *error) {
                 completion(theArray,error);
@@ -1028,7 +1028,7 @@
 
     if(!isNextPage){
 
-        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler getInitialLastestMessagesServerCallFlag])  // db is not synced
+        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
         {
             [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray * theArray,NSError *error) {
                 completion(theArray,error);

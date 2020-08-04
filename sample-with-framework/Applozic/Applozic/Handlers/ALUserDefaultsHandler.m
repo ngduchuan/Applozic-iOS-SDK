@@ -942,15 +942,15 @@
     return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS];
 }
 
-+(void)setInitialLastestMessagesServerCallFlag:(BOOL)flag {
++(void)setInitialMessageListCallDone:(BOOL)flag {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:AL_INITIAL_LATEST_MESSAGES_SERVER_CALL];
+    [userDefaults setBool:flag forKey:AL_INITIAL_MESSAGE_LIST_CALL];
     [userDefaults synchronize];
 }
 
-+(BOOL)getInitialLastestMessagesServerCallFlag {
++(BOOL)isInitialMessageListCallDone {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:AL_INITIAL_LATEST_MESSAGES_SERVER_CALL];
+    return [userDefaults boolForKey:AL_INITIAL_MESSAGE_LIST_CALL];
 }
 
 +(NSUserDefaults *)getUserDefaults {
