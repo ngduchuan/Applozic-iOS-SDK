@@ -1056,7 +1056,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     NSManagedObjectContext *managedObjectContext =  [[ALDBHandler sharedInstance] managedObjectContext];
 
-    if (managedObjectContext != nil) {
+    if (managedObjectContext) {
         [managedObjectContext performBlock:^{
             [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
         }];
@@ -1084,7 +1084,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }];
     
     NSManagedObjectContext *managedObjectContext = [[ALDBHandler sharedInstance] managedObjectContext];
-    if (managedObjectContext != nil) {
+    if (managedObjectContext) {
         [managedObjectContext performBlock:^{
             [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
         }];

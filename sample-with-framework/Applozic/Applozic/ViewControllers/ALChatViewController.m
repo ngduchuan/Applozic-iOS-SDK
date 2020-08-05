@@ -1845,6 +1845,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return 0;
+    }
+
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
     CGFloat cellHeight = [ALUIConstant getCellHeight:theMessage andCellFrame:self.view.frame];
     return cellHeight;
@@ -1852,6 +1856,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return NO;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"] || msgCell.contentType ==(short)ALMESSAGE_CHANNEL_NOTIFICATION)
     {

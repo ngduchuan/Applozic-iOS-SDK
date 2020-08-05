@@ -153,9 +153,8 @@ dispatch_queue_t dispatchGlobalQueue;
 - (NSError *)saveContext {
     NSError *error = nil;
     @try {
-        NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-        if (managedObjectContext != nil) {
-            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+        if (self.managedObjectContext) {
+            if ([self.managedObjectContext hasChanges] && ![self.managedObjectContext save:&error]) {
                 ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
                 return error;
             }
@@ -232,7 +231,7 @@ dispatch_queue_t dispatchGlobalQueue;
 
 -(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError: (NSError **)fetchError {
     NSArray * fetchResultArray = nil;
-    if (self.managedObjectContext != nil) {
+    if (self.managedObjectContext) {
         fetchResultArray = [self.managedObjectContext executeFetchRequest:fetchrequest
                                                                     error:fetchError];
     }
@@ -240,7 +239,7 @@ dispatch_queue_t dispatchGlobalQueue;
 }
 
 -(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
-    if (self.managedObjectContext != nil) {
+    if (self.managedObjectContext) {
         return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
     }
     return nil;
@@ -248,7 +247,7 @@ dispatch_queue_t dispatchGlobalQueue;
 
 -(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
 
-    if (self.managedObjectContext != nil) {
+    if (self.managedObjectContext) {
         NSError *fetchError = nil;
         NSUInteger fetchCount = [self.managedObjectContext countForFetchRequest:fetchrequest error:&fetchError];
         if (fetchError) {
