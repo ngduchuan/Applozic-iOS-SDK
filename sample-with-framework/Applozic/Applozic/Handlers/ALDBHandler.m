@@ -195,18 +195,20 @@ dispatch_queue_t dispatchGlobalQueue;
                         completion:(void (^)(NSError*error))completion {
     @try {
         NSError* error;
+        if (!context) {
+            error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Private context is nil"}];
+            completion(error);
+            return;
+        }
         if (context.hasChanges && [context save:&error]) {
-            NSManagedObjectContext* parentContext = [context parentContext];
-            [parentContext performBlock:^ {
-                NSError* parentContextError;
-                if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
-                    completion(nil);
-                } else {
-                    if (parentContextError) {
-                        ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
-                    }
-                    completion(parentContextError);
-                }
+            if (!self.managedObjectContext) {
+                error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil"}];
+                completion(error);
+                return;
+            }
+            [self.managedObjectContext performBlock:^ {
+                NSError *parentContextError = [self saveContext];
+                completion(parentContextError);
             }];
         } else {
             if (error) {

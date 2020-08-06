@@ -308,9 +308,6 @@
 }
 
 -(BOOL)addContact:(ALContact *)userContact {
-
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-
     DB_CONTACT* existingContact = [self getContactByKey:@"userId" value:[userContact userId]];
     if (existingContact) {
         [self updateContact:userContact];
