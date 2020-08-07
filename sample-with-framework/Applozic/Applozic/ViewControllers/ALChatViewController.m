@@ -1212,7 +1212,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     NSPredicate* compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
     [theRequest setPredicate:compoundPredicate];
 
-    self.mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
+    self.mTotalCount = [theDbHandler countForFetchRequest:theRequest];
 }
 
 //This is just a test method
@@ -1661,6 +1661,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return [[UITableViewCell alloc]init];
+    }
 
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
 
@@ -1824,6 +1827,11 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.sendMessageTextView resignFirstResponder];
+
+    if (self.alMessageWrapper.messageArray.count == 0) {
+        return nil;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"])
     {
@@ -1837,6 +1845,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return 0;
+    }
+
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
     CGFloat cellHeight = [ALUIConstant getCellHeight:theMessage andCellFrame:self.view.frame];
     return cellHeight;
@@ -1844,6 +1856,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return NO;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"] || msgCell.contentType ==(short)ALMESSAGE_CHANNEL_NOTIFICATION)
     {
@@ -2329,7 +2345,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", self.contactIds];
     }
 
-    self.mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
+
+    self.mTotalCount = [theDbHandler countForFetchRequest:theRequest];
 
     NSPredicate* predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate* predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
@@ -2338,52 +2355,43 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [theRequest setFetchOffset:self.startIndex];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
 
-    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
-    [self enableLoadMoreOption: !(theArray.count < 50)];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
 
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+    if (theArray.count) {
+        [self enableLoadMoreOption: !(theArray.count < 50)];
+        ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
 
-    for (DB_Message * theEntity in theArray)
-    {
-        ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
-        [tempArray insertObject:theMessage atIndex:0];
-        //[self.mMessageListArrayKeyStrings insertObject:theMessage.key atIndex:0];
-    }
+        NSMutableArray *tempArray = [[NSMutableArray alloc] init];
 
-    [self.alMessageWrapper addObjectToMessageArray:tempArray];
-    [self.mTableView reloadData];
-
-    if(isLoadEarlierTapped)
-    {
-        if ((theArray != nil && theArray.count < self.rp )|| [self.alMessageWrapper getUpdatedMessageArray].count == self.mTotalCount)
+        for (DB_Message * theEntity in theArray)
         {
-//            self.mTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+            ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
+            [tempArray insertObject:theMessage atIndex:0];
         }
-        self.startIndex = self.startIndex + theArray.count;
+
+        [self.alMessageWrapper addObjectToMessageArray:tempArray];
         [self.mTableView reloadData];
-        if (theArray.count != 0)
+
+        if(isLoadEarlierTapped)
         {
-            CGRect theFrame = [self.mTableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:theArray.count-1 inSection:0]];
-            [self.mTableView setContentOffset:CGPointMake(0, theFrame.origin.y-60)];
-        }
-    }
-    else
-    {
-        if (theArray.count < self.rp || [self.alMessageWrapper getUpdatedMessageArray].count == self.mTotalCount)
-        {
-//            self.mTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+            self.startIndex = self.startIndex + theArray.count;
+            [self.mTableView reloadData];
+            if (theArray.count != 0)
+            {
+                CGRect theFrame = [self.mTableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:theArray.count-1 inSection:0]];
+                [self.mTableView setContentOffset:CGPointMake(0, theFrame.origin.y-60)];
+            }
         }
         else
         {
-//            self.mTableView.tableHeaderView = self.mTableHeaderView;
-        }
-        self.startIndex = theArray.count;
+            self.startIndex = theArray.count;
 
-        [self scrollTableViewToBottomWithAnimation:YES];
+            [self scrollTableViewToBottomWithAnimation:YES];
+        }
+
+        self.refresh = YES;
     }
 
-    self.refresh = YES;
     [self setBackGroundWallpaper];
 }
 
