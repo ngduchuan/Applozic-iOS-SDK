@@ -205,16 +205,22 @@
         ALSLog(ALLoggerSeverityInfo, @"message list response THE JSON %@",theJson);
 
         if (theJson) {
-
+            [ALUserDefaultsHandler setInitialMessageListCallDone:YES];
             if (messageListResponse.userDetailsList) {
                 ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
                 [alContactDBService addUserDetails:messageListResponse.userDetailsList];
             }
-
             ALChannelService *channelService = [[ALChannelService alloc] init];
             [channelService callForChannelServiceForDBInsertion:theJson];
-        }
 
+            /// Save the last message created time for calling the message list API.
+            /// Next time onwards this saved time will be used. as the start time
+
+            if (messageListResponse.messageList.count > 0 ) {
+                ALMessage * lastMessage = (ALMessage *)[messageListResponse.messageList lastObject];
+                [ALUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
+            }
+        }
         //USER BLOCK SYNC CALL
         ALUserService * userService = [ALUserService new];
         [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
@@ -503,7 +509,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        paramString: paramString];
 
     [ALResponseHandler
-     processRequest: urlRequest
+     authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
         if (theError) {
@@ -565,7 +571,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        paramString: paramString];
 
     [ALResponseHandler
-     processRequest: urlRequest
+     authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
         if (theError) {
