@@ -176,6 +176,7 @@
 		1863584F20E2480800B75802 /* ApplozicClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1863584D20E2480800B75802 /* ApplozicClient.m */; };
 		186885A120ECC5FE00919802 /* ALMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1868859F20ECC5FE00919802 /* ALMessageBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		186885A220ECC5FE00919802 /* ALMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 186885A020ECC5FE00919802 /* ALMessageBuilder.m */; };
+		1868E8E324AD46A4008DABC7 /* ALSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */; };
 		1868F12C21B570ED00B237B3 /* ALGroupDetailsMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */; };
 		1868F12E21B57C2200B237B3 /* ALGroupDetailsMemberCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1868F12D21B57C2200B237B3 /* ALGroupDetailsMemberCell.h */; };
 		187EEBA22321130C008012BC /* ALSearchRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 187EEBA02321130C008012BC /* ALSearchRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -186,6 +187,9 @@
 		18A2BA2220C44E5400AD47A2 /* ALTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2120C44E5400AD47A2 /* ALTemplateMessagesView.swift */; };
 		18A2BA2620C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */; };
 		18A2BA2720C44E9200AD47A2 /* ALTemplateMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2520C44E9200AD47A2 /* ALTemplateMessageModel.swift */; };
+		18B6036D24BFC3A80072F197 /* ALCustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */; };
+		18B6037224C051990072F197 /* ALSearchResultViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B6037024C051990072F197 /* ALSearchResultViewController.h */; };
+		18B6037324C051990072F197 /* ALSearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B6037124C051990072F197 /* ALSearchResultViewController.m */; };
 		18BC191621E4F3B8002B33C9 /* ALDocumentPickerHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BC191421E4F3B8002B33C9 /* ALDocumentPickerHandler.h */; };
 		18BC191721E4F3B8002B33C9 /* ALDocumentPickerHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BC191521E4F3B8002B33C9 /* ALDocumentPickerHandler.m */; };
 		18BD2D80225D142400B180A9 /* MQTTStrict.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BD2D75225D142100B180A9 /* MQTTStrict.h */; };
@@ -702,6 +706,7 @@
 		1863584D20E2480800B75802 /* ApplozicClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplozicClient.m; path = Applozic/ApplozicClient.m; sourceTree = "<group>"; };
 		1868859F20ECC5FE00919802 /* ALMessageBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMessageBuilder.h; path = Applozic/ALMessageBuilder.h; sourceTree = "<group>"; };
 		186885A020ECC5FE00919802 /* ALMessageBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALMessageBuilder.m; path = Applozic/ALMessageBuilder.m; sourceTree = "<group>"; };
+		1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ALSearchViewModel.swift; path = Applozic/ALSearchViewModel.swift; sourceTree = "<group>"; };
 		1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALGroupDetailsMemberCell.m; path = Applozic/Views/ALGroupDetailsMemberCell.m; sourceTree = "<group>"; };
 		1868F12D21B57C2200B237B3 /* ALGroupDetailsMemberCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALGroupDetailsMemberCell.h; path = Applozic/Views/ALGroupDetailsMemberCell.h; sourceTree = "<group>"; };
 		187E3E562152BCB7002B2459 /* AppLozic 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 9.xcdatamodel"; sourceTree = "<group>"; };
@@ -713,6 +718,9 @@
 		18A2BA2120C44E5400AD47A2 /* ALTemplateMessagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesView.swift; path = Applozic/ALTemplateMessagesView.swift; sourceTree = "<group>"; };
 		18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesViewModel.swift; path = Applozic/ALTemplateMessagesViewModel.swift; sourceTree = "<group>"; };
 		18A2BA2520C44E9200AD47A2 /* ALTemplateMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessageModel.swift; path = Applozic/ALTemplateMessageModel.swift; sourceTree = "<group>"; };
+		18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALCustomSearchBar.swift; sourceTree = "<group>"; };
+		18B6037024C051990072F197 /* ALSearchResultViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALSearchResultViewController.h; sourceTree = "<group>"; };
+		18B6037124C051990072F197 /* ALSearchResultViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALSearchResultViewController.m; sourceTree = "<group>"; };
 		18BC191421E4F3B8002B33C9 /* ALDocumentPickerHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALDocumentPickerHandler.h; sourceTree = "<group>"; };
 		18BC191521E4F3B8002B33C9 /* ALDocumentPickerHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALDocumentPickerHandler.m; sourceTree = "<group>"; };
 		18BD2D75225D142100B180A9 /* MQTTStrict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTStrict.h; path = Applozic/MQTT/MQTTStrict.h; sourceTree = "<group>"; };
@@ -1041,6 +1049,7 @@
 		8B1AD6972110809800AB2060 /* ALLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALLogger.m; sourceTree = "<group>"; };
 		8B1AD6982110809800AB2060 /* ALLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALLogger.h; sourceTree = "<group>"; };
 		8B242ABB2459467300ED21AD /* SecureStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStore.swift; sourceTree = "<group>"; };
+		8B37EC0B24C9ACB700C7464F /* AppLozic 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 13.xcdatamodel"; sourceTree = "<group>"; };
 		8B6C119E1FC2D9AF007CFB54 /* SoundRecordingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundRecordingView.swift; sourceTree = "<group>"; };
 		C592EC8621624C190082D4FA /* ALVideoCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALVideoCoder.swift; path = Applozic/ALVideoCoder.swift; sourceTree = "<group>"; };
 		C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
@@ -1102,6 +1111,7 @@
 			children = (
 				18A2BA2520C44E9200AD47A2 /* ALTemplateMessageModel.swift */,
 				18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */,
+				1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */,
 			);
 			name = ViewModel;
 			sourceTree = "<group>";
@@ -1342,6 +1352,8 @@
 				C76366071DF82B500087221C /* ALNavigationController.m */,
 				18587A7A2177A81E006AA149 /* ALImagePreviewController.h */,
 				18587A7B2177A81E006AA149 /* ALImagePreviewController.m */,
+				18B6037024C051990072F197 /* ALSearchResultViewController.h */,
+				18B6037124C051990072F197 /* ALSearchResultViewController.m */,
 			);
 			name = ViewControllers;
 			path = Applozic/ViewControllers;
@@ -1570,6 +1582,7 @@
 				1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */,
 				1AC5A594223A92E40044A9BD /* ALTabViewController.h */,
 				1AC5A595223A92E40044A9BD /* ALTabViewController.m */,
+				18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */,
 			);
 			name = ApplozicUIWidget;
 			sourceTree = "<group>";
@@ -2076,6 +2089,7 @@
 				6D7756AF1D5B80DF0025560B /* ALChannelDBService.h in Headers */,
 				1843C6F224530DA700967E7E /* SDImageAssetManager.h in Headers */,
 				6D7756B31D5B80DF0025560B /* ALChannelInfo.h in Headers */,
+				18B6037224C051990072F197 /* ALSearchResultViewController.h in Headers */,
 				1843C70524530DA700967E7E /* SDImageGraphics.h in Headers */,
 				6D7756D31D5B82000025560B /* ALLastSeenSyncFeed.h in Headers */,
 				6D7757351D5B84BE0025560B /* ALUIConstant.h in Headers */,
@@ -2381,6 +2395,7 @@
 				1843C70724530DA700967E7E /* SDAnimatedImage.m in Sources */,
 				1843C70F24530DA700967E7E /* SDImageCoderHelper.m in Sources */,
 				6D6DF1D41BC5364C00EBA00F /* KAProgressLabel.m in Sources */,
+				18B6036D24BFC3A80072F197 /* ALCustomSearchBar.swift in Sources */,
 				6D6DF1511BC5364C00EBA00F /* ALRegisterUserClientService.m in Sources */,
 				29C849A31CC932050042643C /* NSString+Encode.m in Sources */,
 				6D7756EE1D5B82560025560B /* ALReachability.m in Sources */,
@@ -2469,6 +2484,7 @@
 				18A2BA2220C44E5400AD47A2 /* ALTemplateMessagesView.swift in Sources */,
 				186885A220ECC5FE00919802 /* ALMessageBuilder.m in Sources */,
 				1843C71824530DA700967E7E /* UIImage+Transform.m in Sources */,
+				1868E8E324AD46A4008DABC7 /* ALSearchViewModel.swift in Sources */,
 				10B6DABD204E980400B6E024 /* ALGroupUser.m in Sources */,
 				2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */,
 				4612E8F91E13882D0022DB23 /* MQTTCFSocketTransport.m in Sources */,
@@ -2528,6 +2544,7 @@
 				6D7756F21D5B82A70025560B /* ALDataNetworkConnection.m in Sources */,
 				6D6DF14F1BC5364C00EBA00F /* ALMessageService.m in Sources */,
 				1A3264D2211C116700737C79 /* UIImage+animatedGIF.m in Sources */,
+				18B6037324C051990072F197 /* ALSearchResultViewController.m in Sources */,
 				6D7756D41D5B82000025560B /* ALLastSeenSyncFeed.m in Sources */,
 				6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */,
 				105F30C81FFBAEEC00D60431 /* AlChannelInfoModel.m in Sources */,
@@ -2720,7 +2737,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.8.3;
+				MARKETING_VERSION = 7.9.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2755,7 +2772,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.8.3;
+				MARKETING_VERSION = 7.9.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2805,6 +2822,7 @@
 		6D6DF1371BC5364C00EBA00F /* AppLozic.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				8B37EC0B24C9ACB700C7464F /* AppLozic 13.xcdatamodel */,
 				1808CE562260B251006BAEA3 /* AppLozic 12.xcdatamodel */,
 				185430DF2224384B00D55795 /* AppLozic 11.xcdatamodel */,
 				1A113EDC21BBA77D0000A7CC /* AppLozic 10.xcdatamodel */,
@@ -2818,7 +2836,7 @@
 				C7EF19C71DF2FDB600529704 /* AppLozic 2.xcdatamodel */,
 				6D6DF1381BC5364C00EBA00F /* AppLozic.xcdatamodel */,
 			);
-			currentVersion = 1808CE562260B251006BAEA3 /* AppLozic 12.xcdatamodel */;
+			currentVersion = 8B37EC0B24C9ACB700C7464F /* AppLozic 13.xcdatamodel */;
 			name = AppLozic.xcdatamodeld;
 			path = Applozic/AppLozic.xcdatamodeld;
 			sourceTree = "<group>";
