@@ -661,7 +661,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if (channel &&
         self.channelKey &&
         channel.key.intValue == self.channelKey.intValue) {
-        [self setTitleWithChannel:channel orConact:nil];
+        [self setTitleWithChannel:channel orContact:nil];
         [self channelDeleted];
     }
 }
@@ -1112,7 +1112,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self fetchConversationProfileDetailsWithUserId:self.contactIds withChannelKey:self.channelKey withCompletion:^(ALChannel *channel, ALContact *contact) {
         self.alChannel = channel;
         self.alContact = contact;
-        [self setTitleWithChannel:channel orConact:contact];
+        [self setTitleWithChannel:channel orContact:contact];
         [self.loadingIndicator stopLoading];
         if (channel) {
             [self setChannelSubTitle:channel];
@@ -1166,7 +1166,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)setTitleWithChannel:(ALChannel *)channel
-                  orConact:(ALContact *)contact {
+                  orContact:(ALContact *)contact {
     /// Contact will be present in case of one to one chat or group of two
     if (contact) {
         [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
