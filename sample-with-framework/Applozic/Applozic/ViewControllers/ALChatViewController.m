@@ -1037,7 +1037,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     defaultTableRect = self.mTableView.frame;
 
-    self.loadingIndicator = [[ALLoadingIndicator alloc] initWithFrame:CGRectZero color:UIColor.blackColor];
+    self.loadingIndicator = [[ALLoadingIndicator alloc] initWithFrame:CGRectZero color:UIColor.whiteColor];
     titleLabelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     titleLabelButton.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     [titleLabelButton addTarget:self action:@selector(didTapTitleView:) forControlEvents:UIControlEventTouchUpInside];
@@ -1104,7 +1104,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void) updateConversationProfileDetails {
 
-    [self.loadingIndicator set:[UIColor whiteColor]];
     [self.label setHidden:YES];
     self.navigationItem.titleView = self.loadingIndicator;
     
