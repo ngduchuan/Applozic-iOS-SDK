@@ -1167,7 +1167,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)setTitleWithChannel:(ALChannel *)channel
                   orConact:(ALContact *)contact {
-    /// Contact will be prsent in case of one to one chat or group of two
+    /// Contact will be present in case of one to one chat or group of two
     if (contact) {
         [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
         ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
