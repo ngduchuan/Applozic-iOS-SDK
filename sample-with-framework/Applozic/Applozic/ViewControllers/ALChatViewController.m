@@ -4881,18 +4881,16 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)reloadDataWithMessageKey:(NSString *)messageKey andMessage:(ALMessage *) alMessage {
-    
     NSIndexPath * path = [self getIndexPathForMessage:messageKey];
     if ([self isValidIndexPath:path]) {
-        NSInteger newCount =  [self.alMessageWrapper getUpdatedMessageArray].count;
-        NSInteger oldCount =  [self.mTableView numberOfRowsInSection:path.section];
-        ALMessage * message =  [self.alMessageWrapper getUpdatedMessageArray][path.row];
-
+        NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
+        NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
+        ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
         if ([message.key isEqualToString:messageKey]) {
             [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
         }
         if (newCount > oldCount) {
-            NSLog(@" @@Message list shouldn't have more number of rows then the numberOfRowsInSection before update");
+            ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
             [self.mTableView reloadData];
             return;
         } else {
