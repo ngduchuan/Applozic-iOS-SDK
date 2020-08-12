@@ -661,7 +661,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if (channel &&
         self.channelKey &&
         channel.key.intValue == self.channelKey.intValue) {
-        [self setTitleWithChannel:channel withConact:nil];
+        [self setTitleWithChannel:channel orConact:nil];
         [self channelDeleted];
     }
 }
@@ -1107,19 +1107,19 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.label setHidden:YES];
     self.navigationItem.titleView = self.loadingIndicator;
     
-    [self.loadingIndicator startLoadingWithLoadText:NSLocalizedStringWithDefaultValue(@"ProfileDetailsLoadingText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Loading...", @"")];
+    [self.loadingIndicator startLoadingWithLoadText:NSLocalizedStringWithDefaultValue(@"ChatTitleLoadingText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Loading...", @"")];
 
     [self fetchConversationProfileDetailsWithUserId:self.contactIds withChannelKey:self.channelKey withCompletion:^(ALChannel *channel, ALContact *contact) {
         self.alChannel = channel;
         self.alContact = contact;
-        [self setTitleWithChannel:channel withConact:contact];
+        [self setTitleWithChannel:channel orConact:contact];
+        [self.loadingIndicator stopLoading];
         if (channel) {
             [self setChannelSubTitle:channel];
         } else {
             [self checkUserBlockStatus];
             [self checkUserDeleted];
         }
-        [self.loadingIndicator stopLoading];
         [self.label setHidden:NO];
         self.navigationItem.titleView = self->titleLabelButton;
     }];
@@ -1136,7 +1136,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALChannelService * channelService = [[ALChannelService alloc] init];
         [channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
             if (alChannel && [alChannel isGroupOfTwo]) {
-
                 NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
                 [userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
                     completion(alChannel, contact);
@@ -1167,23 +1166,17 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)setTitleWithChannel:(ALChannel *)channel
-                withConact:(ALContact *)contact {
-
-    if (channel) {
-        if ([channel isConversationClosed]){
-            [self freezeView:YES];
-        }
-        if (contact) {
-            [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
-            ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
-            [self updateLastSeenAtStatus:userDetail];
-        } else {
-            [titleLabelButton setTitle:channel.name forState:UIControlStateNormal];
-        }
-    } else {
+                  orConact:(ALContact *)contact {
+    /// Contact will be prsent in case of one to one chat or group of two
+    if (contact) {
         [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
         ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
         [self updateLastSeenAtStatus:userDetail];
+    } else if (channel) {
+        if ([channel isConversationClosed]) {
+            [self freezeView:YES];
+        }
+        [titleLabelButton setTitle:channel.name forState:UIControlStateNormal];
     }
 }
 

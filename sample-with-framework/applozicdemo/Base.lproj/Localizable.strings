@@ -315,5 +315,5 @@
 "SearchLabelText" = "Search...";
 "NoSearchResultFound" = "No results found";
 "SearchInfoText" = "Press search button to start searching...";
-"ProfileDetailsLoadingText" = "Loading...";
+"ChatTitleLoadingText" = "Loading...";
 
