@@ -4841,13 +4841,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)onDownloadCompleted:(ALMessage *)alMessage {
 
     if (alMessage) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSIndexPath * path = [self getIndexPathForMessage:alMessage.key];
-            if ([self isValidIndexPath:path]) {
-                [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-                [self.mTableView reloadSections:[NSIndexSet indexSetWithIndex:path.section] withRowAnimation:UITableViewRowAnimationNone];
-            }
-        });
+        [self reloadDataWithMessageKey:alMessage.key andMessage:alMessage];
     }
 }
 
@@ -4881,12 +4875,29 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey{
 
     if (alMessage != nil) {
-        NSIndexPath * path = [self getIndexPathForMessage:oldMessageKey];
-        if([self isValidIndexPath:path]){
-            [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-            [self.mTableView reloadSections:[NSIndexSet indexSetWithIndex:path.section] withRowAnimation:UITableViewRowAnimationNone];
-        }
+        [self reloadDataWithMessageKey:oldMessageKey andMessage:alMessage];
         [self updateUserDisplayNameWithMessage:alMessage withDisplayName:self.displayName];
+    }
+}
+
+-(void)reloadDataWithMessageKey:(NSString *)messageKey andMessage:(ALMessage *) alMessage {
+    
+    NSIndexPath * path = [self getIndexPathForMessage:messageKey];
+    if ([self isValidIndexPath:path]) {
+        NSInteger newCount =  [self.alMessageWrapper getUpdatedMessageArray].count;
+        NSInteger oldCount =  [self.mTableView numberOfRowsInSection:path.section];
+        ALMessage * message =  [self.alMessageWrapper getUpdatedMessageArray][path.row];
+
+        if ([message.key isEqualToString:messageKey]) {
+            [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
+        }
+        if (newCount > oldCount) {
+            NSLog(@" @@Message list shouldn't have more number of rows then the numberOfRowsInSection before update");
+            [self.mTableView reloadData];
+            return;
+        } else {
+            [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
+        }
     }
 }
 
@@ -4915,9 +4926,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
     return self.mTableView &&
+    indexPath.row != -1 &&
     indexPath.section < [self.mTableView numberOfSections] &&
-    indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section] &&
-    indexPath.row < [self.alMessageWrapper getUpdatedMessageArray].count;
+    indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section];
 }
 
 @end
