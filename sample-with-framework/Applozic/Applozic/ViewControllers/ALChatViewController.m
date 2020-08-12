@@ -1720,13 +1720,18 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
 
+    ALChannelService * channelService =  [[ALChannelService alloc] init];
+    ALChannel * channel = nil;
+    if (theMessage.getGroupId) {
+        channel = [channelService getChannelByKey:theMessage.getGroupId];
+    }
+
     if(theMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
         ALLocationCell *theCell = (ALLocationCell *)[tableView dequeueReusableCellWithIdentifier:@"LocationCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1737,8 +1742,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALLinkCell *theCell = (ALLinkCell *)[tableView dequeueReusableCellWithIdentifier:@"ALLinkCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1749,8 +1753,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALImageCell *theCell = (ALImageCell *)[tableView dequeueReusableCellWithIdentifier:@"ImageCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1761,8 +1764,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALVideoCell *theCell = (ALVideoCell *)[tableView dequeueReusableCellWithIdentifier:@"VideoCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1773,8 +1775,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALAudioCell *theCell = (ALAudioCell *)[tableView dequeueReusableCellWithIdentifier:@"AudioCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1808,8 +1809,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1820,8 +1820,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALChatCell *theCell = (ALChatCell *)[tableView dequeueReusableCellWithIdentifier:@"ChatCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -1835,8 +1834,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             ALMyContactMessageCell *theCell = (ALMyContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"MyContactMessageCell"];
             theCell.tag = indexPath.row;
             theCell.delegate = self;
-            theCell.channel = self.alChannel;
-            theCell.contact = self.alContact;
+            theCell.channel = channel;
             theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
             [theCell populateCell:theMessage viewSize:self.view.frame.size];
             [self.view layoutIfNeeded];
@@ -1845,8 +1843,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             ALContactMessageCell *theCell = (ALContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactMessageCell"];
             theCell.tag = indexPath.row;
             theCell.delegate = self;
-            theCell.channel = self.alChannel;
-            theCell.contact = self.alContact;
+            theCell.channel = channel;
             theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
             [theCell populateCell:theMessage viewSize:self.view.frame.size];
             [self.view layoutIfNeeded];
@@ -1859,8 +1856,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALDocumentsCell *theCell = (ALDocumentsCell *)[tableView dequeueReusableCellWithIdentifier:@"DocumentsCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
+        theCell.channel = channel;
         theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
@@ -4706,7 +4702,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 ALReceiverUserProfileVC * receiverUserProfileVC =
                 (ALReceiverUserProfileVC *)[storyboard instantiateViewControllerWithIdentifier:@"ALReceiverUserProfile"];
 
-                receiverUserProfileVC.alContact = self.alContact;
+                receiverUserProfileVC.alContact = contact;
                 [self.mActivityIndicator stopAnimating];
                 [self.navigationController pushViewController:receiverUserProfileVC animated:YES];
             }
