@@ -354,7 +354,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
     }
-    
+    self.frontView.frame = self.mBubleImageView.frame;
     [self.documentName setText:alMessage.fileMeta.name];
     [self.mImageView setContentMode:UIViewContentModeScaleAspectFit];
     
