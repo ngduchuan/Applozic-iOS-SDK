@@ -310,4 +310,24 @@
     [self.delegate openUserChat:self.mMessage];
 }
 
+- (void)msgInfo:(id)sender {
+    [self.delegate showAnimationForMsgInfo:YES];
+    UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+    ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
+    msgInfoVC.contentURL = theUrl;
+    __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
+
+    [msgInfoVC setMessage:self.mMessage andHeaderHeight:self.mBubleImageView.frame.size.height withCompletionHandler:^(NSError *error) {
+
+        if(!error)
+        {
+            [self.delegate loadViewForMedia:weakObj];
+        }
+        else
+        {
+            [self.delegate showAnimationForMsgInfo:NO];
+        }
+    }];
+}
+
 @end
