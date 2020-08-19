@@ -243,8 +243,6 @@
 		29CBF2031C0303A700BE6A20 /* ALColorUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBF2011C0303A700BE6A20 /* ALColorUtility.m */; };
 		29D6F86B1D193D9D00A75369 /* PSPDFTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D6F8691D193D9D00A75369 /* PSPDFTextView.h */; };
 		29D6F86C1D193D9D00A75369 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6F86A1D193D9D00A75369 /* PSPDFTextView.m */; };
-		322B304A1EF9537600DB01FC /* AlApplicationInfoFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 322B30481EF9537600DB01FC /* AlApplicationInfoFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		322B304B1EF9537600DB01FC /* AlApplicationInfoFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 322B30491EF9537600DB01FC /* AlApplicationInfoFeed.m */; };
 		4612E8F31E13882D0022DB23 /* Doxyfile in Resources */ = {isa = PBXBuildFile; fileRef = 4612E8CB1E13882D0022DB23 /* Doxyfile */; };
 		4612E8F41E13882D0022DB23 /* MQTTCFSocketDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 4612E8CC1E13882D0022DB23 /* MQTTCFSocketDecoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4612E8F51E13882D0022DB23 /* MQTTCFSocketDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 4612E8CD1E13882D0022DB23 /* MQTTCFSocketDecoder.m */; };
@@ -776,8 +774,6 @@
 		29CBF2011C0303A700BE6A20 /* ALColorUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALColorUtility.m; sourceTree = "<group>"; };
 		29D6F8691D193D9D00A75369 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		29D6F86A1D193D9D00A75369 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
-		322B30481EF9537600DB01FC /* AlApplicationInfoFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AlApplicationInfoFeed.h; path = Applozic/AlApplicationInfoFeed.h; sourceTree = "<group>"; };
-		322B30491EF9537600DB01FC /* AlApplicationInfoFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlApplicationInfoFeed.m; path = Applozic/AlApplicationInfoFeed.m; sourceTree = "<group>"; };
 		4612E8CB1E13882D0022DB23 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = Applozic/MQTT/Doxyfile; sourceTree = "<group>"; };
 		4612E8CC1E13882D0022DB23 /* MQTTCFSocketDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTCFSocketDecoder.h; path = Applozic/MQTT/MQTTCFSocketDecoder.h; sourceTree = "<group>"; };
 		4612E8CD1E13882D0022DB23 /* MQTTCFSocketDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTCFSocketDecoder.m; path = Applozic/MQTT/MQTTCFSocketDecoder.m; sourceTree = "<group>"; };
@@ -1861,8 +1857,6 @@
 		6DDE81831C27D8A1009B8CF9 /* user */ = {
 			isa = PBXGroup;
 			children = (
-				322B30481EF9537600DB01FC /* AlApplicationInfoFeed.h */,
-				322B30491EF9537600DB01FC /* AlApplicationInfoFeed.m */,
 				C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */,
 				C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */,
 				6D7756BB1D5B82000025560B /* ALAPIResponse.h */,
@@ -2197,7 +2191,6 @@
 				464F7D191E1D345300B68DCC /* ALChannelUser.h in Headers */,
 				46B258A01E5B03300078BBA5 /* ALChannelMsgCell.h in Headers */,
 				18BD2D82225D142400B180A9 /* GCDTimer.h in Headers */,
-				322B304A1EF9537600DB01FC /* AlApplicationInfoFeed.h in Headers */,
 				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				1843C72A24530DA700967E7E /* UIColor+SDHexString.h in Headers */,
@@ -2353,7 +2346,6 @@
 				1863584F20E2480800B75802 /* ApplozicClient.m in Sources */,
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				6D36F2091BFF3EE3003D46D3 /* ALApplozicSettings.m in Sources */,
-				322B304B1EF9537600DB01FC /* AlApplicationInfoFeed.m in Sources */,
 				8B170C212122CEFF003A14B3 /* ALCustomPickerViewController.swift in Sources */,
 				4612E8F51E13882D0022DB23 /* MQTTCFSocketDecoder.m in Sources */,
 				465EBAF21E9624C100E7B79B /* ALSubViewController.m in Sources */,

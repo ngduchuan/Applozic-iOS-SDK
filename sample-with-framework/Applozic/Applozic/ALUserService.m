@@ -487,20 +487,6 @@ static int CONTACT_PAGE_SIZE = 100;
         }
 }
 
--(void)updateUserApplicationInfo{
-
-    AlApplicationInfoFeed *userApplicationInfo = [AlApplicationInfoFeed new];
-    userApplicationInfo.applicationKey = [ALUserDefaultsHandler getApplicationKey];
-    userApplicationInfo.bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-
-    ALUserClientService *clientService = [ALUserClientService new];
-    [clientService updateApplicationInfoDeatils:userApplicationInfo withCompletion:^(NSString *json, NSError *error) {
-        ALSLog(ALLoggerSeverityInfo, @"Response For user application update reponse :%@",json);
-    }];
-
-}
-
-
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
 
     if(!oldPassword || !newPassword){
