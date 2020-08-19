@@ -591,7 +591,7 @@ UIViewController * modalCon;
     msgInfoVC.contentURL = theUrl;
 
     __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
-    [msgInfoVC setMessage:self.mMessage andHeaderHeight:self.mBubleImageView.frame.size.height withCompletionHandler:^(NSError *error) {
+    [msgInfoVC setMessage:self.mMessage andHeaderHeight:msgFrameHeight withCompletionHandler:^(NSError *error) {
 
         if(!error)
         {

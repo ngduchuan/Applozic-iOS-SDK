@@ -316,10 +316,10 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         return;
     }
 
-    [gestureView canBecomeFirstResponder];
     UIMenuController * sharedMenuController =  [UIMenuController sharedMenuController] ;
 
-    if (![gestureView canBecomeFirstResponder] || sharedMenuController.isMenuVisible) {
+    if (![gestureView canBecomeFirstResponder] ||
+        sharedMenuController.isMenuVisible) {
         return;
     }
 
