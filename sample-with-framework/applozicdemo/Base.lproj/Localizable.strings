@@ -43,7 +43,7 @@
 
 "lastSeenJustNowLabelText" = "Last seen Just Now ";
 
-"lastSeenYesterday" = "Last seen yesterday at ";
+"lastSeenYesterday" = "Last seen yesterday at %@";
 
 "hrsAgo" = "%@ hrs ago";
 "mins" = "%@ mins ago";
@@ -315,5 +315,5 @@
 "SearchLabelText" = "Search...";
 "NoSearchResultFound" = "No results found";
 "SearchInfoText" = "Press search button to start searching...";
-
+"ChatTitleLoadingText" = "Loading...";
 
