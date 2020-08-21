@@ -69,8 +69,6 @@
 
 -(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion;
 
--(void)updateUserApplicationInfo;
-
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword withCompletion:(void(^)( ALAPIResponse* alAPIResponse, NSError *theError))completion;
 -(void)processResettingUnreadCount;
 
