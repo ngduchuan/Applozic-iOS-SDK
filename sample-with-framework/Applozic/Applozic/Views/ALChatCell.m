@@ -516,9 +516,11 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
+        UIMenuItem * deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
+
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
 
-        [sharedMenuController setMenuItems: @[msgInfo, messageReply, messageForward]];
+        [sharedMenuController setMenuItems: @[msgInfo, messageReply, messageForward, deleteForAllMenuItem]];
     }
 
     [sharedMenuController setTargetRect:gestureView.frame inView:superView];
@@ -552,22 +554,35 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 -(BOOL) canPerformAction:(SEL)action withSender:(id)sender
 {
 
-    if(self.mMessage.groupId){
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        ALChannel *channel =  [channelService getChannelByKey:self.mMessage.groupId];
-        if(channel && channel.type == OPEN){
-            return (self.mMessage.isDownloadRequired? NO:(action == @selector(copy:)));
-        }
+    ALChannelDBService *channelDbService = [[ALChannelDBService alloc] init];
+
+    if (self.channel &&
+        (self.channel.type == OPEN ||
+         [channelDbService isChannelLeft:self.channel.key])) {
+        return (self.mMessage.isDownloadRequired? NO:(action == @selector(copy:)));
     }
 
-    if([self.mMessage isSentMessage] && self.mMessage.groupId)
-    {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:) || action == @selector(copy:)) : (action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action]  || [self isMessageReplyMenuEnabled:action] || action == @selector(copy:)));
+    if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
+
+        return self.mMessage.isMessageSentToServer ?
+        (action == @selector(delete:) ||
+         action == @selector(msgInfo:) ||
+         action == @selector(copy:) ||
+         [self isMessageReplyMenuEnabled:action] ||
+         [self isForwardMenuEnabled:action] ||
+         action == @selector(deleteMessageForAll:) ) :
+        ((action == @selector(copy:))
+         || (action == @selector(delete:)));
     }
 
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:) ||[self isForwardMenuEnabled:action]|| [self isMessageReplyMenuEnabled:action] )|| (action == @selector(copy:)));
+    return self.mMessage.isMessageSentToServer ?
+    (action == @selector(delete:) ||
+     action == @selector(copy:) ||
+     [self isMessageReplyMenuEnabled:action] ||
+     [self isForwardMenuEnabled:action]) :
+    ((action == @selector(copy:))
+     || (action == @selector(delete:)));
 }
-
 
 -(void) messageForward:(id)sender
 {
@@ -804,6 +819,11 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 -(BOOL)isForwardMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isForwardOptionEnabled] &&
             action == @selector(messageForward:));
+}
+
+
+-(void)deleteMessageForAll:(id)sender {
+    [self.delegate deleteMessasgeforALL:self.mMessage];
 }
 
 @end

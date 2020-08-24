@@ -172,6 +172,8 @@
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
 		185B6AB324EBE7D20028AB75 /* ALTappableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 185B6AB124EBE7D20028AB75 /* ALTappableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		185B6AB424EBE7D20028AB75 /* ALTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B6AB224EBE7D20028AB75 /* ALTappableView.m */; };
+		185B6ABB24EDAF5B0028AB75 /* ALMyDeletedMessageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 185B6AB924EDAF5B0028AB75 /* ALMyDeletedMessageCell.h */; };
+		185B6ABC24EDAF5B0028AB75 /* ALMyDeletedMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B6ABA24EDAF5B0028AB75 /* ALMyDeletedMessageCell.m */; };
 		1860E01C2151395600119CD7 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 1860E01A2151395600119CD7 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1860E01D2151395600119CD7 /* ALAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 1860E01B2151395600119CD7 /* ALAudioSession.m */; };
 		1863584820E2470F00B75802 /* ALRealTimeUpdate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1863584220E2470E00B75802 /* ALRealTimeUpdate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -190,6 +192,10 @@
 		18A2BA2220C44E5400AD47A2 /* ALTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2120C44E5400AD47A2 /* ALTemplateMessagesView.swift */; };
 		18A2BA2620C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */; };
 		18A2BA2720C44E9200AD47A2 /* ALTemplateMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2520C44E9200AD47A2 /* ALTemplateMessageModel.swift */; };
+		18A5CCA024EFB5830016F354 /* ALFriendDeletedMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A5CC9E24EFB5830016F354 /* ALFriendDeletedMessage.h */; };
+		18A5CCA124EFB5830016F354 /* ALFriendDeletedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5CC9F24EFB5830016F354 /* ALFriendDeletedMessage.m */; };
+		18A5CCA424EFBA810016F354 /* ALDeletedMessasgeBaseCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A5CCA224EFBA810016F354 /* ALDeletedMessasgeBaseCell.h */; };
+		18A5CCA524EFBA810016F354 /* ALDeletedMessasgeBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5CCA324EFBA810016F354 /* ALDeletedMessasgeBaseCell.m */; };
 		18B6036D24BFC3A80072F197 /* ALCustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */; };
 		18B6037224C051990072F197 /* ALSearchResultViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B6037024C051990072F197 /* ALSearchResultViewController.h */; };
 		18B6037324C051990072F197 /* ALSearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B6037124C051990072F197 /* ALSearchResultViewController.m */; };
@@ -703,6 +709,8 @@
 		18587A7B2177A81E006AA149 /* ALImagePreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
 		185B6AB124EBE7D20028AB75 /* ALTappableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALTappableView.h; path = Applozic/Views/ALTappableView.h; sourceTree = "<group>"; };
 		185B6AB224EBE7D20028AB75 /* ALTappableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALTappableView.m; path = Applozic/Views/ALTappableView.m; sourceTree = "<group>"; };
+		185B6AB924EDAF5B0028AB75 /* ALMyDeletedMessageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMyDeletedMessageCell.h; path = Applozic/Views/ALMyDeletedMessageCell.h; sourceTree = "<group>"; };
+		185B6ABA24EDAF5B0028AB75 /* ALMyDeletedMessageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALMyDeletedMessageCell.m; path = Applozic/Views/ALMyDeletedMessageCell.m; sourceTree = "<group>"; };
 		1860E01A2151395600119CD7 /* ALAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAudioSession.h; path = Applozic/ALAudioSession.h; sourceTree = "<group>"; };
 		1860E01B2151395600119CD7 /* ALAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAudioSession.m; path = Applozic/ALAudioSession.m; sourceTree = "<group>"; };
 		1863584220E2470E00B75802 /* ALRealTimeUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALRealTimeUpdate.h; path = Applozic/ALRealTimeUpdate.h; sourceTree = "<group>"; };
@@ -722,6 +730,10 @@
 		18A2BA2120C44E5400AD47A2 /* ALTemplateMessagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesView.swift; path = Applozic/ALTemplateMessagesView.swift; sourceTree = "<group>"; };
 		18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesViewModel.swift; path = Applozic/ALTemplateMessagesViewModel.swift; sourceTree = "<group>"; };
 		18A2BA2520C44E9200AD47A2 /* ALTemplateMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessageModel.swift; path = Applozic/ALTemplateMessageModel.swift; sourceTree = "<group>"; };
+		18A5CC9E24EFB5830016F354 /* ALFriendDeletedMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALFriendDeletedMessage.h; path = Applozic/Views/ALFriendDeletedMessage.h; sourceTree = "<group>"; };
+		18A5CC9F24EFB5830016F354 /* ALFriendDeletedMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALFriendDeletedMessage.m; path = Applozic/Views/ALFriendDeletedMessage.m; sourceTree = "<group>"; };
+		18A5CCA224EFBA810016F354 /* ALDeletedMessasgeBaseCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALDeletedMessasgeBaseCell.h; path = Applozic/Views/ALDeletedMessasgeBaseCell.h; sourceTree = "<group>"; };
+		18A5CCA324EFBA810016F354 /* ALDeletedMessasgeBaseCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALDeletedMessasgeBaseCell.m; path = Applozic/Views/ALDeletedMessasgeBaseCell.m; sourceTree = "<group>"; };
 		18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALCustomSearchBar.swift; sourceTree = "<group>"; };
 		18B6037024C051990072F197 /* ALSearchResultViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALSearchResultViewController.h; sourceTree = "<group>"; };
 		18B6037124C051990072F197 /* ALSearchResultViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALSearchResultViewController.m; sourceTree = "<group>"; };
@@ -1172,6 +1184,12 @@
 				6D6DF0B21BC5364C00EBA00F /* ALChatCell.m */,
 				46B2589E1E5B03300078BBA5 /* ALChannelMsgCell.h */,
 				46B2589F1E5B03300078BBA5 /* ALChannelMsgCell.m */,
+				185B6AB924EDAF5B0028AB75 /* ALMyDeletedMessageCell.h */,
+				185B6ABA24EDAF5B0028AB75 /* ALMyDeletedMessageCell.m */,
+				18A5CC9E24EFB5830016F354 /* ALFriendDeletedMessage.h */,
+				18A5CC9F24EFB5830016F354 /* ALFriendDeletedMessage.m */,
+				18A5CCA224EFBA810016F354 /* ALDeletedMessasgeBaseCell.h */,
+				18A5CCA324EFBA810016F354 /* ALDeletedMessasgeBaseCell.m */,
 			);
 			name = "Chat Cell";
 			sourceTree = "<group>";
@@ -2015,6 +2033,7 @@
 				6D6DF1421BC5364C00EBA00F /* ALDBHandler.h in Headers */,
 				6D6DF15E1BC5364C00EBA00F /* ALChatCell.h in Headers */,
 				1843C6F024530DA700967E7E /* UIView+WebCacheOperation.h in Headers */,
+				18A5CCA424EFBA810016F354 /* ALDeletedMessasgeBaseCell.h in Headers */,
 				6D6DF1761BC5364C00EBA00F /* ALMessage.h in Headers */,
 				18F4006C2265E3020070CBB7 /* ALHTTPManager.h in Headers */,
 				1843C74A24530DA700967E7E /* SDWebImageDownloaderConfig.h in Headers */,
@@ -2151,6 +2170,7 @@
 				1843C75524530DA700967E7E /* UIImage+GIF.h in Headers */,
 				4612E9061E13882D0022DB23 /* MQTTPersistence.h in Headers */,
 				8B00F0E020C65A9A00ADBFC9 /* ALApplicationInfo.h in Headers */,
+				18A5CCA024EFB5830016F354 /* ALFriendDeletedMessage.h in Headers */,
 				4612E9151E13882D0022DB23 /* MQTTSSLSecurityPolicyTransport.h in Headers */,
 				1843C72224530DA700967E7E /* SDWebImageDownloaderDecryptor.h in Headers */,
 				4612E9011E13882D0022DB23 /* MQTTInMemoryPersistence.h in Headers */,
@@ -2199,6 +2219,7 @@
 				46B258A01E5B03300078BBA5 /* ALChannelMsgCell.h in Headers */,
 				18BD2D82225D142400B180A9 /* GCDTimer.h in Headers */,
 				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
+				185B6ABB24EDAF5B0028AB75 /* ALMyDeletedMessageCell.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				1843C72A24530DA700967E7E /* UIColor+SDHexString.h in Headers */,
 				105F30C61FFBAEEC00D60431 /* AlChannelInfoModel.h in Headers */,
@@ -2333,6 +2354,7 @@
 				6D6DF1671BC5364C00EBA00F /* ALNotificationView.m in Sources */,
 				1843C74524530DA700967E7E /* NSImage+Compatibility.m in Sources */,
 				6D6DF1851BC5364C00EBA00F /* DB_Message.m in Sources */,
+				18A5CCA124EFB5830016F354 /* ALFriendDeletedMessage.m in Sources */,
 				29D6F86C1D193D9D00A75369 /* PSPDFTextView.m in Sources */,
 				6D7756D01D5B82000025560B /* ALAPIResponse.m in Sources */,
 				1836CCEA23AB7E5100309234 /* ALNotificationHelper.m in Sources */,
@@ -2381,6 +2403,7 @@
 				6D7757341D5B84BE0025560B /* ALMessageArrayWrapper.m in Sources */,
 				6D6DF15B1BC5364C00EBA00F /* ALMessagesViewController.m in Sources */,
 				1804731422C3BB8A0062CC52 /* ALContactMessageBaseCell.m in Sources */,
+				185B6ABC24EDAF5B0028AB75 /* ALMyDeletedMessageCell.m in Sources */,
 				6D7756D21D5B82000025560B /* ALContactsResponse.m in Sources */,
 				1843C70624530DA700967E7E /* SDWebImageDownloader.m in Sources */,
 				1843C73224530DA700967E7E /* SDWebImageCacheSerializer.m in Sources */,
@@ -2551,6 +2574,7 @@
 				18B6037324C051990072F197 /* ALSearchResultViewController.m in Sources */,
 				6D7756D41D5B82000025560B /* ALLastSeenSyncFeed.m in Sources */,
 				6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */,
+				18A5CCA524EFBA810016F354 /* ALDeletedMessasgeBaseCell.m in Sources */,
 				105F30C81FFBAEEC00D60431 /* AlChannelInfoModel.m in Sources */,
 				6D7756E01D5B82000025560B /* ALUserDetail.m in Sources */,
 				1843C6EB24530DA700967E7E /* SDAnimatedImageView.m in Sources */,

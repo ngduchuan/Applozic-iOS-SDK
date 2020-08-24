@@ -76,6 +76,8 @@
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
 #import "ALNotificationHelper.h"
+#import "ALMyDeletedMessageCell.h"
+#import "ALFriendDeletedMessage.h"
 
 static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
@@ -1029,6 +1031,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     [self.mTableView registerClass:[ALMyContactMessageCell class] forCellReuseIdentifier:@"MyContactMessageCell"];
 
+    [self.mTableView registerClass:[ALMyDeletedMessageCell class] forCellReuseIdentifier:@"ALMyDeletedMessageCell"];
+    
+    [self.mTableView registerClass:[ALFriendDeletedMessage class] forCellReuseIdentifier:@"ALFriendDeletedMessage"];
+
+
     if([ALApplozicSettings getContextualChatOption])
     {
         self.pickerView.delegate = self;
@@ -1719,8 +1726,22 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         channel = [channelService getChannelByKey:theMessage.getGroupId];
     }
 
-    if(theMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    if (theMessage.isDeletedForAll) {
+        if ([theMessage isSentMessage]) {
+            ALMyDeletedMessageCell *cell = (ALMyDeletedMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ALMyDeletedMessageCell"];
+            cell.tag = indexPath.row;
+            [cell update:theMessage];
+            [self.view layoutIfNeeded];
+            return cell;
+        } else {
+            ALFriendDeletedMessage *cell = (ALFriendDeletedMessage *)[tableView dequeueReusableCellWithIdentifier:@"ALFriendDeletedMessage"];
+            cell.tag = indexPath.row;
+            [cell update:theMessage];
+            [self.view layoutIfNeeded];
+            return cell;
+        }
+    }
+    else if (theMessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         ALLocationCell *theCell = (ALLocationCell *)[tableView dequeueReusableCellWithIdentifier:@"LocationCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
@@ -2473,6 +2494,15 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self showNoConversationLabel];
 }
 
+-(void) deleteMessasgeforALL:(ALMessage *) message {
+
+    [self.mActivityIndicator startAnimating];
+    ALMessageService * messageService = [[ALMessageService alloc] init];
+    [messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse * apiResponse, NSError *error) {
+        [self.mActivityIndicator stopAnimating];
+
+    }];
+}
 
 //=================================================================================================================
 

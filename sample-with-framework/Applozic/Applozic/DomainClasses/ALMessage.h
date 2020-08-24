@@ -136,6 +136,8 @@ typedef enum {
 -(BOOL)isChannelContentTypeMessage;
 -(BOOL)isDocumentMessage;
 -(BOOL)isSilentNotification;
+-(BOOL)isMessageSentToServer;
+-(BOOL)isDeletedForAll;
 
 @property (nonatomic,assign) BOOL deleted;
 @property (nonatomic, assign) BOOL msgHidden;
