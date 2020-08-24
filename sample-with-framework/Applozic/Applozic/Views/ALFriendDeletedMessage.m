@@ -59,6 +59,8 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
     self.mUserProfileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.mUserProfileImageView.clipsToBounds = YES;
     self.mUserProfileImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.mUserProfileImageView.layer.cornerRadius = 22.5;
+    self.mUserProfileImageView.layer.masksToBounds = YES;
     self.mUserProfileImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
     [self.contentView addSubview:self.mUserProfileImageView];
 
@@ -106,8 +108,6 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
 
 -(void) update:(ALMessage *)message {
     [super update:message];
-    self.mUserProfileImageView.layer.cornerRadius = self.mUserProfileImageView.frame.size.width/2;
-
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
     NSString * theDate = [NSString stringWithFormat:@"%@", [message getCreatedAtTimeChat:today]];
 

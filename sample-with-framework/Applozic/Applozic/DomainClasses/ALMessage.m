@@ -445,7 +445,6 @@ static NSString * const AL_TRUE = @"true";
 
 -(BOOL)isDeletedForAll {
     return self.metadata &&
-    self.metadata &&
     [self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] &&
     [[self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] isEqualToString:AL_TRUE];
 }
@@ -537,6 +536,13 @@ static NSString * const AL_TRUE = @"true";
             || (channel && [channel isNotificationMuted])
             
             || (contact && [contact isNotificationMuted]));
+}
+
+-(void)setAsDeletedForAll {
+    if (!self.metadata) {
+        self.metadata = [[NSMutableDictionary alloc] init];
+    }
+    [self.metadata setValue:AL_TRUE forKey:AL_DELETE_MESSAGE_FOR_KEY];
 }
 
 @end

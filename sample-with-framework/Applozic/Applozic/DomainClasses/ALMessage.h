@@ -147,5 +147,5 @@ typedef enum {
 -(BOOL)isLinkMessage;
 -(BOOL)isResetUnreadCountMessage;
 -(BOOL)hasAttachment;
-
+-(void)setAsDeletedForAll;
 @end

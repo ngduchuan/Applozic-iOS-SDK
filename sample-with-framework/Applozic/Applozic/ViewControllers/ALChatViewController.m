@@ -311,6 +311,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMemberUpdate:)
                                                  name:AL_Updated_Group_Members object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
+                                                 name:AL_MESSAGE_META_DATA_UPDATE object:nil];
 
     self.mqttObject = [ALMQTTConversationService sharedInstance];
 
@@ -677,6 +679,21 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self setChannelSubTitle:channel];
         }
     });
+}
+
+-(void)onMessageMetaDataUpdate:(NSNotification *)notification {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return;
+    }
+    ALMessage *message = (ALMessage *)notification.object;
+    NSIndexPath * path = [self getIndexPathForMessage:message.key];
+    if ([self isValidIndexPath:path]) {
+        ALMessage *alMessage = [self.alMessageWrapper getUpdatedMessageArray][path.row];
+        if ([alMessage.key isEqualToString:message.key]) {
+            alMessage.metadata = message.metadata;
+            [self reloadDataWithMessageKey:message.key andMessage:alMessage withValidIndexPath:path];
+        }
+    }
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
@@ -2494,13 +2511,18 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self showNoConversationLabel];
 }
 
--(void) deleteMessasgeforALL:(ALMessage *) message {
+-(void) deleteMessasgeforAll:(ALMessage *) message {
 
     [self.mActivityIndicator startAnimating];
     ALMessageService * messageService = [[ALMessageService alloc] init];
+    ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
     [messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse * apiResponse, NSError *error) {
         [self.mActivityIndicator stopAnimating];
-
+        if (!error) {
+            [message setAsDeletedForAll];
+            [messagedb updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
+            [self reloadDataWithMessageKey:message.key andMessage:message];
+        }
     }];
 }
 
@@ -4913,19 +4935,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)reloadDataWithMessageKey:(NSString *)messageKey andMessage:(ALMessage *) alMessage {
     NSIndexPath * path = [self getIndexPathForMessage:messageKey];
     if ([self isValidIndexPath:path]) {
-        NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
-        NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
-        ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
-        if ([message.key isEqualToString:messageKey]) {
-            [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-        }
-        if (newCount > oldCount) {
-            ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
-            [self.mTableView reloadData];
-            return;
-        } else {
-            [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
-        }
+        [self reloadDataWithMessageKey:messageKey andMessage:alMessage withValidIndexPath:path];
+    }
+}
+
+-(void)reloadDataWithMessageKey:(NSString *)messageKey
+                      andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
+    NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
+    NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
+    ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
+    if ([message.key isEqualToString:messageKey]) {
+        [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
+    }
+    if (newCount > oldCount) {
+        ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
+        [self.mTableView reloadData];
+        return;
+    } else {
+        [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 

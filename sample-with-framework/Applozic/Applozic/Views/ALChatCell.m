@@ -559,7 +559,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     if (self.channel &&
         (self.channel.type == OPEN ||
          [channelDbService isChannelLeft:self.channel.key])) {
-        return (self.mMessage.isDownloadRequired? NO:(action == @selector(copy:)));
+        return (action == @selector(copy:));
     }
 
     if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
@@ -570,7 +570,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
          action == @selector(copy:) ||
          [self isMessageReplyMenuEnabled:action] ||
          [self isForwardMenuEnabled:action] ||
-         action == @selector(deleteMessageForAll:) ) :
+         [self isMessageDeleteForAllMenuEnabled:action]) :
         ((action == @selector(copy:))
          || (action == @selector(delete:)));
     }
@@ -821,9 +821,12 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
             action == @selector(messageForward:));
 }
 
-
+-(BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isMessageDeleteForAllEnabled] &&
+            action == @selector(deleteMessageForAll:));
+}
 -(void)deleteMessageForAll:(id)sender {
-    [self.delegate deleteMessasgeforALL:self.mMessage];
+    [self.delegate deleteMessasgeforAll:self.mMessage];
 }
 
 @end
