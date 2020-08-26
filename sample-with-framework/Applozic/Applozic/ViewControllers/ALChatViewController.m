@@ -682,14 +682,13 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)onMessageMetaDataUpdate:(NSNotification *)notification {
-    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
-        return;
-    }
     ALMessage *message = (ALMessage *)notification.object;
 
-    if (![self isMessageForCurrentThread:message]) {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0
+        || ![self isMessageForCurrentThread:message]) {
         return;
     }
+
     NSIndexPath * path = [self getIndexPathForMessage:message.key];
     if ([self isValidIndexPath:path]) {
         ALMessage *alMessage = [self.alMessageWrapper getUpdatedMessageArray][path.row];
