@@ -15,6 +15,7 @@
 #import "ALApplozicSettings.h"
 #import "ALChannel.h"
 #import "ALContact.h"
+#import "ALTappableView.h"
 
 @protocol ALChatCellDelegate <NSObject>
 
@@ -64,5 +65,7 @@
 @property (nonatomic, strong) ALChannel * channel;
 
 @property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
+
+@property (nonatomic,retain) ALTappableView * frontView;
 
 @end

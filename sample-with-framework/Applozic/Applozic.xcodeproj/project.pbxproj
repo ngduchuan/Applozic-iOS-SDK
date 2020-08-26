@@ -170,6 +170,8 @@
 		18471CE724E2E39500EB7099 /* ALLoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
+		185B6AB324EBE7D20028AB75 /* ALTappableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 185B6AB124EBE7D20028AB75 /* ALTappableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		185B6AB424EBE7D20028AB75 /* ALTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B6AB224EBE7D20028AB75 /* ALTappableView.m */; };
 		1860E01C2151395600119CD7 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 1860E01A2151395600119CD7 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1860E01D2151395600119CD7 /* ALAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 1860E01B2151395600119CD7 /* ALAudioSession.m */; };
 		1863584820E2470F00B75802 /* ALRealTimeUpdate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1863584220E2470E00B75802 /* ALRealTimeUpdate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -699,6 +701,8 @@
 		185430DF2224384B00D55795 /* AppLozic 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 11.xcdatamodel"; sourceTree = "<group>"; };
 		18587A7A2177A81E006AA149 /* ALImagePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALImagePreviewController.h; sourceTree = "<group>"; };
 		18587A7B2177A81E006AA149 /* ALImagePreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
+		185B6AB124EBE7D20028AB75 /* ALTappableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALTappableView.h; path = Applozic/Views/ALTappableView.h; sourceTree = "<group>"; };
+		185B6AB224EBE7D20028AB75 /* ALTappableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALTappableView.m; path = Applozic/Views/ALTappableView.m; sourceTree = "<group>"; };
 		1860E01A2151395600119CD7 /* ALAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAudioSession.h; path = Applozic/ALAudioSession.h; sourceTree = "<group>"; };
 		1860E01B2151395600119CD7 /* ALAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAudioSession.m; path = Applozic/ALAudioSession.m; sourceTree = "<group>"; };
 		1863584220E2470E00B75802 /* ALRealTimeUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALRealTimeUpdate.h; path = Applozic/ALRealTimeUpdate.h; sourceTree = "<group>"; };
@@ -1582,6 +1586,8 @@
 				1AC5A594223A92E40044A9BD /* ALTabViewController.h */,
 				1AC5A595223A92E40044A9BD /* ALTabViewController.m */,
 				18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */,
+				185B6AB124EBE7D20028AB75 /* ALTappableView.h */,
+				185B6AB224EBE7D20028AB75 /* ALTappableView.m */,
 			);
 			name = ApplozicUIWidget;
 			sourceTree = "<group>";
@@ -1969,6 +1975,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				185B6AB324EBE7D20028AB75 /* ALTappableView.h in Headers */,
 				18D34F0D24917A16008C0106 /* ALAuthService.h in Headers */,
 				1843C72524530DA700967E7E /* SDImageIOAnimatedCoder.h in Headers */,
 				10C89FBE1FD9A5CF001C2FFC /* MessageReplyView.h in Headers */,
@@ -2411,6 +2418,7 @@
 				1843C6EF24530DA700967E7E /* SDWebImageError.m in Sources */,
 				6D7757201D5B838A0025560B /* MessageListRequest.m in Sources */,
 				4612E9181E13882D0022DB23 /* MQTTTransport.m in Sources */,
+				185B6AB424EBE7D20028AB75 /* ALTappableView.m in Sources */,
 				18F4006B2265E3020070CBB7 /* ALHTTPManager.m in Sources */,
 				6D73B2FE1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.m in Sources */,
 				1843C75B24530DA700967E7E /* SDAnimatedImageRep.m in Sources */,
