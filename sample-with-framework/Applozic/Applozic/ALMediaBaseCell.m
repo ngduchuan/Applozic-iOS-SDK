@@ -366,7 +366,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
                  [self isForwardMenuEnabled:action] ||
                  [self isMessageReplyMenuEnabled:action]));
     }
-
+    
     return (self.mMessage.isDownloadRequired ?
             (action == @selector(delete:)):
             (action == @selector(delete:)||

@@ -562,26 +562,24 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         return (action == @selector(copy:));
     }
 
-    if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
-
-        return self.mMessage.isMessageSentToServer ?
-        (action == @selector(delete:) ||
-         action == @selector(msgInfo:) ||
-         action == @selector(copy:) ||
-         [self isMessageReplyMenuEnabled:action] ||
-         [self isForwardMenuEnabled:action] ||
-         [self isMessageDeleteForAllMenuEnabled:action]) :
-        ((action == @selector(copy:))
-         || (action == @selector(delete:)));
+    if (![self.mMessage isMessageSentToServer]) {
+        return (action == @selector(copy:) ||
+                action == @selector(delete:));
     }
 
-    return self.mMessage.isMessageSentToServer ?
-    (action == @selector(delete:) ||
-     action == @selector(copy:) ||
-     [self isMessageReplyMenuEnabled:action] ||
-     [self isForwardMenuEnabled:action]) :
-    ((action == @selector(copy:))
-     || (action == @selector(delete:)));
+    if ([self.mMessage isSentMessage] &&
+        self.mMessage.groupId) {
+        return (action == @selector(delete:) ||
+                action == @selector(msgInfo:) ||
+                action == @selector(copy:) ||
+                [self isMessageReplyMenuEnabled:action] ||
+                [self isForwardMenuEnabled:action] ||
+                [self isMessageDeleteForAllMenuEnabled:action]);
+    }
+    return (action == @selector(delete:) ||
+            action == @selector(copy:) ||
+            [self isMessageReplyMenuEnabled:action] ||
+            [self isForwardMenuEnabled:action]);
 }
 
 -(void) messageForward:(id)sender

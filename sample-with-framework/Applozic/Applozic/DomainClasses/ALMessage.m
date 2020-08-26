@@ -439,10 +439,6 @@ static NSString * const AL_TRUE = @"true";
     }
 }
 
--(BOOL)isMessageSentToServer {
-    return self.sentToServer;
-}
-
 -(BOOL)isDeletedForAll {
     return self.metadata &&
     [self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] &&
@@ -543,6 +539,10 @@ static NSString * const AL_TRUE = @"true";
         self.metadata = [[NSMutableDictionary alloc] init];
     }
     [self.metadata setValue:AL_TRUE forKey:AL_DELETE_MESSAGE_FOR_KEY];
+}
+
+-(BOOL)isMessageSentToServer {
+    return self.status.intValue != 0;
 }
 
 @end
