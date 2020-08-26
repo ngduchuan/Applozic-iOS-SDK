@@ -8,6 +8,7 @@
 
 #import "ALDeletedMessasgeBaseCell.h"
 #import "ALUtilityClass.h"
+#import "ALMessageService.h"
 
 @implementation ALDeletedMessasgeBaseCell
 
@@ -55,6 +56,18 @@
     self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:[ALApplozicSettings getFontFace]];
     [self.contentView addSubview:self.mMessageLabel];
 
+    self.frontView = [[ALTappableView alloc] init];
+    self.frontView.backgroundColor = [UIColor clearColor];
+    self.frontView.alpha = 1.0;
+    self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.frontView.userInteractionEnabled = YES;
+    [self.contentView addSubview:self.frontView];
+
+    UILongPressGestureRecognizer * menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+    menuTapGesture.minimumPressDuration = 1.0;
+    menuTapGesture.cancelsTouchesInView = NO;
+    [self.frontView addGestureRecognizer:menuTapGesture];
+
     self.backgroundColor = [UIColor clearColor];
 }
 
@@ -78,6 +91,7 @@
 
 
 -(void)update:(ALMessage *)message {
+    self.mMessage = message;
 
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
     NSString * theDate = [NSString stringWithFormat:@"%@",[message getCreatedAtTimeChat:today]];
@@ -86,6 +100,56 @@
 
     self.mDateLabel.text = theDate;
     self.mMessageLabel.text = deletedMessageText;
+}
+
+-(void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+
+    UIView * superView = [longPressGestureRecognizer.view superview];
+    UIView * gestureView = longPressGestureRecognizer.view;
+
+    if (!superView ||
+        !gestureView ||
+        !self.canBecomeFirstResponder) {
+        return;
+    }
+
+    UIMenuController * sharedMenuController =  [UIMenuController sharedMenuController];
+
+    if (![gestureView canBecomeFirstResponder] ||
+        sharedMenuController.isMenuVisible) {
+        return;
+    }
+
+    [gestureView becomeFirstResponder];
+
+    [sharedMenuController setTargetRect:gestureView.frame inView:superView];
+    [sharedMenuController setMenuVisible:YES animated:YES];
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+
+    if (self.channel &&
+        self.channel.type == OPEN) {
+        return NO;
+    }
+
+    return action == @selector(delete:);
+}
+
+-(void) delete:(id)sender {
+    //UI
+    ALSLog(ALLoggerSeverityInfo, @"Message to deleteUI %@",self.mMessage.message);
+    [self.delegate deleteMessageFromView:self.mMessage];
+
+    //serverCall
+    [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
+
+        ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
+    }];
+}
+
+-(BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 @end

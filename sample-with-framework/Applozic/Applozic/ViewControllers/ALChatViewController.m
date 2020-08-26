@@ -1747,12 +1747,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         if ([theMessage isSentMessage]) {
             ALMyDeletedMessageCell *cell = (ALMyDeletedMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ALMyDeletedMessageCell"];
             cell.tag = indexPath.row;
+            cell.channel = channel;
             [cell update:theMessage];
             [self.view layoutIfNeeded];
             return cell;
         } else {
             ALFriendDeletedMessage *cell = (ALFriendDeletedMessage *)[tableView dequeueReusableCellWithIdentifier:@"ALFriendDeletedMessage"];
             cell.tag = indexPath.row;
+            cell.channel = channel;
             [cell update:theMessage];
             [self.view layoutIfNeeded];
             return cell;

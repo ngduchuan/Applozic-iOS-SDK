@@ -104,6 +104,12 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
     [self.mDateLabel.widthAnchor constraintEqualToConstant:DATE_LABEL_WIDTH_PADDING].active = YES;
     self.dateLabelHeight = [self.mDateLabel.heightAnchor constraintEqualToConstant:0];
     self.dateLabelHeight.active = YES;
+
+    [self.frontView.leadingAnchor constraintEqualToAnchor:self.mBubleImageView.leadingAnchor].active = YES;
+    [self.frontView.trailingAnchor constraintEqualToAnchor:self.mBubleImageView.trailingAnchor].active = YES;
+    [self.frontView.topAnchor constraintEqualToAnchor:self.mBubleImageView.topAnchor].active = YES;
+    [self.frontView.bottomAnchor constraintEqualToAnchor:self.mBubleImageView.bottomAnchor].active = YES;
+
 }
 
 -(void) update:(ALMessage *)message {
