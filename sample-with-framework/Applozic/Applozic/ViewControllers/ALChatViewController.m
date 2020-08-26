@@ -686,6 +686,10 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         return;
     }
     ALMessage *message = (ALMessage *)notification.object;
+
+    if (![self isMessageForCurrentThread:message]) {
+        return;
+    }
     NSIndexPath * path = [self getIndexPathForMessage:message.key];
     if ([self isValidIndexPath:path]) {
         ALMessage *alMessage = [self.alMessageWrapper getUpdatedMessageArray][path.row];
@@ -694,6 +698,15 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self reloadDataWithMessageKey:message.key andMessage:alMessage withValidIndexPath:path];
         }
     }
+}
+
+-(BOOL) isMessageForCurrentThread:(ALMessage *)message {
+    return (self.channelKey &&
+            message.groupId &&
+            (self.channelKey.intValue == message.groupId.intValue)) ||
+    (self.contactIds &&
+     message.groupId == nil &&
+     [self.contactIds isEqualToString:message.contactIds]);
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
