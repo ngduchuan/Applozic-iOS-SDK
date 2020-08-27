@@ -254,8 +254,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@",(NSString *)theJson);
-        ALContactsResponse * contactResponse = [[ALContactsResponse alloc] initWithJSONString:(NSString *)theJson];
+        NSString *jsonString = (NSString *)theJson;
+        if ([jsonString isKindOfClass:[NSString class]] &&
+            [jsonString isEqualToString:@"error"]) {
+            NSError * error = [NSError
+                               errorWithDomain:@"Applozic"
+                               code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, error);
+            return;
+        }
+
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", jsonString);
+        ALContactsResponse * contactResponse = [[ALContactsResponse alloc] initWithJSONString:jsonString];
         [ALUserDefaultsHandler setContactViewLoadStatus:YES];
         completion(contactResponse, nil);
     }];
