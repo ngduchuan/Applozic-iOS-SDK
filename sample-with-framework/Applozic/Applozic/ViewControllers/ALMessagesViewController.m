@@ -262,6 +262,9 @@ static int const MQTT_MAX_RETRY = 3;
                                                     name:UIKeyboardDidHideNotification
                                                   object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
+                                                   name:AL_MESSAGE_META_DATA_UPDATE object:nil];
+
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -681,6 +684,21 @@ static int const MQTT_MAX_RETRY = 3;
     ALContactCell *contactCell  = (ALContactCell *)[self.mTableView cellForRowAtIndexPath:path];
     
     return contactCell;
+}
+
+-(NSIndexPath*) getIndexPathForMessage:(NSString*)messageKey {
+    int index = (int)[self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
+        ALMessage *message = (ALMessage*)element;
+        if([message.key isEqualToString:messageKey])
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+
+    NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:1];
+    return path;
 }
 
 //==============================================================================================================================================
@@ -1606,6 +1624,47 @@ static int const MQTT_MAX_RETRY = 3;
     [self.customSearchBar resignFirstResponder];
     self.navigationItem.titleView = nil;
     [self setupNavigationButtons];
+}
+
+-(void)onMessageMetaDataUpdate:(NSNotification *)notification {
+    if (self.mContactsMessageListArray.count == 0) {
+        return;
+    }
+    
+    ALMessage *message = (ALMessage *)notification.object;
+    NSIndexPath * path = [self getIndexPathForMessage:message.key];
+    if ([self isValidIndexPath:path]) {
+        ALMessage *alMessage = self.mContactsMessageListArray[path.row];
+        if ([alMessage.key isEqualToString:message.key]) {
+            alMessage.metadata = message.metadata;
+            [self reloadDataWithMessageKey:message.key andMessage:alMessage withValidIndexPath:path];
+        }
+    }
+}
+
+-(BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
+    return self.mTableView &&
+    indexPath.row != -1 &&
+    indexPath.section < [self.mTableView numberOfSections] &&
+    indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section];
+}
+
+-(void)reloadDataWithMessageKey:(NSString *)messageKey
+                     andMessage:(ALMessage *)alMessage
+             withValidIndexPath:(NSIndexPath *)path {
+    NSInteger newCount = self.mContactsMessageListArray.count;
+    NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
+    ALMessage * message = self.mContactsMessageListArray[path.row];
+    if ([message.key isEqualToString:messageKey]) {
+        self.mContactsMessageListArray[path.row] = alMessage;
+    }
+    if (newCount > oldCount) {
+        ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
+        [self.mTableView reloadData];
+        return;
+    } else {
+        [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
 @end

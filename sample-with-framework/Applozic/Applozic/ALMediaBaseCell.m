@@ -276,11 +276,6 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     
 }
 
--(BOOL)isMessageReplyMenuEnabled:(SEL) action {
-
-    return ([ALApplozicSettings isReplyOptionEnabled] && action ==@selector(messageReply:));
-}
-
 -(NSString *)getMessageStatusIconName:(ALMessage *)alMessage {
 
     switch (alMessage.status.intValue) {
@@ -331,35 +326,47 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
     if ([self.mMessage.type isEqualToString:AL_IN_BOX]) {
 
-        [sharedMenuController setMenuItems: @[messageForwardMenuItem, messageReplyMenuItem]];
+        [sharedMenuController setMenuItems: @[messageForwardMenuItem,
+                                              messageReplyMenuItem]];
 
     } else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]) {
 
+        UIMenuItem * deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
+
         UIMenuItem * msgInfoMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
 
-        [sharedMenuController setMenuItems: @[msgInfoMenuItem, messageReplyMenuItem, messageForwardMenuItem]];
+        [sharedMenuController setMenuItems: @[msgInfoMenuItem,
+                                              messageReplyMenuItem,
+                                              messageForwardMenuItem,
+                                              deleteForAllMenuItem]];
     }
 
     [sharedMenuController setTargetRect:gestureView.frame inView:superView];
     [sharedMenuController setMenuVisible:YES animated:YES];
 }
 
--(BOOL) canPerformAction:(SEL)action withSender:(id)sender {
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
 
     if (self.channel && self.channel.type == OPEN) {
         return NO;
     }
 
+    if (![self.mMessage isMessageSentToServer]) {
+        return action == @selector(delete:);
+    }
+
     if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
         return (self.mMessage.isDownloadRequired ?
                 (action == @selector(delete:) ||
+                 [self isMessageDeleteForAllMenuEnabled:action] ||
                  action == @selector(msgInfo:)):
                 (action == @selector(delete:) ||
                  action == @selector(msgInfo:) ||
+                 [self isMessageDeleteForAllMenuEnabled:action] ||
                  [self isForwardMenuEnabled:action] ||
                  [self isMessageReplyMenuEnabled:action]));
     }
-
+    
     return (self.mMessage.isDownloadRequired ?
             (action == @selector(delete:)):
             (action == @selector(delete:)||
@@ -367,9 +374,19 @@ static CGFloat const DATE_LABEL_SIZE = 12;
              [self isMessageReplyMenuEnabled:action]));
 }
 
--(BOOL)isForwardMenuEnabled:(SEL) action; {
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isReplyOptionEnabled] &&
+            action == @selector(messageReply:));
+}
+
+-(BOOL)isForwardMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isForwardOptionEnabled] &&
             action == @selector(messageForward:));
+}
+
+-(BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isMessageDeleteForAllEnabled] &&
+            action == @selector(deleteMessageForAll:));
 }
 
 -(void) messageForward:(id)sender {
@@ -416,6 +433,10 @@ static CGFloat const DATE_LABEL_SIZE = 12;
             [self.delegate showAnimationForMsgInfo:NO];
         }
     }];
+}
+
+-(void)deleteMessageForAll:(id)sender {
+    [self.delegate deleteMessasgeforAll:self.mMessage];
 }
 
 @end
