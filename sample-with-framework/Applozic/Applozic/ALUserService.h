@@ -98,4 +98,7 @@
 
 - (void)updateDisplayNameWith:(NSString *) userId withDisplayName:(NSString *) displayName withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError * error)) completion;
 
+-(void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
+                                withCompletion:(void(^)(NSMutableArray *contcatArray, NSError * error))completion;
+
 @end
