@@ -321,9 +321,20 @@
             [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
-        }
-        else
-        {
+        } else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
+            ALChannelService *channelService = [[ALChannelService alloc] init];
+            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
+            if (parts.count == 2) {
+                NSNumber * channelKey = [NSNumber numberWithInt:[parts[0] intValue]];
+                NSNumber * notificationMuteTillTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
+                [channelService updateMuteAfterTime:notificationMuteTillTime andChnnelKey:channelKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:ALChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
+
+                if (self.realTimeUpdate) {
+                    [self.realTimeUpdate onChannelMute:channelKey];
+                }
+            }
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"APNs NOTIFICATION \"%@\" IS NOT HANDLED",type);
         }
 
@@ -505,7 +516,8 @@
                        @(AL_CANCEL_CALL):@"MT_CANCEL_CALL",
                        @(AL_MESSAGE):@"MT_MESSAGE",
                        @(AL_DELETE_MULTIPLE_MESSAGE):@"MT_DELETE_MULTIPLE_MESSAGE",
-                       @(AL_SYNC_PENDING):@"MT_SYNC_PENDING"
+                       @(AL_SYNC_PENDING):@"MT_SYNC_PENDING",
+                       @(AL_GROUP_MUTE_NOTIFICATION):@"APPLOZIC_39",
         };
     }
     return  dictionary;
