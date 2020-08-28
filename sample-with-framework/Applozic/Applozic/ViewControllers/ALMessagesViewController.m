@@ -117,11 +117,6 @@ static int const MQTT_MAX_RETRY = 3;
     self.mqttRetryCount = 0;
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
-    [self.mActivityIndicator startAnimating];
-    
-    self.dBService = [[ALMessageDBService alloc] init];
-    self.dBService.delegate = self;
-    [self.dBService getMessages:self.childGroupList];
 
     self.alMqttConversationService = [ALMQTTConversationService sharedInstance];
     self.alMqttConversationService.mqttConversationDelegate = self;
@@ -221,18 +216,13 @@ static int const MQTT_MAX_RETRY = 3;
 
     [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
-    
-    if ([self.detailChatViewController refreshMainView])
+
+    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
     {
-        if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-        {
-            [self intializeSubgroupMessages];
-        }
-        
-        [self.dBService getMessages:self.childGroupList];
-        [self.detailChatViewController setRefreshMainView:FALSE];
-        [self.mTableView reloadData];
+        [self intializeSubgroupMessages];
     }
+
+    [self prepareViewController];
 
     [self setupNavigationButtons];
 
@@ -290,6 +280,12 @@ static int const MQTT_MAX_RETRY = 3;
     [self callLastSeenStatusUpdate];
 }
 
+-(void)prepareViewController {
+    [self.mActivityIndicator startAnimating];
+    self.dBService = [[ALMessageDBService alloc] init];
+    self.dBService.delegate = self;
+    [self.dBService getMessages:self.childGroupList];
+}
 
 -(void)intializeSubgroupMessages
 {
@@ -512,14 +508,6 @@ static int const MQTT_MAX_RETRY = 3;
     }
     
     self.mContactsMessageListArray = messagesArray;
-    for (int i=0; i<messagesArray.count; i++) {
-        ALMessage * message = messagesArray[i];
-        if(message.groupId != nil) {
-            // It's a group message
-        } else if (message.contactIds != nil)  {
-            // It's a normal one to one message
-        }
-    }
     [self.mTableView reloadData];
     ALSLog(ALLoggerSeverityInfo, @"GETTING MESSAGE ARRAY");
 }
@@ -528,7 +516,6 @@ static int const MQTT_MAX_RETRY = 3;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.dBService getMessages:nil];
-        [self.detailChatViewController setRefreshMainView:NO];
         [self.mTableView reloadData];
     });
 }
@@ -1152,8 +1139,6 @@ static int const MQTT_MAX_RETRY = 3;
 
 -(void)updateLastSeenAtStatus:(ALUserDetail *) alUserDetail
 {
-    [self.detailChatViewController setRefreshMainView:YES];
-    
     if ([self.detailChatViewController.contactIds isEqualToString:alUserDetail.userId])
     {
         [self.detailChatViewController updateLastSeenAtStatus:alUserDetail];
