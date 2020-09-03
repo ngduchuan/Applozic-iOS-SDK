@@ -504,7 +504,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)updateVOIPMsg
 {
     [self.mTableView reloadData];
-    [self setRefreshMainView:YES];
     [self setRefresh:YES];
 }
 
@@ -521,7 +520,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     [self sendMessage:theMessage withUserDisplayName:self.displayName];
     [self.mTableView reloadData];
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
 }
 
@@ -1349,7 +1347,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self showNoConversationLabel];
     [self sendMessage:message withUserDisplayName:nil];
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
     self.alMessage=nil;
 }
@@ -1391,7 +1388,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count] withUserDisplayName:nil];
 
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
     self.alMessage=nil;
 
@@ -1438,7 +1434,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self updateUserDisplayNameWithMessage:theMessage withDisplayName:self.displayName];
         completion(message, error);
         [self.mTableView reloadData];
-        [self setRefreshMainView:TRUE];
     }];
 }
 
@@ -1454,7 +1449,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [[self.alMessageWrapper getUpdatedMessageArray] addObject:locationMessage];
         [self sendMessage:locationMessage withUserDisplayName:self.displayName];
         [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-        [self setRefreshMainView:TRUE];
         [self scrollTableViewToBottomWithAnimation:YES];
     }
     else
@@ -3206,7 +3200,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         }
         [self.mTableView reloadData];
-        [self setRefreshMainView:YES];
         [self updateUserDisplayNameWithMessage:theMessage withDisplayName:displayName];
     }];
 }
@@ -3315,7 +3308,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALMessage* alMessage  = [[ALMessage alloc] init];
     ALSLog(ALLoggerSeverityInfo, @" OUR Individual Notificationhandler ");
-    [self setRefreshMainView:TRUE];
     // see if this view is visible or not...
 
     NSString * notificationObject = (NSString *)notification.object;
@@ -3349,7 +3341,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)syncCall:(ALMessage*)alMessage  updateUI:(NSNumber *)updateUI alertValue: (NSString *)alertValue
 {
-    [self setRefreshMainView:TRUE];
     bool isGroupNotification = (alMessage.groupId == nil ? false : true);
 
     if (self.isGroup && isGroupNotification && [self.channelKey isEqualToNumber:alMessage.groupId] &&
@@ -3799,7 +3790,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALSLog(ALLoggerSeverityInfo, @"USER DET : %@",alUserDetail.userId);
     ALSLog(ALLoggerSeverityInfo, @"self.contactIds : %@",self.contactIds);
-    [self setRefreshMainView:TRUE];
 
     double value = [alUserDetail.lastSeenAtTime doubleValue];
     ALContactService *cnService = [[ALContactService alloc] init];
