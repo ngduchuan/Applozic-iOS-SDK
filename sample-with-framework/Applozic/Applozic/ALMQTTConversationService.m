@@ -26,6 +26,7 @@
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
+NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGroupMuteNotification";
 
 @implementation ALMQTTConversationService
 
@@ -256,8 +257,6 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         data = [dataToString dataUsingEncoding:NSUTF8StringEncoding];
 
         ALSLog(ALLoggerSeverityInfo, @"MQTT_GOT_NEW_MESSAGE after decyption : %@", dataToString);
-    }else{
-        fullMessage = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding ];
     }
 
     ALSLog(ALLoggerSeverityInfo, @"MQTT_GOT_NEW_MESSAGE : %@", fullMessage);
@@ -546,9 +545,20 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                     
                 }];
             }
-        }
-        else
-        {
+        } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
+            ALChannelService *channelService = [[ALChannelService alloc] init];
+            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
+            if (parts.count == 2) {
+                NSNumber * channelKey = [NSNumber numberWithInt:[parts[0] intValue]];
+                NSNumber * notificationMuteTillTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
+                [channelService updateMuteAfterTime:notificationMuteTillTime andChnnelKey:channelKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:ALChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
+
+                if (self.realTimeUpdate) {
+                    [self.realTimeUpdate onChannelMute:channelKey];
+                }
+            }
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"MQTT NOTIFICATION \"%@\" IS NOT HANDLED",type);
         }
     }

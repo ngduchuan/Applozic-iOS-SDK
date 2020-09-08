@@ -781,7 +781,11 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
-
+-(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
+              andChnnelKey:(NSNumber*)channelKey {
+    ALChannelDBService * dbService = [ALChannelDBService new];
+    [dbService updateMuteAfterTime:notificationAfterTime andChnnelKey:channelKey];
+}
 
 -(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
                    orClinetChannelIds:(NSMutableArray*) clientChannelIds
