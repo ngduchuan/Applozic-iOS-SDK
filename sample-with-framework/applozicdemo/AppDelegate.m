@@ -178,35 +178,25 @@
 
 -(void)registerForNotification
 {
-    if(@available(iOS 10.0, *))
-    {
-        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-        center.delegate = self;
-        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error)
-         {
-             if(!error)
-             {
-                 dispatch_async(dispatch_get_main_queue(), ^ {
-                     [[UIApplication sharedApplication] registerForRemoteNotifications];  // required to get the app to do anything at all about push notifications
-                     NSLog(@"Push registration success." );
-                 });
-             }
-             else
-             {
-                 NSLog(@"Push registration FAILED" );
-                 NSLog(@"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
-                 NSLog(@"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
-             }
-         }];
-    }
-    else
-    {
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound |    UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error)
+     {
+        if(!error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^ {
+                [[UIApplication sharedApplication] registerForRemoteNotifications];  // required to get the app to do anything at all about push notifications
+                NSLog(@"Push registration success." );
+            });
+        }
+        else
+        {
+            NSLog(@"Push registration FAILED" );
+            NSLog(@"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+            NSLog(@"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+        }
+    }];
 }
-
 
 - (void)redirectLogToDocuments
 {
