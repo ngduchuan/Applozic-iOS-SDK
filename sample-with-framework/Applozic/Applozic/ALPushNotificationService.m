@@ -334,6 +334,12 @@
                     [self.realTimeUpdate onChannelMute:channelKey];
                 }
             }
+        } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_ACTIVATED)]]) {
+            [ALUserDefaultsHandler deactivateLoggedInUser:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"false"}];
+        } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DEACTIVATED)]]) {
+            [ALUserDefaultsHandler deactivateLoggedInUser:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"true"}];
         } else {
             ALSLog(ALLoggerSeverityInfo, @"APNs NOTIFICATION \"%@\" IS NOT HANDLED",type);
         }
@@ -518,6 +524,8 @@
                        @(AL_DELETE_MULTIPLE_MESSAGE):@"MT_DELETE_MULTIPLE_MESSAGE",
                        @(AL_SYNC_PENDING):@"MT_SYNC_PENDING",
                        @(AL_GROUP_MUTE_NOTIFICATION):@"APPLOZIC_39",
+                       @(AL_USER_ACTIVATED):@"APPLOZIC_18",
+                       @(AL_USER_DEACTIVATED):@"APPLOZIC_19",
         };
     }
     return  dictionary;

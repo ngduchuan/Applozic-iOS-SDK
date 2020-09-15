@@ -314,6 +314,10 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
                                                  name:AL_MESSAGE_META_DATA_UPDATE object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLoggedInUserDeactivated:)
+                                                 name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
+
+
     self.mqttObject = [ALMQTTConversationService sharedInstance];
 
     if (self.individualLaunch) {
@@ -361,12 +365,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self.pickerView reloadAllComponents];
     }
 
-    if (self.channelKey) {
-        [self checkIfChannelLeft];
-    }else{
-        self.typingMessageView.hidden = NO;
-    }
-
+    self.typingMessageView.hidden = NO;
     [self setCallButtonInNavigationBar];
 
     [self hideKeyBoardOnEmptyList];
@@ -376,12 +375,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     maxHeight = [self getMaxSizeLines:[ALApplozicSettings getMaxTextViewLines]];
     minHeight = [self getMaxSizeLines:1]; //  Single Line Height
 
-    if (![self isGroup]) {
-        ALContact *contact = [[[ALContactService alloc] init] loadContactByKey:@"userId" value:self.contactIds];
-        [self enableOrDisableChat:contact.isChatDisabled];
-    } else {
-        [self disableChatViewInteraction:NO withPlaceholder:nil];
-    }
     [self serverCallForLastSeen];
 
 }
@@ -697,13 +690,22 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 }
 
--(BOOL) isMessageForCurrentThread:(ALMessage *)message {
+-(BOOL)isMessageForCurrentThread:(ALMessage *)message {
     return (self.channelKey &&
             message.groupId &&
             (self.channelKey.intValue == message.groupId.intValue)) ||
     (self.contactIds &&
      message.groupId == nil &&
      [self.contactIds isEqualToString:message.contactIds]);
+}
+
+-(void)onLoggedInUserDeactivated:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+
+    if (!userInfo) {
+        return;
+    }
+    [self enableOrDisableChat:[[userInfo valueForKey:@"DEACTIVATED"] isEqualToString:@"true"] orChannel:self.alChannel orContact:self.alContact];
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
@@ -888,16 +890,17 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 }
 
--(void)checkUserDeleted
+-(BOOL)updateUserDeletedStatus
 {
     ALContactService *cnService = [[ALContactService alloc] init];
-    BOOL isUserDeleted = [cnService isUserDeleted:self.contactIds];
-    [self freezeView:isUserDeleted];
-    [self.label setHidden:isUserDeleted];
-    if (isUserDeleted)
+    BOOL deletedFlag = [cnService isUserDeleted:self.contactIds];
+    [self freezeView:deletedFlag];
+    [self.label setHidden:deletedFlag];
+    if (deletedFlag)
     {
         [ALNotificationView showLocalNotification:[ALApplozicSettings getUserDeletedText]];
     }
+    return deletedFlag;
 }
 
 //==============================================================================================================================================
@@ -961,8 +964,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)checkIfChannelLeft
+-(BOOL)updateChannelUserStatus
 {
+    BOOL disableUserInteractionInChannel = NO;
     [self.navRightBarButtonItems removeObject:self.closeButton];
 
     ALChannelService * alChannelService = [[ALChannelService alloc] init];
@@ -971,13 +975,16 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self freezeView:YES];
         ALNotificationView * notification = [[ALNotificationView alloc] init];
         [notification showGroupLeftMessage];
+        disableUserInteractionInChannel = YES;
     }
     else if ([ALChannelService isChannelDeleted:self.channelKey])
     {
         [self freezeView:YES];
         [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        disableUserInteractionInChannel = YES;
     }else if([ALChannelService isConversationClosed:self.channelKey]){
         [self freezeView:YES];
+        disableUserInteractionInChannel = YES;
     }
     else
     {
@@ -986,6 +993,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         }
 
         [self freezeView:NO];
+        disableUserInteractionInChannel = NO;
     }
 
     if(self.alChannel.metadata != nil && [[self.alChannel.metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"] && ![[self.alChannel.metadata  valueForKey:@"AL_ADMIN_USERID"] isEqualToString:[ALUserDefaultsHandler getUserId]]){
@@ -993,6 +1001,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }else{
         self.typingMessageView.hidden = NO;
     }
+    return disableUserInteractionInChannel;
 }
 
 //==============================================================================================================================================
@@ -1150,11 +1159,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self.loadingIndicator stopLoading];
         if (channel) {
             [self setChannelSubTitle:channel];
+            BOOL disableUserInteractionInChannel = [self updateChannelUserStatus];
+            [self enableOrDisableChat:disableUserInteractionInChannel orChannel:channel orContact:nil];
+            [self.label setHidden:NO];
         } else {
             [self checkUserBlockStatus];
-            [self checkUserDeleted];
+            BOOL isUserDeleted = [self updateUserDeletedStatus];
+            [self enableOrDisableChat:isUserDeleted orChannel:nil orContact:contact];
         }
-        [self.label setHidden:NO];
         self.navigationItem.titleView = self->titleLabelButton;
     }];
 }
@@ -3728,15 +3740,28 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     return [sortedMessages mutableCopy];
 }
 
--(void) enableOrDisableChat:(BOOL)disable {
-    if (ALUserDefaultsHandler.isChatDisabled) {
-        /// User has disabled chat.
-        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YouDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have disabled chat", @"");
+-(void) enableOrDisableChat:(BOOL)disable
+                  orChannel:(ALChannel *)channel
+                  orContact:(ALContact *) contact {
+    // If user is deactivated we will disable disableChatViewInteraction
+    if ([ALUserDefaultsHandler isLoggedInUserDeactivated]) {
+        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YourChatDeactivated", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your chat deactivated", @"");
         [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
-    } else if (disable) {
-        /// Chat is disabled for this user.
-        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"UserDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has disabled his/her chat", @"");
-        [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        return;
+    }
+
+    if (channel) {
+        [self disableChatViewInteraction:disable withPlaceholder:nil];
+    } else if (contact) {
+        if (ALUserDefaultsHandler.isChatDisabled) {
+            /// User has disabled chat.
+            NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YouDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have disabled chat", @"");
+            [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        } else if (disable) {
+            /// Chat is disabled for this user.
+            NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"UserDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has disabled his/her chat", @"");
+            [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        }
     } else {
         [self disableChatViewInteraction:NO withPlaceholder:nil];
     }
@@ -3776,8 +3801,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self updateConversationProfileDetails];
             [self updateLastSeenAtStatus:alUserDetail];
             [self setCallButtonInNavigationBar];
-            [self checkUserDeleted];
-            [self enableOrDisableChat: alUserDetail.isChatDisabled];
         }
         else
         {
@@ -4210,7 +4233,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self freezeView:isUserDeleted];
         [self.label setHidden:isUserDeleted];
         [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
-        [self enableOrDisableChat:self.alContact.isChatDisabled];
+        [self enableOrDisableChat:isUserDeleted orChannel:nil orContact:self.alContact];
     }
     [self.mTableView reloadData];
 }
