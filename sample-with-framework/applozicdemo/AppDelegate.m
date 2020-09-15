@@ -9,10 +9,6 @@
 #import <Applozic/Applozic.h>
 #import "ApplozicLoginViewController.h"
 #import <UserNotifications/UserNotifications.h>
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <BuddyBuildSDK/BuddyBuildSDK.h>
-
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
@@ -27,8 +23,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [BuddyBuildSDK setup];
-
     [self registerForNotification];
     // checks wheather app version is updated/changed then makes server call setting VERSION_CODE
     [ALRegisterUserClientService isAppUpdated];
@@ -70,8 +64,6 @@
     if([userDefaults boolForKey:@"sendLogs"] == YES) {
         [self redirectLogToDocuments];
     }
-    
-    [Fabric with:@[[Crashlytics class]]];
     return YES;
 }
 
