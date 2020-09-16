@@ -59,8 +59,7 @@
 -(NSPersistentContainer *)persistentContainer {
 
     @synchronized (self) {
-        NSURL *storeURL =  [ALUtilityClass getApplicationDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
-        NSURL *groupURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
+        NSURL *storeURL = [ALUtilityClass getApplicationDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
 
         if (_persistentContainer == nil) {
             NSPersistentContainer *container = [[NSPersistentContainer alloc] initWithName:@"AppLozic" managedObjectModel:self.managedObjectModel];
@@ -81,45 +80,10 @@
 
             if (self.isStoreLoaded) {
                 [container.viewContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-                NSError *storeError = nil;
-                NSPersistentStore  *sourceStore  = nil;
-                NSPersistentStore  *destinationStore  = nil;
-                sourceStore = [container.persistentStoreCoordinator persistentStoreForURL:storeURL];
-                if (sourceStore != nil && groupURL) {
-                    // Perform the migration
-
-                    NSDictionary *options = @{
-                        NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES],
-                        NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES]
-                    };
-
-                    destinationStore = [container.persistentStoreCoordinator migratePersistentStore:sourceStore
-                                                                                              toURL:groupURL
-                                                                                            options:options
-                                                                                           withType:NSSQLiteStoreType
-                                                                                              error:&storeError];
-                    if (destinationStore == nil) {
-                        ALSLog(ALLoggerSeverityError, @"Failed to migratePersistentStore");
-                        _persistentContainer = nil;
-                    } else {
-                        NSFileCoordinator *nsFileCoordinator = [[NSFileCoordinator alloc]initWithFilePresenter:nil];
-                        [nsFileCoordinator coordinateWritingItemAtURL:storeURL
-                                                              options:0
-                                                                error:nil
-                                                           byAccessor:^(NSURL *url) {
-                            NSError *error;
-                            [[NSFileManager defaultManager] removeItemAtURL:url error:&error];
-                            if(error){
-                                ALSLog(ALLoggerSeverityError, @"Failed to Delete the data base file %@, %@", error, [error userInfo]);
-                            }
-                        }];
-                    }
-                } else {
-                    _persistentContainer = container;
-                }
+                _persistentContainer = container;
             }
         } else {
-            if (![self persistentStoreExistsWithStoreURL:storeURL] && ![self persistentStoreExistsWithStoreURL:groupURL]) {
+            if (![self persistentStoreExistsWithStoreURL:storeURL]) {
                 _persistentContainer = nil;
             }
         }
@@ -155,24 +119,8 @@
     }
 }
 
--(BOOL) isProtectedDataAvailable {
-    __block BOOL protectedDataAvailable = NO;
-    if ([NSThread isMainThread])
-    {
-        protectedDataAvailable = [[UIApplication sharedApplication] isProtectedDataAvailable];
-    }
-    else
-    {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-
-            protectedDataAvailable = [[UIApplication sharedApplication] isProtectedDataAvailable];
-        });
-    }
-    return protectedDataAvailable;
-}
-
-- (void) savePrivateAndMainContext:(NSManagedObjectContext*)context
-                        completion:(void (^)(NSError*error))completion {
+- (void) saveWithContext:(NSManagedObjectContext*)context
+              completion:(void (^)(NSError*error))completion {
     @try {
         NSError* error;
         if (!context) {
@@ -186,13 +134,13 @@
             return;
         } else {
             if (error) {
-                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in saveWithContext :%@",error);
                 [context rollback];
             }
             completion(error);
         }
     } @catch (NSException *exception) {
-        ALSLog(ALLoggerSeverityError, @"Unresolved NSException in db savePrivateAndMainContext %@, %@", exception.reason, [exception userInfo]);
+        ALSLog(ALLoggerSeverityError, @"Unresolved NSException in db saveWithContext %@, %@", exception.reason, [exception userInfo]);
     }
 }
 

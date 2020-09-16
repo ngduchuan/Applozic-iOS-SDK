@@ -1140,7 +1140,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
                 count++;
                 if (count % AL_CHANNEL_MEMBER_BATCH_SIZE == 0) {
-                    [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+                    [theDBHandler saveWithContext:context completion:^(NSError *error) {
 
                         if (error) {
                             isProccessFailed = YES;
@@ -1149,7 +1149,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                 }
             }
 
-            [theDBHandler savePrivateAndMainContext:context completion:^(NSError *error) {
+            [theDBHandler saveWithContext:context completion:^(NSError *error) {
                 NSString *operationStatus  = @"Save operation success";
                 if(error){
                     operationStatus = @"Save operation failed";
