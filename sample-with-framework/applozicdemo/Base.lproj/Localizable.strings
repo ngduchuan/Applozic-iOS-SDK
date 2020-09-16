@@ -318,6 +318,4 @@
 "SearchInfoText" = "Press search button to start searching...";
 "ChatTitleLoadingText" = "Loading...";
 "deletedMessageText" = "This message has been deleted";
-"YourChatDeactivated" = "Your chat deactivated";
-
-
+"YourChatDeactivated" = "Your chat is deactivated";

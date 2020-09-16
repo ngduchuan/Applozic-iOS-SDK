@@ -3745,7 +3745,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                   orContact:(ALContact *) contact {
     // If user is deactivated we will disable disableChatViewInteraction
     if ([ALUserDefaultsHandler isLoggedInUserDeactivated]) {
-        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YourChatDeactivated", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your chat deactivated", @"");
+        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YourChatDeactivated", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your chat is deactivated", @"");
         [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
         return;
     }
