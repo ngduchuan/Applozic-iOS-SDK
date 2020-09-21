@@ -1,9 +1,8 @@
 To add the Applozic framework manually, a .xcframework file is required. Follow these steps to create an Applozic.xcframework file
 
-1. Go to Applozic sample folder sdk and open ``/Applozic-iOS-SDK/sample-with-framework/applozicdemo.xcodeproj,`` Click ``Applozic.xcodeproj`` and select TARGET ``Applozic`` and go to Build settings search for ``Build libraries for Distribution`` and make it to ``YES``
-2. Go to Applozic sample folder in the terminal:
+1. Go to Applozic sample folder in the terminal:
 ``cd /path/to/Applozic/Applozic-iOS-SDK/sample-with-framework``
-3. Archive the framework for each platform. Run these two commands to archive for the iOS device and Simulator:
+2. Archive the framework for each platform. Run these two commands to archive for the iOS device and Simulator:
  
     **NOTE**: For release, it will be: ``-configuration Release`` in below command.
  
@@ -14,11 +13,11 @@ To add the Applozic framework manually, a .xcframework file is required. Follow 
  # For Simulator
  xcodebuild archive -scheme Applozic -archivePath archives/ios-sim -sdk iphonesimulator SKIP_INSTALL=NO 
  ```
-4. For creating XCFramework. Run the below command:
+3. For creating XCFramework. Run the below command:
  ```swift
  xcodebuild -create-xcframework \
  -framework archives/ios.xcarchive/Products/Library/Frameworks/Applozic.framework \
  -framework archives/ios-sim.xcarchive/Products/Library/Frameworks/Applozic.framework \
  -output Applozic.xcframework
  ```
-5. The generated XCFramework can now be copied from: `Applozic-iOS-SDK/sample-with-framework/Applozic.xcframework`` add ``Applozic.xcframework`` in your project.
+4. The generated XCFramework can now be copied from: `Applozic-iOS-SDK/sample-with-framework/Applozic.xcframework`` add ``Applozic.xcframework`` in your project.
