@@ -15,6 +15,7 @@
 #import "ALRealTimeUpdate.h"
 
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
+extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 
 @protocol ALMQTTConversationDelegate <NSObject>
 

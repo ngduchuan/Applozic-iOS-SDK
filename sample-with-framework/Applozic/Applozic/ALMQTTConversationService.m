@@ -27,6 +27,7 @@ static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGroupMuteNotification";
+NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUserDidChangeDeactivateNotification";
 
 @implementation ALMQTTConversationService
 
@@ -558,6 +559,12 @@ NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGr
                     [self.realTimeUpdate onChannelMute:channelKey];
                 }
             }
+        } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_ACTIVATED)]]) {
+            [ALUserDefaultsHandler deactivateLoggedInUser:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"false"}];
+        } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DEACTIVATED)]]) {
+            [ALUserDefaultsHandler deactivateLoggedInUser:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"true"}];
         } else {
             ALSLog(ALLoggerSeverityInfo, @"MQTT NOTIFICATION \"%@\" IS NOT HANDLED",type);
         }
