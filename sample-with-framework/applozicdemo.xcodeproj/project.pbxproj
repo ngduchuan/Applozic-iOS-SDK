@@ -785,7 +785,6 @@
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				PROVISIONING_PROFILE_SPECIFIER = "global Customer Demo";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -819,7 +818,6 @@
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				PROVISIONING_PROFILE_SPECIFIER = "Applozic customer demo";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64 i386";
 			};
 			name = Release;
 		};
