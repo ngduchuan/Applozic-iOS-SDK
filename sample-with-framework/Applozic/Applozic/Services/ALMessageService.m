@@ -809,14 +809,6 @@ static ALMessageClientService *alMsgClientService;
 }
 
 //============================================================================================================
-#pragma mark ADD BROADCAST MESSAGE TO DB
-//============================================================================================================
-
-+(void)addBroadcastMessageToDB:(ALMessage *)alMessage {
-    [ALMessageDBService addBroadcastMessageToDB:alMessage];
-}
-
-//============================================================================================================
 #pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
 //============================================================================================================
 
@@ -1044,5 +1036,15 @@ static ALMessageClientService *alMsgClientService;
 - (void)onUploadFailed:(ALMessage *)alMessage {
 
 }
+
+
+-(void)deleteMessageForAllWithKey:(NSString *) keyString
+                   withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+    ALMessageClientService * mesasgeClientService  = [[ALMessageClientService alloc] init];
+    [mesasgeClientService deleteMessageForAllWithKey:keyString withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        completion(apiResponse, error);
+    }];
+}
+
 
 @end
