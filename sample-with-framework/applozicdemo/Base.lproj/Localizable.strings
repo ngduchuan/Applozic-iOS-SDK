@@ -13,6 +13,7 @@
 "forwardOptionTitle" ="Forward";
 "replyOptionTitle" ="Reply";
 "infoOptionTitle" ="Info";
+"deleteForAll" ="Delete for all";
 
 "noConversationTitle"  = "You have no conversations yet";
 
@@ -316,4 +317,5 @@
 "NoSearchResultFound" = "No results found";
 "SearchInfoText" = "Press search button to start searching...";
 "ChatTitleLoadingText" = "Loading...";
-
+"deletedMessageText" = "This message has been deleted";
+"YourChatDeactivated" = "Your chat is deactivated";

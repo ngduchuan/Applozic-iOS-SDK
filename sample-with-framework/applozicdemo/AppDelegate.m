@@ -9,10 +9,6 @@
 #import <Applozic/Applozic.h>
 #import "ApplozicLoginViewController.h"
 #import <UserNotifications/UserNotifications.h>
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <BuddyBuildSDK/BuddyBuildSDK.h>
-
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
@@ -27,8 +23,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [BuddyBuildSDK setup];
-
     [self registerForNotification];
     // checks wheather app version is updated/changed then makes server call setting VERSION_CODE
     [ALRegisterUserClientService isAppUpdated];
@@ -70,8 +64,6 @@
     if([userDefaults boolForKey:@"sendLogs"] == YES) {
         [self redirectLogToDocuments];
     }
-    
-    [Fabric with:@[[Crashlytics class]]];
     return YES;
 }
 
@@ -178,35 +170,25 @@
 
 -(void)registerForNotification
 {
-    if(@available(iOS 10.0, *))
-    {
-        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-        center.delegate = self;
-        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error)
-         {
-             if(!error)
-             {
-                 dispatch_async(dispatch_get_main_queue(), ^ {
-                     [[UIApplication sharedApplication] registerForRemoteNotifications];  // required to get the app to do anything at all about push notifications
-                     NSLog(@"Push registration success." );
-                 });
-             }
-             else
-             {
-                 NSLog(@"Push registration FAILED" );
-                 NSLog(@"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
-                 NSLog(@"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
-             }
-         }];
-    }
-    else
-    {
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound |    UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error)
+     {
+        if(!error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^ {
+                [[UIApplication sharedApplication] registerForRemoteNotifications];  // required to get the app to do anything at all about push notifications
+                NSLog(@"Push registration success." );
+            });
+        }
+        else
+        {
+            NSLog(@"Push registration FAILED" );
+            NSLog(@"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+            NSLog(@"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+        }
+    }];
 }
-
 
 - (void)redirectLogToDocuments
 {

@@ -76,7 +76,6 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 -(ALMessage *)getALMessageByKey:(NSString*)messageReplyId;
 
-+(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
 +(void)syncMessages;
 +(void) getLatestMessageForUser:(NSString *)deviceKeyString withDelegate : (id<ApplozicUpdatesDelegate>)theDelegate withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
@@ -93,5 +92,8 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 -(void)updateMessageMetadataOfKey:(NSString*) messageKey withMetadata: (NSMutableDictionary *) metadata withCompletion:(void(^)(ALAPIResponse* theJson, NSError *theError)) completion;
 
 - (void) fetchReplyMessages:(NSMutableArray<NSString *> *) keys withCompletion: (void(^)(NSMutableArray<ALMessage *>* messages))completion;
+
+-(void)deleteMessageForAllWithKey:(NSString *) keyString
+                   withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
 
 @end

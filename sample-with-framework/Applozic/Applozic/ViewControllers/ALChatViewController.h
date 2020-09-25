@@ -50,8 +50,6 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 
 @property (nonatomic) BOOL isVisible;
 
-
-@property (nonatomic) BOOL refreshMainView;
 @property (nonatomic) BOOL refresh;
 @property (strong, nonatomic) NSString * displayName;
 
@@ -96,7 +94,6 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 -(void)checkUserBlockStatus;
 -(void)updateChannelSubscribing:(NSNumber *)oldChannelKey andNewChannel:(NSNumber *)newChannelKey;
 -(void)subProcessDetailUpdate:(ALUserDetail *)userId;
--(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
 
 -(void)subscrbingChannel;
 -(void)unSubscrbingChannel;

@@ -41,8 +41,6 @@
 		8B344D621FB5DF2B00BAFD49 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B344D611FB5DF1A00BAFD49 /* MessageUI.framework */; };
 		8FFB428979FD738E5C4A3BD5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E71166F2B6E73BE1C8CE86E /* SystemConfiguration.framework */; };
 		A18CF189D70FDE1E604A7538 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DC495FFC34D1F473FCFB224 /* AVFoundation.framework */; };
-		C7ACBBC91DB650DD0087EE35 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7ACBBC71DB650DD0087EE35 /* Fabric.framework */; };
-		C7ACBBCA1DB650DD0087EE35 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7ACBBC81DB650DD0087EE35 /* Crashlytics.framework */; };
 		DD2A6CFC168403D86BCF47A0 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 254D88CF49A190C80498EFA6 /* CoreMedia.framework */; };
 		FB3D7035F00A1E03C724C18B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F507244E1C6CC857C3670071 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
@@ -150,8 +148,6 @@
 		8B1BFF5221D35C8000768400 /* MqttConversationDelegateObjectMock.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MqttConversationDelegateObjectMock.m; sourceTree = "<group>"; };
 		8B1E77C4212F07BA00A5CE04 /* ApplozicClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApplozicClientTests.m; sourceTree = "<group>"; };
 		8B344D611FB5DF1A00BAFD49 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		C7ACBBC71DB650DD0087EE35 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		C7ACBBC81DB650DD0087EE35 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		CB1ED364E65158421A4DCED3 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		F507244E1C6CC857C3670071 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FE1B9732748F398619EB8200 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -173,8 +169,6 @@
 				8B344D621FB5DF2B00BAFD49 /* MessageUI.framework in Frameworks */,
 				462D5B441DA40C7000F5CD73 /* UserNotifications.framework in Frameworks */,
 				6DAA09D91BE39FB800CBF133 /* Applozic.framework in Frameworks */,
-				C7ACBBCA1DB650DD0087EE35 /* Crashlytics.framework in Frameworks */,
-				C7ACBBC91DB650DD0087EE35 /* Fabric.framework in Frameworks */,
 				28AE0C1B9834A2349B7A30F0 /* BuddyBuildSDK.framework in Frameworks */,
 				79E9593767F7DFCB4CC72D74 /* AssetsLibrary.framework in Frameworks */,
 				15102E152CFA927B82CEA1B8 /* CoreText.framework in Frameworks */,
@@ -254,8 +248,6 @@
 			isa = PBXGroup;
 			children = (
 				8B11D375212FD46A0084F74A /* libOCMock.a */,
-				C7ACBBC71DB650DD0087EE35 /* Fabric.framework */,
-				C7ACBBC81DB650DD0087EE35 /* Crashlytics.framework */,
 				4694ECDE1D99575B006050AB /* restrictWords.txt */,
 				6D6D0BA51C297A20002E8B3D /* Roboto-Regular.ttf */,
 				6D54E5F31BE4B28E001BD278 /* Default-568h@2x.png */,
@@ -516,7 +508,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Fabric.framework/run 5dbe3574ac9d4cdb66ed5b90383c783dc78e7296 91260c247f6c61ef02ede9a9625f063a09fc1348c30e9727d6b7d9b5cfeef95a\n";
+			shellScript = "
+";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -714,7 +707,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
@@ -755,7 +748,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				SDKROOT = iphoneos;
@@ -779,7 +772,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = applozicdemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -792,7 +785,6 @@
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				PROVISIONING_PROFILE_SPECIFIER = "global Customer Demo";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -813,7 +805,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = applozicdemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

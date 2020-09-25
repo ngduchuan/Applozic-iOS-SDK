@@ -76,6 +76,8 @@
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
 #import "ALNotificationHelper.h"
+#import "ALMyDeletedMessageCell.h"
+#import "ALFriendDeletedMessage.h"
 
 static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
@@ -309,6 +311,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMemberUpdate:)
                                                  name:AL_Updated_Group_Members object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
+                                                 name:AL_MESSAGE_META_DATA_UPDATE object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLoggedInUserDeactivated:)
+                                                 name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
+
 
     self.mqttObject = [ALMQTTConversationService sharedInstance];
 
@@ -357,12 +365,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self.pickerView reloadAllComponents];
     }
 
-    if (self.channelKey) {
-        [self checkIfChannelLeft];
-    }else{
-        self.typingMessageView.hidden = NO;
-    }
-
+    self.typingMessageView.hidden = NO;
     [self setCallButtonInNavigationBar];
 
     [self hideKeyBoardOnEmptyList];
@@ -372,12 +375,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     maxHeight = [self getMaxSizeLines:[ALApplozicSettings getMaxTextViewLines]];
     minHeight = [self getMaxSizeLines:1]; //  Single Line Height
 
-    if (![self isGroup]) {
-        ALContact *contact = [[[ALContactService alloc] init] loadContactByKey:@"userId" value:self.contactIds];
-        [self enableOrDisableChat:contact.isChatDisabled];
-    } else {
-        [self disableChatViewInteraction:NO withPlaceholder:nil];
-    }
     [self serverCallForLastSeen];
 
 }
@@ -500,7 +497,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)updateVOIPMsg
 {
     [self.mTableView reloadData];
-    [self setRefreshMainView:YES];
     [self setRefresh:YES];
 }
 
@@ -517,7 +513,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     [self sendMessage:theMessage withUserDisplayName:self.displayName];
     [self.mTableView reloadData];
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
 }
 
@@ -631,7 +626,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)makeCallContact
 {
     NSURL * phoneNumber = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", self.alContact.contactNumber]];
-    [[UIApplication sharedApplication] openURL:phoneNumber];
+    [[UIApplication sharedApplication] openURL:phoneNumber options:@{} completionHandler:nil];
 }
 
 //==============================================================================================================================================
@@ -675,6 +670,42 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self setChannelSubTitle:channel];
         }
     });
+}
+
+-(void)onMessageMetaDataUpdate:(NSNotification *)notification {
+    ALMessage *message = (ALMessage *)notification.object;
+
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0
+        || ![self isMessageForCurrentThread:message]) {
+        return;
+    }
+
+    NSIndexPath * path = [self getIndexPathForMessage:message.key];
+    if ([self isValidIndexPath:path]) {
+        ALMessage *alMessage = [self.alMessageWrapper getUpdatedMessageArray][path.row];
+        if ([alMessage.key isEqualToString:message.key]) {
+            alMessage.metadata = message.metadata;
+            [self reloadDataWithMessageKey:message.key andMessage:alMessage withValidIndexPath:path];
+        }
+    }
+}
+
+-(BOOL)isMessageForCurrentThread:(ALMessage *)message {
+    return (self.channelKey &&
+            message.groupId &&
+            (self.channelKey.intValue == message.groupId.intValue)) ||
+    (self.contactIds &&
+     message.groupId == nil &&
+     [self.contactIds isEqualToString:message.contactIds]);
+}
+
+-(void)onLoggedInUserDeactivated:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+
+    if (!userInfo) {
+        return;
+    }
+    [self enableOrDisableChatWithChannel:self.alChannel orContact:self.alContact];
 }
 
 -(void)setChannelSubTitle:(ALChannel *)channel {
@@ -859,16 +890,17 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 }
 
--(void)checkUserDeleted
+-(BOOL)updateUserDeletedStatus
 {
     ALContactService *cnService = [[ALContactService alloc] init];
-    BOOL isUserDeleted = [cnService isUserDeleted:self.contactIds];
-    [self freezeView:isUserDeleted];
-    [self.label setHidden:isUserDeleted];
-    if (isUserDeleted)
+    BOOL deletedFlag = [cnService isUserDeleted:self.contactIds];
+    [self freezeView:deletedFlag];
+    [self.label setHidden:deletedFlag];
+    if (deletedFlag)
     {
         [ALNotificationView showLocalNotification:[ALApplozicSettings getUserDeletedText]];
     }
+    return deletedFlag;
 }
 
 //==============================================================================================================================================
@@ -932,23 +964,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)checkIfChannelLeft
+-(BOOL)updateChannelUserStatus
 {
+    BOOL disableUserInteractionInChannel = NO;
     [self.navRightBarButtonItems removeObject:self.closeButton];
 
     ALChannelService * alChannelService = [[ALChannelService alloc] init];
     if([alChannelService isChannelLeft:self.channelKey])
     {
-        [self freezeView:YES];
         ALNotificationView * notification = [[ALNotificationView alloc] init];
         [notification showGroupLeftMessage];
+        disableUserInteractionInChannel = YES;
     }
     else if ([ALChannelService isChannelDeleted:self.channelKey])
     {
-        [self freezeView:YES];
         [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        disableUserInteractionInChannel = YES;
     }else if([ALChannelService isConversationClosed:self.channelKey]){
-        [self freezeView:YES];
+        disableUserInteractionInChannel = YES;
     }
     else
     {
@@ -956,7 +989,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self.navRightBarButtonItems addObject:self.closeButton];
         }
 
-        [self freezeView:NO];
+        disableUserInteractionInChannel = NO;
     }
 
     if(self.alChannel.metadata != nil && [[self.alChannel.metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"] && ![[self.alChannel.metadata  valueForKey:@"AL_ADMIN_USERID"] isEqualToString:[ALUserDefaultsHandler getUserId]]){
@@ -964,6 +997,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }else{
         self.typingMessageView.hidden = NO;
     }
+    return disableUserInteractionInChannel;
 }
 
 //==============================================================================================================================================
@@ -1028,6 +1062,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.mTableView registerClass:[ALChannelMsgCell class] forCellReuseIdentifier:@"ALChannelMsgCell"];
 
     [self.mTableView registerClass:[ALMyContactMessageCell class] forCellReuseIdentifier:@"MyContactMessageCell"];
+
+    [self.mTableView registerClass:[ALMyDeletedMessageCell class] forCellReuseIdentifier:@"ALMyDeletedMessageCell"];
+    
+    [self.mTableView registerClass:[ALFriendDeletedMessage class] forCellReuseIdentifier:@"ALFriendDeletedMessage"];
+
 
     if([ALApplozicSettings getContextualChatOption])
     {
@@ -1116,11 +1155,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self.loadingIndicator stopLoading];
         if (channel) {
             [self setChannelSubTitle:channel];
+            [self enableOrDisableChatWithChannel:channel orContact:nil];
+            [self.label setHidden:NO];
         } else {
             [self checkUserBlockStatus];
-            [self checkUserDeleted];
+            [self enableOrDisableChatWithChannel:nil orContact:contact];
         }
-        [self.label setHidden:NO];
         self.navigationItem.titleView = self->titleLabelButton;
     }];
 }
@@ -1313,7 +1353,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self showNoConversationLabel];
     [self sendMessage:message withUserDisplayName:nil];
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
     self.alMessage=nil;
 }
@@ -1355,7 +1394,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count] withUserDisplayName:nil];
 
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-    [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
     self.alMessage=nil;
 
@@ -1402,7 +1440,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self updateUserDisplayNameWithMessage:theMessage withDisplayName:self.displayName];
         completion(message, error);
         [self.mTableView reloadData];
-        [self setRefreshMainView:TRUE];
     }];
 }
 
@@ -1418,7 +1455,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [[self.alMessageWrapper getUpdatedMessageArray] addObject:locationMessage];
         [self sendMessage:locationMessage withUserDisplayName:self.displayName];
         [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
-        [self setRefreshMainView:TRUE];
         [self scrollTableViewToBottomWithAnimation:YES];
     }
     else
@@ -1689,14 +1725,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 //==============================================================================================================================================
-#pragma mark - BROADCAST MESSAGE PROCESS
-//==============================================================================================================================================
-
--(void)addBroadcastMessageToDB:(ALMessage *)alMessage {
-    [ALMessageService addBroadcastMessageToDB:alMessage];
-}
-
-//==============================================================================================================================================
 #pragma mark - TableView Datasource
 //==============================================================================================================================================
 
@@ -1719,8 +1747,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         channel = [channelService getChannelByKey:theMessage.getGroupId];
     }
 
-    if(theMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    if (theMessage.isDeletedForAll) {
+        if ([theMessage isSentMessage]) {
+            ALMyDeletedMessageCell *cell = (ALMyDeletedMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ALMyDeletedMessageCell"];
+            cell.tag = indexPath.row;
+            cell.channel = channel;
+            [cell update:theMessage];
+            [self.view layoutIfNeeded];
+            return cell;
+        } else {
+            ALFriendDeletedMessage *cell = (ALFriendDeletedMessage *)[tableView dequeueReusableCellWithIdentifier:@"ALFriendDeletedMessage"];
+            cell.tag = indexPath.row;
+            cell.channel = channel;
+            [cell update:theMessage];
+            [self.view layoutIfNeeded];
+            return cell;
+        }
+    }
+    else if (theMessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         ALLocationCell *theCell = (ALLocationCell *)[tableView dequeueReusableCellWithIdentifier:@"LocationCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
@@ -2473,6 +2517,20 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self showNoConversationLabel];
 }
 
+-(void) deleteMessasgeforAll:(ALMessage *) message {
+
+    [self.mActivityIndicator startAnimating];
+    ALMessageService * messageService = [[ALMessageService alloc] init];
+    ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
+    [messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse * apiResponse, NSError *error) {
+        [self.mActivityIndicator stopAnimating];
+        if (!error) {
+            [message setAsDeletedForAll];
+            [messagedb updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
+            [self reloadDataWithMessageKey:message.key andMessage:message];
+        }
+    }];
+}
 
 //=================================================================================================================
 
@@ -3140,7 +3198,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         }
         [self.mTableView reloadData];
-        [self setRefreshMainView:YES];
         [self updateUserDisplayNameWithMessage:theMessage withDisplayName:displayName];
     }];
 }
@@ -3249,7 +3306,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALMessage* alMessage  = [[ALMessage alloc] init];
     ALSLog(ALLoggerSeverityInfo, @" OUR Individual Notificationhandler ");
-    [self setRefreshMainView:TRUE];
     // see if this view is visible or not...
 
     NSString * notificationObject = (NSString *)notification.object;
@@ -3283,7 +3339,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)syncCall:(ALMessage*)alMessage  updateUI:(NSNumber *)updateUI alertValue: (NSString *)alertValue
 {
-    [self setRefreshMainView:TRUE];
     bool isGroupNotification = (alMessage.groupId == nil ? false : true);
 
     if (self.isGroup && isGroupNotification && [self.channelKey isEqualToNumber:alMessage.groupId] &&
@@ -3671,15 +3726,34 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     return [sortedMessages mutableCopy];
 }
 
--(void) enableOrDisableChat:(BOOL)disable {
-    if (ALUserDefaultsHandler.isChatDisabled) {
-        /// User has disabled chat.
-        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YouDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have disabled chat", @"");
+-(void)enableOrDisableChatWithChannel:(ALChannel *)channel
+                            orContact:(ALContact *) contact {
+    // If user is deactivated we will disable Interaction and return
+    if ([ALUserDefaultsHandler isLoggedInUserDeactivated]) {
+        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YourChatDeactivated", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your chat is deactivated", @"");
         [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
-    } else if (disable) {
-        /// Chat is disabled for this user.
-        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"UserDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has disabled his/her chat", @"");
-        [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        return;
+    }
+
+    if (channel) {
+        BOOL disableUserInteractionInChannel = [self updateChannelUserStatus];
+        [self disableChatViewInteraction:disableUserInteractionInChannel withPlaceholder:nil];
+    } else if (contact) {
+        if ([contact isDeleted]) {
+            /// User deletd.
+            NSString *userDeletedInfo = NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
+            [self disableChatViewInteraction: YES withPlaceholder: userDeletedInfo];
+        } else if (ALUserDefaultsHandler.isChatDisabled) {
+            /// User has disabled chat.
+            NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YouDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have disabled chat", @"");
+            [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        } else if (contact.isChatDisabled) {
+            /// Chat is disabled for this user.
+            NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"UserDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has disabled his/her chat", @"");
+            [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+        } else {
+            [self disableChatViewInteraction:NO withPlaceholder:nil];
+        }
     } else {
         [self disableChatViewInteraction:NO withPlaceholder:nil];
     }
@@ -3719,8 +3793,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self updateConversationProfileDetails];
             [self updateLastSeenAtStatus:alUserDetail];
             [self setCallButtonInNavigationBar];
-            [self checkUserDeleted];
-            [self enableOrDisableChat: alUserDetail.isChatDisabled];
         }
         else
         {
@@ -3733,7 +3805,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALSLog(ALLoggerSeverityInfo, @"USER DET : %@",alUserDetail.userId);
     ALSLog(ALLoggerSeverityInfo, @"self.contactIds : %@",self.contactIds);
-    [self setRefreshMainView:TRUE];
 
     double value = [alUserDetail.lastSeenAtTime doubleValue];
     ALContactService *cnService = [[ALContactService alloc] init];
@@ -4150,11 +4221,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     {
         ALContactService *contactService = [ALContactService new];
         self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
-        BOOL isUserDeleted = self.alContact.deletedAtTime ? YES : NO;
-        [self freezeView:isUserDeleted];
-        [self.label setHidden:isUserDeleted];
         [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
-        [self enableOrDisableChat:self.alContact.isChatDisabled];
+        [self enableOrDisableChatWithChannel:nil orContact:self.alContact];
     }
     [self.mTableView reloadData];
 }
@@ -4883,19 +4951,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)reloadDataWithMessageKey:(NSString *)messageKey andMessage:(ALMessage *) alMessage {
     NSIndexPath * path = [self getIndexPathForMessage:messageKey];
     if ([self isValidIndexPath:path]) {
-        NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
-        NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
-        ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
-        if ([message.key isEqualToString:messageKey]) {
-            [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
-        }
-        if (newCount > oldCount) {
-            ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
-            [self.mTableView reloadData];
-            return;
-        } else {
-            [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
-        }
+        [self reloadDataWithMessageKey:messageKey andMessage:alMessage withValidIndexPath:path];
+    }
+}
+
+-(void)reloadDataWithMessageKey:(NSString *)messageKey
+                      andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
+    NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
+    NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
+    ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
+    if ([message.key isEqualToString:messageKey]) {
+        [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
+    }
+    if (newCount > oldCount) {
+        ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
+        [self.mTableView reloadData];
+        return;
+    } else {
+        [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
