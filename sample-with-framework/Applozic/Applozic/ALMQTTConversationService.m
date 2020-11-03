@@ -519,7 +519,6 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
                     if (channel && channel.isOpenGroup) {
                         if (alMessage.hasAttachment) {
                             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-                            [alMessage setAsDeletedForAll];
                             [messageDBService updateMessageMetadataOfKey:alMessage.key withMetadata:alMessage.metadata];
                         }
                         [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:alMessage userInfo:nil];
