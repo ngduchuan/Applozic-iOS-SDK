@@ -1894,4 +1894,19 @@
     return [userDefaults boolForKey:AL_MESSAGE_DELETE_FOR_ALL_ENABLED];
 }
 
++(void)setPhotosSelectionLimit:(NSInteger)selectionLimit {
+    NSUserDefaults *userDefaults = ALApplozicSettings.getUserDefaults;
+    if (selectionLimit < 1 || selectionLimit > 20) {
+        selectionLimit = 10;
+    }
+    [userDefaults setInteger:selectionLimit forKey:AL_PHOTO_PICKER_SELECTION_LIMIT];
+    [userDefaults synchronize];
+}
+
++(NSInteger)getPhotosSelectionLimit {
+    NSUserDefaults *userDefaults = ALApplozicSettings.getUserDefaults;
+    NSInteger limit = [userDefaults integerForKey:AL_PHOTO_PICKER_SELECTION_LIMIT];
+    return limit > 0 ? limit : 10;
+}
+
 @end

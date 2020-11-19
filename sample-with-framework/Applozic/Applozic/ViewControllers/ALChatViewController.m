@@ -140,6 +140,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 @property (nonatomic) BOOL isUserBlocked;
 @property (nonatomic) BOOL isUserBlockedBy;
 @property (nonatomic, strong) ALLoadingIndicator *loadingIndicator;
+@property (nonatomic, strong) ALPhotoPicker *photoPicker;
 
 -(void)processAttachment:(NSString *)filePath andMessageText:(NSString *)textwithimage andContentType:(short)contentype;
 
@@ -199,6 +200,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 
     [self initialSetUp];
+    self.photoPicker = [[ALPhotoPicker alloc] initWithSelectionLimit:[ALApplozicSettings getPhotosSelectionLimit] loadingTitle:NSLocalizedStringWithDefaultValue(@"ExportLoadingIndicatorText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Exporting...", @"")];
+
+    self.photoPicker.delegate = self;
     self.placeHolderTxt = NSLocalizedStringWithDefaultValue(@"placeHolderText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write a Message...", @"");
     self.sendMessageTextView.text = self.placeHolderTxt;
     self.defaultMessageViewHeight = 56.0;
@@ -1208,7 +1212,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)setTitleWithChannel:(ALChannel *)channel
-                  orContact:(ALContact *)contact {
+                 orContact:(ALContact *)contact {
     /// Contact will be present in case of one to one chat or group of two
     if (contact) {
         [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
@@ -2931,15 +2935,20 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         }
 
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], attachmentMenuDefaultText , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
-                UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-                ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
-                launchChat.multipleAttachmentDelegate = self;
-                [self.navigationController pushViewController:launchChat animated:YES];
+
+            if (@available(iOS 14.0, *)) {
+                [self.photoPicker openGalleryFrom:self];
             } else {
-                ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
-                controller.modalPresentationStyle = UIModalPresentationFullScreen;
-                [self presentViewController:controller animated:NO completion:nil];
+                if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
+                    UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+                    ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
+                    launchChat.multipleAttachmentDelegate = self;
+                    [self.navigationController pushViewController:launchChat animated:YES];
+                } else {
+                    ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
+                    controller.modalPresentationStyle = UIModalPresentationFullScreen;
+                    [self presentViewController:controller animated:NO completion:nil];
+                }
             }
         }]];
     }
@@ -4154,7 +4163,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     self.sendMessageTextView.hidden = YES;
 
     for (int i = 1; i < n; ++i)
-        newText = [newText stringByAppendingString:@"\n|W|"];
+    newText = [newText stringByAppendingString:@"\n|W|"];
 
     self.sendMessageTextView.text = newText;
 
@@ -4957,7 +4966,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)reloadDataWithMessageKey:(NSString *)messageKey
-                      andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
+                     andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
     NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
     NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
     ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];
