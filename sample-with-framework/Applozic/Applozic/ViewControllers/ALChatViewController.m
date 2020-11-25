@@ -1421,7 +1421,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if (latLongString.length != 0)
     {
         ALMessage * locationMessage = [self formLocationMessage:latLongString];
-        locationMessage.metadata = [locationMessage getUpdatedMetadataWithDictionary:self.messageMetadata];
+        locationMessage.metadata = [locationMessage combineMetadata:self.messageMetadata];
         [self sendLocationMessage:locationMessage withCompletion:^(NSString *message, NSError *error) {
 
             if(!error)
@@ -2725,7 +2725,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     theMessage.fileMeta = [self getFileMetaInfo];
     theMessage.message = textwithimage;
     theMessage.imageFilePath = filePath.lastPathComponent;
-    theMessage.metadata = [theMessage getUpdatedMetadataWithDictionary:metadata];
+    theMessage.metadata = [theMessage combineMetadata:metadata];
 
     theMessage.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", filePath.lastPathComponent];
     if(self.contactIds)
@@ -3204,9 +3204,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)sendMessage:(ALMessage *)theMessage
     messageAtIndex:(NSUInteger) messageIndex
 withUserDisplayName:(NSString *) displayName
-withMessageMetadata:(NSMutableDictionary *)messgaeMetadata {
+withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     [self resetMessageReplyView];
-    theMessage.metadata = [theMessage getUpdatedMetadataWithDictionary:messgaeMetadata];
+    theMessage.metadata = [theMessage combineMetadata:messageMetadata];
 
     [[ALMessageService sharedInstance] sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
 

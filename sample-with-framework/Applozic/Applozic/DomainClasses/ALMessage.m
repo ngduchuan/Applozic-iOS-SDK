@@ -545,7 +545,7 @@ static NSString * const AL_TRUE = @"true";
     return self.status.intValue != 0;
 }
 
--(NSMutableDictionary *)getUpdatedMetadataWithDictionary:(NSMutableDictionary *) messageMetadata {
+-(NSMutableDictionary *)combineMetadata:(NSMutableDictionary *) messageMetadata {
     if (!self.metadata) {
         return messageMetadata;
     }
