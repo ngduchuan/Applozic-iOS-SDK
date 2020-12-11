@@ -13,7 +13,6 @@
 		18330A852271F6A7004C7552 /* ApplozicShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 18330A7A2271F6A7004C7552 /* ApplozicShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		18A2B2AC2289F36B00CE93BC /* Applozic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAA09D61BE39F6B00CBF133 /* Applozic.framework */; };
 		1DE667DF7B311A11C9675E35 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1B9732748F398619EB8200 /* CoreVideo.framework */; };
-		28AE0C1B9834A2349B7A30F0 /* BuddyBuildSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162EC4668DEC45215321962B /* BuddyBuildSDK.framework */; };
 		29B643C91CE9F24800FE8A73 /* ALSettingsForDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B643C81CE9F24800FE8A73 /* ALSettingsForDebug.m */; };
 		32A5E88E1F3B870500E99655 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 32A5E8901F3B870500E99655 /* Localizable.strings */; };
 		462D5B441DA40C7000F5CD73 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 462D5B431DA40C7000F5CD73 /* UserNotifications.framework */; };
@@ -169,7 +168,6 @@
 				8B344D621FB5DF2B00BAFD49 /* MessageUI.framework in Frameworks */,
 				462D5B441DA40C7000F5CD73 /* UserNotifications.framework in Frameworks */,
 				6DAA09D91BE39FB800CBF133 /* Applozic.framework in Frameworks */,
-				28AE0C1B9834A2349B7A30F0 /* BuddyBuildSDK.framework in Frameworks */,
 				79E9593767F7DFCB4CC72D74 /* AssetsLibrary.framework in Frameworks */,
 				15102E152CFA927B82CEA1B8 /* CoreText.framework in Frameworks */,
 				842F66858A6423DE9E523B39 /* CoreTelephony.framework in Frameworks */,
