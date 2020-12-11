@@ -197,6 +197,7 @@
 		18A5CCA124EFB5830016F354 /* ALFriendDeletedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5CC9F24EFB5830016F354 /* ALFriendDeletedMessage.m */; };
 		18A5CCA424EFBA810016F354 /* ALDeletedMessasgeBaseCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A5CCA224EFBA810016F354 /* ALDeletedMessasgeBaseCell.h */; };
 		18A5CCA524EFBA810016F354 /* ALDeletedMessasgeBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5CCA324EFBA810016F354 /* ALDeletedMessasgeBaseCell.m */; };
+		18B050E3255DA79500366EE8 /* ALPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B050E2255DA79500366EE8 /* ALPhotoPicker.swift */; };
 		18B6036D24BFC3A80072F197 /* ALCustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */; };
 		18B6037224C051990072F197 /* ALSearchResultViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B6037024C051990072F197 /* ALSearchResultViewController.h */; };
 		18B6037324C051990072F197 /* ALSearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B6037124C051990072F197 /* ALSearchResultViewController.m */; };
@@ -736,6 +737,7 @@
 		18A5CC9F24EFB5830016F354 /* ALFriendDeletedMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALFriendDeletedMessage.m; path = Applozic/Views/ALFriendDeletedMessage.m; sourceTree = "<group>"; };
 		18A5CCA224EFBA810016F354 /* ALDeletedMessasgeBaseCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALDeletedMessasgeBaseCell.h; path = Applozic/Views/ALDeletedMessasgeBaseCell.h; sourceTree = "<group>"; };
 		18A5CCA324EFBA810016F354 /* ALDeletedMessasgeBaseCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALDeletedMessasgeBaseCell.m; path = Applozic/Views/ALDeletedMessasgeBaseCell.m; sourceTree = "<group>"; };
+		18B050E2255DA79500366EE8 /* ALPhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ALPhotoPicker.swift; path = Applozic/ALPhotoPicker.swift; sourceTree = "<group>"; };
 		18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALCustomSearchBar.swift; sourceTree = "<group>"; };
 		18B6037024C051990072F197 /* ALSearchResultViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALSearchResultViewController.h; sourceTree = "<group>"; };
 		18B6037124C051990072F197 /* ALSearchResultViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALSearchResultViewController.m; sourceTree = "<group>"; };
@@ -1609,6 +1611,7 @@
 				18B6036C24BFC3A80072F197 /* ALCustomSearchBar.swift */,
 				185B6AB124EBE7D20028AB75 /* ALTappableView.h */,
 				185B6AB224EBE7D20028AB75 /* ALTappableView.m */,
+				18B050E2255DA79500366EE8 /* ALPhotoPicker.swift */,
 			);
 			name = ApplozicUIWidget;
 			sourceTree = "<group>";
@@ -2530,6 +2533,7 @@
 				6D6DF14B1BC5364C00EBA00F /* ALResponseHandler.m in Sources */,
 				6D6DF1431BC5364C00EBA00F /* ALDBHandler.m in Sources */,
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,
+				18B050E3255DA79500366EE8 /* ALPhotoPicker.swift in Sources */,
 				C75576EF1E27A5B300358D9B /* ALMuteRequest.m in Sources */,
 				1814A746252F31C2004E836B /* UIView+WebCache.m in Sources */,
 				18D34F0A24915F42008C0106 /* ALJWT.swift in Sources */,
@@ -2770,7 +2774,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.12.0;
+				MARKETING_VERSION = 7.13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2808,7 +2812,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.12.0;
+				MARKETING_VERSION = 7.13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
