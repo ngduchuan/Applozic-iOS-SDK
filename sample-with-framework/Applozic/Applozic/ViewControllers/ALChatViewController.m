@@ -62,7 +62,6 @@
 #import "ALChannelMsgCell.h"
 #include <tgmath.h>
 #import "ALAudioVideoBaseVC.h"
-#import "ALVOIPNotificationHandler.h"
 #import "ALChannelService.h"
 #import "ALMultimediaData.h"
 #import <Applozic/Applozic-Swift.h>
@@ -3205,15 +3204,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         return;
     }
 
-    NSString * roomID =  [NSString stringWithFormat:@"%@:%@",[ALUtilityClass getDevieUUID],
-                          [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000]];
+    NSDictionary *callUserInfo = @{@"USER_ID": self.contactIds,
+                                   @"CALL_FOR_AUDIO": [NSNumber numberWithBool:callForAudio]};
 
-    ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
-    [voipHandler launchAVViewController:self.contactIds
-                           andLaunchFor:[NSNumber numberWithInt:AV_CALL_DIALLED]
-                               orRoomId:roomID
-                           andCallAudio:callForAudio
-                      andViewController:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ALDidSelectStartCallOption" object:nil userInfo:callUserInfo];
+
 }
 
 -(void)deleteConversation{
