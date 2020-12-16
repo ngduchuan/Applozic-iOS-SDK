@@ -89,11 +89,11 @@
     }
 
     if (viewController.navigationController != nil
-        && [viewController.navigationController popViewControllerAnimated:NO] != nil) {
+        && [viewController.navigationController popViewControllerAnimated:YES] != nil) {
         completion(YES);
         return;
     }
-    [viewController dismissViewControllerAnimated:NO completion:^ {
+    [viewController dismissViewControllerAnimated:YES completion:^ {
         completion(YES);
     }];
 }
