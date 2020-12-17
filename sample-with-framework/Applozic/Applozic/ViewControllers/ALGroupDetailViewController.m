@@ -518,7 +518,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     [uiAlertController addAction:okButton];
     [uiAlertController addAction:cancelButton];
-    [self.navigationController presentViewController:uiAlertController animated:NO completion:nil];
+    [self.navigationController presentViewController:uiAlertController animated:YES completion:nil];
 }
 
 -(BOOL)isThisChannelLeft:(NSNumber *)channelKey

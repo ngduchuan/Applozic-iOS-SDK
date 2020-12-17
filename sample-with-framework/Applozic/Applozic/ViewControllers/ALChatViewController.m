@@ -2636,7 +2636,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     UIImage *image =   [ALUtilityClass getImageFromFilePath:filePath];
     if(image){
         ALPreviewPhotoViewController * contrller = [[ALPreviewPhotoViewController alloc] initWithImage:image pathExtension:filePath.pathExtension];
-        [self.navigationController pushViewController:contrller animated:NO];
+        [self.navigationController pushViewController:contrller animated:YES];
     }
 }
 
@@ -2956,7 +2956,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 } else {
                     ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
                     controller.modalPresentationStyle = UIModalPresentationFullScreen;
-                    [self presentViewController:controller animated:NO completion:nil];
+                    [self presentViewController:controller animated:YES completion:nil];
                 }
             }
         }]];
