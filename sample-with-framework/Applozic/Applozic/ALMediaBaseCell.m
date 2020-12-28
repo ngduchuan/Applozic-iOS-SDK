@@ -378,13 +378,11 @@ static CGFloat const DATE_LABEL_SIZE = 12;
                  [self isForwardMenuEnabled:action] ||
                  [self isMessageReplyMenuEnabled:action]));
     }
-    
-    return action == @selector(messageReport:) ||
-    (self.mMessage.isDownloadRequired ?
-     (action == @selector(delete:)):
-     (action == @selector(delete:)||
-      [self isForwardMenuEnabled:action] ||
-      [self isMessageReplyMenuEnabled:action]));
+    BOOL deleteOrReportActionFlag = (action == @selector(delete:) || action == @selector(messageReport:));
+    BOOL isActionMenuOptionEnabled = (self.mMessage.isDownloadRequired ? deleteOrReportActionFlag : ([self isForwardMenuEnabled:action] ||
+                                                                                                     [self isMessageReplyMenuEnabled:action] ||
+                                                                                                     deleteOrReportActionFlag));
+    return isActionMenuOptionEnabled;
 }
 
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action {
