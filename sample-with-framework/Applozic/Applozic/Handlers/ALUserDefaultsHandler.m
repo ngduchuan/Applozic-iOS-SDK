@@ -984,6 +984,17 @@
     return lastSyncGeneratedTime;
 }
 
++(void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setValue:VOIPDeviceToken forKey:AL_VOIP_DEVICE_TOKEN];
+    [userDefaults synchronize];
+}
+
++(NSString*) getVOIPDeviceToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults valueForKey:AL_VOIP_DEVICE_TOKEN];
+}
+
 +(SecureStore *)getSecureStore {
     PasswordQueryable *passQuery = [[PasswordQueryable alloc]
                                            initWithService: AL_STORE];
