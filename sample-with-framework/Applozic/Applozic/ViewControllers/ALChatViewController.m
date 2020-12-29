@@ -2543,6 +2543,77 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }];
 }
 
+/// Message report delegate callback
+-(void)messageReport:(ALMessage *)alMessage {
+    if(![ALDataNetworkConnection checkDataNetworkAvailable]) {
+        return;
+    }
+
+    NSString *alertTitle = NSLocalizedStringWithDefaultValue(@"ReportAlertTitle",
+                                                             [ALApplozicSettings getLocalizableName],
+                                                             [NSBundle mainBundle],
+                                                             @"Are you sure you want to report this message?",
+                                                             @"");
+    NSString *alertMessage = NSLocalizedStringWithDefaultValue(@"ReportAlertMessage",
+                                                               [ALApplozicSettings getLocalizableName],
+                                                               [NSBundle mainBundle],
+                                                               @"If you report the message, it will be sent to admin of this application for review",
+                                                               @"");
+    NSString *reportMessageButtonTitle = NSLocalizedStringWithDefaultValue(@"ReportMessage",
+                                                                           [ALApplozicSettings getLocalizableName],
+                                                                           [NSBundle mainBundle],
+                                                                           @"Report message",
+                                                                           @"");
+    NSString *cancelTitle = NSLocalizedStringWithDefaultValue(@"cancel",
+                                                              [ALApplozicSettings getLocalizableName],
+                                                              [NSBundle mainBundle],
+                                                              @"Cancel",
+                                                              @"");
+
+    UIAlertController * uiAlertController = [UIAlertController
+                                             alertControllerWithTitle:alertTitle
+                                             message:alertMessage
+                                             preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* reportConfirmButton = [UIAlertAction
+                                          actionWithTitle:reportMessageButtonTitle
+                                          style:UIAlertActionStyleDefault
+                                          handler:^(UIAlertAction * action) {
+        [self reportMessageOnConfirmTap:alMessage];
+    }];
+    UIAlertAction* cancelButton = [UIAlertAction
+                                   actionWithTitle:cancelTitle
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+    }];
+    [uiAlertController addAction:reportConfirmButton];
+    [uiAlertController addAction:cancelButton];
+    [self presentViewController:uiAlertController animated:YES completion:nil];
+}
+
+-(void)reportMessageOnConfirmTap:(ALMessage *)alMessage {
+
+    [self.mActivityIndicator startAnimating];
+    ALUserService * service = [[ALUserService alloc] init];
+    [service reportUserWithMessageKey:alMessage.key
+                       withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        [self.mActivityIndicator stopAnimating];
+        NSString *messageReportedInfo = @"";
+        if (error) {
+            messageReportedInfo = NSLocalizedStringWithDefaultValue(@"ReportMessageError",
+                                                                    [ALApplozicSettings getLocalizableName],
+                                                                    [NSBundle mainBundle],
+                                                                    @"Failed to report the message", @"");
+        } else {
+            messageReportedInfo = NSLocalizedStringWithDefaultValue(@"ReportMessageSuccess",
+                                                                    [ALApplozicSettings getLocalizableName],
+                                                                    [NSBundle mainBundle],
+                                                                    @"Message has been reported", @"");
+        }
+        [ALUtilityClass showAlertMessage:@"" andTitle:messageReportedInfo];
+    }];
+}
+
 //=================================================================================================================
 
 #pragma mark - Clear messages from chat view
