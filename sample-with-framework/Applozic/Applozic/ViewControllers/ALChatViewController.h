@@ -26,6 +26,7 @@ extern NSString * const ThirdPartyDetailVCNotification;
 extern NSString * const ThirdPartyDetailVCNotificationNavigationVC;
 extern NSString * const ThirdPartyDetailVCNotificationALContact;
 extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
+extern NSString * const ThirdPartyProfileTapNotification;
 
 @protocol ALChatViewControllerDelegate <NSObject>
 
