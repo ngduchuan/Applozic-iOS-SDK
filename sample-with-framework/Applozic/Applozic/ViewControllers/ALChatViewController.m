@@ -85,7 +85,9 @@ NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetail
 NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";
 NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVCNotificationChannelKey";
 NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotification";
-
+NSString * const ALAudioVideoCallForUserIdKey = @"USER_ID";
+NSString * const ALCallForAudioKey = @"CALL_FOR_AUDIO";
+NSString * const ALDidSelectStartCallOptionKey = @"ALDidSelectStartCallOption";
 
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
 ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
@@ -3203,12 +3205,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self showNoDataNotification];
         return;
     }
-
-    NSDictionary *callUserInfo = @{@"USER_ID": self.contactIds,
-                                   @"CALL_FOR_AUDIO": [NSNumber numberWithBool:callForAudio]};
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ALDidSelectStartCallOption" object:nil userInfo:callUserInfo];
-
+    
+    NSDictionary *callUserInfo = @{ALAudioVideoCallForUserIdKey: self.contactIds,
+                                   ALCallForAudioKey: [NSNumber numberWithBool:callForAudio]};
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:ALDidSelectStartCallOptionKey object:nil userInfo:callUserInfo];
+    
 }
 
 -(void)deleteConversation{
