@@ -363,7 +363,9 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         return action == @selector(messageReport:);
     }
 
-    if (![self.mMessage isMessageSentToServer]) {
+    /// Check only for sent message 
+    if (![self.mMessage isMessageSentToServer]
+        && [self.mMessage isSentMessage]) {
         return action == @selector(delete:);
     }
 

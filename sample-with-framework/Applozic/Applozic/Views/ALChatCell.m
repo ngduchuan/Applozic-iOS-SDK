@@ -576,7 +576,9 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
                 action == @selector(messageReport:));
     }
 
-    if (![self.mMessage isMessageSentToServer]) {
+    /// Check only for sent message
+    if (![self.mMessage isMessageSentToServer]
+        && [self.mMessage isSentMessage]) {
         return (action == @selector(copy:) ||
                 action == @selector(delete:));
     }

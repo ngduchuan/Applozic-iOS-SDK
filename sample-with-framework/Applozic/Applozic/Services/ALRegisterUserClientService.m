@@ -298,7 +298,6 @@
 
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:notificationMode];
-    [user setRegistrationId:ALUserDefaultsHandler.getApnDeviceToken];
 
     ALRegisterUserClientService * alRegisterUserClientService = [[ALRegisterUserClientService alloc] init];
     [alRegisterUserClientService updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {

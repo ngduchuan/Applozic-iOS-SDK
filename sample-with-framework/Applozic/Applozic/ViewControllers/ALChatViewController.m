@@ -4895,6 +4895,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     self.channelKey = alMessage.groupId;
     self.contactIds = alMessage.contactIds;
     [self reloadView];
+    [self.mTableView reloadData];
     [self handleMessageForwardForChatView:alMessage];
 }
 
