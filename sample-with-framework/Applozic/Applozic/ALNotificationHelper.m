@@ -25,7 +25,8 @@
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
 
-    if (isTapActionDisabled) {
+    ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
+    if (isTapActionDisabled || [alPushAssist isVOIPViewOnTop]) {
         ALSLog(ALLoggerSeverityInfo, @"Notification tap is disabled");
         return;
     }
@@ -35,7 +36,6 @@
         conversationId = nil;
     }
 
-    ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
 
     if ([alPushAssist.topViewController isKindOfClass:[ALMessagesViewController class]]
         || ([alPushAssist.topViewController isKindOfClass:[ALSearchResultViewController class]]
