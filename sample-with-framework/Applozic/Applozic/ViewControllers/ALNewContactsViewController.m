@@ -1464,11 +1464,13 @@ static const int SHOW_GROUP = 102;
 
 
 -(void)proccessRegisteredContactsCall:(BOOL)isRemoveobject{
-    
+
+    [self.view setUserInteractionEnabled:NO];
     ALUserService * userService = [ALUserService new];
     [userService getListOfRegisteredUsersWithCompletion:^(NSError *error) {
         
         [self.searchBar setUserInteractionEnabled:YES];
+        [self.view setUserInteractionEnabled:YES];
         if(error)
         {
             [self.activityIndicator stopAnimating];
@@ -1477,7 +1479,7 @@ static const int SHOW_GROUP = 102;
             [self onlyGroupFetch];
             return;
         }
-        
+        [ALUserDefaultsHandler setContactServerCallIsDone:YES];
         if(self->_stopSearchText != nil){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self getSerachResult:self->_stopSearchText];
@@ -1485,7 +1487,6 @@ static const int SHOW_GROUP = 102;
             [[self activityIndicator] stopAnimating];
         }else{
             if(isRemoveobject){
-                [ALUserDefaultsHandler setContactServerCallIsDone:YES];
                 [self.filteredContactList removeAllObjects];
                 [self.contactList removeAllObjects];
             }
