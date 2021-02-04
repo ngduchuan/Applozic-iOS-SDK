@@ -320,3 +320,10 @@
 "deletedMessageText" = "This message has been deleted";
 "YourChatDeactivated" = "Your chat is deactivated";
 "ExportLoadingIndicatorText" = "Exporting...";
+
+"ReportMessageOption" = "Report";
+"ReportAlertTitle" = "Are you sure you want to report this message?";
+"ReportAlertMessage" = "If you report the message, it will be sent to admin of this application for review";
+"ReportMessage" = "Report message";
+"ReportMessageSuccess" = "Message has been reported";
+"ReportMessageError" = "Failed to report the message";

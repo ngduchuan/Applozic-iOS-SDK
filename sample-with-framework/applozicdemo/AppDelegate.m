@@ -39,7 +39,7 @@
         viewController.modalPresentationStyle = UIModalPresentationFullScreen;
         [self.window makeKeyAndVisible];
         [self.window.rootViewController presentViewController:viewController
-                                                     animated:nil
+                                                     animated:YES
                                                    completion:nil];
     }
     
