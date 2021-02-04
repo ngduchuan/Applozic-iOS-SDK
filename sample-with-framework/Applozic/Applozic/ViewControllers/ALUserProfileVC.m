@@ -12,13 +12,11 @@
 #import "ALApplozicSettings.h"
 #import "ALUtilityClass.h"
 #import "ALConnectionQueueHandler.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALImagePickerHandler.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "ALNotificationView.h"
 #import "ALDataNetworkConnection.h"
-#import "ALUserService.h"
 #import "ALRegisterUserClientService.h"
 #import "UIImageView+WebCache.h"
 #import "ALContactService.h"
@@ -42,6 +40,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *mobileNotification;
 @property (strong, nonatomic) IBOutlet UIButton *editButton;
 @property (weak, nonatomic) IBOutlet UISwitch *onlineToggleSwitch;
+
+@property (weak, nonatomic) IBOutlet UILabel *userNameTitle;
+
+@property (weak, nonatomic) IBOutlet UILabel *displayNameLabel;
+
 
 - (IBAction)editButtonAction:(id)sender;
 @end
@@ -129,18 +132,19 @@
     
     alContactService = [[ALContactService alloc] init];
     myContact = [alContactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
-    self.userNameLabel.text = [myContact getDisplayName];
+    self.displayNameLabel.text = [myContact getDisplayName];
     self.userDesignationLabel.text = @"";
     [self.userStatusLabel setText:[ALUserDefaultsHandler getLoggedInUserStatus] ? [ALUserDefaultsHandler getLoggedInUserStatus] :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
     
     
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
         self.userView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-        self.userNameLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         self.profileImage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         self.userStatusLabel.textAlignment = NSTextAlignmentRight;
         self.profileStatus.textAlignment = NSTextAlignmentRight;
+        self.displayNameLabel.textAlignment = NSTextAlignmentRight;
         self.notificationTitle.textAlignment = NSTextAlignmentRight;
+        self.userNameTitle.textAlignment = NSTextAlignmentRight;
         self.mobileNotification.textAlignment = NSTextAlignmentRight;
     }
     
@@ -522,6 +526,58 @@
     return filePath;
 }
 
+- (IBAction)editNameButtonAction:(id)sender {
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"yourUserNameAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your Name" , @"")
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = NSLocalizedStringWithDefaultValue(@"alertUserNameTextFieldPlaceHolder",
+                                                                  [ALApplozicSettings getLocalizableName],
+                                                                  [NSBundle mainBundle], @"Enter your name" , @"");
+    }];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText",
+                                                                                                [ALApplozicSettings getLocalizableName],
+                                                                                                [NSBundle mainBundle], @"Cancel" , @"")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"updateUiButtonText",
+                                                                                                [ALApplozicSettings getLocalizableName],
+                                                                                                [NSBundle mainBundle], @"Update" , @"")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+        
+        UITextField *displayNameTextField = alertController.textFields.firstObject;
+        NSString *enteredDisplayName = [displayNameTextField.text stringByTrimmingCharactersInSet:
+                                        [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+        if (enteredDisplayName.length &&
+            ![enteredDisplayName isEqualToString:[self->myContact getDisplayName]]) {
+
+            [self.activityIndicator startAnimating];
+            ALUserService *userService = [ALUserService new];
+            [userService updateUserDisplayName:displayNameTextField.text
+                                  andUserImage:nil
+                                    userStatus:nil
+                                withCompletion:^(id theJson, NSError *error) {
+                [self.activityIndicator stopAnimating];
+                if (!error) {
+                    self->myContact.displayName = displayNameTextField.text;
+                    self.displayNameLabel.text = displayNameTextField.text;
+                    [self->alContactService updateContact:self->myContact];
+                }
+            }];
+        }
+    }]];
+
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 -(IBAction)editButtonAction:(id)sender
 {
     [self alertViewForStatus];
@@ -568,7 +624,7 @@
                                                               [self.activityIndicator startAnimating];
                                                               
                                                               ALUserService *userService = [ALUserService new];
-                                                              [userService updateUserDisplayName:self.userNameLabel.text
+                                                              [userService updateUserDisplayName:[self->myContact getDisplayName]
                                                                                     andUserImage:@""
                                                                                       userStatus:statusText
                                                                                   withCompletion:^(id theJson, NSError *error) {
