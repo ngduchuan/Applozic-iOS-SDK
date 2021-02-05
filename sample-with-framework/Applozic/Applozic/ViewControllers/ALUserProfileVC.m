@@ -42,9 +42,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *onlineToggleSwitch;
 
 @property (weak, nonatomic) IBOutlet UILabel *userNameTitle;
-
 @property (weak, nonatomic) IBOutlet UILabel *displayNameLabel;
-
+@property (strong, nonatomic) UIImage *placeHolderImage;
 
 - (IBAction)editButtonAction:(id)sender;
 @end
@@ -61,12 +60,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    alContactService = [[ALContactService alloc] init];
+    self.placeHolderImage =[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
+
+    [self fetchLoginUserDetails];
     
     // Scales down the switch
     self.notificationToggle.transform = CGAffineTransformMakeScale(0.75, 0.75);
@@ -82,20 +80,38 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)fetchLoginUserDetails {
+    NSString *loginUserId = [ALUserDefaultsHandler getUserId];
+    [self.activityIndicator startAnimating];
+
+    [ALUserService updateUserDetail:loginUserId
+                     withCompletion:^(ALUserDetail *userDetail) {
+        self->myContact = [self->alContactService loadContactByKey:@"userId" value:loginUserId];
+        [self setupViewWithContact:self->myContact];
+        [self.activityIndicator stopAnimating];
+    }];
+}
+
+-(void)setupViewWithContact:(ALContact *)contact {
+
+    if (contact.contactImageUrl) {
+        [self.profileImage sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:self.placeHolderImage];
+    } else {
+        [self.profileImage setImage:self.placeHolderImage];
+    }
+
+    self.displayNameLabel.text = [contact getDisplayName];
+    [self.userStatusLabel setText: contact.userStatus ? contact.userStatus :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
+
+    BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE);
+    [self.notificationToggle setOn:(!checkMode) animated:YES];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(showMQTTNotification:)
-                                                 name:@"MQTT_APPLOZIC_01"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleAPNS:)
-                                                 name:@"pushNotification"
-                                               object:nil];
-    
+    [self addNotificationObserver];
     self.mImagePicker = [UIImagePickerController new];
     self.mImagePicker.delegate = self;
     self.mImagePicker.allowsEditing = YES;
@@ -117,26 +133,6 @@
     
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"profileTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile", @"");
     
-    [self.profileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
-    NSData *imageData = [NSData dataWithContentsOfFile:[ALUserDefaultsHandler getProfileImageLink]];
-    NSURL *serverImageURL = [NSURL URLWithString:[ALUserDefaultsHandler getProfileImageLinkFromServer]];
-    if(imageData)
-    {
-        UIImage *imageFile = [UIImage imageWithData:imageData];
-        [self.profileImage setImage:imageFile];
-    }
-    else if(serverImageURL)
-    {
-        [self.profileImage sd_setImageWithURL:serverImageURL];
-    }
-    
-    alContactService = [[ALContactService alloc] init];
-    myContact = [alContactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
-    self.displayNameLabel.text = [myContact getDisplayName];
-    self.userDesignationLabel.text = @"";
-    [self.userStatusLabel setText:[ALUserDefaultsHandler getLoggedInUserStatus] ? [ALUserDefaultsHandler getLoggedInUserStatus] :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
-    
-    
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
         self.userView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         self.profileImage.transform = CGAffineTransformMakeScale(-1.0, 1.0);
@@ -152,11 +148,22 @@
     [self.notificationTitle setText:NSLocalizedStringWithDefaultValue(@"notificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notifications", @"")];
     
     [self.mobileNotification setText:NSLocalizedStringWithDefaultValue(@"mobileNotificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mobile Notifications", @"")];
-    
-    
-    BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE);
-    [self.notificationToggle setOn:(!checkMode) animated:YES];
-    
+}
+
+-(void)addNotificationObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showMQTTNotification:)
+                                                 name:@"MQTT_APPLOZIC_01"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleAPNS:)
+                                                 name:@"pushNotification"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUser:)
+                                                 name:@"USER_DETAIL_OTHER_VC" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -165,15 +172,17 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
+
 }
 
 -(void)commonNavBarTheme:(UINavigationController *)navigationController
 {
     [navigationController.navigationBar setTitleTextAttributes: @{
-                                                                  NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                                                                  NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                      size:18]
-                                                                  }];
+        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:18]
+    }];
     
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
@@ -388,9 +397,9 @@
     
     [alertController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"takePhotoText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Take Photo", @"")
                                                         style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                            
-                                                            [self uploadByCamera];
-                                                        }]];
+
+        [self uploadByCamera];
+    }]];
     
     [self presentViewController:alertController animated:YES completion:nil];
 }
@@ -461,6 +470,11 @@
     [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+
+        if (self->myContact.contactImageUrl) {
+            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:self->myContact.contactImageUrl] placeholderImage:self.placeHolderImage];
+        }
+
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     
@@ -473,6 +487,8 @@
         }
         
         NSString * uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
+
+        [self.activityIndicator startAnimating];
 
         ALHTTPManager * manager = [[ALHTTPManager alloc]init];
         [manager uploadProfileImage:image withFilePath:self->mainFilePath uploadURL:uploadUrl withCompletion:^(NSData * _Nullable data, NSError *error) {
@@ -492,21 +508,20 @@
                             ALSLog(ALLoggerSeverityInfo, @"IMAGE_UPDATED_SUCCESSFULLY");
 
                             [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert" , @"") ];
-                            [ALUserDefaultsHandler setProfileImageLinkFromServer:self->imageLinkFromServer];
+                            self->myContact.contactImageUrl = self->imageLinkFromServer;
+                            [self->alContactService updateContact:self->myContact];
 
                         }
+                        [self.activityIndicator stopAnimating];
                     }];
                 });
+            } else {
+                [self.activityIndicator stopAnimating];
             }
-
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [self.activityIndicator stopAnimating];
-            });
         }];
 
     }];
 
-    
     [alert addAction:cancel];
     [alert addAction:upload];
     [self presentViewController:alert animated:YES completion:nil];
@@ -522,10 +537,10 @@
 -(NSString *)getImageFilePath:(UIImage *)image
 {
     NSString *filePath = [ALImagePickerHandler saveImageToDocDirectory:image];
-    [ALUserDefaultsHandler setProfileImageLink:filePath];
     return filePath;
 }
 
+/// Edit user name action callback
 - (IBAction)editNameButtonAction:(id)sender {
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"yourUserNameAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your Name" , @"")
@@ -565,12 +580,12 @@
                                   andUserImage:nil
                                     userStatus:nil
                                 withCompletion:^(id theJson, NSError *error) {
-                [self.activityIndicator stopAnimating];
                 if (!error) {
                     self->myContact.displayName = displayNameTextField.text;
                     self.displayNameLabel.text = displayNameTextField.text;
                     [self->alContactService updateContact:self->myContact];
                 }
+                [self.activityIndicator stopAnimating];
             }];
         }
     }]];
@@ -610,49 +625,62 @@
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @"")
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          
-                                                          UITextField *statusField = alertController.textFields.firstObject;
-                                                          if(statusField.text.length && ![statusField.text isEqualToString:self.userStatusLabel.text])
-                                                          {
-                                                              
-                                                              NSString * statusText = statusField.text;
-                                                              if(statusText.length >= 256)
-                                                              {
-                                                                  statusText = [statusText substringToIndex:255];
-                                                              }
-                                                              
-                                                              [self.activityIndicator startAnimating];
-                                                              
-                                                              ALUserService *userService = [ALUserService new];
-                                                              [userService updateUserDisplayName:[self->myContact getDisplayName]
-                                                                                    andUserImage:@""
-                                                                                      userStatus:statusText
-                                                                                  withCompletion:^(id theJson, NSError *error) {
-                                                                                      
-                                                                                      ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_STATUS_UPDATE :: %@", (NSString *)theJson);
-                                                                                      ALSLog(ALLoggerSeverityError, @"ERROR :: %@",error.description);
-                                                                                      
-                                                                                      if(!error)
-                                                                                      {
-                                                                                          ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY");
-                                                                                          self->myContact.userStatus = statusText;
-                                                                                          ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY  %@", self->myContact.userStatus);
-                                                                                          [self->alContactService updateContact:self->myContact];
-                                                                                          [self.userStatusLabel setText: statusText];
-                                                                                          [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
-                                                                                          
-                                                                                      }
-                                                                                      
-                                                                                      [self.activityIndicator stopAnimating];
-                                                                                      
-                                                                                  }];
-                                                          }
-                                                          
-                                                      }]];
-    
+
+        UITextField *statusField = alertController.textFields.firstObject;
+        if(statusField.text.length && ![statusField.text isEqualToString:self.userStatusLabel.text])
+        {
+
+            NSString * statusText = statusField.text;
+            if(statusText.length >= 256)
+            {
+                statusText = [statusText substringToIndex:255];
+            }
+
+            [self.activityIndicator startAnimating];
+
+            ALUserService *userService = [ALUserService new];
+            [userService updateUserDisplayName:[self->myContact getDisplayName]
+                                  andUserImage:@""
+                                    userStatus:statusText
+                                withCompletion:^(id theJson, NSError *error) {
+
+                ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_STATUS_UPDATE :: %@", (NSString *)theJson);
+                ALSLog(ALLoggerSeverityError, @"ERROR :: %@",error.description);
+
+                if(!error)
+                {
+                    self->myContact.userStatus = statusText;
+                    ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY  %@", self->myContact.userStatus);
+                    [self->alContactService updateContact:self->myContact];
+                    [self.userStatusLabel setText: statusText];
+                    [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
+                }
+
+                [self.activityIndicator stopAnimating];
+
+            }];
+        }
+
+    }]];
+
     [self presentViewController:alertController animated:YES completion:nil];
     
 }
 
+-(void)updateUser:(NSNotification *)userUpdateNotification {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ALUserDetail *userDetail = (ALUserDetail *)userUpdateNotification.object;
+        if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
+            if (userDetail.displayName) {
+                self.displayNameLabel.text = userDetail.displayName;
+            }
+            if (userDetail.imageLink) {
+                [self.profileImage sd_setImageWithURL:[NSURL URLWithString:userDetail.imageLink] placeholderImage:self.placeHolderImage];
+            }
+            self.userStatusLabel.text = userDetail.userStatus;
+            [ALUserDefaultsHandler setLoggedInUserStatus:userDetail.userStatus];
+        }
+    });
+}
 
 @end

@@ -1035,8 +1035,17 @@ static int const MQTT_MAX_RETRY = 3;
 {
     ALSLog(ALLoggerSeverityInfo, @"ALMSGVC : USER_DETAIL_CHANGED_CALL_UPDATE");
     [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+
+        if (!userDetail) {
+            return;
+        }
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
+
+        if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
+            return;
+        }
+
         ALContactCell * contactCell = [self getCell:userId];
         UILabel* nameIcon = (UILabel *)[contactCell viewWithTag:102];
         [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[userDetail getDisplayName]]];
