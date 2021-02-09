@@ -100,8 +100,10 @@
         [self.profileImage setImage:self.placeHolderImage];
     }
 
+    NSString *emptyProfileStatusInfo = NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Status", @"");
+
     self.displayNameLabel.text = [contact getDisplayName];
-    [self.userStatusLabel setText: contact.userStatus ? contact.userStatus :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
+    [self.userStatusLabel setText: contact.userStatus != nil ? contact.userStatus : emptyProfileStatusInfo];
 
     BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE);
     [self.notificationToggle setOn:(!checkMode) animated:YES];

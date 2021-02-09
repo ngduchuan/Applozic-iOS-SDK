@@ -95,7 +95,7 @@
 //User profile
 
 
-"emptyLabelProfileText" = "Profile Status";
+"emptyLabelProfileText" = "No Status";
 "alertText" = "Alert";
 "unableToUpdateText" ="Unable to update !!!";
 "notificationStatusUpdateText" = "Notification setting updated!!!";
