@@ -4299,7 +4299,15 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
     [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
+        if (!userDetail) {
+            return;
+        }
+
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
+
+        if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
+            return;
+        }
         [self subProcessDetailUpdate:userDetail];
     }];
 }

@@ -490,10 +490,7 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
         {
             //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
             NSString * userId = [theMessageDict objectForKey:@"message"];
-            if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
-            {
-                [self.mqttConversationDelegate updateUserDetail:userId];
-            }
+            [self.mqttConversationDelegate updateUserDetail:userId];
             if(self.realTimeUpdate){
                 [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];

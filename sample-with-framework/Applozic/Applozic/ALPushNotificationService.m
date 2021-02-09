@@ -274,10 +274,7 @@
         else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DETAIL_CHANGED)]] || [type isEqualToString:self.notificationTypes[@(AL_USER_DELETE_NOTIFICATION)]])
         {
             NSString * userId = notificationMsg;
-            if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
-            {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAILS_UPDATE_CALL" object:userId];
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAILS_UPDATE_CALL" object:userId];
             if(self.realTimeUpdate){
                 [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];

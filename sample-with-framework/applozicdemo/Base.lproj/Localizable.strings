@@ -95,7 +95,7 @@
 //User profile
 
 
-"emptyLabelProfileText" = "Profile Status";
+"emptyLabelProfileText" = "No Status";
 "alertText" = "Alert";
 "unableToUpdateText" ="Unable to update !!!";
 "notificationStatusUpdateText" = "Notification setting updated!!!";
@@ -327,3 +327,8 @@
 "ReportMessage" = "Report message";
 "ReportMessageSuccess" = "Message has been reported";
 "ReportMessageError" = "Failed to report the message";
+
+// User name update
+"alertUserNameTextFieldPlaceHolder"= "Enter your name";
+"yourUserNameAlertTitle" = "Your Name";
+
