@@ -70,6 +70,8 @@ static const int SHOW_GROUP = 102;
 @property (strong, nonatomic) NSMutableArray *alChannelsList;
 @property (nonatomic)NSInteger selectedSegment;
 @property (strong, nonatomic) UILabel *emptyConversationText;
+@property (strong, nonatomic) ALContactService *contactService;
+
 @end
 
 @implementation ALNewContactsViewController
@@ -85,6 +87,7 @@ static const int SHOW_GROUP = 102;
     self.selectedSegment = 0;
     [ALUserDefaultsHandler setContactServerCallIsDone:NO];
 
+    self.contactService = [[ALContactService alloc] init];
     self.applozicClient = [[ApplozicClient alloc ]initWithApplicationKey:ALUserDefaultsHandler.getApplicationKey];
     self.applozicClient.attachmentProgressDelegate = self;
 
@@ -709,9 +712,19 @@ static const int SHOW_GROUP = 102;
     if(filterArray){
         contactFilterPredicate = [NSPredicate predicateWithFormat:@"contactType IN %@", filterArray];
     }
-    
+
+    NSString *supportUserId = [ALApplozicSettings getSupportContactUserId];
+
     if(![ALUserDefaultsHandler getLoginUserConatactVisibility]){
-        NSPredicate* predicate=  [NSPredicate predicateWithFormat:@"userId!=%@ AND deletedAtTime == nil",[ALUserDefaultsHandler getUserId]];
+        NSPredicate* predicate = nil;
+        if (supportUserId) {
+            NSArray * userIdArray = [[NSArray alloc] initWithObjects:[ALUserDefaultsHandler getUserId], supportUserId, nil];
+            predicate = [NSPredicate predicateWithFormat:@"NOT (userId IN %@) AND deletedAtTime == nil", userIdArray];
+
+        } else {
+            predicate = [NSPredicate predicateWithFormat:@"userId !=%@ AND deletedAtTime == nil", [ALUserDefaultsHandler getUserId]];
+        }
+
         if(contactFilterPredicate){
             contactFilterPredicate =[NSCompoundPredicate andPredicateWithSubpredicates:@[contactFilterPredicate, predicate]];
         }else{
@@ -746,6 +759,12 @@ static const int SHOW_GROUP = 102;
         NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES selector:@selector(caseInsensitiveCompare:)];
         NSArray * descriptors = [NSArray arrayWithObject:valueDescriptor];
         self.filteredContactList = [NSMutableArray arrayWithArray:[self.contactList sortedArrayUsingDescriptors:descriptors]];
+
+        if (supportUserId) {
+            ALContact *supportContact = [self.contactService loadContactByKey:@"userId" value:supportUserId];
+            [self.filteredContactList insertObject:supportContact atIndex:0];
+        }
+
         [self.contactList removeAllObjects];
         self.contactList = [NSMutableArray arrayWithArray:self.filteredContactList];
         [[self activityIndicator] stopAnimating];
@@ -930,8 +949,7 @@ static const int SHOW_GROUP = 102;
         {
             case 0:
             {
-                 ALContactService * contactService = [ALContactService new];
-                if(![contactService isUserDeleted:contactId]){
+                if(![self.contactService isUserDeleted:contactId]){
                     self.alMessage.contactIds = contactId;
                     self.alMessage.to = contactId;
                     self.alMessage.groupId = nil;
@@ -1329,7 +1347,6 @@ static const int SHOW_GROUP = 102;
 
 -(void)launchProcessForSubgroups
 {
-    ALContactService *contactService = [ALContactService new];
     ALChannelService *channelService = [ALChannelService new];
     NSMutableSet * allMemberSet = [NSMutableSet new];
     NSMutableArray * allMemberArray = [NSMutableArray new];
@@ -1357,7 +1374,7 @@ static const int SHOW_GROUP = 102;
     
     for(NSString * userId in allMemberSet)
     {
-        ALContact *contact = [contactService loadContactByKey:@"userId" value:userId];
+        ALContact *contact = [self.contactService loadContactByKey:@"userId" value:userId];
         if(![contact.userId isEqualToString:[ALUserDefaultsHandler getUserId]])
         {
             [contactList addObject:contact];
@@ -1375,8 +1392,7 @@ static const int SHOW_GROUP = 102;
 -(void)initiateGroupOfTwoChat:(ALChannel *)parentChannel andUser:(ALContact *)alContact
 {
     ALChannelService * channelService = [ALChannelService new];
-    ALContactService *contactService = [ALContactService new];
-    ALContact *loginContact = [contactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+    ALContact *loginContact = [self.contactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
     NSMutableArray * userList = [NSMutableArray arrayWithObjects:alContact.userId, loginContact.userId, nil];
     
     // ALSO SORT USERS
@@ -1506,14 +1522,13 @@ static const int SHOW_GROUP = 102;
         [self.searchBar setUserInteractionEnabled:YES];
         
         NSMutableArray * contactList = [NSMutableArray new];
-        ALContactService *contactService = [ALContactService new];
-        
+
         if(!error && channel != nil){
             for(NSString * userId in channel.membersId)
             {
                 if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
                 {
-                    ALContact *contact = [contactService loadContactByKey:@"userId" value:userId];
+                    ALContact *contact = [self.contactService loadContactByKey:@"userId" value:userId];
                     [contactList addObject:contact];
                 }
             }
@@ -1533,7 +1548,7 @@ static const int SHOW_GROUP = 102;
             if(membersArray && membersArray.count >0){
                 for(NSString * userId in membersArray)
                 {
-                    ALContact *contact = [contactService loadContactByKey:@"userId" value:userId];
+                    ALContact *contact = [self.contactService loadContactByKey:@"userId" value:userId];
                     [contactList addObject:contact];
                 }
                 
@@ -1555,15 +1570,14 @@ static const int SHOW_GROUP = 102;
       [self.searchBar setUserInteractionEnabled:YES];
         
         NSMutableArray * contactList = [NSMutableArray new];
-        ALContactService *contactService = [ALContactService new];
-        
+
         if(!error && membersArray != nil){
             membersArray = [membersArray valueForKeyPath:@"@distinctUnionOfObjects.self"];
             for(NSString * userId in membersArray)
             {
                 if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
                 {
-                    ALContact *contact = [contactService loadContactByKey:@"userId" value:userId];
+                    ALContact *contact = [self.contactService loadContactByKey:@"userId" value:userId];
                     [contactList addObject:contact];
                 }
             }
@@ -1588,7 +1602,7 @@ static const int SHOW_GROUP = 102;
                 for(NSString * userId in membersArray)
                 {
                     if(![userId isEqualToString:[ALUserDefaultsHandler getUserId] ]) {
-                        ALContact *contact = [contactService loadContactByKey:@"userId" value:userId];
+                        ALContact *contact = [self.contactService loadContactByKey:@"userId" value:userId];
                         [contactList addObject:contact];
                     }
                 }
