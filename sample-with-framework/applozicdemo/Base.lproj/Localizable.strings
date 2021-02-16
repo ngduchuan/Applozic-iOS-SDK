@@ -145,7 +145,7 @@
 
 //CONTCATSCREEN
 
-"searchInfo" = "Email, userid, number";
+"searchInfo" = "Search...";
 "contactsTitle" = "Contacts";
 "groupsTitle" = "Groups";
 "noContactFoundText" = "No contact found";
