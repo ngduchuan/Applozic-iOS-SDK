@@ -7,24 +7,11 @@
 //
 
 #import "ALNotificationView.h"
-#import "TSMessage.h"
-#import "ALPushAssist.h"
-#import "ALUtilityClass.h"
 #import "ALChatViewController.h"
-#import "TSMessageView.h"
 #import "ALMessagesViewController.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALContact.h"
-#import "ALContactDBService.h"
-#import "ALApplozicSettings.h"
-#import "ALChannelDBService.h"
-#import "ALApplozicSettings.h"
-#import "ALConstant.h"
 #import "ALGroupDetailViewController.h"
 #import "ALUserProfileVC.h"
-#import "ALUserService.h"
 #import "Applozic.h"
-
 
 @implementation ALNotificationView
 
@@ -316,7 +303,7 @@
          
          @try
          {
-             if([delegate isKindOfClass:[ALMessagesViewController class]] && top.isMessageViewOnTop)
+             if([delegate isKindOfClass:[ALMessagesViewController class]] && (top.isMessageContainerOnTop || [top.topViewController isKindOfClass:[ALMessagesViewController class]]))
              {
                  // Conversation View is Opened.....
                  ALMessagesViewController* class2=(ALMessagesViewController*)delegate;
@@ -334,17 +321,17 @@
                  [class2 createDetailChatViewControllerWithMessage:self.alMessageObject];
                  self.checkContactId = [NSString stringWithFormat:@"%@",self.contactId];
              }
-             else if([delegate isKindOfClass:[ALChatViewController class]] && top.isChatViewOnTop)
+             else if([delegate isKindOfClass:[ALChatViewController class]] && [top.topViewController isKindOfClass:[ALChatViewController class]])
              {
                  [self updateChatScreen:delegate];
              }
-             else if ([delegate isKindOfClass:[ALGroupDetailViewController class]] && top.isGroupDetailViewOnTop)
+             else if ([delegate isKindOfClass:[ALGroupDetailViewController class]] && [top.topViewController isKindOfClass:[ALGroupDetailViewController class]])
              {
                  ALGroupDetailViewController *groupDeatilVC = (ALGroupDetailViewController *)delegate;
                  [[(ALGroupDetailViewController *)delegate navigationController] popViewControllerAnimated:YES];
                  [self updateChatScreen:groupDeatilVC.alChatViewController];
              }
-             else if ([delegate isKindOfClass:[ALUserProfileVC class]] && top.isUserProfileVCOnTop)
+             else if ([delegate isKindOfClass:[ALUserProfileVC class]] && [top.topViewController isKindOfClass:[ALUserProfileVC class]])
              {
                  ALSLog(ALLoggerSeverityInfo, @"OnTop UserProfile VC : ContactID %@ and ChannelID %@",self.contactId, self.groupId);
                  ALUserProfileVC * userProfileVC = (ALUserProfileVC *)delegate;
@@ -362,7 +349,7 @@
                  }
                  [msgVC createDetailChatViewController:self.contactId];
              }
-             else if ([delegate isKindOfClass:[ALNewContactsViewController class]] && top.isContactVCOnTop)
+             else if ([delegate isKindOfClass:[ALNewContactsViewController class]] && [top.topViewController isKindOfClass:[ALNewContactsViewController class]])
              {
                  ALSLog(ALLoggerSeverityInfo, @"OnTop CONTACT VC : ContactID %@ and ChannelID %@",self.contactId, self.groupId);
                  ALNewContactsViewController *contactVC = (ALNewContactsViewController *)delegate;
@@ -393,7 +380,7 @@
              {
                 //This will come here once the notiifcation clicked from other views for opening the chat screen
                  
-                 if(top.isChatViewOnTop){
+                 if([top.topViewController isKindOfClass:[ALChatViewController class]]){
                      [self updateChatScreen:delegate];
                  }else{
                      ALChatLauncher *chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];

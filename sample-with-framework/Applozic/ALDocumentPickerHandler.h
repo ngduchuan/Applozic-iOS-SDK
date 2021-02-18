@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "ALPushAssist.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import <UIKit/UIKit.h>
-
 
 NS_ASSUME_NONNULL_BEGIN
 

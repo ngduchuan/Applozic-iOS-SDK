@@ -5,48 +5,21 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-static const int LAUNCH_GROUP_OF_TWO = 4;
-static const int REGULAR_CONTACTS = 0;
-static const int BROADCAST_GROUP_CREATION = 5;
-
 #import "UIView+Toast.h"
-#import "TSMessageView.h"
 #import "ALMessagesViewController.h"
-#import "ALConstant.h"
-#import "ALMessageService.h"
-#import "ALMessage.h"
-#import "ALUtilityClass.h"
-#import "ALContact.h"
-#import "ALMessageDBService.h"
-#import "ALRegisterUserClientService.h"
-#import "ALDBHandler.h"
-#import "ALContact.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALContactDBService.h"
 #import "UIImageView+WebCache.h"
 #import "ALColorUtility.h"
-#import "ALMQTTConversationService.h"
-#import "ALApplozicSettings.h"
-#import "ALDataNetworkConnection.h"
-#import "ALUserService.h"
-#import "ALChannelDBService.h"
-#import "ALChannel.h"
 #import "ALChatLauncher.h"
-#import "ALChannelService.h"
 #import "ALNotificationView.h"
-#import "ALPushAssist.h"
-#import "ALUserDetail.h"
-#import "ALContactService.h"
-#import "ALConversationClientService.h"
-#import "ALPushNotificationService.h"
-#import "ALPushAssist.h"
 #import "ALGroupCreationViewController.h"
-#import "ALMessageClientService.h"
-#import "ALLogger.h"
 #import "ALNotificationHelper.h"
 #import <Applozic/Applozic-Swift.h>
 #import "ALSearchResultViewController.h"
+#import "ALUIUtilityClass.h"
 
+static const int LAUNCH_GROUP_OF_TWO = 4;
+static const int REGULAR_CONTACTS = 0;
+static const int BROADCAST_GROUP_CREATION = 5;
 static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
@@ -1073,8 +1046,8 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag
 {
     [self.detailChatViewController checkUserBlockStatus];
-    
-    if([[ALPushAssist new] isMessageViewOnTop])
+    ALPushAssist *pushAssist =  [[ALPushAssist alloc] init];
+    if([pushAssist.topViewController isKindOfClass:[ALMessagesViewController class]])
     {
         [self.detailChatViewController.label setHidden:YES];
         
@@ -1097,7 +1070,7 @@ static int const MQTT_MAX_RETRY = 3;
         [self.detailChatViewController syncCall:alMessage updateUI:[NSNumber numberWithInt:APP_STATE_ACTIVE] alertValue:alMessage.message];
     } else if ([helper isApplozicViewControllerOnTop]) {
 
-        if (top.isMessageViewOnTop) {
+        if ([top.topViewController isKindOfClass:[ALMessagesViewController class]]) {
             [self updateMessageList:messageArray];
         }
 
@@ -1350,7 +1323,7 @@ static int const MQTT_MAX_RETRY = 3;
 
 -(UIView *)setCustomBackButton:(NSString *)text
 {
-    UIImage * backImage = [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+    UIImage * backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
     backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];

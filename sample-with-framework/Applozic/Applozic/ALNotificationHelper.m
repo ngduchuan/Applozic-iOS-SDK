@@ -7,8 +7,7 @@
 //
 
 #import "ALNotificationHelper.h"
-#import "ALApplozicSettings.h"
-#import <Applozic/Applozic-Swift.h>
+#import <ApplozicCore/ApplozicCore.h>
 #import <Applozic/ALSearchResultViewController.h>
 
 @implementation ALNotificationHelper

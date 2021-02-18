@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALNotificationView : UILabel
 

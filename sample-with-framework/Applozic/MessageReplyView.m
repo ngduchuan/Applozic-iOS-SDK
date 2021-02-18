@@ -8,13 +8,8 @@
 
 #import "MessageReplyView.h"
 #import "UIImageView+WebCache.h"
-#import  "ALUtilityClass.h"
-#import "ALMessageService.h"
-#import "ALContactService.h"
-#import "ALApplozicSettings.h"
 #import "ALLocationCell.h"
-#import "ALDataNetworkConnection.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const REPLY_VIEW_PADDING = 5;
 static NSString *const FONT_NAME = @"Helvetica";
@@ -193,7 +188,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
     
     if(replyMessage.isContactMessage)
     {
-        [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
+        [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
         
     }
     else if(replyMessage.isLocationMessage)
@@ -206,7 +201,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
         }
         else
         {
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
         }
         
     }
@@ -215,12 +210,12 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
     {
         if(replyMessage.isDocumentMessage){
             
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
             return;
         }
         if([replyMessage.fileMeta.contentType hasPrefix:@"audio"])
         {
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
             return;
         }else if([replyMessage.fileMeta.contentType hasPrefix:@"video"]){
 
@@ -248,7 +243,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
                     });
                 }];
             }else{
-                [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
+                [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
             }
             return;
         }else if([replyMessage.fileMeta.contentType hasPrefix:@"image"]){
@@ -290,15 +285,15 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
                 if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
                     [self setImage:[NSURL fileURLWithPath:filePath]];
                 } else {
-                    [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
+                    [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
                 }
             } else if (replyMessage.fileMeta.thumbnailUrl) {
                 [self setImage:[NSURL URLWithString:replyMessage.fileMeta.thumbnailUrl]];
             } else {
-                [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
+                [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
             }
         }else{
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
         }
     }
 

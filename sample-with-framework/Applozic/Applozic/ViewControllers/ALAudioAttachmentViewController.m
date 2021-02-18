@@ -7,8 +7,7 @@
 //
 
 #import "ALAudioAttachmentViewController.h"
-#import "ALApplozicSettings.h"
-#import "ALUtilityClass.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALAudioAttachmentViewController ()
 {

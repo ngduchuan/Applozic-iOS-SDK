@@ -8,18 +8,13 @@
 #import "ALGroupDetailViewController.h"
 #import "ALGroupDetailsMemberCell.h"
 #import "ALChatViewController.h"
-#import "ALChannel.h"
-#import "ALApplozicSettings.h"
 #import "UIImageView+WebCache.h"
 #import "ALMessagesViewController.h"
 #import "ALNotificationView.h"
-#import "ALDataNetworkConnection.h"
-#import "ALMQTTConversationService.h"
 #import "ALGroupCreationViewController.h"
-#import "ALPushAssist.h"
-#import "ALChannelUser.h"
-#import "ALMessageClientService.h"
 #import "ALNotificationHelper.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 const int GROUP_ADDITION = 2;
 
@@ -114,7 +109,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     ALPushAssist *pushAssist = [ALPushAssist new];
 
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && pushAssist.isGroupDetailViewOnTop)
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && [pushAssist.topViewController isKindOfClass:[ALGroupDetailViewController class]])
     {
         ALMessage *alMessage = [[ALMessage alloc] init];
         alMessage.message = alertValue;
@@ -498,7 +493,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                                NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                                                for (UIViewController *viewController in allViewControllers)
                                                {
-                                                   if ([ALPushAssist isViewObjIsMsgVC:viewController] || [ALPushAssist isViewObjIsMsgContainerVC:viewController])
+                                                   if ([viewController isKindOfClass:[ALMessagesViewController class]] || [ALPushAssist isViewObjIsMsgContainerVC:viewController])
                                                    {
                                                        [self.navigationController popToViewController:viewController animated:YES];
                                                    }
@@ -769,13 +764,12 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     if (alContact.localImageResourceName)
     {
-        UIImage *someImage = [ALUtilityClass getImageFromFramworkBundle:alContact.localImageResourceName];
+        UIImage *someImage = [ALUIUtilityClass getImageFromFramworkBundle:alContact.localImageResourceName];
         [memberCell.profileImageView  setImage:someImage];
     }
     else if(alContact.contactImageUrl)
     {
-        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+        [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     else
     {
@@ -863,10 +857,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     if (section == 0)
     {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:
-                                  [ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
+                                  [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
 
-        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:nil];
+        [ALUIUtilityClass downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:nil];
 
         imageView.frame = CGRectMake((screenWidth/2)-30, 20, 60, 60);
         imageView.backgroundColor = [UIColor blackColor];

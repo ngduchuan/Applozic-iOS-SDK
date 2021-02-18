@@ -9,20 +9,10 @@
 #import "ALGroupCreationViewController.h"
 #import "ALNewContactsViewController.h"
 #import "ALChatViewController.h"
-#import "ALConnectionQueueHandler.h"
-#import "UIImage+Utility.h"
-#import "ALApplozicSettings.h"
-#import "ALUtilityClass.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALImagePickerHandler.h"
-#import "ALRequestHandler.h"
-#import "ALResponseHandler.h"
 #import "ALNotificationView.h"
-#import "ALDataNetworkConnection.h"
-#import "ALRegisterUserClientService.h"
 #import "UIImageView+WebCache.h"
-#import "ALContactService.h"
-#import "ALHTTPManager.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 static const int GROUP_CREATION = 1;
 static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";

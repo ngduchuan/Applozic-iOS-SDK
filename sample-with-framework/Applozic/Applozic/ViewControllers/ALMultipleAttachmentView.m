@@ -10,12 +10,13 @@
 
 #import "ALMultipleAttachmentView.h"
 #import "AlMultipleAttachmentCell.h"
-#import "ALUtilityClass.h"
 #import "ALChatViewController.h"
 #import "ALImagePickerHandler.h"
 #import "ALImagePickerController.h"
-#import "UIImage+animatedGIF.h"
 #import "ALMultimediaData.h"
+#import "ALUIUtilityClass.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 static CGFloat NAVIGATION_TEXT_SIZE = 20;
 
@@ -43,7 +44,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     self.imageArray = [NSMutableArray new];
     self.mediaFileArray = [NSMutableArray new];
 
-    UIImage * addButtonImage = [ALUtilityClass getImageFromFramworkBundle:@"Plus_PNG.png"];
+    UIImage * addButtonImage = [ALUIUtilityClass getImageFromFramworkBundle:@"Plus_PNG.png"];
     [self.imageArray addObject: addButtonImage];
 
     //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];

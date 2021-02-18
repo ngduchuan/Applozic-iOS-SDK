@@ -7,16 +7,9 @@
 //
 
 #import "ApplozicLoginViewController.h"
-#import <Applozic/ALUser.h>
-#import <Applozic/ALUserDefaultsHandler.h>
-#import <Applozic/ALMessageClientService.h>
-#import <Applozic/ALRegistrationResponse.h>
-#import <Applozic/ALRegisterUserClientService.h>
 #import <Applozic/ALMessagesViewController.h>
-#import <Applozic/ALApplozicSettings.h>
-#import <Applozic/ALDataNetworkConnection.h>
 #import <Applozic/ALChatLauncher.h>
-#import <Applozic/ALMessageDBService.h>
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALChatManager.h"
 #import "LaunchChatFromSimpleViewController.h"
 

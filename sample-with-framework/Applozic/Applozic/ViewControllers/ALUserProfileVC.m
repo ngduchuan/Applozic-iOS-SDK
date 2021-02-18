@@ -7,26 +7,13 @@
 //
 
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "UIImage+Utility.h"
 #import "ALUserProfileVC.h"
-#import "ALApplozicSettings.h"
-#import "ALUtilityClass.h"
-#import "ALConnectionQueueHandler.h"
 #import "ALImagePickerHandler.h"
-#import "ALRequestHandler.h"
-#import "ALResponseHandler.h"
 #import "ALNotificationView.h"
-#import "ALDataNetworkConnection.h"
-#import "ALRegisterUserClientService.h"
 #import "UIImageView+WebCache.h"
-#import "ALContactService.h"
-#import "ALConstant.h"
 #import "ALMessagesViewController.h"
-#import "ALPushAssist.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALUserService.h"
-#import "ALUserDetail.h"
-#import "ALHTTPManager.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 @interface ALUserProfileVC ()
 
@@ -62,7 +49,7 @@
     [super viewDidLoad];
 
     alContactService = [[ALContactService alloc] init];
-    self.placeHolderImage =[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
+    self.placeHolderImage = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
 
     [self fetchLoginUserDetails];
     
@@ -228,7 +215,7 @@
         channelKey = @([myArray[1] intValue]);
     }
     
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && pushAssist.isUserProfileVCOnTop)
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && [pushAssist.topViewController isKindOfClass:[ALUserProfileVC class]])
     {
         ALSLog(ALLoggerSeverityInfo, @"######## USER PROFILE VC : APP_STATE_ACTIVE #########");
         

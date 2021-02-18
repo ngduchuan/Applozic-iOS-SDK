@@ -10,20 +10,11 @@
 #import  <Applozic/ALChatViewController.h>
 #import "ALChatManager.h"
 #import "ApplozicLoginViewController.h"
-#import  <Applozic/ALUserDefaultsHandler.h>
-#import  <Applozic/ALRegisterUserClientService.h>
-#import  <Applozic/ALDBHandler.h>
-#import  <Applozic/ALContact.h>
-#import  <Applozic/ALDataNetworkConnection.h>
-#import  <Applozic/ALMessageService.h>
-#import  <Applozic/ALContactService.h>
-#import  <Applozic/ALUserService.h>
 #import <Applozic/ALImagePickerHandler.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import <Applozic/Applozic-Swift.h>
-#import <Applozic/ALChannelService.h>
-#import <Applozic/ALLogger.h>
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface LaunchChatFromSimpleViewController ()<MFMailComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *sendLogsButton;
