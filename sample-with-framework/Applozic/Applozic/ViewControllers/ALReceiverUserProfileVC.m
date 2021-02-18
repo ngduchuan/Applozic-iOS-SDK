@@ -199,7 +199,7 @@
     [self.profileImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     if(self.alContact.contactImageUrl)
     {
-        [ALUIUtilityClass downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:nil];
+        [ALUIUtilityClass downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     
     [self.callButton setEnabled:NO];

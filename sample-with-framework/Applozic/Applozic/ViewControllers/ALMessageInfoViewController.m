@@ -247,7 +247,7 @@
 {
     ALContactDBService * alContactDBService = [ALContactDBService new];
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
-    [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:nil];
+    [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:@"ic_contact_picture_holo_light.png"];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     

@@ -173,6 +173,7 @@
 		187361A125DD584300C02F5D /* ALMessageArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873619F25DD584300C02F5D /* ALMessageArrayWrapper.m */; };
 		187D675E25DD83C4008BE643 /* ALUIUtilityClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 187D675C25DD83C4008BE643 /* ALUIUtilityClass.h */; };
 		187D675F25DD83C4008BE643 /* ALUIUtilityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 187D675D25DD83C4008BE643 /* ALUIUtilityClass.m */; };
+		187D683425DED634008BE643 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */; };
 		1896EDB625DBD15D0038EBFF /* ApplozicCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EDB425DBD15D0038EBFF /* ApplozicCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EDCD25DBD4190038EBFF /* ALMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EDC225DBD4180038EBFF /* ALMessageBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EDCE25DBD4190038EBFF /* ALMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EDC325DBD4180038EBFF /* ALMessageBuilder.m */; };
@@ -425,8 +426,6 @@
 		18E0F08D25DCF8E500F6EDE3 /* ALSyncCallService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0F08B25DCF8E500F6EDE3 /* ALSyncCallService.m */; };
 		18E0F09225DCF8F300F6EDE3 /* ALMediaPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0F09025DCF8F300F6EDE3 /* ALMediaPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F09325DCF8F300F6EDE3 /* ALMediaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0F09125DCF8F300F6EDE3 /* ALMediaPlayer.m */; };
-		18E0F09625DCF93100F6EDE3 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */; };
-		18E0F09725DCF93100F6EDE3 /* ApplozicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		18E0F0A625DCFD3400F6EDE3 /* ALContactService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0F0A225DCFD3400F6EDE3 /* ALContactService.m */; };
 		18E0F0A725DCFD3400F6EDE3 /* ALContactDBService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0F0A325DCFD3400F6EDE3 /* ALContactDBService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F0A825DCFD3400F6EDE3 /* ALContactDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0F0A425DCFD3400F6EDE3 /* ALContactDBService.m */; };
@@ -544,7 +543,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		18E0F09825DCF93100F6EDE3 /* PBXContainerItemProxy */ = {
+		187D683625DED634008BE643 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6D6DF0741BC535C800EBA00F /* Project object */;
 			proxyType = 1;
@@ -552,20 +551,6 @@
 			remoteInfo = ApplozicCore;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		18E0F09A25DCF93200F6EDE3 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				18E0F09725DCF93100F6EDE3 /* ApplozicCore.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		10C89FBC1FD9A5CE001C2FFC /* MessageReplyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageReplyView.h; sourceTree = "<group>"; };
@@ -1131,7 +1116,7 @@
 			files = (
 				46ABAAD71DA4054000EC48AC /* Contacts.framework in Frameworks */,
 				46ABAAD81DA4054000EC48AC /* ContactsUI.framework in Frameworks */,
-				18E0F09625DCF93100F6EDE3 /* ApplozicCore.framework in Frameworks */,
+				187D683425DED634008BE643 /* ApplozicCore.framework in Frameworks */,
 				6DC729661C7854E100A8A268 /* MediaPlayer.framework in Frameworks */,
 				6D3A4DF71C75ED330067A4C8 /* AVFoundation.framework in Frameworks */,
 				6D5439DC1C19B8D600C686BC /* SystemConfiguration.framework in Frameworks */,
@@ -2307,12 +2292,11 @@
 				6D6DF07A1BC535C800EBA00F /* Headers */,
 				6D6DF07B1BC535C800EBA00F /* Resources */,
 				6DAA09DB1BE4AD8800CBF133 /* Run Script */,
-				18E0F09A25DCF93200F6EDE3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				18E0F09925DCF93100F6EDE3 /* PBXTargetDependency */,
+				187D683725DED634008BE643 /* PBXTargetDependency */,
 			);
 			name = Applozic;
 			productName = Applozic;
@@ -2325,7 +2309,7 @@
 		6D6DF0741BC535C800EBA00F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "applozic Inc";
 				TargetAttributes = {
 					1896EDB125DBD15D0038EBFF = {
@@ -2681,10 +2665,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		18E0F09925DCF93100F6EDE3 /* PBXTargetDependency */ = {
+		187D683725DED634008BE643 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1896EDB125DBD15D0038EBFF /* ApplozicCore */;
-			targetProxy = 18E0F09825DCF93100F6EDE3 /* PBXContainerItemProxy */;
+			targetProxy = 187D683625DED634008BE643 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2713,7 +2697,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2728,7 +2712,7 @@
 				MARKETING_VERSION = 7.14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.ApplozicCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2752,7 +2736,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2766,6 +2750,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 7.14.0;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.ApplozicCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2780,6 +2765,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2826,7 +2812,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
@@ -2840,6 +2826,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2880,6 +2867,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
@@ -2894,10 +2882,9 @@
 		6D6DF0861BC535C800EBA00F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2915,7 +2902,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 7.14.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2932,10 +2919,9 @@
 		6D6DF0871BC535C800EBA00F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";

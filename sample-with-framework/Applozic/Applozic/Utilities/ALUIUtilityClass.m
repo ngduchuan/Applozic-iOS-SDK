@@ -42,8 +42,11 @@
                      imageView:(UIImageView *) imageView
                   defaultImage:(NSString *) defaultImage {
 
-    NSURL * theUrl1 = [NSURL URLWithString:blobKey];
-    [imageView sd_setImageWithURL:theUrl1 placeholderImage:[ALUIUtilityClass getImageFromFramworkBundle:defaultImage] options:SDWebImageRefreshCached];
+    if (blobKey) {
+        NSURL * theUrl1 = [NSURL URLWithString:blobKey];
+        [imageView sd_setImageWithURL:theUrl1 placeholderImage:[ALUIUtilityClass getImageFromFramworkBundle:defaultImage] options:SDWebImageRefreshCached];
+    }
+
 }
 
 

@@ -89,7 +89,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
             self.mUserNameLabel.text = [grpContact getDisplayName];
             self.onlineImageMarker.hidden = (!grpContact.connected);
             if (grpContact.contactImageUrl.length) {
-                [ALUIUtilityClass downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:nil];
+                [ALUIUtilityClass downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
                 self.imageNameLabel.hidden = YES;
                 nameIcon.hidden = YES;
             } else {
