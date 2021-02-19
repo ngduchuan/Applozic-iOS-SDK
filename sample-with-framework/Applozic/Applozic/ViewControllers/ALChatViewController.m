@@ -3829,9 +3829,17 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
         BOOL disableUserInteractionInChannel = [self updateChannelUserStatus];
         [self disableChatViewInteraction:disableUserInteractionInChannel withPlaceholder:nil];
     } else if (contact) {
-        if ([contact isDeleted]) {
-            /// User deletd.
-            NSString *userDeletedInfo = NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
+
+        ALContactService * contactService = [[ALContactService alloc] init];
+        ALContact *loginUserContact = [contactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+
+        if ([contact isDeleted] || [loginUserContact isDeleted]) {
+            /// User deletd .
+            NSString *userDeletedInfo = [loginUserContact isDeleted] ?
+            NSLocalizedStringWithDefaultValue(@"yourAccountDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your account deleted", @"")
+            :
+            NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
+
             [self disableChatViewInteraction: YES withPlaceholder: userDeletedInfo];
         } else if (ALUserDefaultsHandler.isChatDisabled) {
             /// User has disabled chat.
@@ -4305,9 +4313,6 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
 
-        if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
-            return;
-        }
         [self subProcessDetailUpdate:userDetail];
     }];
 }
@@ -4315,12 +4320,18 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 -(void)subProcessDetailUpdate:(ALUserDetail *)userDetail  // (COMMON METHOD CALL FROM SELF and ALMSGVC)
 {
     ALSLog(ALLoggerSeverityInfo, @"ALCHATVC : USER_DETAIL_SUB_PROCESS");
-    if(![self isGroup] && [userDetail.userId isEqualToString:self.contactIds])
+    if(![self isGroup])
     {
+        BOOL isEnableOrDisableChatRequired = NO;
         ALContactService *contactService = [ALContactService new];
-        self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
-        [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
-        [self enableOrDisableChatWithChannel:nil orContact:self.alContact];
+        if ([userDetail.userId isEqualToString:self.contactIds]) {
+            self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
+            [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
+            isEnableOrDisableChatRequired = YES;
+        }
+        if (isEnableOrDisableChatRequired || [userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
+            [self enableOrDisableChatWithChannel:nil orContact:self.alContact];
+        }
     }
     [self.mTableView reloadData];
 }

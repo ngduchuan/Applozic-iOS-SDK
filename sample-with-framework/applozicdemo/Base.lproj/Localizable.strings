@@ -22,6 +22,7 @@
 "groupDeletedInfo"  = "This Group has been Deleted";
 
 "userDeletedInfo"  = "User has been deleted";
+"yourAccountDeletedInfo"  = "Your account deleted";
 
 "chatTitle"  = "Chats";
 
