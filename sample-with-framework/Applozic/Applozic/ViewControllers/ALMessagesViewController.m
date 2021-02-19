@@ -1042,16 +1042,11 @@ static int const MQTT_MAX_RETRY = 3;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
 
-        if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
-            return;
-        }
-
         ALContactCell * contactCell = [self getCell:userId];
-        UILabel* nameIcon = (UILabel *)[contactCell viewWithTag:102];
-        [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[userDetail getDisplayName]]];
-        
         if(contactCell)
         {
+            UILabel* nameIcon = (UILabel *)[contactCell viewWithTag:102];
+            [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[userDetail getDisplayName]]];
             
             if(userDetail.getDisplayName){
                 contactCell.mUserNameLabel.text = userDetail.getDisplayName;
