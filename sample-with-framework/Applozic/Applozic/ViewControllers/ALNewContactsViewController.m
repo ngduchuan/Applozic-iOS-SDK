@@ -530,6 +530,7 @@ static const int SHOW_GROUP = 102;
                 {
                     ALChannel * channel = (ALChannel *)[self.filteredContactList objectAtIndex:indexPath.row];
                     newContactCell.contactPersonName.text = [channel name];
+                    newContactCell.contactPersonImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"];
                     [ALUIUtilityClass downloadImageUrlAndSet:channel.channelImageURL imageView:newContactCell.contactPersonImageView defaultImage:@"applozic_group_icon.png"];
                     [nameIcon setHidden:YES];
                 }
