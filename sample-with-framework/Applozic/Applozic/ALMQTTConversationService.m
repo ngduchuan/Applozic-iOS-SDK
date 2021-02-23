@@ -382,13 +382,20 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             NSString * pairedKey = deliveryParts[0];
             NSString * contactId = (deliveryParts.count > 1) ? deliveryParts[1] : nil;
 
+            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
+            ALMessage *existingMessage = [messageDataBaseService getMessageByKey:pairedKey];
+            // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
+            if (existingMessage &&
+                (existingMessage.status.intValue == DELIVERED_AND_READ)) {
+                return;
+            }
+
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED];
 
-            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
-            ALMessage *message = [messageDataBaseService getMessageByKey:pairedKey];
-            if(message){
-                [self.realTimeUpdate onMessageDelivered:message];
+            if (existingMessage) {
+                existingMessage.status = [NSNumber numberWithInt:DELIVERED];
+                [self.realTimeUpdate onMessageDelivered:existingMessage];
             }
         }
         else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELETE_MESSAGE)]])
@@ -698,19 +705,31 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     return NO;
 }
 
--(BOOL) messageReadStatusPublishWithPairedMessageKey:(NSString *) pairedMessageKey {
+-(BOOL) messageReadStatusPublishWithMessageKey:(NSString *) messageKey {
 
-    if (!pairedMessageKey) {
+    if (!messageKey) {
         return NO;
     }
 
-    NSString * dataString = [NSString stringWithFormat:@"%@,%@,%i",
-                             [ALUserDefaultsHandler getUserId],
-                             pairedMessageKey,
-                             READ];
+    ALMessageDBService * messageDBService = [[ALMessageDBService alloc] init];
+    ALMessage *message = [messageDBService getMessageByKey:messageKey];
 
-    return [self publishCustomData:dataString
-                     withTopicName:AL_MESSAGE_STATUS_TOPIC];
+    if (!message) {
+        return NO;
+    }
+
+    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i",
+                            [ALUserDefaultsHandler getUserId],
+                            message.pairedMessageKey,
+                            READ];
+
+    BOOL isReadStatusPublished = [self publishCustomData:dataString
+                                           withTopicName:AL_MESSAGE_STATUS_TOPIC];
+
+    if (isReadStatusPublished) {
+        [ALUserService markConversationReadInDataBaseWithMessage:message];
+    }
+    return isReadStatusPublished;
 }
 
 -(void) unsubscribeToConversation {

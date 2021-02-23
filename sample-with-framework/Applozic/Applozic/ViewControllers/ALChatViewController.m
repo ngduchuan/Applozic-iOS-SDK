@@ -4472,7 +4472,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (self.comingFromBackground) {
         BOOL isReadUpdateFailedToPublish = NO;
         for (ALMessage *message in sortedMessageArray) {
-            BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithPairedMessageKey:message.pairedMessageKey];
+            BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithMessageKey:message.key];
             if (!isReadStatusPublished) {
                 isReadUpdateFailedToPublish = YES;
             }
