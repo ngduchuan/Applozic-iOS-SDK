@@ -4458,19 +4458,28 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     NSArray * theFilteredArray = [messageList filteredArrayUsingPredicate:compoundPredicate];
     NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
     NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
-    NSArray *sortedArray = [theFilteredArray sortedArrayUsingDescriptors:descriptors];
-    if(sortedArray.count==0){
+    NSArray *sortedMessageArray = [theFilteredArray sortedArrayUsingDescriptors:descriptors];
+    if(sortedMessageArray.count==0){
         ALSLog(ALLoggerSeverityInfo, @"No message for contact .....%@",self.contactIds);
         return;
     }
     [self updateConversationProfileDetails];
 
-    [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedArray]];
+    [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedMessageArray]];
     [self.mTableView reloadData];
     [self scrollTableViewToBottomWithAnimation:YES];
 
     if (self.comingFromBackground) {
-        [self markConversationRead];
+        BOOL isReadUpdateFailedToPublish = NO;
+        for (ALMessage *message in sortedMessageArray) {
+            BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithMessageKey:message.key];
+            if (!isReadStatusPublished) {
+                isReadUpdateFailedToPublish = YES;
+            }
+        }
+        if (isReadUpdateFailedToPublish) {
+            [self markConversationRead];
+        }
     }
 }
 

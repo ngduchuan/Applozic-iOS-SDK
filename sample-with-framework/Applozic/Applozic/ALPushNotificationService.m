@@ -158,13 +158,20 @@
             NSString * pairedKey = deliveryParts[0];
             NSString * contactId = deliveryParts.count>1 ? deliveryParts[1]:nil;
 
+            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
+            ALMessage *existingMessage = [messageDataBaseService getMessageByKey:pairedKey];
+            // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
+            if (existingMessage &&
+                (existingMessage.status.intValue == DELIVERED_AND_READ)) {
+                return true;
+            }
+
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_DELIVERED_READ" object:deliveryParts[0] userInfo:dictionary];
             if(self.realTimeUpdate){
-                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
-                ALMessage* message = [messageDbService getMessageByKey:pairedKey];
-                if(message){
-                    [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
+                if (existingMessage) {
+                    existingMessage.status = [NSNumber numberWithInt:DELIVERED];
+                    [self.realTimeUpdate onMessageDeliveredAndRead:existingMessage withUserId:contactId];
                 }
             }
         }
