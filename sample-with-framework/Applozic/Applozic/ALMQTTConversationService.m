@@ -22,12 +22,14 @@
 #import "ALPushNotificationService.h"
 #import "ALRegisterUserClientService.h"
 #import "ALAuthService.h"
+#import "ALDataNetworkConnection.h"
 
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGroupMuteNotification";
 NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUserDidChangeDeactivateNotification";
+NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
 @implementation ALMQTTConversationService
 
@@ -669,6 +671,46 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
 
     NSData * data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
     [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
+}
+
+-(BOOL) publishCustomData:(NSString *)dataString
+            withTopicName:(NSString *) topic {
+    @try {
+        if (!self.session ||
+            !(self.session.status == MQTTSessionStatusConnected) ||
+            ![ALDataNetworkConnection checkDataNetworkAvailable] ||
+            !dataString ||
+            !topic) {
+            return NO;
+        }
+
+        ALSLog(ALLoggerSeverityInfo, @"Sending custom data to topic : %@", topic);
+
+        NSData * data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.session publishData:data
+                          onTopic:topic
+                           retain:NO
+                              qos:MQTTQosLevelAtMostOnce];
+        return YES;
+    }  @catch (NSException * exp) {
+        ALSLog(ALLoggerSeverityError, @"Exception in publishCustomData :: %@", exp.description);
+    }
+    return NO;
+}
+
+-(BOOL) messageReadStatusPublishWithPairedMessageKey:(NSString *) pairedMessageKey {
+
+    if (!pairedMessageKey) {
+        return NO;
+    }
+
+    NSString * dataString = [NSString stringWithFormat:@"%@,%@,%i",
+                             [ALUserDefaultsHandler getUserId],
+                             pairedMessageKey,
+                             READ];
+
+    return [self publishCustomData:dataString
+                     withTopicName:AL_MESSAGE_STATUS_TOPIC];
 }
 
 -(void) unsubscribeToConversation {
