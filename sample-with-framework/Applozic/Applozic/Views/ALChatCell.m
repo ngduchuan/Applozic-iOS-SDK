@@ -8,7 +8,7 @@
 
 #import "ALChatCell.h"
 #import "UIImageView+WebCache.h"
-#import "UIImage+Utility.h"
+#import "ALUIImage+Utility.h"
 #import "ALColorUtility.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
@@ -93,7 +93,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.mMessageLabel = [[ALHyperLabel alloc] init];
         self.mMessageLabel.numberOfLines = 0;
 
-        NSString *fontName = [ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_FONTNAME];
+        NSString *fontName = [ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_FONTNAME];
 
         if (!fontName) {
             fontName = DEFAULT_FONT_NAME;

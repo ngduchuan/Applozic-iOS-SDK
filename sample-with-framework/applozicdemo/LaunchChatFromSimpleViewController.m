@@ -15,6 +15,7 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <Applozic/Applozic-Swift.h>
 #import <ApplozicCore/ApplozicCore.h>
+#import <Applozic/ALUIUtilityClass.h>
 
 @interface LaunchChatFromSimpleViewController ()<MFMailComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *sendLogsButton;
@@ -136,7 +137,7 @@
     else
     {
 
-        [ALUtilityClass showAlertMessage:@"Failure" andTitle:@"Your device doesn't support the composer sheet"];
+        [ALUIUtilityClass showAlertMessage:@"Failure" andTitle:@"Your device doesn't support the composer sheet"];
 
     }
 }

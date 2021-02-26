@@ -390,7 +390,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 -(void)setVideoThumbnail:(NSString *)videoFilePATH
 {
-    [self.mImageView setImage:[ALUtilityClass setVideoThumbnail:videoFilePATH]];
+    [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:videoFilePATH]];
 }
 
 -(void) downloadRetryAction

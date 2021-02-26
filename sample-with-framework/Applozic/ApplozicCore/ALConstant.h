@@ -88,3 +88,13 @@ typedef enum {
     AL_ENTERPRISE = 4,
     AL_SUSPENDED = 6
 } AL_PRICING_PACKAGE;
+
+/**************************************************
+ AV_CALL_CONTENT_TWO = 102    (NOTIFICATION ONLY)
+ AV_CALL_CONTENT_THREE = 103  (SHOW MESG CONTENT)
+ **************************************************/
+typedef enum
+{
+    AV_CALL_CONTENT_TWO = 102,
+    AV_CALL_CONTENT_THREE = 103
+} CALL_CONTENT_TYPE;

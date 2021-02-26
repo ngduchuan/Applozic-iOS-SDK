@@ -17,7 +17,6 @@
 #import "ALContactService.h"
 #import "ALMessageClientService.h"
 #import "ALApplozicSettings.h"
-#import "ALAudioVideoBaseVC.h"
 #import "ALChannelService.h"
 #import "ALChannel.h"
 #import "ALUserService.h"

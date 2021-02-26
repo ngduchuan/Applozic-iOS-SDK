@@ -83,7 +83,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import <ApplozicCore/ALUtilityClass.h>
 #import <ApplozicCore/ALResponseHandler.h>
 #import <ApplozicCore/ALConnectionQueueHandler.h>
-#import <ApplozicCore/UIImage+Utility.h>
 #import <ApplozicCore/ALDataNetworkConnection.h>
 #import <ApplozicCore/ALAppLocalNotifications.h>
 #import <ApplozicCore/ALMQTTConversationService.h>
@@ -101,16 +100,13 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import <ApplozicCore/MQTTSSLSecurityPolicyEncoder.h>
 #import <ApplozicCore/ApplozicClient.h>
 #import <ApplozicCore/ALRealTimeUpdate.h>
-#import <ApplozicCore/ALAudioSession.h>
 #import <ApplozicCore/ALAuthService.h>
 #import <ApplozicCore/ALAttachmentService.h>
 #import <ApplozicCore/ALAuthClientService.h>
 #import <ApplozicCore/ALDownloadTask.h>
 #import <ApplozicCore/ALHTTPManager.h>
-#import <ApplozicCore/ALMediaPlayer.h>
 #import <ApplozicCore/ALUploadTask.h>
 #import <ApplozicCore/MQTTProperties.h>
 #import <ApplozicCore/NSData+AES.h>
 #import <ApplozicCore/SearchResultCache.h>
 #import <ApplozicCore/MQTTStrict.h>
-#import <ApplozicCore/UIImage+animatedGIF.h>

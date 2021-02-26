@@ -5,7 +5,7 @@
 //
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
-#import "UIView+Toast.h"
+#import "ALUIView+Toast.h"
 #import <AVKit/AVKit.h>
 #import "ALChatViewController.h"
 #import "ALChatCell.h"
@@ -46,6 +46,7 @@
 #import "ALMyDeletedMessageCell.h"
 #import "ALFriendDeletedMessage.h"
 #import "ALUIUtilityClass.h"
+#import "ALUIImage+Utility.h"
 
 static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
@@ -302,7 +303,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.mqttObject.mqttConversationDelegate = self;
         [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
             if (!connected) {
-                [ALUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
+                [ALUIUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
                     if (clicked){
                         [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
                             if (!connected) {
@@ -893,7 +894,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                                  NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
                                  preferredStyle:UIAlertControllerStyleAlert];
 
-    [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
 
     UIAlertAction* ok = [UIAlertAction
                          actionWithTitle:
@@ -930,7 +931,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
                 [alertText stringByAppendingString:unblokInfo];
 
-                [ALUtilityClass showAlertMessage:alertText andTitle:   NSLocalizedStringWithDefaultValue(@"userUnBlock", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"USER UNBLOCK", @"")];
+                [ALUIUtilityClass showAlertMessage:alertText andTitle:   NSLocalizedStringWithDefaultValue(@"userUnBlock", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"USER UNBLOCK", @"")];
             }
 
         }];
@@ -1468,7 +1469,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALSLog(ALLoggerSeverityInfo, @"Google Map Length = ZERO");
     NSString * alertMsg = @"Unable to fetch current location. Try Again!!!";
-    [ALUtilityClass showAlertMessage:alertMsg andTitle:@"Current Location"];
+    [ALUIUtilityClass showAlertMessage:alertMsg andTitle:@"Current Location"];
 }
 
 //==============================================================================================================================================
@@ -1535,13 +1536,13 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (!self.sendMessageTextView.text.length || [self.sendMessageTextView.text isEqualToString:self.placeHolderTxt])
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"forgetToTypeMessageInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Did you forget to type the message", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"emptyText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Empty", @"")];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"forgetToTypeMessageInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Did you forget to type the message", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"emptyText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Empty", @"")];
         return;
     }
 
     if([ALApplozicSettings getMessageAbuseMode] && [self checkRestrictWords:self.sendMessageTextView.text])
     {
-        [ALUtilityClass showAlertMessage:[ALApplozicSettings getAbuseWarningText] andTitle:NSLocalizedStringWithDefaultValue(@"warningText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"WARNING", @"")];
+        [ALUIUtilityClass showAlertMessage:[ALApplozicSettings getAbuseWarningText] andTitle:NSLocalizedStringWithDefaultValue(@"warningText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"WARNING", @"")];
         return;
     }
 
@@ -1554,7 +1555,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             if (![ALDataNetworkConnection checkDataNetworkAvailable])
             {
-                [ALUtilityClass showAlertMessage:nil andTitle:NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet Connectivity", @"")];
+                [ALUIUtilityClass showAlertMessage:@"" andTitle:NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet Connectivity", @"")];
 
                 return;
             }
@@ -2579,7 +2580,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                                                                     [NSBundle mainBundle],
                                                                     @"Message has been reported", @"");
         }
-        [ALUtilityClass showAlertMessage:@"" andTitle:messageReportedInfo];
+        [ALUIUtilityClass showAlertMessage:@"" andTitle:messageReportedInfo];
     }];
 }
 
@@ -2673,7 +2674,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)showImagePreviewWithFilePath:(NSString *)filePath
 {
-    UIImage *image =   [ALUtilityClass getImageFromFilePath:filePath];
+    UIImage *image = [ALUIUtilityClass getImageFromFilePath:filePath];
     if(image){
         ALPreviewPhotoViewController * contrller = [[ALPreviewPhotoViewController alloc] initWithImage:image pathExtension:filePath.pathExtension];
         [self.navigationController pushViewController:contrller animated:YES];
@@ -2708,7 +2709,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage * clickImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-    UIImage * image = [ALUtilityClass getNormalizedImage:clickImage];
+    UIImage * image = [ALUIUtilityClass getNormalizedImage:clickImage];
     image = [image getCompressedImageLessThanSize:5];
 
     if(image)
@@ -2896,7 +2897,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
 
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     if(![ALApplozicSettings isCameraOptionHidden]){
@@ -2957,7 +2958,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
                     NSString * alertText = [NSString stringWithFormat:blockInfo,[self.alContact getDisplayName]];
 
-                    [ALUtilityClass showAlertMessage:alertText andTitle:NSLocalizedStringWithDefaultValue(@"userBlock", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"USER BLOCK", @"")  ];
+                    [ALUIUtilityClass showAlertMessage:alertText andTitle:NSLocalizedStringWithDefaultValue(@"userBlock", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"USER BLOCK", @"")  ];
                 }
             }];
         }]];
@@ -3061,14 +3062,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 }
                 else
                 {
-                    [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
+                    [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
                 }
             });
         }];
     }
     else
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
     }
 }
 
@@ -3093,14 +3094,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 }
                 else
                 {
-                    [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
+                    [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
                 }
             });
         }];
     }
     else
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OOPS !!!", @"")];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OOPS !!!", @"")];
     }
 }
 
@@ -3121,7 +3122,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             }
             else
             {
-                [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForMicroPhone", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable MicroPhone Permission", @"")  andViewController:self];
+                [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForMicroPhone", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable MicroPhone Permission", @"")  andViewController:self];
             }
         });
     }];
@@ -3143,7 +3144,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             }
             else
             {
-                [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Contacts Permission", @"")  andViewController:self];
+                [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Contacts Permission", @"")  andViewController:self];
             }
         });
     }];
@@ -3197,7 +3198,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         if(error)
         {
-            [ALUtilityClass displayToastWithMessage:@"Delete failed"];
+            [ALUIUtilityClass displayToastWithMessage:@"Delete failed"];
             return;
         }
 
@@ -4711,7 +4712,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
                 theUrl = [NSURL fileURLWithPath:filePath];
             }
 
-            globalThumbnail = [ALUtilityClass subProcessThumbnail:theUrl];
+            globalThumbnail = [ALUIUtilityClass subProcessThumbnail:theUrl];
 
             if([message.message length] != 0){
                 self.replyMessageText.text = message.message;

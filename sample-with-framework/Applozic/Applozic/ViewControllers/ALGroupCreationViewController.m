@@ -13,6 +13,8 @@
 #import "ALNotificationView.h"
 #import "UIImageView+WebCache.h"
 #import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
+#import "ALUIImage+Utility.h"
 
 static const int GROUP_CREATION = 1;
 static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
@@ -119,7 +121,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
                                               message: NSLocalizedStringWithDefaultValue(@"groupNameEmptyAlertMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please give the group name.", @"")
                                               preferredStyle:UIAlertControllerStyleAlert];
         
-        [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+        [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
         
         UIAlertAction *okAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK", @"")                                   style:UIAlertActionStyleDefault
@@ -158,7 +160,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
 {
     if(!self.groupNameInput.text.length)
     {
-        [ALUtilityClass showAlertMessage:
+        [ALUIUtilityClass showAlertMessage:
          NSLocalizedStringWithDefaultValue(@"youHaveNotUpdatedAnything", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You haven't update anything", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"wait", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Wait!!!", @"")];
         return;
 
@@ -219,7 +221,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
 {
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     
@@ -272,14 +274,14 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
                 else
                 {
                     
-                    [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
+                    [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
                 }
             });
         }];
     }
     else
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OPPS !!", @"")];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OPPS !!", @"")];
         
         
     }
@@ -298,7 +300,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     UIImage * rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
-    UIImage * normalizedImage = [ALUtilityClass getNormalizedImage:rawImage];
+    UIImage * normalizedImage = [ALUIUtilityClass getNormalizedImage:rawImage];
     [self.groupIconView setImage:normalizedImage];
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -319,7 +321,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
                                                                     message:NSLocalizedStringWithDefaultValue(@"areYouSureForUploadText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure to upload?", @"")
                                                              preferredStyle:UIAlertControllerStyleAlert];
     
-    [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
         [self.groupIconView setImage:[UIImage imageNamed:DEFAULT_GROUP_ICON_NAME]];

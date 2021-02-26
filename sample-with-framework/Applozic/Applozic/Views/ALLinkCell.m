@@ -14,6 +14,7 @@
 #import "ALChatViewController.h"
 #import "UIImage+MultiFormat.h"
 #import "ALUIUtilityClass.h"
+#import "ALUIImage+animatedGIF.h"
 
 // Constants
 

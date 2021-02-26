@@ -7,7 +7,6 @@
 
 #import "ALMessage.h"
 #import "ALUtilityClass.h"
-#import "ALAudioVideoBaseVC.h"
 #import "ALChannel.h"
 #import "ALContact.h"
 #import "ALChannelService.h"

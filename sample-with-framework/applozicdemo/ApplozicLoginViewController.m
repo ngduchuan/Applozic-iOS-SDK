@@ -12,6 +12,7 @@
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALChatManager.h"
 #import "LaunchChatFromSimpleViewController.h"
+#import <Applozic/ALUIUtilityClass.h>
 
 @interface ApplozicLoginViewController ()
 
@@ -158,13 +159,13 @@
     
     if (self.userIdField.text.length == 0)
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"userIdEmpty", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"UserId can't be blank frnce", @"")andTitle: NSLocalizedStringWithDefaultValue(@"error", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Error", @"")];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"userIdEmpty", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"UserId can't be blank frnce", @"")andTitle: NSLocalizedStringWithDefaultValue(@"error", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Error", @"")];
         return;
     }
     
     if (self.passwordField.text.length == 0)
     {
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"passwordEmpty", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Password can't be blank ", @"")
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"passwordEmpty", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Password can't be blank ", @"")
                                 andTitle:NSLocalizedStringWithDefaultValue(@"error", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Error", @"")];
         return;
     }

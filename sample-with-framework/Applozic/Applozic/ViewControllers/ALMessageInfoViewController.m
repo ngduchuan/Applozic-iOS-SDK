@@ -54,7 +54,7 @@
 {
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
     }
@@ -345,7 +345,7 @@
         {
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
-            [imageView setImage: [ALUtilityClass setVideoThumbnail:filePath]];
+            [imageView setImage: [ALUIUtilityClass setVideoThumbnail:filePath]];
             
             
         }

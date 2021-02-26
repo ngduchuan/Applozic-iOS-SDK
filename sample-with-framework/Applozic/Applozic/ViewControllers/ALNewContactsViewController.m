@@ -201,7 +201,7 @@ static const int SHOW_GROUP = 102;
                                                                                                                size:18]
                                                                            }];
         
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
         
@@ -1107,7 +1107,7 @@ static const int SHOW_GROUP = 102;
                                               message:NSLocalizedStringWithDefaultValue(@"selectMembersText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please select minimum two members" , @"")
                                               preferredStyle:UIAlertControllerStyleAlert];
         
-        [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+        [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
         
         UIAlertAction *okAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK", @"")

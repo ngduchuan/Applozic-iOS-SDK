@@ -8,6 +8,7 @@
 
 #import "ALVCardClass.h"
 #import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 @implementation ALVCardClass
 
@@ -116,7 +117,7 @@
                                         actionWithTitle:settingTitle
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction * action) {
-                                            [ALUtilityClass openApplicationSettings];
+                                            [ALUIUtilityClass openApplicationSettings];
 
                                         }];
 
@@ -139,7 +140,7 @@
     NSString * saveContactMessage = NSLocalizedStringWithDefaultValue(@"ContactSaveMessage", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Contact Saved Successfully", @"");
     NSString * contactTitle = NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Contact", @"");
 
-    [ALUtilityClass showAlertMessage:saveContactMessage andTitle:contactTitle];
+    [ALUIUtilityClass showAlertMessage:saveContactMessage andTitle:contactTitle];
     
 }
 

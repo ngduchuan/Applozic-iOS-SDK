@@ -1,6 +1,6 @@
 /***************************************************************************
- 
-UIView+Toast.h
+
+ALUIView+Toast.h
 Toast
 
 Copyright (c) 2014 Charles Scalesse.

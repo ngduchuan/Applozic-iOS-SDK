@@ -6,7 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "UIImage+Utility.h"
 
 @interface ALRequestHandler : NSObject
 

@@ -82,7 +82,7 @@
 {
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
     
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     
@@ -212,7 +212,7 @@
     {
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
     }
 }
 

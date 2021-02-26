@@ -61,8 +61,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.sendMessageTextView.backgroundColor = [ALApplozicSettings getMsgTextViewBGColor];
     
     
-    if ([ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR])
-        self.mTableView.backgroundColor = (UIColor *)[ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR];
+    if ([ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR])
+        self.mTableView.backgroundColor = (UIColor *)[ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR];
     else
         self.mTableView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     
@@ -240,7 +240,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
        
     }
@@ -262,7 +262,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)checkPricingPackageAndShowMessage
 {
     if([applicationInfo isChatSuspended]) {
-        [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
+        [ALUIUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
     }
     
 }

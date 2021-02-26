@@ -5,7 +5,7 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "UIView+Toast.h"
+#import "ALUIView+Toast.h"
 #import "ALMessagesViewController.h"
 #import "UIImageView+WebCache.h"
 #import "ALColorUtility.h"
@@ -172,7 +172,7 @@ static int const MQTT_MAX_RETRY = 3;
     [super viewWillAppear:animated];
     [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
         if (!connected) {
-            [ALUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
+            [ALUIUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
                 if (clicked){
                     [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
                         if (!connected) {
@@ -189,7 +189,7 @@ static int const MQTT_MAX_RETRY = 3;
         [self dropShadowInNavigationBar];
     }
 
-    [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+    [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
 
     if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
@@ -907,7 +907,7 @@ static int const MQTT_MAX_RETRY = 3;
             if(error)
             {
                 ALSLog(ALLoggerSeverityError, @"DELETE_FAILED_CONVERSATION_ERROR_DESCRIPTION :: %@", error.description);
-                [ALUtilityClass displayToastWithMessage:@"Delete failed"];
+                [ALUIUtilityClass displayToastWithMessage:@"Delete failed"];
                 return;
             }
             NSArray * theFilteredArray;

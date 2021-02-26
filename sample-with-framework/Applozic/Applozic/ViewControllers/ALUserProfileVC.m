@@ -14,6 +14,7 @@
 #import "ALMessagesViewController.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
+#import "ALUIImage+Utility.h"
 
 @interface ALUserProfileVC ()
 
@@ -175,7 +176,7 @@
     
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    [navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+    [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
 }
 
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -358,13 +359,13 @@
         if(!error)
         {
             
-            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"notificationStatusUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notification setting updated!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
+            [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"notificationStatusUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notification setting updated!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [ALUserDefaultsHandler setNotificationMode:modeValue];
             [self.notificationToggle setOn:flag animated:YES];
         }
         else
         {
-            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"unableToUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to update!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
+            [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"unableToUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to update!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [self.notificationToggle setOn:(!flag) animated:YES];
         }
         [self.activityIndicator stopAnimating];
@@ -376,7 +377,7 @@
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     
-    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     
@@ -416,7 +417,7 @@
                 }
                 else
                 {
-                    [ALUtilityClass permissionPopUpWithMessage:
+                    [ALUIUtilityClass permissionPopUpWithMessage:
                      NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"")
                                              andViewController:self];
                 }
@@ -426,7 +427,7 @@
     else
     {
         
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
+        [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
     }
 }
 
@@ -438,7 +439,7 @@
 {
     
     UIImage * rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
-    UIImage * normalImage = [ALUtilityClass getNormalizedImage:rawImage];
+    UIImage * normalImage = [ALUIUtilityClass getNormalizedImage:rawImage];
     [self.profileImage setImage:normalImage];
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -456,7 +457,7 @@
     UIAlertController * alert = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation" , @"") message:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?" , @"")
                                                              preferredStyle:UIAlertControllerStyleAlert];
     
-    [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 
@@ -496,7 +497,7 @@
                         {
                             ALSLog(ALLoggerSeverityInfo, @"IMAGE_UPDATED_SUCCESSFULLY");
 
-                            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert" , @"") ];
+                            [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert" , @"") ];
                             self->myContact.contactImageUrl = self->imageLinkFromServer;
                             [self->alContactService updateContact:self->myContact];
 
@@ -536,7 +537,7 @@
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleAlert];
 
-    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
 
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = NSLocalizedStringWithDefaultValue(@"alertUserNameTextFieldPlaceHolder",
@@ -595,7 +596,7 @@
                                           NSLocalizedStringWithDefaultValue(@"maxCharForStatus", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"(Max 256 characters)" , @"")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
-    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         

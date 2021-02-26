@@ -17,6 +17,7 @@
 #import "ALColorUtility.h"
 #import "KAProgressLabel.h"
 #import "ALMediaBaseCell.h"
+#import "ALMediaPlayer.h"
 
 @interface ALAudioCell : ALMediaBaseCell <ALALMediaPlayerDelegate>
 

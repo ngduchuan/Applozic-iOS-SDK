@@ -15,17 +15,11 @@
 
 + (NSString *)generateJsonStringFromDictionary:(NSDictionary *)dictionary;
 
-+(UIColor*)colorWithHexString:(NSString*)hex;
-
-+(id)parsedALChatCostomizationPlistForKey:(NSString *)key;
-
 + (BOOL)isToday:(NSDate *)todayDate;
 
 + (NSString*) fileMIMEType:(NSString*) filePath;
 
 +(CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
-
-+(void)displayToastWithMessage:(NSString *)toastMessage;
 
 +(NSString*)getLocationUrl:(ALMessage*)almessage;
 
@@ -33,28 +27,16 @@
 
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler;
 
-+(UIView *)setStatusBarStyle;
-
-+(NSString *)getNameAlphabets:(NSString *)actualName;
 +(NSString *)getFileNameWithCurrentTimeStamp;
 
 @property (nonatomic, strong) NSString *msgdate;
 @property (nonatomic, strong) NSString *msgtime;
 
 -(void)getExactDate:(NSNumber *)dateValue;
-+(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
-+(UIImage *)subProcessThumbnail:(NSURL *)url;
-+(void)subVideoImage:(NSURL *)url  withCompletion:(void (^)(UIImage *image)) completion;
-+(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title;
-+(UIImage *)getNormalizedImage:(UIImage *)rawImage;
 +(BOOL)isThisDebugBuild;
-+(void)openApplicationSettings;
-+(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController;
-+(void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController;
-+(void)movementAnimation:(UIButton *)button andHide:(BOOL)flag;
+
 +(NSString *)getDevieUUID;
 +(BOOL)checkDeviceKeyString:(NSString *)string;
-+(void)setImageFromURL:(NSString *)urlString andImageView:(UIImageView *)imageView;
 +(NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
 +(NSString *)getFileExtensionWithFileName:(NSString *)fileName;
 +(NSURL *)getDocumentDirectory;
@@ -62,14 +44,6 @@
 +(NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *) path;
 +(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path;
 +(NSData *)compressImage:(NSData *) data;
-+(UIImage *)getImageFromFilePath:(NSString *)filePath;
 +(NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
-
-+(void)showRetryUIAlertControllerWithButtonClickCompletionHandler:(void (^)(BOOL clicked)) completion;
-
-+(UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText;
-
-+(void)dismissAlertController:(UIAlertController *)alertController
-               withCompletion:(void (^)(BOOL dismissed)) completion;
 
 @end

@@ -57,3 +57,8 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALTappableView.h>
 #import <ApplozicCore/ApplozicCore.h>
 #import <Applozic/ALPushNotificationHandler.h>
+#import <Applozic/ALUIUtilityClass.h>
+#import <Applozic/ALUIImage+animatedGIF.h>
+#import <Applozic/ALMediaPlayer.h>
+#import <Applozic/ALUIImage+Utility.h>
+#import <Applozic/ALAudioSession.h>

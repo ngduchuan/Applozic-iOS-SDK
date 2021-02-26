@@ -6,7 +6,7 @@
 //
 
 
-#import "UIView+Toast.h"
+#import "ALUIView+Toast.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 
