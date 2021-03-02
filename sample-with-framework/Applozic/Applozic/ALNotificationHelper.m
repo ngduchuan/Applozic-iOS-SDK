@@ -20,8 +20,7 @@
             || [topViewControllerName hasPrefix:@"Applozic"]
             || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
             || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]
-            || [topViewControllerName isEqualToString:@"PHPickerViewController"]
-            || [topViewControllerName isEqualToString:@"UIAlertController"]);
+            || [topViewControllerName isEqualToString:@"PHPickerViewController"]);
 }
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {

@@ -73,7 +73,6 @@
     
     NSLog(@"RECEIVED_NOTIFICATION :: %@", dictionary);
     ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
-    //    [pushNotificationService processPushNotification:dictionary updateUI:[NSNumber numberWithInt:APP_STATE_INACTIVE]];
     [pushNotificationService notificationArrivedToApplication:application withDictionary:dictionary];
 }
 
@@ -81,7 +80,6 @@
 
     NSLog(@"RECEIVED_NOTIFICATION_WITH_COMPLETION :: %@", userInfo);
     ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
-    //    [pushNotificationService processPushNotification:userInfo updateUI:[NSNumber numberWithInt:APP_STATE_BACKGROUND]];
     [pushNotificationService notificationArrivedToApplication:application withDictionary:userInfo];
     completionHandler(UIBackgroundFetchResultNewData);
 }

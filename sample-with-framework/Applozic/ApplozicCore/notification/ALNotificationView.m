@@ -56,7 +56,7 @@
     {
         return NSLocalizedStringWithDefaultValue(@"shareadAudioText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared an Audio", @"");
     }
-    else if (alMessage.contentType == AV_CALL_CONTENT_THREE)
+    else if (alMessage.contentType == AV_CALL_MESSAGE)
     {
         return [alMessage getVOIPMessageText];
         

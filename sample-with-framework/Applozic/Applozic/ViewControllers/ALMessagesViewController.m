@@ -528,7 +528,7 @@ static int const MQTT_MAX_RETRY = 3;
             contactCell = [self getCell:msg.contactIds];
         }
         
-        if (msg.contentType == AV_CALL_CONTENT_TWO)
+        if (msg.contentType == AV_CALL_HIDDEN_NOTIFICATION)
         {
 //            ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
 //            [voipHandler handleAVMsg:msg andViewController:self];

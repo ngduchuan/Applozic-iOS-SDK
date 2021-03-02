@@ -95,6 +95,6 @@ typedef enum {
  **************************************************/
 typedef enum
 {
-    AV_CALL_CONTENT_TWO = 102,
-    AV_CALL_CONTENT_THREE = 103
+    AV_CALL_HIDDEN_NOTIFICATION = 102,
+    AV_CALL_MESSAGE = 103
 } CALL_CONTENT_TYPE;

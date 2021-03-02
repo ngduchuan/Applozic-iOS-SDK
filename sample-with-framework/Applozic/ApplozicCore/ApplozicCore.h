@@ -90,7 +90,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import <ApplozicCore/TSMessage.h>
 #import <ApplozicCore/TSMessageView.h>
 #import <ApplozicCore/NSString+Encode.h>
-#import <ApplozicCore/HexColors.h>
 #import <ApplozicCore/ALApplicationInfo.h>
 #import <ApplozicCore/MQTTDecoder.h>
 #import <ApplozicCore/MQTTInMemoryPersistence.h>

@@ -211,7 +211,7 @@
     {
         heightOfCell = [self getImageCellHeight:alMessage andCellFrame:cellFrame] ;
     }
-    else if (alMessage.contentType == AV_CALL_CONTENT_THREE)
+    else if (alMessage.contentType == AV_CALL_MESSAGE)
     {
         return [self getVOIPCellHeight:alMessage andCellFrame:cellFrame];
     }

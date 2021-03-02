@@ -8,7 +8,6 @@
 
 #import "ALChatManager.h"
 #import <Applozic/Applozic.h>
-#import <ApplozicCore/ApplozicCore.h>
 
 @implementation ALChatManager
 
@@ -445,7 +444,7 @@
 
     //****************** SHOW/HIDE RECEIVER USER PROFILE ******************/
     [ALApplozicSettings setReceiverUserProfileOption:NO];
-    
+
     /****************************************************************************************************************/
     
     

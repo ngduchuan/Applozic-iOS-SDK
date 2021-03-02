@@ -236,13 +236,13 @@ static NSString * const AL_TRUE = @"true";
 
 -(BOOL)isVOIPNotificationMessage
 {
-    return (self.contentType == AV_CALL_CONTENT_TWO);
+    return (self.contentType == AV_CALL_HIDDEN_NOTIFICATION);
 }
 
 
 -(BOOL)isToIgnoreUnreadCountIncrement
 {
-    return (self.contentType == AV_CALL_CONTENT_THREE);
+    return (self.contentType == AV_CALL_MESSAGE);
 }
 
 -(BOOL)isResetUnreadCountMessage {

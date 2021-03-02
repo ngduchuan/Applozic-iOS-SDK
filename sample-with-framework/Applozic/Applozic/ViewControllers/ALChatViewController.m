@@ -1809,7 +1809,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         return theCell;
     }
 
-    else if (theMessage.contentType == AV_CALL_CONTENT_THREE)
+    else if (theMessage.contentType == AV_CALL_MESSAGE)
     {
         ALVOIPCell * theCell = (ALVOIPCell *)[tableView dequeueReusableCellWithIdentifier:@"VOIPCell"];
         theCell.colourDictionary = self.alphabetiColorCodesDictionary;
@@ -4392,7 +4392,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 -(void)addMessageToList:(NSMutableArray  *)messageList
 {
     NSCompoundPredicate *compoundPredicate;
-    NSPredicate * contentPredicate = [NSPredicate predicateWithFormat:@"contentType != %i", AV_CALL_CONTENT_TWO];
+    NSPredicate * contentPredicate = [NSPredicate predicateWithFormat:@"contentType != %i", AV_CALL_HIDDEN_NOTIFICATION];
 
     if(self.isGroup)
     {
