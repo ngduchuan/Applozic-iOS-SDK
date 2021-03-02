@@ -14,7 +14,6 @@
 #import "UIImageView+WebCache.h"
 #import "ALGroupCreationViewController.h"
 #import "ALGroupDetailViewController.h"
-#import "ALNotificationView.h"
 #import "ALSubViewController.h"
 #import "ALNotificationHelper.h"
 #import "ALUIUtilityClass.h"

@@ -30,7 +30,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALContactMessageCell.h>
 #import <Applozic/ALMyContactMessageCell.h>
 #import <Applozic/ALImagePickerHandler.h>
-#import <Applozic/ALNotificationView.h>
 #import <Applozic/ALImageCell.h>
 #import <Applozic/ALBaseViewController.h>
 #import <Applozic/ALCollectionReusableView.h>
@@ -60,5 +59,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALUIUtilityClass.h>
 #import <Applozic/ALUIImage+animatedGIF.h>
 #import <Applozic/ALMediaPlayer.h>
-#import <Applozic/ALUIImage+Utility.h>
 #import <Applozic/ALAudioSession.h>

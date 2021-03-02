@@ -8,7 +8,6 @@
 
 #import "ALMessageInfoViewController.h"
 #import "UIImageView+WebCache.h"
-#import "ALNotificationView.h"
 #import "ALUIUtilityClass.h"
 
 @interface ALMessageInfoViewController ()

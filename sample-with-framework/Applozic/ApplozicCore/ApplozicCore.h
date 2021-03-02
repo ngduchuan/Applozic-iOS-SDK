@@ -110,3 +110,5 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import <ApplozicCore/NSData+AES.h>
 #import <ApplozicCore/SearchResultCache.h>
 #import <ApplozicCore/MQTTStrict.h>
+#import <ApplozicCore/ALNotificationView.h>
+#import <ApplozicCore/ALUIImage+Utility.h>

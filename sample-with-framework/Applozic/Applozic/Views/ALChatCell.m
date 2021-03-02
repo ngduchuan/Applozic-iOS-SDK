@@ -8,7 +8,6 @@
 
 #import "ALChatCell.h"
 #import "UIImageView+WebCache.h"
-#import "ALUIImage+Utility.h"
 #import "ALColorUtility.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"

@@ -22,8 +22,6 @@
 
 -(instancetype)initWithAlMessage:(ALMessage*)alMessage  withAlertMessage: (NSString *) alertMessage;
 
--(void)nativeNotification:(id)delegate;
-
 -(void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler;
 
 -(void)showGroupLeftMessage;
@@ -33,8 +31,6 @@
 @property (retain, nonatomic) ALMessage * alMessageObject;
 
 -(void)noDataConnectionNotificationView;
-
--(void)updateChatScreen:(UIViewController*)delegate;
 
 +(void)showNotification:(NSString *)message;
 +(void)showPromotionalNotifications:(NSString *)text;

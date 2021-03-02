@@ -157,8 +157,6 @@
 		18471CE724E2E39500EB7099 /* ALLoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
-		1859ED1225E9186D00F1F69B /* ALUIImage+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */; };
-		1859ED1525E9189A00F1F69B /* ALUIImage+Utility.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF025DCF85800F6EDE3 /* ALUIImage+Utility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1859ED1F25E919BD00F1F69B /* ALUIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873618425DD51CA00C02F5D /* ALUIImage+animatedGIF.m */; };
 		1859ED2225E919BF00F1F69B /* ALUIImage+animatedGIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 1873618325DD51C900C02F5D /* ALUIImage+animatedGIF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1859ED3325E923E900F1F69B /* ALMediaPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0F09025DCF8F300F6EDE3 /* ALMediaPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -347,6 +345,10 @@
 		1896EF3A25DBEEF10038EBFF /* ALMessageList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EF2425DBEEF10038EBFF /* ALMessageList.m */; };
 		1896EF3B25DBEEF10038EBFF /* ALMessageServiceWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EF2525DBEEF10038EBFF /* ALMessageServiceWrapper.m */; };
 		1896EF3C25DBEEF10038EBFF /* ALSendMessageResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EF2625DBEEF10038EBFF /* ALSendMessageResponse.m */; };
+		18A2587825ED3B1800EC0F11 /* ALNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */; };
+		18A2587B25ED3B1D00EC0F11 /* ALNotificationView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A2588625ED702A00EC0F11 /* ALUIImage+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */; };
+		18A2588925ED702E00EC0F11 /* ALUIImage+Utility.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF025DCF85800F6EDE3 /* ALUIImage+Utility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18A2BA2020C44DB500AD47A2 /* ALTemplateMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA1F20C44DB500AD47A2 /* ALTemplateMessageCell.swift */; };
 		18A2BA2220C44E5400AD47A2 /* ALTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2120C44E5400AD47A2 /* ALTemplateMessagesView.swift */; };
 		18A2BA2620C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A2BA2420C44E9200AD47A2 /* ALTemplateMessagesViewModel.swift */; };
@@ -494,8 +496,6 @@
 		6D6DF1631BC5364C00EBA00F /* ALContactCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF0B61BC5364C00EBA00F /* ALContactCell.m */; };
 		6D6DF1641BC5364C00EBA00F /* ALNewContactCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0B71BC5364C00EBA00F /* ALNewContactCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D6DF1651BC5364C00EBA00F /* ALNewContactCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF0B81BC5364C00EBA00F /* ALNewContactCell.m */; };
-		6D6DF1661BC5364C00EBA00F /* ALNotificationView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6D6DF1671BC5364C00EBA00F /* ALNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */; };
 		6D6DF16F1BC5364C00EBA00F /* Applozic.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0C41BC5364C00EBA00F /* Applozic.storyboard */; };
 		6D6DF1861BC5364C00EBA00F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */; };
 		6D6DF1D31BC5364C00EBA00F /* KAProgressLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF1311BC5364C00EBA00F /* KAProgressLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1052,8 +1052,8 @@
 		6D6DF0B61BC5364C00EBA00F /* ALContactCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALContactCell.m; path = Applozic/Views/ALContactCell.m; sourceTree = "<group>"; };
 		6D6DF0B71BC5364C00EBA00F /* ALNewContactCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALNewContactCell.h; path = Applozic/Views/ALNewContactCell.h; sourceTree = "<group>"; };
 		6D6DF0B81BC5364C00EBA00F /* ALNewContactCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALNewContactCell.m; path = Applozic/Views/ALNewContactCell.m; sourceTree = "<group>"; };
-		6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALNotificationView.h; path = Applozic/Views/ALNotificationView.h; sourceTree = "<group>"; };
-		6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALNotificationView.m; path = Applozic/Views/ALNotificationView.m; sourceTree = "<group>"; };
+		6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALNotificationView.h; sourceTree = "<group>"; };
+		6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALNotificationView.m; sourceTree = "<group>"; };
 		6D6DF0C51BC5364C00EBA00F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Applozic.storyboard; sourceTree = "<group>"; };
 		6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		6D6DF1311BC5364C00EBA00F /* KAProgressLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KAProgressLabel.h; sourceTree = "<group>"; };
@@ -1130,6 +1130,7 @@
 		1896EDB325DBD15D0038EBFF /* ApplozicCore */ = {
 			isa = PBXGroup;
 			children = (
+				18A2587725ED3AB000EC0F11 /* notification */,
 				18E0F10F25DD2B1300F6EDE3 /* ALConstant.h */,
 				18E0F01025DCF86F00F6EDE3 /* JWT */,
 				18E0EFED25DCF64D00F6EDE3 /* utilities */,
@@ -1421,6 +1422,15 @@
 			path = commons;
 			sourceTree = "<group>";
 		};
+		18A2587725ED3AB000EC0F11 /* notification */ = {
+			isa = PBXGroup;
+			children = (
+				6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */,
+				6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */,
+			);
+			path = notification;
+			sourceTree = "<group>";
+		};
 		18A2BA2320C44E5E00AD47A2 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -1490,6 +1500,8 @@
 			isa = PBXGroup;
 			children = (
 				18E0EFF825DCF85800F6EDE3 /* ALLogger.h */,
+				18E0EFF025DCF85800F6EDE3 /* ALUIImage+Utility.h */,
+				18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */,
 				18E0EFF925DCF85900F6EDE3 /* ALLogger.m */,
 				18E0EFFD25DCF85900F6EDE3 /* ALUtilityClass.h */,
 				18E0EFF225DCF85800F6EDE3 /* ALUtilityClass.m */,
@@ -1647,10 +1659,8 @@
 				1A9CB20C211D8E7C00B19EC2 /* ALMultimediaData.h */,
 				1A9CB20D211D8E7C00B19EC2 /* ALMultimediaData.m */,
 				18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */,
-				18E0EFF025DCF85800F6EDE3 /* ALUIImage+Utility.h */,
 				1873618325DD51C900C02F5D /* ALUIImage+animatedGIF.h */,
 				1873618425DD51CA00C02F5D /* ALUIImage+animatedGIF.m */,
-				18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */,
 				187D675C25DD83C4008BE643 /* ALUIUtilityClass.h */,
 				187D675D25DD83C4008BE643 /* ALUIUtilityClass.m */,
 			);
@@ -1956,8 +1966,6 @@
 		6D6DF1E51BC5389B00EBA00F /* notification */ = {
 			isa = PBXGroup;
 			children = (
-				6D6DF0BA1BC5364C00EBA00F /* ALNotificationView.m */,
-				6D6DF0B91BC5364C00EBA00F /* ALNotificationView.h */,
 			);
 			name = notification;
 			sourceTree = "<group>";
@@ -2074,6 +2082,7 @@
 				1896EDD225DBD4190038EBFF /* ALDownloadTask.h in Headers */,
 				1896EECF25DBE8E40038EBFF /* DB_CHANNEL.h in Headers */,
 				1896EDEC25DBD5520038EBFF /* ALConversationProxy.h in Headers */,
+				18A2588925ED702E00EC0F11 /* ALUIImage+Utility.h in Headers */,
 				1896EE8D25DBE6630038EBFF /* ALRequestHandler.h in Headers */,
 				1896EE2E25DBD7070038EBFF /* AlChannelInfoModel.h in Headers */,
 				1896EF0525DBEA670038EBFF /* ALPushNotificationService.h in Headers */,
@@ -2102,6 +2111,7 @@
 				18E0F07725DCF8A400F6EDE3 /* MQTTSessionSynchron.h in Headers */,
 				18E0F05425DCF8A400F6EDE3 /* MQTTClient-Prefix.pch in Headers */,
 				18E0F07225DCF8A400F6EDE3 /* MQTTTransport.h in Headers */,
+				18A2587B25ED3B1D00EC0F11 /* ALNotificationView.h in Headers */,
 				18E0F06325DCF8A400F6EDE3 /* MQTTDecoder.h in Headers */,
 				18E0F00C25DCF85900F6EDE3 /* NSString+Encode.h in Headers */,
 				18E0F11025DD2B1300F6EDE3 /* ALConstant.h in Headers */,
@@ -2202,14 +2212,12 @@
 				1814A739252F31C2004E836B /* SDImageGIFCoder.h in Headers */,
 				1814A74B252F31C2004E836B /* UIView+WebCacheOperation.h in Headers */,
 				6D6DF15C1BC5364C00EBA00F /* ALNewContactsViewController.h in Headers */,
-				1859ED1525E9189A00F1F69B /* ALUIImage+Utility.h in Headers */,
 				6D6DF0811BC535C800EBA00F /* Applozic.h in Headers */,
 				1814A77E252F31C2004E836B /* SDmetamacros.h in Headers */,
 				18E0F0C725DD0AAF00F6EDE3 /* ALPushNotificationHandler.h in Headers */,
 				1814A73B252F31C2004E836B /* SDImageAWebPCoder.h in Headers */,
 				1814A70E252F31C2004E836B /* SDImageIOAnimatedCoderInternal.h in Headers */,
 				6D6DF1441BC5364C00EBA00F /* ALImagePickerHandler.h in Headers */,
-				6D6DF1661BC5364C00EBA00F /* ALNotificationView.h in Headers */,
 				1814A720252F31C2004E836B /* SDImageHEICCoder.h in Headers */,
 				6D6DF1601BC5364C00EBA00F /* ALImageCell.h in Headers */,
 				29D6F86B1D193D9D00A75369 /* PSPDFTextView.h in Headers */,
@@ -2418,6 +2426,7 @@
 				1896EE6E25DBD84B0038EBFF /* ALAPIResponse.m in Sources */,
 				1896EDF725DBD5520038EBFF /* ALConversationProxy.m in Sources */,
 				1896EE5C25DBD84B0038EBFF /* ALUserBlockResponse.m in Sources */,
+				18A2587825ED3B1800EC0F11 /* ALNotificationView.m in Sources */,
 				18E0F00125DCF85900F6EDE3 /* NSString+Encode.m in Sources */,
 				1896EDD325DBD4190038EBFF /* ALDownloadTask.m in Sources */,
 				18E0F06025DCF8A400F6EDE3 /* MQTTSSLSecurityPolicyEncoder.m in Sources */,
@@ -2448,6 +2457,7 @@
 				1896EE6725DBD84B0038EBFF /* ALMessageInfo.m in Sources */,
 				1896EDF625DBD5520038EBFF /* ALConversationDBService.m in Sources */,
 				1896EE7025DBD84B0038EBFF /* ALUserDetailListFeed.m in Sources */,
+				18A2588625ED702A00EC0F11 /* ALUIImage+Utility.m in Sources */,
 				18E0F06E25DCF8A400F6EDE3 /* MQTTProperties.m in Sources */,
 				1896EF3825DBEEF10038EBFF /* ALSyncMessageFeed.m in Sources */,
 				18E0F0A625DCFD3400F6EDE3 /* ALContactService.m in Sources */,
@@ -2515,7 +2525,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D1385751CA9B80D009E6F50 /* ALMultipleAttachmentView.m in Sources */,
-				6D6DF1671BC5364C00EBA00F /* ALNotificationView.m in Sources */,
 				1814A761252F31C2004E836B /* SDAnimatedImageView.m in Sources */,
 				1814A77A252F31C2004E836B /* SDImageCacheDefine.m in Sources */,
 				18A5CCA124EFB5830016F354 /* ALFriendDeletedMessage.m in Sources */,
@@ -2590,7 +2599,6 @@
 				1814A793252F31C3004E836B /* SDAssociatedObject.m in Sources */,
 				1814A71D252F31C2004E836B /* SDImageGraphics.m in Sources */,
 				6D0D107B1D4CD7B6009853FB /* ALImagePickerController.m in Sources */,
-				1859ED1225E9186D00F1F69B /* ALUIImage+Utility.m in Sources */,
 				1814A712252F31C2004E836B /* SDWebImagePrefetcher.m in Sources */,
 				1814A776252F31C2004E836B /* SDImageCachesManager.m in Sources */,
 				6D7756721D5B7EEC0025560B /* ALChatLauncher.m in Sources */,

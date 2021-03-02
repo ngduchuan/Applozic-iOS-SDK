@@ -17,7 +17,6 @@
 #import "UIImageView+WebCache.h"
 #import "ALImagePickerHandler.h"
 #import "ALMapViewController.h"
-#import "ALNotificationView.h"
 #import "ALChatLauncher.h"
 #import "ALMediaBaseCell.h"
 #import "ALGroupDetailViewController.h"
@@ -46,7 +45,6 @@
 #import "ALMyDeletedMessageCell.h"
 #import "ALFriendDeletedMessage.h"
 #import "ALUIUtilityClass.h"
-#import "ALUIImage+Utility.h"
 
 static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;

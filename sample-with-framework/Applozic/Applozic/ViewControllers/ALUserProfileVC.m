@@ -9,12 +9,11 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ALUserProfileVC.h"
 #import "ALImagePickerHandler.h"
-#import "ALNotificationView.h"
 #import "UIImageView+WebCache.h"
 #import "ALMessagesViewController.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
-#import "ALUIImage+Utility.h"
+#import "ALNotificationHelper.h"
 
 @interface ALUserProfileVC ()
 
@@ -194,8 +193,17 @@
     {
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        
-        [alNotification nativeNotification:self];
+
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+
+            if ([helper isApplozicViewControllerOnTop]) {
+
+                [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+            }
+
+        }];
     }
 }
 
@@ -244,7 +252,17 @@
         
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        [alNotification nativeNotification:self];
+
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+
+            if ([helper isApplozicViewControllerOnTop]) {
+
+                [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+            }
+        }];
+
     }
     else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {

@@ -10,7 +10,6 @@
 #import "UIImageView+WebCache.h"
 #import "ALColorUtility.h"
 #import "ALChatLauncher.h"
-#import "ALNotificationView.h"
 #import "ALGroupCreationViewController.h"
 #import "ALNotificationHelper.h"
 #import <Applozic/Applozic-Swift.h>

@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "ALUIImage+Utility.h"
 #import "ALApplozicSettings.h"
 
 #define  DEFAULT_MAX_FILE_UPLOAD_SIZE 32

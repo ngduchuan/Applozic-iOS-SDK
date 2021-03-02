@@ -11,7 +11,6 @@
 #import <AVFoundation/AVAsset.h>
 #import <AVFoundation/AVAssetExportSession.h>
 #import <AVFoundation/AVMediaFormat.h>
-#import "ALUIImage+Utility.h"
 @implementation ALImagePickerHandler
 
 
