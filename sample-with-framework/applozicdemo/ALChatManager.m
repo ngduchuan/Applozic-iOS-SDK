@@ -7,14 +7,7 @@
 //
 
 #import "ALChatManager.h"
-#import <Applozic/ALUserDefaultsHandler.h>
-#import <Applozic/ALMessageClientService.h>
-#import <Applozic/ALApplozicSettings.h>
-#import <Applozic/ALChatViewController.h>
-#import <Applozic/ALMessage.h>
-#import <Applozic/ALNewContactsViewController.h>
-#import <Applozic/ALLogger.h>
-
+#import <Applozic/Applozic.h>
 
 @implementation ALChatManager
 
@@ -389,6 +382,14 @@
 
 -(void)ALDefaultChatViewSettings
 {
+    [ALApplozicSettings setListOfViewControllers:
+    @[
+     [ALMessagesViewController description],
+     [ALChatViewController description],
+     [ALGroupDetailViewController description],
+     [ALNewContactsViewController description],
+     [ALUserProfileVC description]
+     ]];
     
     /*********************************************  NAVIGATION SETTINGS  ********************************************/
     
@@ -443,7 +444,7 @@
 
     //****************** SHOW/HIDE RECEIVER USER PROFILE ******************/
     [ALApplozicSettings setReceiverUserProfileOption:NO];
-    
+
     /****************************************************************************************************************/
     
     

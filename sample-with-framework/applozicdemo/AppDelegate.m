@@ -6,7 +6,6 @@
 //
 
 #import "AppDelegate.h"
-#import <Applozic/Applozic.h>
 #import "ApplozicLoginViewController.h"
 #import <UserNotifications/UserNotifications.h>
 
@@ -29,6 +28,9 @@
     
     ALAppLocalNotifications *localNotification = [ALAppLocalNotifications appLocalNotificationHandler];
     [localNotification dataConnectionNotificationHandler];
+    ALPushNotificationHandler *pushNotificationHandler = [ALPushNotificationHandler shared];
+    [pushNotificationHandler dataConnectionNotificationHandler];
+
     if ([ALUserDefaultsHandler isLoggedIn])
     {
         [ALPushNotificationService userSync];
@@ -71,15 +73,13 @@
     
     NSLog(@"RECEIVED_NOTIFICATION :: %@", dictionary);
     ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
-//    [pushNotificationService processPushNotification:dictionary updateUI:[NSNumber numberWithInt:APP_STATE_INACTIVE]];
-     [pushNotificationService notificationArrivedToApplication:application withDictionary:dictionary];
+    [pushNotificationService notificationArrivedToApplication:application withDictionary:dictionary];
 }
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
-   
+
     NSLog(@"RECEIVED_NOTIFICATION_WITH_COMPLETION :: %@", userInfo);
     ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
-//    [pushNotificationService processPushNotification:userInfo updateUI:[NSNumber numberWithInt:APP_STATE_BACKGROUND]];
     [pushNotificationService notificationArrivedToApplication:application withDictionary:userInfo];
     completionHandler(UIBackgroundFetchResultNewData);
 }
