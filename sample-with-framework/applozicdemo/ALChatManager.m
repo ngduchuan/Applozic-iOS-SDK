@@ -484,6 +484,8 @@
     
     
     /********************************************* CHAT VIEW SETTINGS  **********************************************/
+
+    [ALApplozicSettings setMsgContainerVC:@"ContinerListViewController"];
     
     [ALApplozicSettings setVisibilityForNoMoreConversationMsgVC:NO];        /*  SET VISIBILITY NO MORE CONVERSATION (COMES FROM TOP IN MSG VC)  */
     [ALApplozicSettings setEmptyConversationText:@"You have no conversations yet"]; /*  SET TEXT FOR EMPTY CONVERSATION    */

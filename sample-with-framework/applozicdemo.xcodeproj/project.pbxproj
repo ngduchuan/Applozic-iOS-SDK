@@ -10,6 +10,7 @@
 		15102E152CFA927B82CEA1B8 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35C53010819B64C000F9AF3B /* CoreText.framework */; };
 		187D679225DD9699008BE643 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; };
 		187D679325DD9699008BE643 /* ApplozicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		18BCB98D25F6401000F27095 /* ContinerListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BCB98C25F6401000F27095 /* ContinerListViewController.m */; };
 		1DE667DF7B311A11C9675E35 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1B9732748F398619EB8200 /* CoreVideo.framework */; };
 		29B643C91CE9F24800FE8A73 /* ALSettingsForDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B643C81CE9F24800FE8A73 /* ALSettingsForDebug.m */; };
 		32A5E88E1F3B870500E99655 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 32A5E8901F3B870500E99655 /* Localizable.strings */; };
@@ -103,6 +104,8 @@
 		0DC495FFC34D1F473FCFB224 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		0E71166F2B6E73BE1C8CE86E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		162EC4668DEC45215321962B /* BuddyBuildSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BuddyBuildSDK.framework; sourceTree = "<group>"; };
+		18BCB98A25F6401000F27095 /* ContinerListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContinerListViewController.h; sourceTree = "<group>"; };
+		18BCB98C25F6401000F27095 /* ContinerListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContinerListViewController.m; sourceTree = "<group>"; };
 		254D88CF49A190C80498EFA6 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		29B643C71CE9F24800FE8A73 /* ALSettingsForDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALSettingsForDebug.h; sourceTree = "<group>"; };
 		29B643C81CE9F24800FE8A73 /* ALSettingsForDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALSettingsForDebug.m; sourceTree = "<group>"; };
@@ -196,6 +199,8 @@
 		6D44D9581BF60C5B0039B1A7 /* chat */ = {
 			isa = PBXGroup;
 			children = (
+				18BCB98A25F6401000F27095 /* ContinerListViewController.h */,
+				18BCB98C25F6401000F27095 /* ContinerListViewController.m */,
 				6D44D9591BF60C990039B1A7 /* LaunchChatFromSimpleViewController.h */,
 				6D44D95A1BF60C990039B1A7 /* LaunchChatFromSimpleViewController.m */,
 				6D7F4C6E1C314EBD00AE04CF /* ALChatManager.h */,
@@ -462,6 +467,7 @@
 				6D6DF1FC1BC551FA00EBA00F /* ViewController.m in Sources */,
 				29B643C91CE9F24800FE8A73 /* ALSettingsForDebug.m in Sources */,
 				6D6DF1F91BC551FA00EBA00F /* AppDelegate.m in Sources */,
+				18BCB98D25F6401000F27095 /* ContinerListViewController.m in Sources */,
 				6D7F4C701C314EBD00AE04CF /* ALChatManager.m in Sources */,
 				6D4F28CF1BC6429F007E7B35 /* ApplozicLoginViewController.m in Sources */,
 				6D6DF1F61BC551FA00EBA00F /* main.m in Sources */,
