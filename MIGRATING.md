@@ -1,5 +1,34 @@
 ## Migration Guides
 
+#### Migrating from old version to new version 8.0.0 and above
+
+##### Breaking changes in import for Objective-c project:
+
+1. If you have imported any of the class from Applozic in your project you need to use the different import and remove the old imports
+
+Before :
+ 
+```
+#import <Applozic/ALMessage.h>
+```
+Now : 
+
+```
+#import <Applozic/Applozic.h>
+```
+2. In `AppDelegate` file inside the method of  `didFinishLaunchingWithOptions`  paste the below settings code 
+
+Objective-c
+```objc
+ALPushNotificationHandler *pushNotificationHandler = [ALPushNotificationHandler shared];
+[pushNotificationHandler dataConnectionNotificationHandler];
+```
+Swift
+```swift
+let pushNotificationHandler = ALPushNotificationHandler.shared()
+pushNotificationHandler.dataConnectionNotificationHandler()
+```
+
 #### Migrating from old version to new version 6.11.0
 
 1) Updates to ApplozicAttachmentDelegate will now come in main thread, so you can directly update your UI from the delegate methods.

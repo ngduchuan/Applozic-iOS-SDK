@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Applozic/ALChatLauncher.h>
-#import <Applozic/ALUser.h>
-#import <Applozic/ALConversationService.h>
-#import <Applozic/ALRegisterUserClientService.h>
+#import <ApplozicCore/ApplozicCore.h>
 
 static NSString *const APPLICATION_ID = @"applozic-sample-app";
 

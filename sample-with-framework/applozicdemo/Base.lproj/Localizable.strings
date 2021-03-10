@@ -22,6 +22,7 @@
 "groupDeletedInfo"  = "This Group has been Deleted";
 
 "userDeletedInfo"  = "User has been deleted";
+"yourAccountDeletedInfo"  = "Your account deleted";
 
 "chatTitle"  = "Chats";
 
@@ -95,7 +96,7 @@
 //User profile
 
 
-"emptyLabelProfileText" = "Profile Status";
+"emptyLabelProfileText" = "No Status";
 "alertText" = "Alert";
 "unableToUpdateText" ="Unable to update !!!";
 "notificationStatusUpdateText" = "Notification setting updated!!!";
@@ -145,7 +146,7 @@
 
 //CONTCATSCREEN
 
-"searchInfo" = "Email, userid, number";
+"searchInfo" = "Search...";
 "contactsTitle" = "Contacts";
 "groupsTitle" = "Groups";
 "noContactFoundText" = "No contact found";
@@ -327,3 +328,8 @@
 "ReportMessage" = "Report message";
 "ReportMessageSuccess" = "Message has been reported";
 "ReportMessageError" = "Failed to report the message";
+
+// User name update
+"alertUserNameTextFieldPlaceHolder"= "Enter your name";
+"yourUserNameAlertTitle" = "Your Name";
+
