@@ -168,7 +168,6 @@
 		1868E8E324AD46A4008DABC7 /* ALSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1868E8E224AD46A3008DABC7 /* ALSearchViewModel.swift */; };
 		1868F12C21B570ED00B237B3 /* ALGroupDetailsMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */; };
 		1868F12E21B57C2200B237B3 /* ALGroupDetailsMemberCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1868F12D21B57C2200B237B3 /* ALGroupDetailsMemberCell.h */; };
-		1873618A25DD524D00C02F5D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D3A4DF61C75ED330067A4C8 /* AVFoundation.framework */; };
 		187361A025DD584300C02F5D /* ALMessageArrayWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1873619E25DD584300C02F5D /* ALMessageArrayWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		187361A125DD584300C02F5D /* ALMessageArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873619F25DD584300C02F5D /* ALMessageArrayWrapper.m */; };
 		187D675E25DD83C4008BE643 /* ALUIUtilityClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 187D675C25DD83C4008BE643 /* ALUIUtilityClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1105,7 +1104,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1873618A25DD524D00C02F5D /* AVFoundation.framework in Frameworks */,
 				18E0EFEA25DCF41C00F6EDE3 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2717,7 +2715,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.14.0;
+				MARKETING_VERSION = 8.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2756,7 +2754,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.14.0;
+				MARKETING_VERSION = 8.0.0;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.ApplozicCore;
@@ -2909,7 +2907,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.14.0;
+				MARKETING_VERSION = 8.0.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2946,7 +2944,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.14.0;
+				MARKETING_VERSION = 8.0.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
