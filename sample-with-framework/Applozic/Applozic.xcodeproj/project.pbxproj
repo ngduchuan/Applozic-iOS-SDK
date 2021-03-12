@@ -157,6 +157,10 @@
 		18471CE724E2E39500EB7099 /* ALLoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
+		1858B64825FA12E20095FF81 /* ALSecureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B64625FA12E20095FF81 /* ALSecureStore.h */; };
+		1858B64925FA12E20095FF81 /* ALSecureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1858B64725FA12E20095FF81 /* ALSecureStore.m */; };
+		1858B66525FA239D0095FF81 /* ALPasswordQueryable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */; };
+		1858B66625FA239D0095FF81 /* ALPasswordQueryable.m in Sources */ = {isa = PBXBuildFile; fileRef = 1858B66425FA239D0095FF81 /* ALPasswordQueryable.m */; };
 		1859ED1F25E919BD00F1F69B /* ALUIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873618425DD51CA00C02F5D /* ALUIImage+animatedGIF.m */; };
 		1859ED2225E919BF00F1F69B /* ALUIImage+animatedGIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 1873618325DD51C900C02F5D /* ALUIImage+animatedGIF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1859ED3325E923E900F1F69B /* ALMediaPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0F09025DCF8F300F6EDE3 /* ALMediaPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -282,7 +286,6 @@
 		1896EE9825DBE6630038EBFF /* ALAppLocalNotifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE8A25DBE6630038EBFF /* ALAppLocalNotifications.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EE9925DBE6630038EBFF /* ALResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE8B25DBE6630038EBFF /* ALResponseHandler.m */; };
 		1896EEA525DBE84C0038EBFF /* ALApplozicSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE9E25DBE84B0038EBFF /* ALApplozicSettings.m */; };
-		1896EEA625DBE84C0038EBFF /* SecureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE9F25DBE84B0038EBFF /* SecureStore.swift */; };
 		1896EEA725DBE84C0038EBFF /* ALInternalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EEA025DBE84C0038EBFF /* ALInternalSettings.m */; };
 		1896EEA825DBE84C0038EBFF /* ALUserDefaultsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EEA125DBE84C0038EBFF /* ALUserDefaultsHandler.m */; };
 		1896EEA925DBE84C0038EBFF /* ALApplozicSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEA225DBE84C0038EBFF /* ALApplozicSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -702,6 +705,10 @@
 		18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALLoadingIndicator.swift; sourceTree = "<group>"; };
 		18587A7A2177A81E006AA149 /* ALImagePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALImagePreviewController.h; sourceTree = "<group>"; };
 		18587A7B2177A81E006AA149 /* ALImagePreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
+		1858B64625FA12E20095FF81 /* ALSecureStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALSecureStore.h; sourceTree = "<group>"; };
+		1858B64725FA12E20095FF81 /* ALSecureStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALSecureStore.m; sourceTree = "<group>"; };
+		1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALPasswordQueryable.h; sourceTree = "<group>"; };
+		1858B66425FA239D0095FF81 /* ALPasswordQueryable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALPasswordQueryable.m; sourceTree = "<group>"; };
 		185B6AB124EBE7D20028AB75 /* ALTappableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALTappableView.h; path = Applozic/Views/ALTappableView.h; sourceTree = "<group>"; };
 		185B6AB224EBE7D20028AB75 /* ALTappableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALTappableView.m; path = Applozic/Views/ALTappableView.m; sourceTree = "<group>"; };
 		185B6AB924EDAF5B0028AB75 /* ALMyDeletedMessageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALMyDeletedMessageCell.h; path = Applozic/Views/ALMyDeletedMessageCell.h; sourceTree = "<group>"; };
@@ -826,7 +833,6 @@
 		1896EE8A25DBE6630038EBFF /* ALAppLocalNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAppLocalNotifications.h; sourceTree = "<group>"; };
 		1896EE8B25DBE6630038EBFF /* ALResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALResponseHandler.m; sourceTree = "<group>"; };
 		1896EE9E25DBE84B0038EBFF /* ALApplozicSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALApplozicSettings.m; sourceTree = "<group>"; };
-		1896EE9F25DBE84B0038EBFF /* SecureStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureStore.swift; sourceTree = "<group>"; };
 		1896EEA025DBE84C0038EBFF /* ALInternalSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALInternalSettings.m; sourceTree = "<group>"; };
 		1896EEA125DBE84C0038EBFF /* ALUserDefaultsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserDefaultsHandler.m; sourceTree = "<group>"; };
 		1896EEA225DBE84C0038EBFF /* ALApplozicSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALApplozicSettings.h; sourceTree = "<group>"; };
@@ -1320,7 +1326,10 @@
 				1896EEA025DBE84C0038EBFF /* ALInternalSettings.m */,
 				1896EEA425DBE84C0038EBFF /* ALUserDefaultsHandler.h */,
 				1896EEA125DBE84C0038EBFF /* ALUserDefaultsHandler.m */,
-				1896EE9F25DBE84B0038EBFF /* SecureStore.swift */,
+				1858B64625FA12E20095FF81 /* ALSecureStore.h */,
+				1858B64725FA12E20095FF81 /* ALSecureStore.m */,
+				1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */,
+				1858B66425FA239D0095FF81 /* ALPasswordQueryable.m */,
 			);
 			path = prefrence;
 			sourceTree = "<group>";
@@ -2077,7 +2086,9 @@
 				1896EE9125DBE6630038EBFF /* ALDataNetworkConnection.h in Headers */,
 				1896EDF025DBD5520038EBFF /* DB_ConversationProxy.h in Headers */,
 				1896EDED25DBD5520038EBFF /* ALConversationCreateResponse.h in Headers */,
+				1858B64825FA12E20095FF81 /* ALSecureStore.h in Headers */,
 				1896EDD225DBD4190038EBFF /* ALDownloadTask.h in Headers */,
+				1858B66525FA239D0095FF81 /* ALPasswordQueryable.h in Headers */,
 				1896EECF25DBE8E40038EBFF /* DB_CHANNEL.h in Headers */,
 				1896EDEC25DBD5520038EBFF /* ALConversationProxy.h in Headers */,
 				18A2588925ED702E00EC0F11 /* ALUIImage+Utility.h in Headers */,
@@ -2399,6 +2410,7 @@
 				1896EE2525DBD7070038EBFF /* ALChannelFeed.m in Sources */,
 				18E0F05625DCF8A400F6EDE3 /* MQTTCFSocketTransport.m in Sources */,
 				1896EDEF25DBD5520038EBFF /* ALConversationClientService.m in Sources */,
+				1858B66625FA239D0095FF81 /* ALPasswordQueryable.m in Sources */,
 				1896EDF225DBD5520038EBFF /* DB_ConversationProxy.m in Sources */,
 				18E0F06B25DCF8A400F6EDE3 /* GCDTimer.m in Sources */,
 				18E0F00525DCF85900F6EDE3 /* NSData+AES.m in Sources */,
@@ -2439,7 +2451,6 @@
 				1896EECC25DBE8E40038EBFF /* DB_CHANNEL_USER_X.m in Sources */,
 				1896EF0425DBEA670038EBFF /* TSBlurView.m in Sources */,
 				1896EF3425DBEEF10038EBFF /* ALSearchRequest.m in Sources */,
-				1896EEA625DBE84C0038EBFF /* SecureStore.swift in Sources */,
 				1896EEC925DBE8E30038EBFF /* ALDBHandler.m in Sources */,
 				1896EE1C25DBD7070038EBFF /* ALChannelSyncResponse.m in Sources */,
 				1896EE5E25DBD84B0038EBFF /* ALUserClientService.m in Sources */,
@@ -2511,6 +2522,7 @@
 				18E0F06D25DCF8A400F6EDE3 /* MQTTMessage.m in Sources */,
 				1896EED025DBE8E40038EBFF /* DB_FileMetaInfo.m in Sources */,
 				1896EF2C25DBEEF10038EBFF /* ALMessageClientService.m in Sources */,
+				1858B64925FA12E20095FF81 /* ALSecureStore.m in Sources */,
 				1896EEE625DBE95B0038EBFF /* ALRegisterUserClientService.m in Sources */,
 				18E0F05D25DCF8A400F6EDE3 /* MQTTSessionLegacy.m in Sources */,
 				1896EE2C25DBD7070038EBFF /* ALChannelDBService.m in Sources */,
