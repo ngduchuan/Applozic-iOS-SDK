@@ -111,3 +111,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import <ApplozicCore/MQTTStrict.h>
 #import <ApplozicCore/ALNotificationView.h>
 #import <ApplozicCore/ALUIImage+Utility.h>
+#import <ApplozicCore/ALJWT.h>
