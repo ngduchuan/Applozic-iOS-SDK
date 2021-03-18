@@ -9,6 +9,7 @@
 #import "ALNotificationHelper.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import <Applozic/ALSearchResultViewController.h>
+#import "ALTabViewController.h"
 
 @implementation ALNotificationHelper
 
@@ -21,7 +22,8 @@
             || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
             || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]
             || [topViewControllerName isEqualToString:@"PHPickerViewController"]
-            || [alPushAssist isOurViewOnTop]);
+            || [alPushAssist isOurViewOnTop]
+            || [[alPushAssist.topViewController presentingViewController] isKindOfClass:ALTabViewController.class]);
 }
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
