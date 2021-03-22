@@ -17,7 +17,7 @@
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
     NSString* topViewControllerName = NSStringFromClass(alPushAssist.topViewController.class);
-    BOOL isApplozicVCOnTap =  ([topViewControllerName hasPrefix:@"AL"]
+    BOOL isApplozicVCOnTop =  ([topViewControllerName hasPrefix:@"AL"]
                                || [topViewControllerName hasPrefix:@"Applozic"]
                                || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
                                || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]
@@ -25,7 +25,7 @@
                                || [alPushAssist isOurViewOnTop]
                                || [[alPushAssist.topViewController presentingViewController] isKindOfClass:ALTabViewController.class]);
 
-    if (!isApplozicVCOnTap) {
+    if (!isApplozicVCOnTop) {
         /// Get the childViewControllers if the chat view is launched directly and check rootVC is ALChatViewController
         NSArray<UIViewController *> *childViewControllers = [alPushAssist.topViewController presentingViewController].childViewControllers;
         if (childViewControllers.count) {
@@ -36,7 +36,7 @@
         }
     }
 
-    return isApplozicVCOnTap;
+    return isApplozicVCOnTop;
 }
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
