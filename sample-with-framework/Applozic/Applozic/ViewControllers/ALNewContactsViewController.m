@@ -702,7 +702,7 @@ static const int SHOW_GROUP = 102;
 
     if(![ALUserDefaultsHandler getLoginUserConatactVisibility]){
         NSPredicate* predicate = nil;
-        if (supportUserId) {
+        if (supportUserId && supportUserId.length > 0) {
             NSArray * userIdArray = [[NSArray alloc] initWithObjects:[ALUserDefaultsHandler getUserId], supportUserId, nil];
             predicate = [NSPredicate predicateWithFormat:@"NOT (userId IN %@) AND deletedAtTime == nil", userIdArray];
 
@@ -745,7 +745,7 @@ static const int SHOW_GROUP = 102;
         NSArray * descriptors = [NSArray arrayWithObject:valueDescriptor];
         self.filteredContactList = [NSMutableArray arrayWithArray:[self.contactList sortedArrayUsingDescriptors:descriptors]];
 
-        if (supportUserId) {
+        if (supportUserId && supportUserId.length > 0) {
             ALContact *supportContact = [self.contactService loadContactByKey:@"userId" value:supportUserId];
             [self.filteredContactList insertObject:supportContact atIndex:0];
         }
