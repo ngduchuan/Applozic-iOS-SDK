@@ -170,16 +170,7 @@ static int const MQTT_MAX_RETRY = 3;
     [super viewWillAppear:animated];
     [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
         if (!connected) {
-            [ALUIUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
-                if (clicked){
-                    [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
-                        if (!connected) {
-                            NSString * errorMessage = NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to reconnect. Please try again later.", @"");
-
-                            [TSMessage showNotificationWithTitle:errorMessage type:TSMessageNotificationTypeError];                        }
-                    }];
-                }
-            }];
+            ALSLog(ALLoggerSeverityInfo, @"MQTT subscribe to conversation faild in ALMessagesViewController");
         }
     }];
     /// Setup the delegate in viewWillAppear
