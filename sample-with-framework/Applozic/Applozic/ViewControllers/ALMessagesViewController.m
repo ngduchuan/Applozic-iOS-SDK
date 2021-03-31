@@ -23,7 +23,6 @@ static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
-static int const MQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface
@@ -41,7 +40,6 @@ static int const MQTT_MAX_RETRY = 3;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *mActivityIndicator;
 
 // Private Variables
-@property (nonatomic) NSInteger mqttRetryCount;
 @property (nonatomic, strong) NSMutableArray * mContactsMessageListArray;
 @property (nonatomic, strong) UIColor *navColor;
 @property (nonatomic, strong) NSNumber *unreadCount;
@@ -87,7 +85,6 @@ static int const MQTT_MAX_RETRY = 3;
     [super viewDidLoad];
     self.extendedLayoutIncludesOpaqueBars = true;
 
-    self.mqttRetryCount = 0;
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
 
@@ -1147,25 +1144,8 @@ static int const MQTT_MAX_RETRY = 3;
 
 -(void)mqttConnectionClosed
 {
-    if (self.mqttRetryCount > MQTT_MAX_RETRY || !self.getVisibleState)
-    {
-        return;
-    }
-    
-    UIApplication *app = [UIApplication sharedApplication];
-    BOOL isBackgroundState = (app.applicationState == UIApplicationStateBackground);
-    
-    if([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState)
-    {
-        ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
-        ALSLog(ALLoggerSeverityInfo, @"ALMessageVC subscribing channel again....");
-        self.mqttRetryCount++;
-        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
-
-            if (!connected) {
-                ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALMessagesViewController");
-            }
-        }];
+    if (self.alMqttConversationService) {
+        [self.alMqttConversationService retryConnection];
     }
 }
 
