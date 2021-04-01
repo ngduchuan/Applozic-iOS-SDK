@@ -46,7 +46,6 @@
 #import "ALFriendDeletedMessage.h"
 #import "ALUIUtilityClass.h"
 
-static int const MQTT_MAX_RETRY = 3;
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
 NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetailVCNotificationNavigationVC";
@@ -70,7 +69,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 @property (nonatomic, weak) IBOutlet UIButton *loadEarlierAction;
 @property (nonatomic, weak) NSIndexPath *indexPathofSelection;
 @property (nonatomic, strong) ALMQTTConversationService *mqttObject;
-@property (nonatomic) NSInteger  mqttRetryCount;
 @property (nonatomic, strong) NSArray * pickerDataSourceArray;
 @property (nonatomic, strong) NSMutableArray * pickerConvIdsArray;
 @property (nonatomic, strong) NSMutableArray * conversationTitleList;
@@ -301,16 +299,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.mqttObject.mqttConversationDelegate = self;
         [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
             if (!connected) {
-                [ALUIUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
-                    if (clicked){
-                        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
-                            if (!connected) {
-                                NSString * errorMessage =  NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to reconnect. Please try again later.", @"");
-                                [TSMessage showNotificationWithTitle:errorMessage type:TSMessageNotificationTypeError];
-                            }
-                        }];
-                    }
-                }];
+                ALSLog(ALLoggerSeverityInfo, @"MQTT subscribe to conversation failed connect in ALChatViewController");
             }
         }];
     } else {
@@ -4343,23 +4332,8 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
 -(void)mqttConnectionClosed
 {
-    if(self.mqttRetryCount > MQTT_MAX_RETRY|| !(self.isViewLoaded && self.view.window))
-    {
-        return;
-    }
-
-    UIApplication *app = [UIApplication sharedApplication];
-    BOOL isBackgroundState = (app.applicationState == UIApplicationStateBackground);
-
-    if ([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState) {
-
-        ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
-        self.mqttRetryCount++;
-        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
-            if (!connected) {
-                ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALChatViewController");
-            }
-        }];
+    if (self.mqttObject) {
+        [self.mqttObject retryConnection];
     }
 }
 
