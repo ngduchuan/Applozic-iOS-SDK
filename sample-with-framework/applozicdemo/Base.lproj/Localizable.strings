@@ -273,9 +273,6 @@
 "tabbarChatsTitle" = "Chats";
 "tabbarProfileTitle" = "Profile";
 "logoutLabelText" = "Logout";
-"audioCall"="Audio Call";
-"videoCall" = "Video Call";
-
 
 "userId" = "UserId";
 "email" = "Email";

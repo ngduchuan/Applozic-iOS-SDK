@@ -605,13 +605,26 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     [self.navRightBarButtonItems removeObject:self.callButton];
 
+    /// Claer the buttons if added before
+    if (self.audioCallButton && self.videoCallButton) {
+        [self.navRightBarButtonItems removeObject:self.audioCallButton];
+        [self.navRightBarButtonItems removeObject:self.videoCallButton];
+    }
+
     if(self.contactIds && !self.channelKey)
     {
         if(self.alContact.contactNumber && [ALApplozicSettings getCallOption])
         {
             [self.navRightBarButtonItems addObject:self.callButton];
         }
+
+        if (self.audioCallButton && self.videoCallButton) {
+            [self.navRightBarButtonItems addObject:self.audioCallButton];
+            [self.navRightBarButtonItems addObject:self.videoCallButton];
+        }
+
     }
+    
 
     self.navigationItem.rightBarButtonItems = [self.navRightBarButtonItems mutableCopy];
 }
@@ -1001,6 +1014,24 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     }
 
+}
+
+-(void)audioCallAction {
+    ALContactDBService * contactDBService = [ALContactDBService new];
+    ALContact *alContact = [contactDBService loadContactByKey:@"userId" value:self.contactIds];
+
+    if (alContact && !alContact.block) {
+        [self openCallViewWithCallForAudio:YES];
+    }
+}
+
+-(void)videoCallAction {
+    ALContactDBService * contactDBService = [ALContactDBService new];
+    ALContact *alContact = [contactDBService loadContactByKey:@"userId" value:self.contactIds];
+
+    if (alContact && !alContact.block) {
+        [self openCallViewWithCallForAudio:NO];
+    }
 }
 
 //==============================================================================================================================================
@@ -2998,23 +3029,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         }]];
 
     }
-
-    if(!self.channelKey && !self.conversationId && [ALApplozicSettings isAudioVideoEnabled])
-    {
-
-        [theController addAction:[UIAlertAction actionWithTitle:  NSLocalizedStringWithDefaultValue(@"videoCall", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Video Call" , @"")
-                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
-            [self openCallView:NO];
-        }]];
-
-        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"audioCall", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Audio Call" , @"")
-                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
-            [self openCallView:YES];
-        }]];
-    }
-
     [self presentViewController:theController animated:YES completion:nil];
 }
 
@@ -3154,7 +3168,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self presentViewController:self.mImagePicker animated:YES completion:nil];
 }
 
--(void)openCallView:(BOOL)callForAudio
+-(void)openCallViewWithCallForAudio:(BOOL)callForAudio
 {
     if(![ALDataNetworkConnection checkDataNetworkAvailable])
     {
