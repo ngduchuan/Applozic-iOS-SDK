@@ -15,9 +15,7 @@
 		187D679325DD9699008BE643 /* ApplozicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		18BCB98D25F6401000F27095 /* ContinerListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BCB98C25F6401000F27095 /* ContinerListViewController.m */; };
 		18DC030A261B8170008D0F50 /* Applozic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAA09D61BE39F6B00CBF133 /* Applozic.framework */; };
-		18DC030B261B8170008D0F50 /* Applozic.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAA09D61BE39F6B00CBF133 /* Applozic.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		18DC030C261B8170008D0F50 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; };
-		18DC030D261B8170008D0F50 /* ApplozicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1DE667DF7B311A11C9675E35 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1B9732748F398619EB8200 /* CoreVideo.framework */; };
 		29B643C91CE9F24800FE8A73 /* ALSettingsForDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B643C81CE9F24800FE8A73 /* ALSettingsForDebug.m */; };
 		32A5E88E1F3B870500E99655 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 32A5E8901F3B870500E99655 /* Localizable.strings */; };
@@ -98,18 +96,6 @@
 				181AED5A2617603F00F77B10 /* ApplozicShare.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18DC030E261B8170008D0F50 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				18DC030B261B8170008D0F50 /* Applozic.framework in Embed Frameworks */,
-				18DC030D261B8170008D0F50 /* ApplozicCore.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6D46B6C21BCE4C8F0014A5D3 /* Embed Frameworks */ = {
@@ -360,7 +346,6 @@
 				181AED4B2617603F00F77B10 /* Sources */,
 				181AED4C2617603F00F77B10 /* Frameworks */,
 				181AED4D2617603F00F77B10 /* Resources */,
-				18DC030E261B8170008D0F50 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -633,7 +618,6 @@
 		181AED5B2617603F00F77B10 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -673,7 +657,6 @@
 		181AED5C2617603F00F77B10 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
