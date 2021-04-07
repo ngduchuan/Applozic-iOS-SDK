@@ -7,17 +7,23 @@
 //
 
 #import "ALPasswordQueryable.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALPasswordQueryable
 
 - (instancetype)initWithService:(NSString *)service {
     self.serviceString = service;
+    self.appKeychainAcessGroup = [ALApplozicSettings getKeychainAcessGroup];
     return self;
 }
 
 - (NSMutableDictionary<NSString *,id> *)query {
     NSMutableDictionary<NSString *, id> *query =  [[NSMutableDictionary alloc] init];
     query[(__bridge NSString *)kSecClass] = (__bridge NSString *)kSecClassGenericPassword;
+    if (self.appKeychainAcessGroup
+        && self.appKeychainAcessGroup.length > 0) {
+        query[(__bridge NSString *)kSecAttrAccessGroup] = self.appKeychainAcessGroup;
+    }
     query[(__bridge NSString *)kSecAttrService] = self.serviceString;
     return query;
 }
