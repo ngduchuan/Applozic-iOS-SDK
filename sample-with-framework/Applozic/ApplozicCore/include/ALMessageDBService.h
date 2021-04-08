@@ -97,4 +97,9 @@
 -(void) updateMessageMetadataOfKey:(NSString*)messageKey withMetadata:(NSMutableDictionary*) metadata ;
 
 -(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
+
+-(NSMutableArray*)fetchMessagesWithCreatedAtTime:(NSNumber *)createdAtTime
+                                           orUserId:(NSString *)userId
+                                       orChannelKey:(NSNumber *)channelKey
+                                   orConversationId:(NSNumber *)conversationId;
 @end

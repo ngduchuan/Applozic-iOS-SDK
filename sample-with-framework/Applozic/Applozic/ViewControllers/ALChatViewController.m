@@ -716,7 +716,19 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if ([self isOpenGroup]) {
         [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
     } else {
-        [self markConversationRead];
+        ALMessageDBService *messageDb = [[ALMessageDBService alloc] init];
+        NSMutableArray * currentMessagesArray = [self.alMessageWrapper getUpdatedMessageArray];
+        /// Check for new messages based on the current latest message and fetch if any messages are in data base
+        if (currentMessagesArray.count) {
+            ALMessage *lastMessage = currentMessagesArray.lastObject;
+            NSMutableArray *messagesArray = [messageDb fetchMessagesWithCreatedAtTime:lastMessage.createdAtTime
+                                                                             orUserId:self.contactIds
+                                                                         orChannelKey:self.channelKey
+                                                                     orConversationId:self.conversationId];
+            if (messagesArray.count) {
+                [self addMessageToList:messagesArray];
+            }
+        }
     }
 }
 
@@ -4411,6 +4423,9 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (self.comingFromBackground) {
         BOOL isReadUpdateFailedToPublish = NO;
         for (ALMessage *message in sortedMessageArray) {
+            if ([message isSentMessage]) {
+                continue;
+            }
             BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithMessageKey:message.key];
             if (!isReadStatusPublished) {
                 isReadUpdateFailedToPublish = YES;

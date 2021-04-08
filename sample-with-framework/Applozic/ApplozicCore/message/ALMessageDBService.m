@@ -1219,4 +1219,49 @@
     }
 }
 
+-(NSMutableArray*)fetchMessagesWithCreatedAtTime:(NSNumber *)createdAtTime
+                                        orUserId:(NSString *)userId
+                                    orChannelKey:(NSNumber *)channelKey
+                                orConversationId:(NSNumber *)conversationId {
+    NSMutableArray *messagesArray = [[NSMutableArray alloc] init];
+
+    // Check if all are nil
+    if (!createdAtTime
+        || (!userId  && !channelKey && !conversationId)) {
+        return messagesArray;
+    }
+
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    [theRequest setFetchLimit:100];
+    NSPredicate* predicateForId;
+    if (conversationId && [ALApplozicSettings getContextualChatOption])
+    {
+        predicateForId = [NSPredicate predicateWithFormat:@"conversationId = %d", [conversationId intValue]];
+    } else if (channelKey != nil) {
+        predicateForId = [NSPredicate predicateWithFormat:@"groupId = %d", [channelKey intValue]];
+    } else {
+        predicateForId = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", userId];
+    }
+
+    NSPredicate* predicateForHideMessage = [NSPredicate predicateWithFormat:@"deletedFlag == %@ AND msgHidden == %@",@(NO),@(NO)];
+    NSPredicate* predicateForHideen = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
+
+    NSPredicate *predicateCreatedAtForStartTime  = [NSPredicate predicateWithFormat:@"createdAt > %@", createdAtTime];
+
+
+    NSPredicate* compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicateForId, predicateForHideMessage, predicateForHideen, predicateCreatedAtForStartTime]];
+    [theRequest setPredicate:compoundPredicate];
+    [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    NSArray * listOfMessages = [theDbHandler executeFetchRequest:theRequest withError:nil];
+    if (listOfMessages.count) {
+        for (DB_Message * theEntity in listOfMessages) {
+            ALMessage * theMessage = [self createMessageEntity:theEntity];
+            [messagesArray insertObject:theMessage atIndex:0];
+        }
+        return messagesArray;
+    }
+    return messagesArray;
+}
+
 @end
