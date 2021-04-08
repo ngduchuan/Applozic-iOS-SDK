@@ -719,12 +719,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALMessageDBService *messageDb = [[ALMessageDBService alloc] init];
         NSMutableArray * currentMessagesArray = [self.alMessageWrapper getUpdatedMessageArray];
         /// Check for new messages based on the current latest message and fetch if any messages are in data base
-        if (currentMessagesArray.count) {
+        if (currentMessagesArray.count > 0) {
             ALMessage *lastMessage = currentMessagesArray.lastObject;
-            NSMutableArray *messagesArray = [messageDb fetchMessagesWithCreatedAtTime:lastMessage.createdAtTime
-                                                                             orUserId:self.contactIds
-                                                                         orChannelKey:self.channelKey
-                                                                     orConversationId:self.conversationId];
+            MessageListRequest * messageListRequest = [[MessageListRequest alloc] init];
+            messageListRequest.startTimeStamp = [NSNumber numberWithLong:(lastMessage.createdAtTime.longValue + 1)];
+            NSMutableArray * messagesArray = [messageDb getMessageListForContactWithCreatedAt:messageListRequest];
             if (messagesArray.count) {
                 [self addMessageToList:messagesArray];
             }
