@@ -1525,7 +1525,8 @@
     {
         if([defaultKeyString hasPrefix:@"com.applozic"] &&
            ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN] &&
+           ![defaultKeyString isEqualToString:AL_SHARE_EXTENSION]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
@@ -1933,6 +1934,17 @@
 +(NSString *)getSupportContactUserId {
     NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
     return [userDefaults valueForKey:AL_SUPPORT_CONTACT_USER_ID];
+}
+
++(void)setKeychainAcessGroup:(NSString *)keychainAcessGroup {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:keychainAcessGroup forKey:AL_KEYCHAIN_ACESS_GROUP];
+    [userDefaults synchronize];
+}
+
++(NSString*) getKeychainAcessGroup {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:AL_KEYCHAIN_ACESS_GROUP];
 }
 
 @end

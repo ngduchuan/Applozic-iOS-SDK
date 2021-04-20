@@ -160,6 +160,7 @@ static NSString *const AL_MESSAGE_DELETE_FOR_ALL_ENABLED = @"com.applozic.userde
 static NSString *const AL_PHOTO_PICKER_SELECTION_LIMIT = @"com.applozic.userdefault.AL_PHOTO_PICKER_SELECTION_LIMIT";
 static NSString *const AL_MESSAGE_META_DATA_KEY = @"com.applozic.userdefault.AL_MESSAGE_META_DATA_KEY";
 static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.AL_SUPPORT_CONTACT_USER_ID";
+static NSString *const AL_KEYCHAIN_ACESS_GROUP = @"com.applozic.userdefault.AL_KEYCHAIN_ACESS_GROUP";
 
 @interface ALApplozicSettings : NSObject
 
@@ -632,5 +633,8 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 /// Support contact userId can be set for  showing the support contact at top in contact screen.
 +(void)setSupportContactUserId:(NSString *)userId;
 +(NSString *)getSupportContactUserId;
+
++(void)setKeychainAcessGroup:(NSString *)keychainAcessGroup;
++(NSString*) getKeychainAcessGroup;
 
 @end

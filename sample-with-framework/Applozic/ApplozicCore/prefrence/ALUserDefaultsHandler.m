@@ -100,7 +100,8 @@
     {
         if([defaultKeyString hasPrefix:AL_KEY_PREFIX] &&
            ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN] &&
+           ![defaultKeyString isEqualToString:AL_SHARE_EXTENSION]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }

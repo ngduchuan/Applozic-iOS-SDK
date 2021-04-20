@@ -96,5 +96,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>AppIdentifierPrefix</key>
+    <string>$(AppIdentifierPrefix)</string>
 </dict>
 </plist>

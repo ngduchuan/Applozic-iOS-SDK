@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull instancetype)initWithService:(NSString * _Nonnull)service;
 @property (nonatomic) NSString *serviceString;
+@property (nonatomic) NSString *appKeychainAcessGroup;
 
 @property (nonatomic, readonly, copy) NSMutableDictionary<NSString *, id> * _Nonnull query;
 
