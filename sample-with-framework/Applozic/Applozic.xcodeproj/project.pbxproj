@@ -159,6 +159,8 @@
 		1836CCE923AB7E5100309234 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1836CCE723AB7E5100309234 /* ALNotificationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1836CCEA23AB7E5100309234 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1836CCE823AB7E5100309234 /* ALNotificationHelper.m */; };
 		18471CE724E2E39500EB7099 /* ALLoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */; };
+		1853470D26405FD600EE0EDD /* ALVideoUploadManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1853470B26405FD600EE0EDD /* ALVideoUploadManager.h */; };
+		1853470E26405FD600EE0EDD /* ALVideoUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1853470C26405FD600EE0EDD /* ALVideoUploadManager.m */; };
 		1855AC74261F2260009EE721 /* ALConversationListRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1855AC72261F2260009EE721 /* ALConversationListRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1855AC75261F2260009EE721 /* ALConversationListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855AC73261F2260009EE721 /* ALConversationListRequest.m */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
@@ -711,6 +713,8 @@
 		1836CCE723AB7E5100309234 /* ALNotificationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ALNotificationHelper.h; path = Applozic/ALNotificationHelper.h; sourceTree = "<group>"; };
 		1836CCE823AB7E5100309234 /* ALNotificationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ALNotificationHelper.m; path = Applozic/ALNotificationHelper.m; sourceTree = "<group>"; };
 		18471CE624E2E39400EB7099 /* ALLoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALLoadingIndicator.swift; sourceTree = "<group>"; };
+		1853470B26405FD600EE0EDD /* ALVideoUploadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALVideoUploadManager.h; sourceTree = "<group>"; };
+		1853470C26405FD600EE0EDD /* ALVideoUploadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALVideoUploadManager.m; sourceTree = "<group>"; };
 		1855AC72261F2260009EE721 /* ALConversationListRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALConversationListRequest.h; sourceTree = "<group>"; };
 		1855AC73261F2260009EE721 /* ALConversationListRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALConversationListRequest.m; sourceTree = "<group>"; };
 		18587A7A2177A81E006AA149 /* ALImagePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALImagePreviewController.h; sourceTree = "<group>"; };
@@ -1268,6 +1272,8 @@
 				1896EE8725DBE6630038EBFF /* ALReachability.m */,
 				1896EE8525DBE6630038EBFF /* ALRequestHandler.m */,
 				1896EE8B25DBE6630038EBFF /* ALResponseHandler.m */,
+				1853470B26405FD600EE0EDD /* ALVideoUploadManager.h */,
+				1853470C26405FD600EE0EDD /* ALVideoUploadManager.m */,
 			);
 			path = networkcommunication;
 			sourceTree = "<group>";
@@ -2087,6 +2093,7 @@
 				1896EE2225DBD7070038EBFF /* ALChannelOfTwoMetaData.h in Headers */,
 				1896EECD25DBE8E40038EBFF /* DB_CONTACT.h in Headers */,
 				1896EE6625DBD84B0038EBFF /* ALUserBlocked.h in Headers */,
+				1853470D26405FD600EE0EDD /* ALVideoUploadManager.h in Headers */,
 				1896EECB25DBE8E40038EBFF /* DB_CHANNEL_USER_X.h in Headers */,
 				1896EE9425DBE6630038EBFF /* ALReachability.h in Headers */,
 				1896EE8E25DBE6630038EBFF /* ALResponseHandler.h in Headers */,
@@ -2507,6 +2514,7 @@
 				1896EE6B25DBD84B0038EBFF /* ALApplicationInfo.m in Sources */,
 				18E0F04D25DCF8A400F6EDE3 /* MQTTCoreDataPersistence.m in Sources */,
 				1896EDCE25DBD4190038EBFF /* ALMessageBuilder.m in Sources */,
+				1853470E26405FD600EE0EDD /* ALVideoUploadManager.m in Sources */,
 				1896EEA825DBE84C0038EBFF /* ALUserDefaultsHandler.m in Sources */,
 				1896EE2025DBD7070038EBFF /* ALChannelClientService.m in Sources */,
 				1896EF0825DBEA670038EBFF /* ALPushNotificationService.m in Sources */,

@@ -16,6 +16,7 @@
 #import "ALContactDBService.h"
 #import "ALContact.h"
 #import "ALLogger.h"
+#import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation ALUtilityClass
@@ -405,6 +406,44 @@
         return nil;
     }
     return documentFileURL;
+}
+
++(NSString *)getPathFromDirectory:(NSString *)imageFilePath {
+
+    NSURL * docDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:imageFilePath];
+    NSString * filePath = docDirectory.path;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        NSURL *docURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:imageFilePath];
+        if (docURL != nil) {
+            filePath = docURL.path;
+        }
+    }
+    return filePath;
+}
+
++(NSString *) saveImageToDocDirectory:(UIImage *) image
+{
+    NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * timestamp = [NSString stringWithFormat:@"IMG-%f.jpeg",[[NSDate date] timeIntervalSince1970] * 1000];
+    NSString * filePath = [docDirPath stringByAppendingPathComponent:timestamp];
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
+    [imageData writeToFile:filePath atomically:YES];
+    return filePath;
+}
+
++(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH
+{
+    NSURL *url = [NSURL fileURLWithPath:videoFilePATH];
+    AVAsset *asset = [AVAsset assetWithURL:url];
+    AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    imageGenerator.appliesPreferredTrackTransform = YES;
+    CMTime time = [asset duration];
+    time.value = 0;
+    CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
+    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+
+    return thumbnail;
 }
 
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
