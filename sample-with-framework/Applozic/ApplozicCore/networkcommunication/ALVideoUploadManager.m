@@ -36,25 +36,25 @@
         DB_Message * dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
         ALMessage * message = [self.messageDatabaseService createMessageEntity:dbMessage];
 
-        NSError * theJsonError = nil;
+        NSError *theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&theJsonError];
 
         if (theJsonError == nil) {
-            ALMessage *newMessage = [[ALMessage alloc] init];
+            ALMessage *fileMetaMessage = [[ALMessage alloc] init];
             ALFileMetaInfo *fileMeta = [[ALFileMetaInfo alloc] init];
-            newMessage.fileMeta = fileMeta;
+            fileMetaMessage.fileMeta = fileMeta;
 
             if (ALApplozicSettings.isS3StorageServiceEnabled) {
-                [newMessage.fileMeta populate:theJson];
+                [fileMetaMessage.fileMeta populate:theJson];
             } else {
                 NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
-                [newMessage.fileMeta populate:fileInfo];
+                [fileMetaMessage.fileMeta populate:fileInfo];
             }
 
             /// Update the current message for thumbnail
             message.fileMeta.thumbnailFilePath = self.uploadTask.videoThumbnailName;
-            message.fileMeta.thumbnailUrl = newMessage.fileMeta.thumbnailUrl;
-            message.fileMeta.thumbnailBlobKey = newMessage.fileMeta.blobKey;
+            message.fileMeta.thumbnailUrl = fileMetaMessage.fileMeta.thumbnailUrl;
+            message.fileMeta.thumbnailBlobKey = fileMetaMessage.fileMeta.blobKey;
 
             /// Update the db message  for thumbnail
             dbMessage.fileMetaInfo.thumbnailBlobKeyString = message.fileMeta.thumbnailBlobKey;
@@ -68,23 +68,18 @@
             [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
                 if (error) {
-                    [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
-                    if (self.attachmentProgressDelegate) {
-                        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
-                    }
+                    [self handleUploadFailedStateWithMessage:message];
                     return;
                 }
 
                 ALHTTPManager *httpManager = [[ALHTTPManager alloc] init];
                 httpManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
+                httpManager.delegate = self.delegate;
                 [httpManager processUploadFileForMessage:message uploadURL:url];
 
             }];
         } else {
-            [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
-            if (self.attachmentProgressDelegate) {
-                [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
-            }
+            [self handleUploadFailedStateWithMessage:message];
         }
     }
 }
@@ -121,41 +116,37 @@
         }
     }
 
+    /// If the thumbnailUrl exist then will directly upload the video else will upload the thumbnail and call the video upload.
     if (message.fileMeta.thumbnailUrl.length > 0 &&
         message.fileMeta.thumbnailFilePath.length > 0) {
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+        ALMessageClientService * clientService  = [[ALMessageClientService alloc] init];
         [clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *url, NSError *error) {
             if (error) {
-                [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
-                if (self.attachmentProgressDelegate) {
-                    [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
-                }
+                [self handleUploadFailedStateWithMessage:message];
                 return;
             }
 
-            ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+            ALHTTPManager *httpManager = [[ALHTTPManager alloc] init];
             httpManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
+            httpManager.delegate = self.delegate;
             [httpManager processUploadFileForMessage:message uploadURL:url];
         }];
     } else {
-        NSString * filePath = [ALUtilityClass getPathFromDirectory:message.imageFilePath];
-        UIImage * thubnailImage = [ALUtilityClass setVideoThumbnail:filePath];
+        NSString *filePath = [ALUtilityClass getPathFromDirectory:message.imageFilePath];
+        UIImage *thubnailImage = [ALUtilityClass setVideoThumbnail:filePath];
         NSString *imageFilePath = [ALUtilityClass saveImageToDocDirectory:thubnailImage];
 
-        ALUploadTask * alUploadTask = [[ALUploadTask alloc]init];
+        ALUploadTask * alUploadTask = [[ALUploadTask alloc] init];
         alUploadTask.identifier = message.key;
         alUploadTask.message = message;
         alUploadTask.videoThumbnailName = imageFilePath.lastPathComponent;
         self.uploadTask = alUploadTask;
 
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+        ALMessageClientService * clientService  = [[ALMessageClientService alloc] init];
         [clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *uploadURL, NSError *error) {
 
             if (error) {
-                [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
-                if (self.attachmentProgressDelegate) {
-                    [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
-                }
+                [self handleUploadFailedStateWithMessage:message];
                 return;
             }
 
@@ -164,22 +155,14 @@
             [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
 
                 if (error) {
-                    [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
-                    if (self.attachmentProgressDelegate) {
-                        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
-                    }
+                    [self handleUploadFailedStateWithMessage:message];
                     return;
                 }
 
                 if ([[NSFileManager defaultManager] fileExistsAtPath:imageFilePath]) {
 
-                    NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"VIDEO_THUMBNAIL,%@",message.key]];
+                    NSURLSession *session = [self configureSessionWithMessage:message];
 
-                    if (ALApplozicSettings.getShareExtentionGroup) {
-                        config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
-                    }
-
-                    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
                     NSData *bodyData = [self requestUploadBodyDataWithFilePath:imageFilePath withRequest:urlRequest withName:self.uploadTask.videoThumbnailName withContentType:@"image/jpeg"];
 
                     // setting the body of the post to the request
@@ -191,6 +174,25 @@
                 }
             }];
         }];
+    }
+}
+
+-(NSURLSession*)configureSessionWithMessage:(ALMessage *)message {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"VIDEO_THUMBNAIL,%@",message.key]];
+
+    if (ALApplozicSettings.getShareExtentionGroup) {
+        config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+    }
+
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
+
+    return session;
+}
+
+-(void)handleUploadFailedStateWithMessage:(ALMessage *)message {
+    [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
+    if (self.attachmentProgressDelegate) {
+        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
     }
 }
 
