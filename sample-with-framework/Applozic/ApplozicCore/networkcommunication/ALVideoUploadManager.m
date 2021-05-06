@@ -133,8 +133,8 @@
         }];
     } else {
         NSString *filePath = [ALUtilityClass getPathFromDirectory:message.imageFilePath];
-        UIImage *thubnailImage = [ALUtilityClass setVideoThumbnail:filePath];
-        NSString *imageFilePath = [ALUtilityClass saveImageToDocDirectory:thubnailImage];
+        UIImage *thumbnailImage = [ALUtilityClass setVideoThumbnail:filePath];
+        NSString *imageFilePath = [ALUtilityClass saveImageToDocDirectory:thumbnailImage];
 
         ALUploadTask * alUploadTask = [[ALUploadTask alloc] init];
         alUploadTask.identifier = message.key;

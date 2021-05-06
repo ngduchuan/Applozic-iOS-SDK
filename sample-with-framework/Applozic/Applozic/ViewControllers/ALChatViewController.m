@@ -2849,15 +2849,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.startIndex = self.startIndex + 1;
 
         if ([theMessage.fileMeta.contentType hasPrefix:@"video"]) {
-            ALVideoUploadManager * videoUploadManager = [[ALVideoUploadManager alloc] init];
+            ALVideoUploadManager *videoUploadManager = [[ALVideoUploadManager alloc] init];
             videoUploadManager.attachmentProgressDelegate = self;
             [videoUploadManager uploadTheVideo:theMessage];
         } else {
             ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
             [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
-                if (error)
-                {
+                if (error) {
                     ALSLog(ALLoggerSeverityError, @"%@",error);
                     [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
                     return;
@@ -2866,7 +2865,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
                 httpManager.attachmentProgressDelegate = self;
                 [httpManager processUploadFileForMessage:theMessage uploadURL:url];
-
             }];
         }
     }
