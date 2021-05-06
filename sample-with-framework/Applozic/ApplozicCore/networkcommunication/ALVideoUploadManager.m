@@ -190,9 +190,9 @@
 }
 
 -(void)handleUploadFailedStateWithMessage:(ALMessage *)message {
-    [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
+    ALMessage *failedMessage = [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
     if (self.attachmentProgressDelegate) {
-        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
+        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:failedMessage]];
     }
 }
 

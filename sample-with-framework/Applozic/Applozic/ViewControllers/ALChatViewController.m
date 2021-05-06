@@ -2858,7 +2858,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
                 if (error) {
                     ALSLog(ALLoggerSeverityError, @"%@",error);
-                    [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
+                    [self onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage]];
                     return;
                 }
 
