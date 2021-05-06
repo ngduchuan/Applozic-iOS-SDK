@@ -248,7 +248,7 @@ static dispatch_semaphore_t semaphore;
                     config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                 }
 
-                NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
+                NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
                 [self startSession: session withRequest: urlRequest];
             });
         }else{
@@ -361,7 +361,7 @@ static dispatch_semaphore_t semaphore;
                         if (ALApplozicSettings.getShareExtentionGroup) {
                             config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                         }
-                        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
+                        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
                         [self startSession: session withRequest:theRequest];
                     }];
                 }];
@@ -382,7 +382,7 @@ static dispatch_semaphore_t semaphore;
                             config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                         }
 
-                        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
+                        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
 
                         [self startSession: session withRequest:urlRequest];
                     } else {
