@@ -1,14 +1,24 @@
-# Applozic-iOS-SDK
-iOS Chat SDK
+<div style="width:100%">
+    <div style="width:50%; display:inline-block">
+        <p align="center">
+         <img style="border-radius: 50px;" align="center" alt="Applozic's LOGO" src="https://i.imgur.com/AOogQ0y.png?1">
+        </p>
+    </div>
+</div>
 
-### Overview         
+# Official iOS SDK for [Chat](https://docs.applozic.com/docs/ios-integration-overview) :speech_balloon:
 
-Open source iOS Chat and Messaging SDK that lets you add real time messaging in your mobile (android, iOS) applications and website.
+![Platform](https://img.shields.io/badge/Platform-ios-brightgreen.svg)
+![Platform](https://img.shields.io/badge/Language-ObjectiveC-yellow.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/AppLozic/Applozic-iOS-SDK)
+![GitHub contributors](https://img.shields.io/github/contributors/AppLozic/Applozic-iOS-SDK)
+![GitHub stars](https://img.shields.io/github/stars/AppLozic/Applozic-iOS-SDK?style=social)
+![Twitter Follow](https://img.shields.io/twitter/follow/Applozic?style=social)
 
-Signup at [https://www.applozic.com/signup.html](https://www.applozic.com/signup.html?utm_source=github&utm_medium=readme&utm_campaign=ios) to get the App ID.
 
+## Introduction :cyclone:     
 
-## Introduction :cyclone:         
+<img align="right" src="https://i.imgur.com/OK9dSLS.png?1" />
 
 Applozic brings real-time engagement with chat, video, and voice to your web,
 mobile, and conversational apps. We power emerging startups and established
@@ -79,7 +89,8 @@ it
 1. Open Terminal
 2. Navigate to the root directory of your Project (the directory where your *.xcodeproj file is)
 3. Run command
-```sh
+
+```bash
 pod init
 ```
 
@@ -101,6 +112,7 @@ end
 5. Open your project newly generated `*.xcworkspace` or existing and build your project.
 
 ### Frameworks
+-------
 
 #### XCFramework setup
 
@@ -116,7 +128,7 @@ App Store requires any app which accesses camera, contacts, gallery, location, a
 
 In the Info.plist file of your project. Please add the following permissions
 
-```
+```xml
  <key>NSCameraUsageDescription</key>
  <string>Allow Camera</string>
  <key>NSContactsUsageDescription</key>
@@ -142,7 +154,7 @@ The method file that we need here is `ALChatManager` files.
 
 ### 2. Register/Login the User
 
-```objc
+```objective-c
 // Creating "ALUser" and Passing user details
 // Except UserId all the other parameters are optional
 
@@ -193,7 +205,6 @@ For Apple to send these notifications, would have to create an APNs certificate 
 
 Once the certificates are created you can download them and export the p12 files with password for development and distribution certificate either from Keychain Acess from Mac.  
 
-
 #### Upload APNs Certificates
 
 Upload your push notification certificates (mentioned above) to the Applozic console by referring to the below-given image.
@@ -217,14 +228,13 @@ Add capabilities to configure app services from Apple, such as push notification
  
 Following screenshot would be of help.
 
-![xcode-capability](https://raw.githubusercontent.com/AppLozic/Applozic-iOS-SDK/main/Images/xcode-capability.png
- "xcode-capability")
+![xcode-capability](https://raw.githubusercontent.com/AppLozic/Applozic-iOS-SDK/main/Images/xcode-capability.png)
  
 #### Configure the push notification in the Appdelegate file of your project.
 
 Add the below imports in the Appdelegate file
 
-```objc
+```objective-c
 #import <Applozic/Applozic.h>
 #import <UserNotifications/UserNotifications.h>
 ```
@@ -233,7 +243,7 @@ Add the below imports in the Appdelegate file
 
 Add the following code in AppDelegate.m class, this function will be called after the app launch to register for push notifications.
 
-```objc
+```objective-c
 
 // UNUserNotificationCenterDelegate are required for APNs call backs please add this delegate to your AppDelegate file 
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
@@ -307,7 +317,7 @@ Add the following code in AppDelegate.m class, this function will be called afte
 
 Add the below code in your Appdelegate file if any of these methods already exist then you can copy-paste the code from the below methods.
 
-```Objc
+```objective-c
 
 // APNs device token sending to applozic
 
@@ -343,7 +353,7 @@ deviceToken {
 
 Once your app receives notification, pass it to the Applozic handler for chat notification processing.
 
-```objc
+```objective-c
 // UNUserNotificationCenter delegates for chat
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification*)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
     ALPushNotificationService *pushNotificationService = [[ALPushNotificationService
@@ -406,7 +416,7 @@ Once your app receives notification, pass it to the Applozic handler for chat no
 
 Implement the following code at the event or Button action designated for showing chat list screen.
 
-```objc
+```objective-c
 ALChatManager * chatManager = [[ALChatManager alloc] init];
 [chatManager launchChat:self];
 ```
@@ -415,7 +425,7 @@ ALChatManager * chatManager = [[ALChatManager alloc] init];
 
 On logout of your app you need to logout the applozic user as well use the below method to logout the user:  
 
-```objc
+```objective-c
 ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
 [registerUserClientService logoutWithCompletionHandler:^(ALAPIResponse *response, NSError *error) {
     if(!error && [response.status isEqualToString:@"success"]) {
