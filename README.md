@@ -42,7 +42,7 @@ exact solutions.
 * [Prerequisites](#prerequisites)
 * [Quick Start](#quickstart)
    * [Setting Up Xcode for new project](#setting-xcode-project)
-   * [Integrating SDK in your App](setup-sdk)
+   * [Integrating SDK in your App](#setup-sdk)
 * [Announcements](#announcements)
 * [Roadmap](#roadmap)
 * [Features](#feature)
