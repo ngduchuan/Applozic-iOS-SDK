@@ -228,7 +228,7 @@ Add capabilities to configure app services from Apple, such as push notification
  
 Following screenshot would be of help.
 
-![xcode-capability](https://raw.githubusercontent.com/AppLozic/Applozic-iOS-SDK/main/Images/xcode-capability.png)
+![xcode-capability](images/xcode-capability.png)
  
 #### Configure the push notification in the Appdelegate file of your project.
 
