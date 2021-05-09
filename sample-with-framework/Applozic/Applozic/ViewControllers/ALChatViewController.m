@@ -45,6 +45,7 @@
 #import "ALMyDeletedMessageCell.h"
 #import "ALFriendDeletedMessage.h"
 #import "ALUIUtilityClass.h"
+#import "ALVideoUploadManager.h"
 
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
@@ -2847,21 +2848,25 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.mTotalCount = self.mTotalCount+1;
         self.startIndex = self.startIndex + 1;
 
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
-        [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
+        if ([theMessage.fileMeta.contentType hasPrefix:@"video"]) {
+            ALVideoUploadManager *videoUploadManager = [[ALVideoUploadManager alloc] init];
+            videoUploadManager.attachmentProgressDelegate = self;
+            [videoUploadManager uploadTheVideo:theMessage];
+        } else {
+            ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+            [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
-            if (error)
-            {
-                ALSLog(ALLoggerSeverityError, @"%@",error);
-                [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
-                return;
-            }
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"%@",error);
+                    [self onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage]];
+                    return;
+                }
 
-            ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
-            httpManager.attachmentProgressDelegate = self;
-            [httpManager processUploadFileForMessage:theMessage uploadURL:url];
-
-        }];
+                ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+                httpManager.attachmentProgressDelegate = self;
+                [httpManager processUploadFileForMessage:theMessage uploadURL:url];
+            }];
+        }
     }
 }
 

@@ -602,6 +602,8 @@ static ALMessageClientService *alMsgClientService;
     dbMessage.fileMetaInfo.name = message.fileMeta.name;
     dbMessage.fileMetaInfo.size = message.fileMeta.size;
     dbMessage.fileMetaInfo.suUserKeyString = message.fileMeta.userKey;
+    dbMessage.fileMetaInfo.thumbnailUrl = message.fileMeta.thumbnailUrl;
+
     message.fileMetaKey = message.fileMeta.key;
     message.msgDBObjectId = [dbMessage objectID];
 

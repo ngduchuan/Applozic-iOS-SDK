@@ -46,5 +46,7 @@
 +(NSData *)compressImage:(NSData *) data;
 +(NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
 +(NSBundle*)getBundle;
-
++(NSString *)getPathFromDirectory:(NSString *)imageFilePath;
++(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
++(NSString *) saveImageToDocDirectory:(UIImage *) image;
 @end
