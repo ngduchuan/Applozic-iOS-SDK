@@ -1060,11 +1060,11 @@ static ALMessageClientService *alMsgClientService;
                 return;
             }
             NSNumber *totalUnreadCount = [alUserService getTotalUnreadCount];
-            completion([totalUnreadCount integerValue], nil);
+            completion(totalUnreadCount.integerValue, nil);
         }];
     } else {
         NSNumber *totalUnreadCount = [alUserService getTotalUnreadCount];
-        completion([totalUnreadCount integerValue], nil);
+        completion(totalUnreadCount.integerValue, nil);
     }
 }
 
