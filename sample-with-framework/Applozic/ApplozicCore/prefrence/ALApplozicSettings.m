@@ -1525,8 +1525,7 @@
     {
         if([defaultKeyString hasPrefix:@"com.applozic"] &&
            ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_SHARE_EXTENSION]) {
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
@@ -1722,19 +1721,15 @@
 
 +(void)setupSuiteAndMigrate {
     [ALApplozicSettings migrateUserDefaultsToAppGroups];
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
-    [userDefaults setValue:AL_DEFAULT_APP_GROUP forKey:AL_SHARE_EXTENSION];
-    [userDefaults synchronize];
 }
 
 +(NSString *)getShareExtentionGroup {
-
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
-    return  [userDefaults valueForKey:AL_SHARE_EXTENSION];
+    return [ALUtilityClass getAppGroupsName];
 }
 
 +(NSUserDefaults *)getUserDefaults {
-    return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
+    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
 }
 
 +(void) setUserDefaultsMigratedFlag:(BOOL)flag {
@@ -1815,7 +1810,7 @@
     }
 
     //Will use the deafault group for access and other places as well
-    NSUserDefaults * groupUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSUserDefaults * groupUserDefaults = [ALApplozicSettings getUserDefaults];
     if(groupUserDefaults != nil && ![ALApplozicSettings isUserDefaultsMigrated] ){
         for(NSString * key in dictionary.allKeys){
             [groupUserDefaults setObject:dictionary[key] forKey:key];
@@ -1934,17 +1929,6 @@
 +(NSString *)getSupportContactUserId {
     NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
     return [userDefaults valueForKey:AL_SUPPORT_CONTACT_USER_ID];
-}
-
-+(void)setKeychainAcessGroup:(NSString *)keychainAcessGroup {
-    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    [userDefaults setValue:keychainAcessGroup forKey:AL_KEYCHAIN_ACESS_GROUP];
-    [userDefaults synchronize];
-}
-
-+(NSString*) getKeychainAcessGroup {
-    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    return [userDefaults valueForKey:AL_KEYCHAIN_ACESS_GROUP];
 }
 
 @end

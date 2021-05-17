@@ -9,6 +9,7 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
 #import "ALPasswordQueryable.h"
+#import "ALUtilityClass.h"
 
 @implementation ALUserDefaultsHandler
 
@@ -100,8 +101,7 @@
     {
         if([defaultKeyString hasPrefix:AL_KEY_PREFIX] &&
            ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN] &&
-           ![defaultKeyString isEqualToString:AL_SHARE_EXTENSION]) {
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
@@ -931,7 +931,8 @@
 }
 
 +(NSUserDefaults *)getUserDefaults {
-    return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
+    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
 }
 
 + (void)deactivateLoggedInUser:(BOOL)deactivate {

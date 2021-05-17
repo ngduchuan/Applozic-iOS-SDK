@@ -19,6 +19,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+NSString * const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
+NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
+
 @implementation ALUtilityClass
 
 + (NSString *) formatTimestamp:(NSTimeInterval) timeInterval toFormat:(NSString *) forMatStr
@@ -444,6 +447,15 @@
     CGImageRelease(imageRef);
 
     return thumbnail;
+}
+
++(NSString *)getAppGroupsName {
+    NSString *appGroupsId = [[NSBundle mainBundle] objectForInfoDictionaryKey:AL_APP_GROUPS_ACCESS_KEY];
+    if (appGroupsId
+        && appGroupsId.length > 0) {
+        return appGroupsId;
+    }
+    return AL_DEFAULT_APP_GROUP;
 }
 
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
