@@ -96,7 +96,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>AppIdentifierPrefix</key>
-    <string>$(AppIdentifierPrefix)</string>
+    <key>ALAppGroupsKey</key>
+    <string>group.com.applozic.share</string>
+    <key>ALKeychainGroupsKey</key>
+    <string>$(AppIdentifierPrefix)com.applozic.customer.demo</string>
 </dict>
 </plist>

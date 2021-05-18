@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ALMessage.h"
 
+extern NSString * const AL_DEFAULT_APP_GROUP;
+extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
+
 @interface ALUtilityClass : NSObject
 
 + (NSString *) formatTimestamp:(NSTimeInterval) timeInterval toFormat:(NSString *) forMatStr;
@@ -49,4 +52,5 @@
 +(NSString *)getPathFromDirectory:(NSString *)imageFilePath;
 +(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 +(NSString *) saveImageToDocDirectory:(UIImage *) image;
++(NSString *)getAppGroupsName;
 @end

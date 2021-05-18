@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY;
+
 @interface ALPasswordQueryable : NSObject <ALSecureStoreQueryable>
 
 - (nonnull instancetype)init NS_UNAVAILABLE;

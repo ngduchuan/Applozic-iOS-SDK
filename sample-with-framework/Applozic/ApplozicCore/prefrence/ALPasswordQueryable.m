@@ -9,11 +9,13 @@
 #import "ALPasswordQueryable.h"
 #import "ALApplozicSettings.h"
 
+NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
+
 @implementation ALPasswordQueryable
 
 - (instancetype)initWithService:(NSString *)service {
     self.serviceString = service;
-    self.appKeychainAcessGroup = [ALApplozicSettings getKeychainAcessGroup];
+    self.appKeychainAcessGroup = [self getKeychainAcessGroupsName];
     return self;
 }
 
@@ -28,4 +30,7 @@
     return query;
 }
 
+-(NSString *)getKeychainAcessGroupsName {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:AL_KEYCHAIN_GROUPS_ACCESS_KEY];
+}
 @end

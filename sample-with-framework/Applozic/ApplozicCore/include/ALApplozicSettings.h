@@ -143,10 +143,8 @@ static NSString *const AL_CHANNEL_ACTION_MESSAGE_BG_COLOR = @"com.applozic.AL_CH
 static NSString *const AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR = @"com.applozic.AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR";
 static NSString *const AL_ALPHABETIC_COLOR_CODES = @"com.applozic.AL_ALPHABETIC_COLOR_CODES";
 static NSString *const AL_DISABLE_UNBLOCK_FROM_CHAT = @"com.applozic.DISABLE_UNBLOCK_FROM_CHAT";
-static NSString *const AL_SHARE_EXTENSION = @"com.applozic.AL_SHARE_EXTENSION";
 static NSString *const AL_USER_DEFAULTS_GROUP_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_GROUP_MIGRATION";
 static NSString *const AL_USER_DEFAULTS_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_MIGRATION";
-static NSString *const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
 static NSString *const AL_DOCUMENT_OPTION = @"com.applozic.AL_DOCUMENT_OPTION";
 static NSString *const AL_SENT_MESSAGE_CONTACT_BUTTON = @"com.applozic.AL_SENT_MESSAGE_CONTACT_BUTTON";
 static NSString *const AL_SENT_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_SENT_CONTACT_MSG_LABEL_COLOR";
@@ -160,7 +158,6 @@ static NSString *const AL_MESSAGE_DELETE_FOR_ALL_ENABLED = @"com.applozic.userde
 static NSString *const AL_PHOTO_PICKER_SELECTION_LIMIT = @"com.applozic.userdefault.AL_PHOTO_PICKER_SELECTION_LIMIT";
 static NSString *const AL_MESSAGE_META_DATA_KEY = @"com.applozic.userdefault.AL_MESSAGE_META_DATA_KEY";
 static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.AL_SUPPORT_CONTACT_USER_ID";
-static NSString *const AL_KEYCHAIN_ACESS_GROUP = @"com.applozic.userdefault.AL_KEYCHAIN_ACESS_GROUP";
 
 @interface ALApplozicSettings : NSObject
 
@@ -633,8 +630,5 @@ static NSString *const AL_KEYCHAIN_ACESS_GROUP = @"com.applozic.userdefault.AL_K
 /// Support contact userId can be set for  showing the support contact at top in contact screen.
 +(void)setSupportContactUserId:(NSString *)userId;
 +(NSString *)getSupportContactUserId;
-
-+(void)setKeychainAcessGroup:(NSString *)keychainAcessGroup;
-+(NSString*) getKeychainAcessGroup;
 
 @end
