@@ -77,4 +77,9 @@
 - (void)onUserMuteStatus:(ALUserDetail *)userDetail {
 }
 
+- (void)onChannelMute:(NSNumber *)channelKey {
+
+}
+
+
 @end

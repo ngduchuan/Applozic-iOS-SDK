@@ -97,15 +97,15 @@
     {
         [self.activityView startAnimating];
     }
-    
+
     [self.view addSubview:_activityView];
     ALUser *user = [[ALUser alloc] init];
     [user setUserId:[ALUserDefaultsHandler getUserId]];
     [user setEmail:[ALUserDefaultsHandler getEmailId]];
-    
+
     ALChatManager * chatManager = [[ALChatManager alloc] init];
     [chatManager connectUserAndLaunchChat:user andFromController:self forUser:nil withGroupId:nil];
-    
+
     //Adding sample contacts...
     [self insertInitialContacts];
 }
@@ -149,28 +149,28 @@
 
 - (IBAction)mChatLaunchButton:(id)sender {
     
-    [self.view addSubview:_activityView];
-    [self.activityView startAnimating];
-    
-    ALUser * user = [[ALUser alloc] init];
-    [user setUserId:[ALUserDefaultsHandler getUserId]];
-    [user setEmail:[ALUserDefaultsHandler getEmailId]];
-    
-    
-    
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService  getChannelInformation:@6731287 orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-        if(alChannel){
-            ALChatManager * chatManager = [[ALChatManager alloc] init];
-            
-            [chatManager launchChatForUserWithDisplayName:nil withGroupId:@6731287
-                                       andwithDisplayName:nil andFromViewController:self];
-            
-            
+    ALMessageService * service = [[ALMessageService alloc] init];
+    [service getTotalUnreadMessageCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
+
+        if (error){
+            NSLog(@"ERRROR in fetching count");
+            return;
         }
-        
+
+        NSLog(@"Current count is now @@ :%lu",(unsigned long)unreadCount);
+
+
+        [service getTotalUnreadConversationCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
+
+            if (error){
+                NSLog(@"ERRROR in fetching getTotalUnreadConversationCountWithCompletionHandler");
+                return;
+            }
+
+            NSLog(@"Current count is now getTotalUnreadConversationCountWithCompletionHandler  @@ :%lu",(unsigned long)unreadCount);
+        }];
     }];
-    
+
 }
 
 -(void)checkUserContact:(NSString *)userId displayName:(NSString *)displayName withCompletion:(void(^)(ALContact * contact))completion
