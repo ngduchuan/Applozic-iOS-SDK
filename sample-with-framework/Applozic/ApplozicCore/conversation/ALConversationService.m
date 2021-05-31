@@ -55,8 +55,7 @@
         return result;
     }
     for (DB_ConversationProxy* object in list) {
-        ALConversationProxy * conversation = [[ALConversationProxy alloc] init];
-        conversation = [self convertAlConversationProxy:object];
+        ALConversationProxy * conversation = [self convertAlConversationProxy:object];
         [result addObject:conversation];
     }
     
@@ -73,8 +72,7 @@
         return result;
     }
     for (DB_ConversationProxy* object in list) {
-        ALConversationProxy * conversation = [[ALConversationProxy alloc] init];
-        conversation = [self convertAlConversationProxy:object];
+        ALConversationProxy * conversation = [self convertAlConversationProxy:object];
         [result addObject:conversation];
     }
     return result;
@@ -86,8 +84,7 @@
     NSArray * list = [conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     
     for (DB_ConversationProxy* object in list) {
-        ALConversationProxy * conversation = [[ALConversationProxy alloc] init];
-        conversation = [self convertAlConversationProxy:object];
+        ALConversationProxy * conversation = [self convertAlConversationProxy:object];
         [result addObject:conversation];
     }
     

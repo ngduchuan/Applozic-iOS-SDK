@@ -120,7 +120,6 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
-            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
 
         }
 

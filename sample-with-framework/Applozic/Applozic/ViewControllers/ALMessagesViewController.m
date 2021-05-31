@@ -1364,9 +1364,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     if (messageArray.count < 1) {
         return;
     }
-    NSMutableArray * allMessagesArray = [[NSMutableArray alloc]init];
 
-    allMessagesArray = self.mContactsMessageListArray;
+    NSMutableArray * allMessagesArray = self.mContactsMessageListArray;
     ALChannelService *channelService = [[ALChannelService alloc]init];
 
 

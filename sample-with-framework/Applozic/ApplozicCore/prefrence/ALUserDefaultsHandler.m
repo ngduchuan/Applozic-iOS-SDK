@@ -355,7 +355,7 @@
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
     NSNumber * timeStamp = [userDefaults objectForKey:AL_LAST_SEEN_SYNC_TIME];
-    return timeStamp ? timeStamp : [NSNumber numberWithInt:0];
+    return timeStamp != nil ? timeStamp : [NSNumber numberWithInt:0];
 }
 
 +(void)setShowLoadEarlierOption:(BOOL) value forContactId:(NSString*)contactId
@@ -429,7 +429,7 @@
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
     NSNumber * lastSyncTimeStamp = [userDefaults valueForKey:AL_USER_BLOCK_LAST_TIMESTAMP];
-    if(!lastSyncTimeStamp)                      //FOR FIRST TIME USER
+    if(lastSyncTimeStamp == nil)                      //FOR FIRST TIME USER
     {
         lastSyncTimeStamp = [NSNumber numberWithInt:1000];
     }
@@ -956,7 +956,7 @@
 +(NSNumber *)getChannelListLastSyncGeneratedTime {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
     NSNumber * lastSyncGeneratedTime = [userDefaults valueForKey:AL_CHANNEL_LIST_LAST_GENERATED_TIME];
-    if (!lastSyncGeneratedTime) {
+    if (lastSyncGeneratedTime == nil) {
         lastSyncGeneratedTime = [NSNumber numberWithInt:10000];
     }
     return lastSyncGeneratedTime;

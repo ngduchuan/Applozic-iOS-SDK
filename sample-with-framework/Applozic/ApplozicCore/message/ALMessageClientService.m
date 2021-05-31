@@ -67,7 +67,7 @@
 -(void)getNSMutableURLRequestForImage:(NSString *) blobKey
                        withCompletion:(void(^)(NSMutableURLRequest * urlRequest, NSString *fileUrl)) completion {
 
-    NSMutableURLRequest * urlRequest = [[NSMutableURLRequest alloc] init];
+    NSMutableURLRequest * urlRequest = nil;
     if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
         NSString * theUrlString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
         NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
@@ -175,7 +175,7 @@
     NSString * theParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&deletedGroupIncluded=%@",
                                  @"0",(unsigned long)mainPageSize,@(YES)];
 
-    if (startTime) {
+    if (startTime != nil) {
         theParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&endTime=%@&deletedGroupIncluded=%@",
                           @"0", (unsigned long)mainPageSize, startTime,@(YES)];
     }
@@ -266,14 +266,14 @@
         }
 
         if (!(messageListRequest.channelType == OPEN)) {
-            if(messageListRequest.channelKey) {
+            if(messageListRequest.channelKey != nil) {
                 [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
             } else {
                 [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
             }
         }
 
-        if(messageListRequest.conversationId) {
+        if(messageListRequest.conversationId != nil) {
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
         }
 
@@ -299,7 +299,7 @@
               withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
     ALChannel *channel = nil;
-    if (messageListRequest.channelKey) {
+    if (messageListRequest.channelKey != nil) {
         channel = [[ALChannelService sharedInstance] getChannelByKey:messageListRequest.channelKey];
     }
 

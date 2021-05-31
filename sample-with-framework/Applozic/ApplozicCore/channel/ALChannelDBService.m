@@ -70,7 +70,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         theChannelEntity.channelDisplayName = channel.name;
         theChannelEntity.channelKey = channel.key;
         theChannelEntity.clientChannelKey = channel.clientChannelKey;
-        if (channel.userCount) {
+        if (channel.userCount != nil) {
             theChannelEntity.userCount = channel.userCount;
         }
         theChannelEntity.notificationAfterTime = channel.notificationAfterTime;
@@ -660,11 +660,11 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             }
             for(NSDictionary * chUserDict in channelUsers) {
                 ALChannelUser * channelUser = [[ALChannelUser alloc] initWithDictonary:chUserDict];
-                if (channelUser.parentGroupKey) {
+                if (channelUser.parentGroupKey != nil) {
                     [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
                 }
                 
-                if (channelUser.role) {
+                if (channelUser.role != nil) {
                     [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
                 }
             }
@@ -849,7 +849,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 -(NSUInteger)markConversationAsRead:(NSNumber*)channelKey {
     NSArray *messages;
     
-    if (channelKey) {
+    if (channelKey != nil) {
         messages =  [self getUnreadMessagesForGroup:channelKey];
     } else {
         ALSLog(ALLoggerSeverityError, @"channelKey null for marking unread");
@@ -887,7 +887,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         NSPredicate *predicate;
         NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"status != %i AND type==%@ ",DELIVERED_AND_READ,@"4"];
         
-        if (groupId) {
+        if (groupId != nil) {
             NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"%K=%d",@"groupId",groupId.intValue];
             predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
         } else {

@@ -1129,8 +1129,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     for(ALConversationProxy * conversation in conversationList)
     {
-        ALTopicDetail * topicDetail = [[ALTopicDetail alloc] init];   //WithDictonary:conversation.topicDetailJson];
-        topicDetail = conversation.getTopicDetail;
+        ALTopicDetail * topicDetail = conversation.getTopicDetail;
 
         if(conversation.getTopicDetail != nil && topicDetail.title != nil)
         {
@@ -2069,8 +2068,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     ALConversationService * alconversationService = [[ALConversationService alloc]init];
     ALConversationProxy *alConversationProxy = [alconversationService getConversationByKey:self.conversationId];
 
-    ALTopicDetail * topicDetail = [[ALTopicDetail alloc] init];//WithJSONString:alConversationProxy.topicDetailJson];
-    topicDetail = alConversationProxy.getTopicDetail;
+    ALTopicDetail * topicDetail = alConversationProxy.getTopicDetail;
     if(topicDetail == nil){
         return  [[UIView alloc]init];
     }
@@ -3364,8 +3362,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     }
     else
     {
-        ALMessage* fetchMsg = [ALMessage new];
-        fetchMsg=[ALMessageService getMessagefromKeyValuePair:@"key" andValue:key];
+        ALMessage* fetchMsg = [ALMessageService getMessagefromKeyValuePair:@"key" andValue:key];
 
         //now find in list ...
         ALMessage * alMessage2 = [self getMessageFromViewList:@"msgDBObjectId" withValue:fetchMsg.msgDBObjectId];

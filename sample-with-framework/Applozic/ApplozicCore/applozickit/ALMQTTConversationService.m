@@ -316,7 +316,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 [dict setObject:[alMessage getLastMessage] forKey:@"alertValue"];
                 [dict setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
 
-                if(alMessage.groupId){
+                if(alMessage.groupId != nil){
                     ALChannelService *channelService = [[ALChannelService alloc] init];
                     [channelService  getChannelInformation:alMessage.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
 
@@ -671,7 +671,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
     NSString * topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], userId];
 
-    if(channelKey)
+    if(channelKey != nil)
     {
         topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
     }
@@ -791,7 +791,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 return;
             }
             NSString * topicString = @"";
-            if(channelKey)
+            if(channelKey != nil)
             {
                 topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
             }
@@ -819,7 +819,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             return;
         }
         NSString * topicString = @"";
-        if(channelKey)
+        if(channelKey != nil)
         {
             topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
         }else
@@ -843,7 +843,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 return;
             }
             NSString * openGroupString = @"";
-            if(channelKey)
+            if(channelKey != nil)
             {
                 openGroupString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
             }
@@ -867,7 +867,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             return;
         }
         NSString * topicString = @"";
-        if(channelKey)
+        if(channelKey != nil)
         {
             topicString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
         }

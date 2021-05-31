@@ -114,22 +114,20 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
         return;
     }
     //3rd Party View is Opened.........
-    ALContact* dpName=[[ALContact alloc] init];
+    ALContact* contact = nil;
     ALContactDBService * contactDb=[[ALContactDBService alloc] init];
-    dpName=[contactDb loadContactByKey:@"userId" value:contactId];
+    contact = [contactDb loadContactByKey:@"userId" value:contactId];
 
 
-    ALChannel *channel=[[ALChannel alloc] init];
+    ALChannel *channel = nil;
     ALChannelDBService *groupDb= [[ALChannelDBService alloc] init];
 
     NSString* title;
-    if(groupID){
+    if (groupID != nil) {
         channel = [groupDb loadChannelByKey:groupID];
-        title=channel.name;
-        contactId=[NSString stringWithFormat:@"%@",groupID];
-    }
-    else {
-        title=dpName.getDisplayName;
+        title = channel.name;
+    } else {
+        title = contact.getDisplayName;
     }
 
     ALPushAssist* top=[[ALPushAssist alloc] init];

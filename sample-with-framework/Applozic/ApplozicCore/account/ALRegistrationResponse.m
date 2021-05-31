@@ -13,7 +13,6 @@
 
 - (id)initWithJSONString:(NSString *)registrationResponse
 {
-    //TODO: Right now error is coming super initWithJSONString, so overriding it...once fixed remove this
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
     self.userKey = [registrationResponse valueForKey:@"userKey"];

@@ -171,8 +171,7 @@ static NSString * const AL_TRUE = @"true";
 
     NSDate *currentTime = [[NSDate alloc] init];
 
-    NSDate *msgDate = [[NSDate alloc] init];
-    msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
+    NSDate *msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
     NSTimeInterval difference = [currentTime timeIntervalSinceDate:msgDate];
 
     float minutes;
@@ -509,13 +508,13 @@ static NSString * const AL_TRUE = @"true";
     
     ALContact *contact;
     
-    if(self.groupId){
+    if (self.groupId != nil) {
         
         ALChannelService *channelService = [[ALChannelService alloc] init];
         
         channel =  [channelService getChannelByKey:self.groupId];
         
-    }else{
+    } else {
         
         ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
         

@@ -28,7 +28,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 +(void)userLastSeenDetail:(NSNumber *)lastSeenAt
            withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/status",KBASE_URL];
-    if(!lastSeenAt){
+    if (lastSeenAt == nil) {
         lastSeenAt = [ALUserDefaultsHandler getLastSyncTime];
         ALSLog(ALLoggerSeverityInfo, @"lastSeenAt is coming as null seeting default vlaue to %@", lastSeenAt);
     }
@@ -241,7 +241,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     NSString * theParamString = @"";
     theParamString = [NSString stringWithFormat:@"pageSize=%@", pageSizeString];
-    if (startTime) {
+    if (startTime != nil) {
         theParamString = [NSString stringWithFormat:@"pageSize=%@&startTime=%@", pageSizeString, startTime];
     }
     

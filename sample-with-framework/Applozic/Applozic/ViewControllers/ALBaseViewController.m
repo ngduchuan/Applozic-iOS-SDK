@@ -287,6 +287,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self removeRegisteredKeyboardNotifications];
 }
 

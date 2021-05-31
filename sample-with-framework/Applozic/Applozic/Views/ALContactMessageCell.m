@@ -153,7 +153,6 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
-            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
 
         }
 

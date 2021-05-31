@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <ApplozicCore/ApplozicCore.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface ALUIUtilityClass : NSObject
 
 +(UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName;
@@ -53,5 +51,3 @@ NS_ASSUME_NONNULL_BEGIN
 +(void)openApplicationSettings;
 
 @end
-
-NS_ASSUME_NONNULL_END

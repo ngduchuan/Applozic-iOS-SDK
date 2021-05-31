@@ -52,7 +52,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     
    
     
-    if(self.conversationId){
+    if (self.conversationId != nil){
         
         paramString = [paramString stringByAppendingFormat:@"&conversationId=%@",self.conversationId];
     }
@@ -74,7 +74,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
 
 -(BOOL)isFirstCall {
 
-    NSString * key = self.channelKey ? [self.channelKey stringValue]: self.userId;
+    NSString * key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
     return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
 }
 
