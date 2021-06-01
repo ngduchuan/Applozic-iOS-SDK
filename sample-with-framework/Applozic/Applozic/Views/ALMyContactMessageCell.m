@@ -110,8 +110,6 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
         CGFloat requiredHeight = viewSize.width - widthPadding;
 
-        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
-
         self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX), 0,
                                                 viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - widthPadding);
 

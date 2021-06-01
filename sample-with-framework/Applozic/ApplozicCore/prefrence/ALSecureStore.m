@@ -123,7 +123,7 @@
     NSString *errorMessage = nil;
     if (@available(iOS 11.3, *)) {
         CFStringRef errorMessageRef = SecCopyErrorMessageString(status, nil);
-        if (errorMessageRef) {
+        if (errorMessageRef != NULL) {
             errorMessage = (__bridge_transfer NSString *)errorMessageRef;
         } else {
             errorMessage  = [[NSString alloc] initWithFormat:@"Unhandled Error with status %d" ,(int)status];

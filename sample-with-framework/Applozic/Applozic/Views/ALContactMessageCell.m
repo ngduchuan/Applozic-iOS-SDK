@@ -127,8 +127,6 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
         CGFloat requiredHeight = viewSize.width -BUBBLE_PADDING_HEIGHT;
 
-        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
-
         CGFloat contactProfileViewY = 0.0;
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
@@ -141,9 +139,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
 
-            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
-            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
-            
+            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;            
             contactProfileViewY =  self.mChannelMemberName.frame.origin.x-AL_CONTACT_PADDING_Y;
 
         }
