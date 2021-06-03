@@ -210,6 +210,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     if ([ALUserDefaultsHandler getUserEncryptionKey]) {
                         [subscribeTopicsDictionary setValue:@(MQTTQosLevelAtMostOnce) forKey:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
                     }
+
+                    if (!topic) {
+                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe topic is nil" forKey:NSLocalizedDescriptionKey]];
+                        completion(false, topicNilError);
+                        return;
+                    }
+
                     [subscribeTopicsDictionary setValue:@(MQTTQosLevelAtMostOnce) forKey:topic];
                     /// Subscribe to both the topics with encr prefix and without encr prefix
 
@@ -811,25 +818,27 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
 -(void)unSubscribeToChannelConversation:(NSNumber *)channelKey
 {
-    ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBING");
-    dispatch_async(dispatch_get_main_queue (), ^{
+    @try {
+        ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBING");
+        dispatch_async(dispatch_get_main_queue (), ^{
 
-        if (!self.session) {
-            ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
-            return;
-        }
-        NSString * topicString = @"";
-        if(channelKey != nil)
-        {
-            topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
-        }else
-        {
-            topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]];
-            [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:NO];
-        }
-        [self.session unsubscribeTopic:topicString];
-        ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBED_COMPLETE");
-    });
+            if (!self.session) {
+                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                return;
+            }
+            NSString * topicString = @"";
+            if (channelKey != nil) {
+                topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+            } else {
+                topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]];
+                [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:NO];
+            }
+            [self.session unsubscribeTopic:topicString];
+            ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBED_COMPLETE");
+        });
+    } @catch (NSException * exp) {
+        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribing to typing conversation :: %@", exp.description);
+    }
 }
 
 -(void)subscribeToOpenChannel:(NSNumber *)channelKey
@@ -859,21 +868,24 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
 -(void)unSubscribeToOpenChannel:(NSNumber *)channelKey
 {
-    ALSLog(ALLoggerSeverityInfo, @"MQTT_/OPEN_GROUP_UNSUBSCRIBING");
-    dispatch_async(dispatch_get_main_queue (), ^{
+    @try {
+        ALSLog(ALLoggerSeverityInfo, @"MQTT_/OPEN_GROUP_UNSUBSCRIBING");
+        dispatch_async(dispatch_get_main_queue (), ^{
 
-        if (!self.session) {
-            ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
-            return;
-        }
-        NSString * topicString = @"";
-        if(channelKey != nil)
-        {
-            topicString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
-        }
-        [self.session unsubscribeTopic:topicString];
-        ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_UNSUBSCRIBTION_COMPLETE");
-    });
+            if (!self.session) {
+                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                return;
+            }
+            NSString * topicString = @"";
+            if (channelKey != nil) {
+                topicString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+            }
+            [self.session unsubscribeTopic:topicString];
+            ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_UNSUBSCRIBTION_COMPLETE");
+        });
+    }@catch (NSException * exp) {
+        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribe Open Channel :: %@", exp.description);
+    }
 }
 
 -(void) syncReceivedMessage :(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary*)nsMutableDictionary{
