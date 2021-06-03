@@ -382,6 +382,7 @@ extension ALCustomPickerViewController: UICollectionViewDelegate, UICollectionVi
 //        cell.selectedIcon.isHidden = true
         cell.videoIcon.isHidden = true
         cell.selectedIcon.isHidden = true
+        cell.imgPreview.alpha = 1.0
         if selectedRows[indexPath.row] == 1 {
             cell.selectedIcon.isHidden = false
         }
