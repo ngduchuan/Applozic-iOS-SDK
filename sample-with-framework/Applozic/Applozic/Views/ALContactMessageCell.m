@@ -24,7 +24,6 @@ static CGFloat const BUBBLE_PADDING_HEIGHT = 190;
 static CGFloat const DATE_HEIGHT = 20;
 
 static CGFloat const CNT_PROFILE_X = 10;
-static CGFloat const CNT_PROFILE_Y = 10;
 static CGFloat const CNT_PROFILE_HEIGHT = 50;
 static CGFloat const CNT_PROFILE_WIDTH = 50;
 static CGFloat const CNT_PERSON_X = 10;
