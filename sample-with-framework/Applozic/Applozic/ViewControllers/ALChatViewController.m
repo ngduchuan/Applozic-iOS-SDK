@@ -1190,9 +1190,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
                 [userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
                     completion(alChannel, contact);
+                    return;
                 }];
+            } else {
+                completion(alChannel, nil);
             }
-            completion(alChannel, nil);
         }];
     } else {
         ALContactService * contactService = [[ALContactService alloc] init];
@@ -3850,8 +3852,15 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     {
         return;
     }
+    NSString *receiverId = self.contactIds;
+    if (self.alChannel && [self.alChannel isGroupOfTwo]) {
+        receiverId = [self.alChannel getReceiverIdInGroupOfTwo];
+    }
 
-    [ALUserService userDetailServerCall:self.contactIds withCompletion:^(ALUserDetail *alUserDetail)
+    if (!receiverId) {
+        return;
+    }
+    [ALUserService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail)
      {
         if(alUserDetail)
         {
