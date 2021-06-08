@@ -30,7 +30,7 @@
     
     UIImage * originalImage = self;
     
-    NSData * theImageData = UIImageJPEGRepresentation(originalImage,1);
+    NSData * theImageData = nil;
     
     int numberOfAttempts = 0;
     
@@ -43,7 +43,6 @@
         originalImage = [UIImage imageWithData:theImageData];
         
     }
-    
     return originalImage;
 }
 

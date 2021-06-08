@@ -13,9 +13,9 @@
 
 -(NSString*)getParamString {
     NSString * paramString;
-    if(self.channelKey) {
+    if (self.channelKey != nil) {
         paramString = [NSString stringWithFormat:@"groupId=%@&content=%@",self.channelKey,[self.searchText urlEncodeUsingNSUTF8StringEncoding]];
-    }else if (self.userId) {
+    } else if (self.userId) {
         paramString = [NSString stringWithFormat:@"userId=%@&content=%@",[self.userId urlEncodeUsingNSUTF8StringEncoding],[self.searchText urlEncodeUsingNSUTF8StringEncoding]];
     }
 

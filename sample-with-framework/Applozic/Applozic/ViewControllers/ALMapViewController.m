@@ -58,11 +58,13 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self.tabBarController.tabBar setHidden: YES];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [self.tabBarController.tabBar setHidden: YES];
     [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];

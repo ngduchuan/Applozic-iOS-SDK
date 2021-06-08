@@ -106,16 +106,13 @@
         NSPredicate *predicate;
         if (userId) {
             predicate = [NSPredicate predicateWithFormat:@"userId = %@",userId];
-        } else {
-            ALSLog(ALLoggerSeverityError, @"Error");
-        }
-
-        [fetchRequest setEntity:entity];
-        [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
-        NSError *fetchError = nil;
-        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        if (result.count) {
-            return result;
+            [fetchRequest setEntity:entity];
+            [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
+            NSError *fetchError = nil;
+            NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            if (result.count) {
+                return result;
+            }
         }
     }
     return nil;
@@ -132,15 +129,14 @@
         NSPredicate *predicate;
         if (userId) {
             predicate = [NSPredicate predicateWithFormat:@"userId == %@ && topicId == %@",userId,topicId];
-        }
+            [fetchRequest setEntity:entity];
+            [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
+            NSError *fetchError = nil;
 
-        [fetchRequest setEntity:entity];
-        [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
-        NSError *fetchError = nil;
-
-        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        if (result.count) {
-            return result;
+            NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            if (result.count) {
+                return result;
+            }
         }
     }
     return nil;
@@ -154,15 +150,15 @@
 
     if (entity) {
         NSPredicate *predicate;
-        if (channelKey) {
+        if (channelKey != nil) {
             predicate = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
-        }
-        [fetchRequest setEntity:entity];
-        [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
-        NSError *fetchError = nil;
-        NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        if (result.count) {
-            return result;
+            [fetchRequest setEntity:entity];
+            [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
+            NSError *fetchError = nil;
+            NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            if (result.count) {
+                return result;
+            }
         }
     }
     return nil;

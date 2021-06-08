@@ -88,8 +88,7 @@
 -(void)addObjectToMessageArray:(NSMutableArray *)paramMessageArray
 {
     
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-    //remove first object if it a date ..
+     //remove first object if it a date ..
     if( [self.messageArray firstObject  ] ){
         ALMessage *messgae = [self.messageArray firstObject ];
         if([ messgae.type isEqualToString:@"100"]){
@@ -97,7 +96,7 @@
         }
     }
     
-    tempArray = [NSMutableArray arrayWithArray:self.messageArray];
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.messageArray];
     [tempArray addObjectsFromArray:paramMessageArray];
     
     int countX  =((int)self.messageArray.count);
@@ -133,12 +132,11 @@
 -(void)addLatestObjectToArray:(NSMutableArray *)paramMessageArray
 {
     
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
     paramMessageArray = [self filterOutDuplicateMessage:paramMessageArray];
     if(!paramMessageArray.count){
         return;
     }
-    tempArray = [NSMutableArray arrayWithArray:self.messageArray];
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.messageArray];
     [tempArray addObjectsFromArray:paramMessageArray];
     
     

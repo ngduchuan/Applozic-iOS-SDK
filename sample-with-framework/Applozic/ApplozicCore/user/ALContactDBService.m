@@ -170,11 +170,11 @@
             if (contact.displayName) {
                 userContact.displayName = contact.displayName;
             }
-            if (contact.contactType) {
+            if (contact.contactType != nil) {
                 userContact.contactType = contact.contactType;
             }
             userContact.localImageResourceName = contact.localImageResourceName;
-            if (contact.deletedAtTime) {
+            if (contact.deletedAtTime != nil) {
                 userContact.deletedAtTime = contact.deletedAtTime;
             }
             userContact.roleType = contact.roleType;
@@ -670,7 +670,7 @@
 
 -(BOOL)isUserDeleted:(NSString *)userId {
     ALContact * contact = [self loadContactByKey:@"userId" value:userId];
-    return contact.deletedAtTime ? YES : NO;
+    return contact.deletedAtTime != nil ? YES : NO;
 }
 
 -(DB_CONTACT*)replaceContact:(DB_CONTACT*)originalContact
@@ -682,7 +682,7 @@
     originalContact.email = updatedContact.email;
     originalContact.contactImageUrl = updatedContact.contactImageUrl;
     originalContact.localImageResourceName = updatedContact.localImageResourceName;
-    originalContact.unreadCount = updatedContact.unreadCount ? updatedContact.unreadCount : [NSNumber numberWithInt:0];
+    originalContact.unreadCount = updatedContact.unreadCount != nil ? updatedContact.unreadCount : [NSNumber numberWithInt:0];
     originalContact.lastSeenAt = updatedContact.lastSeenAt;
     originalContact.userStatus = updatedContact.userStatus;
     originalContact.connected = updatedContact.connected;
@@ -704,7 +704,7 @@
     DB_CONTACT * dbContact = (DB_CONTACT *)[dbHandler insertNewObjectForEntityForName:@"DB_CONTACT"];
 
     if (dbContact) {
-        dbContact = [self replaceContact:dbContact with:contact];
+        [self replaceContact:dbContact with:contact];
 
         NSError *error = [dbHandler saveContext];
         if (error) {

@@ -16,6 +16,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
 
+    [super viewWillAppear:animated];
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"imageViewControllerTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image", @"");
 
 

@@ -427,9 +427,9 @@
 
     NSPredicate *predicateCreatedAt;
     if (conversationListRequest.endTimeStamp
-        && !conversationListRequest.startTimeStamp) {
+        && conversationListRequest.startTimeStamp == nil) {
         predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt < %@",conversationListRequest.endTimeStamp];
-    } else if (conversationListRequest.startTimeStamp) {
+    } else if (conversationListRequest.startTimeStamp != nil) {
         predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt >= %@",conversationListRequest.startTimeStamp];
     }
 
@@ -559,7 +559,7 @@
         theMessageEntity.replyMessageType = theMessage.messageReplyType;
         theMessageEntity.source = theMessage.source;
 
-        if (theMessage.getGroupId) {
+        if (theMessage.getGroupId != nil) {
             theMessageEntity.groupId = theMessage.groupId;
         }
         if (theMessage.fileMeta != nil) {
@@ -671,14 +671,14 @@
     NSPredicate *predicate1;
 
     if ([ALApplozicSettings getContextualChatOption] &&
-        messageListRequest.conversationId &&
-        messageListRequest.conversationId != 0) {
-        if (messageListRequest.channelKey) {
+        messageListRequest.conversationId != nil &&
+        messageListRequest.conversationId.integerValue != 0) {
+        if (messageListRequest.channelKey != nil) {
             predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@ && conversationId = %i",messageListRequest.channelKey,messageListRequest.conversationId];
         } else {
             predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && conversationId = %i",messageListRequest.userId,messageListRequest.conversationId];
         }
-    } else if (messageListRequest.channelKey) {
+    } else if (messageListRequest.channelKey != nil) {
         predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",messageListRequest.channelKey];
     } else {
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil ",messageListRequest.userId];
@@ -692,12 +692,13 @@
 
     NSCompoundPredicate * compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];;
 
-    if (messageListRequest.endTimeStamp) {
+    if (messageListRequest.endTimeStamp
+        != nil) {
         NSPredicate *predicateForEndTimeStamp= [NSPredicate predicateWithFormat:@"createdAt < %@",messageListRequest.endTimeStamp];
         compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateForEndTimeStamp, predicateDeletedCheck,predicateForHiddenMessages]];
     }
 
-    if (messageListRequest.startTimeStamp) {
+    if (messageListRequest.startTimeStamp != nil) {
         NSPredicate *predicateCreatedAtForStartTime  = [NSPredicate predicateWithFormat:@"createdAt >= %@",messageListRequest.startTimeStamp];
         compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateCreatedAtForStartTime, predicateDeletedCheck,predicateForHiddenMessages]];
     }
@@ -724,7 +725,7 @@
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
-    if (channelKey) {
+    if (channelKey != nil) {
         predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
     } else {
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
@@ -1026,7 +1027,7 @@
 
 -(NSMutableArray*)fetchLatestMesssagesFromDb :(BOOL) isGroupMessages {
 
-    NSMutableArray *messagesArray = [NSMutableArray new];
+    NSMutableArray *messagesArray = nil;
 
     if (isGroupMessages) {
         messagesArray =  [self getLatestMessagesForGroup];

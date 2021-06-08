@@ -142,7 +142,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     if (clientChannelKey) {
         [channelDictionary setObject:clientChannelKey forKey:@"clientGroupId"];
     }
-    if (parentChannelKey) {
+    if (parentChannelKey != nil) {
         [channelDictionary setObject:parentChannelKey forKey:@"parentKey"];
     }
     if (adminUserId) {
@@ -583,7 +583,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                withCompletion:(void (^)(NSString *, NSError *))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString * theParamString;
-    if (channelKey) {
+    if (channelKey != nil) {
         theParamString = [NSString stringWithFormat:@"groupId=%@",channelKey];
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
@@ -720,7 +720,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     theParamString = [NSString stringWithFormat:@"pageSize=%@", GROUP_FETCH_BATCH_SIZE];
 
-    if (endTime) {
+    if (endTime != nil) {
         theParamString = [NSString stringWithFormat:@"pageSize=%@&endTime=%@", GROUP_FETCH_BATCH_SIZE , endTime];
     }
     

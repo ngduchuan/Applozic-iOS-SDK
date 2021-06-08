@@ -118,10 +118,10 @@ static ALMessageClientService *alMsgClientService;
     NSMutableArray * messageList = [almessageDBService getMessageListForContactWithCreatedAt:messageListRequest];
 
     NSString *chatId;
-    if (messageListRequest.conversationId) {
+    if (messageListRequest.conversationId != nil) {
         chatId = [messageListRequest.conversationId stringValue];
     } else {
-        chatId = messageListRequest.channelKey ? [messageListRequest.channelKey stringValue] : messageListRequest.userId;
+        chatId = messageListRequest.channelKey != nil ? [messageListRequest.channelKey stringValue] : messageListRequest.userId;
     }
     //Found Record in DB itself ...if not make call to server
     if(messageList.count > 0 && [ALUserDefaultsHandler isServerCallDoneForMSGList:chatId])
@@ -137,7 +137,7 @@ static ALMessageClientService *alMsgClientService;
 
 
     ALChannelService *channelService = [[ALChannelService alloc] init];
-    if(messageListRequest.channelKey)
+    if(messageListRequest.channelKey != nil)
     {
 
         [channelService getChannelInformation:messageListRequest.channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
@@ -265,7 +265,7 @@ static ALMessageClientService *alMsgClientService;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversationTableNotification" object:alMessage userInfo:nil];
 
     ALChannel *channel;
-    if(alMessage.groupId){
+    if(alMessage.groupId != nil){
         ALChannelService *channelService = [[ALChannelService alloc]init];
         channel  = [channelService getChannelByKey:alMessage.groupId];
 
@@ -356,7 +356,6 @@ static ALMessageClientService *alMsgClientService;
                 }
                 if(syncResponse.messagesList.count > 0)
                 {
-                    messageArray = [[NSMutableArray alloc] init];
                     ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
                     messageArray = [dbService addMessageList:syncResponse.messagesList skipAddingMessageInDb:NO];
 
@@ -449,7 +448,7 @@ static ALMessageClientService *alMsgClientService;
         return NO;
     }
 
-    if(message.groupId) {
+    if (message.groupId != nil) {
 
         NSNumber * groupId = message.groupId;
         ALChannelDBService * channelDBService =[[ALChannelDBService alloc] init];
@@ -458,7 +457,7 @@ static ALMessageClientService *alMsgClientService;
             channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
             [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
         }
-    }else {
+    } else {
 
         NSString * contactId = message.contactIds;
         ALContactService * contactService=[[ALContactService alloc] init];
@@ -468,7 +467,7 @@ static ALMessageClientService *alMsgClientService;
         [contactService updateContact:contact];
     }
 
-    if(message.conversationId) {
+    if (message.conversationId != nil) {
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
         }];
@@ -576,7 +575,7 @@ static ALMessageClientService *alMsgClientService;
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
 
-            if(channelKey)
+            if(channelKey != nil)
             {
                 [ALChannelService setUnreadCountZeroForGroupID:channelKey];
             }
@@ -636,7 +635,7 @@ static ALMessageClientService *alMsgClientService;
                     return;
                 }
 
-                if (!msg.groupId) {
+                if (msg.groupId == nil) {
                     ALContact * contact = [contactDBService loadContactByKey:@"userId" value:msg.to];
                     if (contact && [contact isDisplayNameUpdateRequired] ) {
                         [[ALUserService sharedInstance] updateDisplayNameWith:msg.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
@@ -949,7 +948,6 @@ static ALMessageClientService *alMsgClientService;
             {
                 if(syncResponse.messagesList.count > 0)
                 {
-                    messageArray = [[NSMutableArray alloc] init];
                     ALMessageDBService *messageDatabase  = [[ALMessageDBService alloc]init];
                     for(ALMessage * message in syncResponse.messagesList)
                     {
@@ -1024,7 +1022,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
     ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
-    if (!alMessage.groupId) {
+    if (alMessage.groupId == nil) {
         ALContact * contact = [contactDBService loadContactByKey:@"userId" value:alMessage.to];
         if (contact && [contact isDisplayNameUpdateRequired] ) {
             [[ALUserService sharedInstance] updateDisplayNameWith:alMessage.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {

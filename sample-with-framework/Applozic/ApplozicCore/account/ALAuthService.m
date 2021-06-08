@@ -33,11 +33,11 @@ static NSString *const VALID_UPTO = @"validUpto";
         NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
         NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
-        if (createdAtTime) {
+        if (createdAtTime != nil) {
             [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
         }
 
-        if (validUptoInMins) {
+        if (validUptoInMins != nil) {
             [ALUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
         }
     }
@@ -51,7 +51,11 @@ static NSString *const VALID_UPTO = @"validUpto";
 
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 
-    return authTokenCreatedAtTime > 0 && authTokenValidUptoMins > 0 && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
+    BOOL hasValidAuthTokenTime = authTokenCreatedAtTime != nil && authTokenCreatedAtTime.integerValue > 0;
+
+    BOOL hasValidUptoTokenTime = authTokenValidUptoMins != nil && authTokenValidUptoMins.integerValue > 0;
+
+    return hasValidAuthTokenTime && hasValidUptoTokenTime && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
 }
 
 -(void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {

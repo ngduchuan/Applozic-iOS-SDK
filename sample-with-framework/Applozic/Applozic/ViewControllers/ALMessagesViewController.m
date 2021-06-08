@@ -713,7 +713,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             [newBtn sizeToFit];
             [newBtn setTitleColor:[ALApplozicSettings getMessageListTextColor] forState:UIControlStateNormal];
 
-           // Add group button.....
+            // Add group button.....
             UIButton *newBroadCast = (UIButton*)[contactCell viewWithTag:102];
             [newBroadCast addTarget:self action:@selector(createBroadcastGroup:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -735,8 +735,9 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             ALMessage *message = (ALMessage *)self.mContactsMessageListArray[indexPath.row];
             [contactCell updateWithMessage:message withColourDictionary:self.colourDictionary];
         }break;
-                
+
         default:
+            return [[UITableViewCell alloc] init];
             break;
     }
     [contactCell setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
@@ -1364,9 +1365,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     if (messageArray.count < 1) {
         return;
     }
-    NSMutableArray * allMessagesArray = [[NSMutableArray alloc]init];
 
-    allMessagesArray = self.mContactsMessageListArray;
+    NSMutableArray * allMessagesArray = self.mContactsMessageListArray;
     ALChannelService *channelService = [[ALChannelService alloc]init];
 
 

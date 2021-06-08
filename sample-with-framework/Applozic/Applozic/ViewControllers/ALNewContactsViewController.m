@@ -1007,7 +1007,6 @@ static const int SHOW_GROUP = 102;
                 [(ALMessagesViewController*)currentVC setChannelKey:channelKey];
                 ALSLog(ALLoggerSeverityInfo, @"IN_TAB-BAR :: found in backStack .....launching from current vc");
                 [(ALMessagesViewController*) currentVC createDetailChatViewController:contactId];
-                isFoundInBackStack = true;
             }
         }
     }
@@ -1336,7 +1335,7 @@ static const int SHOW_GROUP = 102;
 -(void)launchProcessForSubgroups
 {
     ALChannelService *channelService = [ALChannelService new];
-    NSMutableSet * allMemberSet = [NSMutableSet new];
+    NSMutableSet * allMemberSet = nil;
     NSMutableArray * allMemberArray = [NSMutableArray new];
     [self.childChannels addObject:self.parentChannel];
     self.alChannelsList = [NSMutableArray new];
@@ -1537,7 +1536,7 @@ static const int SHOW_GROUP = 102;
             
         }else{
             ALChannelService *channelService = [ALChannelService new];
-            NSMutableArray * membersArray = [NSMutableArray new];
+            NSMutableArray * membersArray = nil;
             
             membersArray = [channelService getListOfAllUsersInChannelByNameForContactsGroup:[ALApplozicSettings getContactsGroupId]];
             

@@ -24,7 +24,6 @@ static CGFloat const BUBBLE_PADDING_HEIGHT = 190;
 static CGFloat const DATE_HEIGHT = 20;
 
 static CGFloat const CNT_PROFILE_X = 10;
-static CGFloat const CNT_PROFILE_Y = 10;
 static CGFloat const CNT_PROFILE_HEIGHT = 50;
 static CGFloat const CNT_PROFILE_WIDTH = 50;
 static CGFloat const CNT_PERSON_X = 10;
@@ -127,8 +126,6 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
         CGFloat requiredHeight = viewSize.width -BUBBLE_PADDING_HEIGHT;
 
-        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
-
         CGFloat contactProfileViewY = 0.0;
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
@@ -141,9 +138,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
 
-            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
-            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
-            
+            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;            
             contactProfileViewY =  self.mChannelMemberName.frame.origin.x-AL_CONTACT_PADDING_Y;
 
         }
@@ -153,7 +148,6 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
-            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
 
         }
 

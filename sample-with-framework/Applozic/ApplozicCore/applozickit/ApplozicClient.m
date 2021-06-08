@@ -238,7 +238,7 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
  */
 -(void)markConversationReadForGroup : (NSNumber *) groupId withCompletion:(void(^)(NSString *response, NSError *error)) completion
 {
-    if(groupId && groupId != 0)
+    if(groupId != nil && groupId.integerValue != 0)
     {
         [_channelService markConversationAsRead:groupId withCompletion:^(NSString * conversationResponse, NSError * error) {
 
@@ -653,9 +653,9 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
 
 -(void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL) isTyping
 {
-    if(channelKey){
+    if (channelKey != nil) {
         [self sendTypingStatusForChannelKey:channelKey withTyping:isTyping];
-    }else if (userId){
+    } else if (userId) {
         [self sendTypingStatusForUserId:userId withTyping:isTyping];
     }
 }
