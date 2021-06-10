@@ -34,9 +34,9 @@
 }
 
 
--(void)sendAttachment{
+- (void)sendAttachment {
     
-    if(self.imageSelectDelegate){
+    if (self.imageSelectDelegate) {
         [self.imageSelectDelegate onSendButtonClick:self.imageFilePath withReplyMessageKey:self.messageKey];
         [self.navigationController popViewControllerAnimated:YES];
     }
