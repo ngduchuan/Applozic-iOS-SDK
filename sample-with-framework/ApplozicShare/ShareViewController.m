@@ -141,6 +141,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dismissViewController:)
                                                  name:@"DISMISS_SHARE_EXTENSION"

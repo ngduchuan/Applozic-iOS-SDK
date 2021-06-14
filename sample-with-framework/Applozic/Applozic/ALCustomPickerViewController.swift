@@ -90,7 +90,7 @@ public class ALBaseNavigationViewController: UINavigationController {
 
     @objc public static func makeInstanceWith(delegate: ALCustomPickerDelegate) -> ALBaseNavigationViewController? {
         let storyboard = UIStoryboard(name: "CustomPicker", bundle: Bundle(for: ALChatViewController.self))
-//        let storyboard = UIStoryboard.name(storyboard: UIStoryboard.Storyboard.picker, bundle: Bundle.applozic)
+        //        let storyboard = UIStoryboard.name(storyboard: UIStoryboard.Storyboard.picker, bundle: Bundle.applozic)
         guard
             let vc = storyboard.instantiateViewController(withIdentifier: "CustomPickerNavigationViewController")
                 as? ALBaseNavigationViewController,
@@ -149,7 +149,7 @@ public class ALBaseNavigationViewController: UINavigationController {
                 case .denied, .restricted:
                     break
                 default: break
-                    //whatever
+                //whatever
                 }
             }
         case .limited:
@@ -379,7 +379,7 @@ extension ALCustomPickerViewController: UICollectionViewDelegate, UICollectionVi
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ALPhotoCollectionCell", for: indexPath) as! ALPhotoCollectionCell
         
-//        cell.selectedIcon.isHidden = true
+        //        cell.selectedIcon.isHidden = true
         cell.videoIcon.isHidden = true
         cell.selectedIcon.isHidden = true
         cell.imgPreview.alpha = 1.0

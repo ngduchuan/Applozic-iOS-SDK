@@ -13,20 +13,12 @@
 
 @implementation UIImage (Utility)
 
--(double)getImageSizeInMb
-{
+- (double)getImageSizeInMb {
     NSData * imageData = UIImageJPEGRepresentation(self, 1);
-    
     return (imageData.length/1024.0)/1024.0;
 }
 
-//-(BOOL)islandScape
-//{
-//    return self.size.width>self.size.height?YES:NO;
-//}
-
--(UIImage *)getCompressedImageLessThanSize:(double)sizeInMb
-{
+- (UIImage *)getCompressedImageLessThanSize:(double)sizeInMb {
     
     UIImage * originalImage = self;
     
@@ -41,27 +33,23 @@
         theImageData = UIImageJPEGRepresentation(self,0.9);
         
         originalImage = [UIImage imageWithData:theImageData];
-        
     }
     return originalImage;
 }
 
--(NSData *)getCompressedImageData
-{
+- (NSData *)getCompressedImageData {
     
     CGFloat compression = 1.0f;
     CGFloat maxCompression = [ALApplozicSettings getMaxCompressionFactor];
     NSInteger maxSize =( [ALApplozicSettings getMaxImageSizeForUploadInMB]==0 )? DEFAULT_MAX_FILE_UPLOAD_SIZE : [ALApplozicSettings getMaxImageSizeForUploadInMB];
     NSData *imageData = UIImageJPEGRepresentation(self, compression);
     
-    while (((imageData.length/1024.0)/1024.0) > maxSize & compression > maxCompression)
-    {
+    while (((imageData.length/1024.0)/1024.0) > maxSize & compression > maxCompression) {
         compression -= 0.1;
         imageData = UIImageJPEGRepresentation(self, compression);
         
     }
     return imageData;
-    
 }
 
 

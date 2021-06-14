@@ -10,9 +10,7 @@
 
 @implementation ALRegistrationResponse
 
-
-- (id)initWithJSONString:(NSString *)registrationResponse
-{
+- (id)initWithJSONString:(NSString *)registrationResponse {
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
     self.userKey = [registrationResponse valueForKey:@"userKey"];
@@ -33,8 +31,7 @@
     return self;
 }
 
--(BOOL)isRegisteredSuccessfully
-{
+- (BOOL)isRegisteredSuccessfully {
     if ([self.message isEqualToString:@"REGISTERED"]
         || [self.message isEqualToString:@"REGISTERED.WITHOUTREGISTRATIONID"]
         ||  [self.message isEqualToString:@"UPDATED"]) {
