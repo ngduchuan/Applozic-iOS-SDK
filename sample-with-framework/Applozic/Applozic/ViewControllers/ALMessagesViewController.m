@@ -58,6 +58,10 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @property (strong, nonatomic) ALCustomSearchBar *customSearchBar;
 
+@property (strong, nonatomic) ALMessageService *messageService;
+@property (strong, nonatomic) ALChannelService *channelService;
+@property (strong, nonatomic) ALUserService *userService;
+
 @end
 
 // $$$$$$$$$$$$$$$$$$ Class Extension for solving Constraints Issues.$$$$$$$$$$$$$$$$$$$$
@@ -76,12 +80,19 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @implementation ALMessagesViewController
 
+
+-(void)setupServices {
+    self.messageService = [[ALMessageService alloc] init];
+    self.channelService = [[ALChannelService alloc] init];
+    self.userService = [[ALUserService alloc] init];
+}
 //==============================================================================================================================================
 #pragma mark - VIEW LIFE CYCLE
 //==============================================================================================================================================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupServices];
     self.extendedLayoutIncludesOpaqueBars = true;
 
     [self setUpTableView];
@@ -781,16 +792,14 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             return;
         }
         ALMessage *alMessageobj = self.mContactsMessageListArray[indexPath.row];
-        
-        ALChannelService *channelService = [ALChannelService new];
-        
-        if ([channelService isChannelLeft:[alMessageobj getGroupId]]) {
+
+        if ([self.channelService isChannelLeft:[alMessageobj getGroupId]]) {
             
             [self.dBService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
-            [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
+            [self.channelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
         }
         
-        [ALMessageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
+        [self.messageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
                                withCompletion:^(NSString *string, NSError *error) {
             
             if (error) {
@@ -880,7 +889,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 - (void)updateUserDetail:(NSString *)userId {
     ALSLog(ALLoggerSeverityInfo, @"ALMSGVC : USER_DETAIL_CHANGED_CALL_UPDATE");
-    [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
         if (!userDetail) {
             return;
@@ -1051,7 +1060,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)callLastSeenStatusUpdate {
-    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray *userDetailArray)
+    [self.userService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray *userDetailArray)
      {
         for(ALUserDetail *userDetail in userDetailArray) {
             [self updateLastSeenAtStatus:userDetail];

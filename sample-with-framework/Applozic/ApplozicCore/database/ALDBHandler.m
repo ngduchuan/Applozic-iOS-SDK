@@ -7,8 +7,6 @@
 //
 
 #import "ALDBHandler.h"
-#import "DB_CONTACT.h"
-#import "ALContact.h"
 #import "ALUtilityClass.h"
 #import "ALApplozicSettings.h"
 #import "ALLogger.h"

@@ -12,11 +12,13 @@
 #import "ALSyncMessageFeed.h"
 #import "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
-#import "ALMessageService.h"
 #import "ALContactDBService.h"
 #import "ALSearchRequest.h"
+#import "ALResponseHandler.h"
 
 @interface ALMessageClientService : NSObject
+
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey;
 
@@ -75,6 +77,6 @@
               withCompletion:(void(^)(ALAPIResponse* response, NSError *error))completion;
 
 - (void)deleteMessageForAllWithKey:(NSString *) keyString
-                    withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
+                    withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 @end

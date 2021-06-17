@@ -243,7 +243,8 @@
             NSString *userId = notificationMsg;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAILS_UPDATE_CALL" object:userId];
             if (self.realTimeUpdate) {
-                [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+                ALUserService * userService = [[ALUserService alloc] init];
+                [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];
                 }];
             }

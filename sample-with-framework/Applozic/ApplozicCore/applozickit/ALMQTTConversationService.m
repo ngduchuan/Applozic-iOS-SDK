@@ -475,7 +475,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             NSString *userId = [theMessageDict objectForKey:@"message"];
             [self.mqttConversationDelegate updateUserDetail:userId];
             if (self.realTimeUpdate) {
-                [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+                ALUserService *userService = [[ALUserService alloc] init];
+                [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];
                 }];
             }
@@ -682,7 +683,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                                            withTopicName:AL_MESSAGE_STATUS_TOPIC];
 
     if (isReadStatusPublished) {
-        [ALUserService markConversationReadInDataBaseWithMessage:message];
+        ALUserService *userService = [[ALUserService alloc] init];
+        [userService markConversationReadInDataBaseWithMessage:message];
     }
     return isReadStatusPublished;
 }

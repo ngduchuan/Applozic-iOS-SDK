@@ -30,6 +30,17 @@
 
 @implementation ALMessageClientService
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
+
+-(void)setupServices {
+  self.responseHandler = [[ALResponseHandler alloc] init];
+}
 - (void)downloadImageUrl:(NSString *)blobKey
           withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
     [self getNSMutableURLRequestForImage:blobKey withCompletion:^(NSMutableURLRequest *urlRequest, NSString *fileUrl) {
@@ -46,7 +57,7 @@
         }
 
         if (nsMutableURLRequest) {
-            [ALResponseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+            [self.responseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
                 if (theError) {
                     completion(nil,theError);
@@ -107,7 +118,7 @@
 - (void)downloadImageThumbnailUrl:(NSString *)url blobKey:(NSString *)blobKey completion:(void (^)(NSString *, NSError *))completion {
     NSMutableURLRequest *urlRequest = [self getURLRequestForThumbnail:blobKey];
     if (urlRequest) {
-        [ALResponseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+        [self.responseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
             if (theError) {
                 completion(nil,theError);
                 return;
@@ -184,7 +195,7 @@
 
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             completion(nil, theError);
@@ -227,7 +238,7 @@
     NSString * theParamString = [NSString stringWithFormat:@"startIndex=%@&deletedGroupIncluded=%@",@"0",@(YES)];
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             completion(nil, theError);
@@ -238,11 +249,7 @@
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
         [channelService callForChannelServiceForDBInsertion:theJson];
-
-        [ALMessageService getMessageListForUserIfLastIsHiddenMessageinMessageList:messageListResponse withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
-            completion(messages,error);
-        }];
-
+        completion(messageListResponse.messageList , nil);
     }];
 
 }
@@ -255,7 +262,7 @@
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"MSG_LIST ERROR :: %@",theError.description);
@@ -322,7 +329,7 @@
 
         NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
 
-        [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+        [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
             if (theError) {
                 completion(nil,theError);
@@ -350,14 +357,25 @@
     NSString * theParamString = [NSString stringWithFormat:@"key=%@&userId=%@",keyString,[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             completion(nil,theError);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE: %@", (NSString *)theJson);
-        completion((NSString *)theJson,nil);
+
+        NSString *status = (NSString *)theJson;
+        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE: %@", status);
+        if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
+            completion(status, nil);
+            return;
+        } else {
+            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+                                                         code:1
+                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message due to internal error"}];
+            completion(nil, responseError);
+            return;
+        }
     }];
 }
 
@@ -374,15 +392,27 @@
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_THREAD" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_THREAD" WithCompletionHandler:^(id theJson, NSError *theError) {
 
-        if (!theError) {
+        if (theError){
+            ALSLog(ALLoggerSeverityError, @"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
+            completion(nil, theError);
+            return;
+        }
+        NSString *status = (NSString *)theJson;
+        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
+        if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+            completion(status, nil);
+            return;
+        } else {
+            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+                                                         code:1
+                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message thread due to internal error"}];
+            completion(nil, responseError);
+            return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
-        ALSLog(ALLoggerSeverityError, @"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
-        completion((NSString *)theJson,theError);
     }];
 
 }
@@ -394,7 +424,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             completion(nil,theError);
@@ -411,7 +441,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"MESSSAGE_INFORMATION" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MESSSAGE_INFORMATION" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN MESSAGE INFORMATION API RESPONSE : %@", theError);
@@ -444,7 +474,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             [ALUserDefaultsHandler setMsgSyncRequired:YES];
@@ -475,7 +505,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error while updating message metadata: %@", theError);
             completion(nil, theError);
@@ -496,7 +526,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        createGETRequestWithUrlString: urlString
                                        paramString: paramString];
 
-    [ALResponseHandler
+    [self.responseHandler
      authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
@@ -558,7 +588,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        createGETRequestWithUrlString:urlString
                                        paramString: paramString];
 
-    [ALResponseHandler
+    [self.responseHandler
      authenticateAndProcessRequest: urlRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id theJson, NSError *theError) {
@@ -607,7 +637,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                        createGETRequestWithUrlString: theUrlString
                                        paramString: messageListRequest.getParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"Messages for searched conversation" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"Messages for searched conversation" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error while getting messages :: %@", theError.description);
@@ -655,7 +685,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     }
     NSMutableURLRequest *request = [ALRequestHandler createGETRequestWithUrlString: urlString paramString: paramString];
 
-    [ALResponseHandler authenticateAndProcessRequest:request andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:request andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Fetching message error %@", (NSString *)theJson);
             completion(nil, theError);
@@ -668,13 +698,13 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 }
 
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
-                    withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+                    withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/delete",KBASE_URL];
     NSString * theParamString = [NSString stringWithFormat:@"key=%@&deleteForAll=true", keyString];
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_FOR_ALL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_FOR_ALL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             completion(nil, theError);

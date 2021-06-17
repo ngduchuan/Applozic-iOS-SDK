@@ -44,9 +44,22 @@ static int CONTACT_PAGE_SIZE = 100;
     return sharedInstance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
+
+-(void)setupServices {
+    self.userClientService = [[ALUserClientService alloc] init];
+    self.channelService = [[ALChannelService alloc] init];
+}
 
 //1. call this when each message comes
-+ (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
+- (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
     
     NSMutableOrderedSet *contactIdsArr = [[NSMutableOrderedSet alloc] init ];
     ALContactService *contactService =  [[ALContactService alloc]init];
@@ -74,9 +87,9 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+ (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark {
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark {
 
-    [ALUserClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed * messageFeed) {
+    [self.userClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed * messageFeed) {
         NSMutableArray *lastSeenUpdateArray = messageFeed.lastSeenArray;
         ALContactDBService *contactDBService = [[ALContactDBService alloc]init];
         for (ALUserDetail *userDetail in lastSeenUpdateArray){
@@ -89,16 +102,15 @@ static int CONTACT_PAGE_SIZE = 100;
 
 }
 
-+ (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
-    ALUserClientService * userDetailService = [[ALUserClientService alloc] init];
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
 
-    [userDetailService userDetailServerCall:contactId withCompletion:^(ALUserDetail * userDetail) {
+    [self.userClientService userDetailServerCall:contactId withCompletion:^(ALUserDetail * userDetail) {
         completionMark(userDetail);
 
     }];
 }
 
-+ (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
+- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
     [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
 
         if (userDetail) {
@@ -111,8 +123,7 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 
 - (void)updateUser:(NSString *)phoneNumber email:(NSString *)email ofUser:(NSString *)userId withCompletion:(void (^)(BOOL))completion {
-    ALUserClientService *userClientService =  [[ALUserClientService alloc] init];
-    [userClientService updateUser:phoneNumber email:email ofUser:userId withCompletion:^(id theJson, NSError *theError) {
+    [self.userClientService updateUser:phoneNumber email:email ofUser:userId withCompletion:^(id theJson, NSError *theError) {
         if (theJson) {
             /// Updation success.
             ALContact *contact = [[[ALContactService alloc] init] loadContactByKey:@"userId" value:userId];
@@ -134,7 +145,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+ (void)updateUserDisplayName:(ALContact *)alContact {
+- (void)updateUserDisplayName:(ALContact *)alContact {
     if (alContact.userId && alContact.displayName) {
         ALUserClientService *alUserClientService  = [[ALUserClientService alloc] init];
         [alUserClientService updateUserDisplayName:alContact withCompletion:^(id theJson, NSError *theError) {
@@ -168,8 +179,7 @@ static int CONTACT_PAGE_SIZE = 100;
     contact.userId = userId;
     contact.displayName = displayName;
 
-    ALUserClientService * alUserClientService = [[ALUserClientService alloc] init];
-    [alUserClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
+    [self.userClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
@@ -184,7 +194,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 - (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
 
-    [ALUserService setUnreadCountZeroForContactId:contactId];
+    [self setUnreadCountZeroForContactId:contactId];
 
     ALContactDBService *userDBService =[[ALContactDBService alloc] init];
     NSUInteger count = [userDBService markConversationAsDeliveredAndRead:contactId];
@@ -193,14 +203,13 @@ static int CONTACT_PAGE_SIZE = 100;
     if (count == 0) {
         return;
     }
-    ALUserClientService * clientService = [[ALUserClientService alloc] init];
-    [clientService markConversationAsReadforContact:contactId withCompletion:^(NSString *response, NSError * error){
+    [self.userClientService markConversationAsReadforContact:contactId withCompletion:^(NSString *response, NSError * error){
         completion(response,error);
     }];
 
 }
 
-+ (void)setUnreadCountZeroForContactId:(NSString*)contactId {
+- (void)setUnreadCountZeroForContactId:(NSString*)contactId {
 
     ALContactService *contactService=[[ALContactService alloc] init];
     ALContact *contact =[contactService loadContactByKey:@"userId" value:contactId];
@@ -209,7 +218,7 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 #pragma mark- Mark message READ
 //===========================================
-+ (void)markMessageAsRead:(ALMessage *)alMessage
+- (void)markMessageAsRead:(ALMessage *)alMessage
        withPairedkeyValue:(NSString *)pairedkeyValue
            withCompletion:(void (^)(NSString *, NSError *))completion {
 
@@ -222,14 +231,14 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+ (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
+- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
 
     if (alMessage.groupId != NULL) {
-        [ALChannelService setUnreadCountZeroForGroupID:alMessage.groupId];
+        [self.channelService setUnreadCountZeroForGroupID:alMessage.groupId];
         ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
         [channelDBService markConversationAsRead:alMessage.groupId];
     } else {
-        [ALUserService setUnreadCountZeroForContactId:alMessage.contactIds];
+        [self setUnreadCountZeroForContactId:alMessage.contactIds];
         ALContactDBService *contactDBService=[[ALContactDBService alloc] init];
         [contactDBService markConversationAsDeliveredAndRead:alMessage.contactIds];
         //  TODO: Mark message read&delivered in DB not whole conversation
@@ -241,7 +250,7 @@ static int CONTACT_PAGE_SIZE = 100;
 //===============================================================================================
 
 - (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion {
-    [ALUserClientService userBlockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
+    [self.userClientService userBlockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
 
         if (!error) {
             ALAPIResponse *forBlockUserResponse = [[ALAPIResponse alloc] initWithJSONString:json];
@@ -261,7 +270,7 @@ static int CONTACT_PAGE_SIZE = 100;
 //===============================================================================================
 
 - (void)blockUserSync:(NSNumber *)lastSyncTime {
-    [ALUserClientService userBlockSyncServerCall:lastSyncTime withCompletion:^(NSString *json, NSError *error) {
+    [self.userClientService userBlockSyncServerCall:lastSyncTime withCompletion:^(NSString *json, NSError *error) {
 
         if (!error) {
             ALUserBlockResponse *block = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
@@ -283,7 +292,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 - (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion {
 
-    [ALUserClientService userUnblockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
+    [self.userClientService userUnblockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
 
         if (!error) {
             ALAPIResponse *forBlockUserResponse = [[ALAPIResponse alloc] initWithJSONString:json];
@@ -386,7 +395,7 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 
 - (void)resettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion {
-    [ALUserClientService readCallResettingUnreadCountWithCompletion:^(NSString *json, NSError *error) {
+    [self.userClientService readCallResettingUnreadCountWithCompletion:^(NSString *json, NSError *error) {
 
         completion(json,error);
     }];
@@ -430,7 +439,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (![contactService isContactExist:userId]) {
         ALSLog(ALLoggerSeverityError, @"###contact is not found");
 
-        [ALUserService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [self userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
 
             [contactDBService updateUserDetail:alUserDetail];
             ALContact * alContact = [contactDBService loadContactByKey:@"userId" value:userId];
@@ -519,7 +528,7 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 - (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     
-    [ALUserService setUnreadCountZeroForContactId:userId];
+    [self setUnreadCountZeroForContactId:userId];
     if (delegate) {
         [delegate conversationReadByCurrentUser:userId withGroupId:nil];
     }

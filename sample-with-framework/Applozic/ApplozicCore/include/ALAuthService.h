@@ -9,8 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "ALUserDefaultsHandler.h"
 #import "ALRegisterUserClientService.h"
+#import "ALAuthClientService.h"
+
+@class ALAuthClientService;
 
 @interface ALAuthService : NSObject
+
+@property (nonatomic, strong) ALAuthClientService *authClientService;
 
 - (NSError *)decodeAndSaveToken:(NSString *)authToken;
 

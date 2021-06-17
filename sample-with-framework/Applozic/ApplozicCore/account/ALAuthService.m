@@ -15,6 +15,18 @@
 static NSString *const CREATED_TIME = @"createdAtTime";
 static NSString *const VALID_UPTO = @"validUpto";
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupService];
+    }
+    return self;
+}
+
+-(void)setupService {
+    self.authClientService = [[ALAuthClientService alloc] init];
+}
+
 - (NSError *)decodeAndSaveToken:(NSString *)authToken {
     NSError * jwtError;
     if (!authToken) {
@@ -75,9 +87,7 @@ static NSString *const VALID_UPTO = @"validUpto";
 }
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
-
-    ALAuthClientService * authClientService = [[ALAuthClientService alloc] init];
-    [authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+    [self.authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         if (error) {
             completion(nil, error);
             return;

@@ -139,7 +139,8 @@
     [self.delegate deleteMessageFromView:self.mMessage];
 
     //serverCall
-    [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
+    ALMessageService *messageService = [[ALMessageService alloc] init];
+    [messageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
 
         ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
     }];

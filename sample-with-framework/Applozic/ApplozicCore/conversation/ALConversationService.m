@@ -15,10 +15,22 @@
 
 @implementation ALConversationService
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
+
+-(void)setupServices {
+    self.conversationClientService = [[ALConversationClientService alloc] init];
+    self.conversationDBService = [[ALConversationDBService alloc] init];
+}
+
 - (ALConversationProxy *)getConversationByKey:(NSNumber*)conversationKey {
     
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
-    DB_ConversationProxy *dbConversation = [conversationDBService getConversationProxyByKey:conversationKey];
+    DB_ConversationProxy *dbConversation = [self.conversationDBService getConversationProxyByKey:conversationKey];
     if (dbConversation == nil) {
         return nil;
     }
@@ -26,13 +38,11 @@
 }
 
 - (void)addConversations:(NSMutableArray *)conversations {
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
-    [conversationDBService insertConversationProxy:conversations];
+    [self.conversationDBService insertConversationProxy:conversations];
 }
 
 - (void)addTopicDetails:(NSMutableArray*)conversations {
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
-    [conversationDBService insertConversationProxyTopicDetails:conversations];
+    [self.conversationDBService insertConversationProxyTopicDetails:conversations];
 }
 
 - (ALConversationProxy *) convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
@@ -48,9 +58,8 @@
 
 - (NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId {
     
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [conversationDBService getConversationProxyListFromDBForUserID:userId];
+    NSArray *list = [self.conversationDBService getConversationProxyListFromDBForUserID:userId];
     if (!list.count) {
         return result;
     }
@@ -65,9 +74,8 @@
 - (NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId
                                           andTopicId:(NSString*)topicId {
     
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [conversationDBService getConversationProxyListFromDBForUserID:userId andTopicId:topicId];
+    NSArray *list = [self.conversationDBService getConversationProxyListFromDBForUserID:userId andTopicId:topicId];
     if (!list.count) {
         return result;
     }
@@ -79,9 +87,8 @@
 }
 
 - (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber*)channelKey {
-    ALConversationDBService *conversationDBService =  [[ALConversationDBService alloc]init];
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
+    NSArray *list = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     
     for (DB_ConversationProxy*object in list) {
         ALConversationProxy *conversation = [self convertAlConversationProxy:object];
@@ -105,7 +112,7 @@
         completion(nil,conversationProxy);
     } else{
         
-        [ALConversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
+        [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
             
             if (!error) {
                 NSMutableArray *proxyArr = [[NSMutableArray alloc] initWithObjects:response.alConversationProxy, nil];
@@ -131,7 +138,7 @@
         return;
     }
 
-    [ALConversationClientService fetchTopicDetails:alConversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
+    [self.conversationClientService fetchTopicDetails:alConversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);

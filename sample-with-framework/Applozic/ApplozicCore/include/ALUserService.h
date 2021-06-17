@@ -18,22 +18,26 @@
 #import "ALUserBlockResponse.h"
 #import "ALRealTimeUpdate.h"
 #import "ALMuteRequest.h"
+#import "ALChannelService.h"
 
 @interface ALUserService : NSObject
 
 + (ALUserService *)sharedInstance;
 
-+ (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
+@property (nonatomic, strong) ALUserClientService *userClientService;
+@property (nonatomic, strong) ALChannelService *channelService;
 
-+ (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
+- (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
 
-+ (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
 
-+ (void)updateUserDisplayName:(ALContact *)alContact;
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+
+- (void)updateUserDisplayName:(ALContact *)alContact;
 
 - (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
 
-+ (void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion;
 
 - (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion;
 
@@ -45,7 +49,7 @@
 
 - (NSMutableArray *)getListOfBlockedUserByCurrentUser;
 
-+ (void)setUnreadCountZeroForContactId:(NSString *)contactId;
+- (void)setUnreadCountZeroForContactId:(NSString *)contactId;
 
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion;
 
@@ -60,7 +64,7 @@
                    userStatus:(NSString *)status
                withCompletion:(void (^)(id theJson, NSError *error))completion;
 
-+ (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
+- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
 - (void)updateUser:(NSString *)phoneNumber
              email:(NSString *)email
@@ -109,6 +113,6 @@
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contcatArray, NSError *error))completion;
 
-+ (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
+- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
 
 @end

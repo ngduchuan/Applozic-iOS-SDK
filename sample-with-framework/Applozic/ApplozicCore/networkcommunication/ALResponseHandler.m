@@ -13,9 +13,21 @@
 
 @implementation ALResponseHandler
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupService];
+    }
+    return self;
+}
+
+-(void)setupService {
+    self.authService = [[ALAuthService alloc] init];
+}
+
 static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
-+ (void)processRequest:(NSMutableURLRequest *)theRequest
+- (void)processRequest:(NSMutableURLRequest *)theRequest
                 andTag:(NSString *)tag
  WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion {
 
@@ -143,7 +155,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 }
 
 
-+ (void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
+- (void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
                                andTag:(NSString *)tag
                 WithCompletionHandler:(void (^)(id, NSError *))completion {
 
@@ -161,11 +173,10 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     }];
 }
 
-+ (void)authenticateRequest:(NSMutableURLRequest *)request
+- (void)authenticateRequest:(NSMutableURLRequest *)request
              WithCompletion:(void (^)(NSMutableURLRequest *urlRequest, NSError *error)) completion {
 
-    ALAuthService *authService = [[ALAuthService alloc] init];
-    [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
+    [self.authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
         if (error) {
             completion(nil, error);
             return;
@@ -179,11 +190,11 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     }];
 }
 
-+ (NSError *)errorWithDescription:(NSString *)reason {
+- (NSError *)errorWithDescription:(NSString *)reason {
     return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
 }
 
-+ (NSError *)checkForServerError:(NSString *)response {
+- (NSError *)checkForServerError:(NSString *)response {
     if ([response hasPrefix:@"<html>"] || [response isEqualToString:[@"error" uppercaseString]]) {
         NSError *error = [NSError errorWithDomain:@"Internal Error" code:500 userInfo:nil];
         return error;

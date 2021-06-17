@@ -29,15 +29,26 @@ const int GROUP_ADDITION = 2;
 @property (nonatomic, strong) ALMQTTConversationService *mqttObject;
 @property (nonatomic, strong) ALChannel *alChannel;
 
+@property (nonatomic, strong) ALChannelDBService *channelDatabaseService;
+@property (nonatomic, strong) ALChannelService *channelService;
+@property (nonatomic, strong) ALMessageService *messageService;
+
 @end
 
 static NSString *const updateGroupMembersNotification = @"Updated_Group_Members";
 
 @implementation ALGroupDetailViewController
 
+-(void)setupServices {
+    self.channelDatabaseService = [[ALChannelDBService alloc] init];
+    self.channelService = [[ALChannelService alloc] init];
+    self.messageService = [[ALMessageService alloc] init];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.alChannel =[[ALChannelService new] getChannelByKey:self.channelKeyID];
+    [self setupServices];
+    self.alChannel = [self.channelService getChannelByKey:self.channelKeyID];
     ALSLog(ALLoggerSeverityInfo, @"## self.alChannel :: %@", self.alChannel);
 }
 
@@ -177,8 +188,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [self setNavigationColor];
     [self setTitle: NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Details", @"")];
 
-    ALChannelService *channnelService = [[ALChannelService alloc] init];
-    self.alChannel = [channnelService getChannelByKey:self.channelKeyID];
+    self.alChannel = [self.channelService getChannelByKey:self.channelKeyID];
     self.groupName = self.alChannel.name;
     colors = [[NSArray alloc] initWithObjects:@"#617D8A",@"#628B70",@"#8C8863",@"8B627D",@"8B6F62", nil];
 
@@ -192,8 +202,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)getChannelMembers {
     [[self activityIndicator] startAnimating];
-    ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc ]init];
-    [channelDatabaseService fetchChannelMembersAsyncWithChannelKey:self.channelKeyID witCompletion:^(NSMutableArray *membersArray) {
+    [self.channelDatabaseService fetchChannelMembersAsyncWithChannelKey:self.channelKeyID witCompletion:^(NSMutableArray *membersArray) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self->memberIds = [NSMutableOrderedSet orderedSetWithArray:membersArray];
             self.memberCount = self->memberIds.count;
@@ -235,9 +244,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0: {
-            ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-
-            ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
+            ALChannelUserX *alChannelUserX =  [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
             if (alChannelUserX.role.intValue != MEMBER && ![self isThisChannelLeft:self.channelKeyID] && [ALApplozicSettings getGroupMemberAddOption])
                 return 3;
@@ -337,12 +344,10 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     contactsVC.delegate = self;
 
     // check if this launch for subgroup
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-
     if ([ALApplozicSettings getSubGroupLaunchFlag]) {
-        ALChannel *parentChannel = [channelService getChannelByKey:self.alChannel.parentKey ? self.alChannel.parentKey : self.alChannel.key];
+        ALChannel *parentChannel = [self.channelService getChannelByKey:self.alChannel.parentKey ? self.alChannel.parentKey : self.alChannel.key];
         contactsVC.parentChannel = parentChannel;
-        contactsVC.childChannels = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:parentChannel.key]];
+        contactsVC.childChannels = [[NSMutableArray alloc] initWithArray:[self.channelService fetchChildChannelsWithParentKey:parentChannel.key]];
     }
     [self.navigationController pushViewController:contactsVC animated:YES];
 }
@@ -350,9 +355,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 - (void)addNewMembertoGroup:(ALContact *)alcontact withCompletion:(void(^)(NSError *error,ALAPIResponse *response))completion {
     [[self activityIndicator] startAnimating];
     self.memberIdToAdd = alcontact.userId;
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService addMemberToChannel:self.memberIdToAdd andChannelKey:self.channelKeyID orClientChannelKey:nil
-                        withCompletion:^(NSError *error, ALAPIResponse *response) {
+    [self.channelService addMemberToChannel:self.memberIdToAdd andChannelKey:self.channelKeyID orClientChannelKey:nil
+                             withCompletion:^(NSError *error, ALAPIResponse *response) {
 
         if (!error && [response.status isEqualToString:@"success"]) {
             [self->memberIds addObject:self.memberIdToAdd];
@@ -395,13 +399,11 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                style:UIAlertActionStyleDefault
                                handler:^(UIAlertAction *action) {
 
-        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-        ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
+        ALChannel *channel = [self.channelDatabaseService loadChannelByKey:self.channelKeyID];
         if (![self isThisChannelLeft:self.channelKeyID] && !channel.isBroadcastGroup) {
             [self turnUserInteractivityForNavigationAndTableView:NO];
-            ALChannelService *alchannelService = [[ALChannelService alloc] init];
-            [alchannelService leaveChannel:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]
-                        orClientChannelKey:nil withCompletion:^(NSError *error) {
+            [self.channelService leaveChannel:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]
+                           orClientChannelKey:nil withCompletion:^(NSError *error) {
 
                 if (!error) {
                     NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
@@ -414,7 +416,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             }];
         } else {
             //DELETE CHANNEL CONVERSATION
-            [ALMessageService deleteMessageThread:nil orChannelKey:self.channelKeyID withCompletion:^(NSString *string, NSError *error) {
+            [self.messageService deleteMessageThread:nil orChannelKey:self.channelKeyID withCompletion:^(NSString *string, NSError *error) {
 
                 if (error) {
                     ALSLog(ALLoggerSeverityError, @"DELETE FAILED: Unable to delete contact conversation : %@", error.description);
@@ -422,8 +424,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                     return;
                 }
                 //DELETE CHANNEL FROM LOCAL AND BACK TO MAIN VIEW
-                ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService deleteChannel:self.channelKeyID];
+                [self.channelDatabaseService deleteChannel:self.channelKeyID];
                 ALChatViewController *chatVC = (ALChatViewController *)self.alChatViewController;
                 if (chatVC.individualLaunch) {
                     [self dismissViewControllerAnimated:YES completion:nil];
@@ -441,9 +442,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     }];
 
     UIAlertAction *cancelButton = [UIAlertAction
-                                  actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel" , @"")
-                                  style:UIAlertActionStyleDefault
-                                  handler:^(UIAlertAction *action) {
+                                   actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel" , @"")
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction *action) {
 
     }];
 
@@ -453,8 +454,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 }
 
 - (BOOL)isThisChannelLeft:(NSNumber *)channelKey {
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
-    BOOL flag = [alChannelService isChannelLeft:channelKey];
+    BOOL flag = [self.channelService isChannelLeft:channelKey];
     return flag;
 }
 
@@ -462,7 +462,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 #pragma mark - Remove Memember (for admin)
 //=======================================
 - (void)channelMemberAction:(NSInteger)row {
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
 
     UIAlertController *theController = [UIAlertController alertControllerWithTitle:nil
@@ -488,7 +487,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         }]];
     }
 
-    ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
+    ALChannelUserX *alChannelUserXLoggedInUser =  [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
     BOOL isLoginUserLeftChannel =  [self isThisChannelLeft:self.channelKeyID];
 
@@ -499,9 +498,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                                              handler:^(UIAlertAction *action) {
 
             [self turnUserInteractivityForNavigationAndTableView:NO];
-            ALChannelService *alchannelService = [[ALChannelService alloc] init];
-            [alchannelService removeMemberFromChannel:channelMemberID andChannelKey:self.channelKeyID
-                                   orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
+            [self.channelService removeMemberFromChannel:channelMemberID andChannelKey:self.channelKeyID
+                                      orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
 
                 if (!error) {
                     [self->memberIds removeObjectAtIndex:row];
@@ -517,8 +515,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         [theController addAction:removeAction];
     }
 
-    ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
-    ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    ALChannel *channel = [self.channelDatabaseService loadChannelByKey:self.channelKeyID];
+    ALChannelUserX *alChannelUserX =  [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
 
     if (!alChannelUserX.isAdminUser  && !channel.isBroadcastGroup && !isLoginUserLeftChannel && alChannelUserXLoggedInUser.isAdminUser) {
 
@@ -527,15 +525,14 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction *action) {
 
-            ALChannelService *channelService = [ALChannelService new];
             ALChannelUser *alChannelUsers = [ALChannelUser new];
             alChannelUsers.role = [NSNumber numberWithInt:1];
             alChannelUsers.userId = self->memberIds[row];
             NSMutableArray *channelUsers = [NSMutableArray new];
             [channelUsers addObject:alChannelUsers.dictionary];
 
-            [channelService updateChannel:self.channelKeyID andNewName:nil
-                              andImageURL:nil orClientChannelKey:nil isUpdatingMetaData:NO metadata:nil orChildKeys:nil orChannelUsers: channelUsers withCompletion:^(NSError *error) {
+            [self.channelService updateChannel:self.channelKeyID andNewName:nil
+                                   andImageURL:nil orClientChannelKey:nil isUpdatingMetaData:NO metadata:nil orChildKeys:nil orChannelUsers: channelUsers withCompletion:^(NSError *error) {
 
                 if (!error) {
 
@@ -628,8 +625,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                 [memberCell.nameLabel setTextAlignment:NSTextAlignmentNatural];
                 [memberCell.nameLabel setTextColor:[UIColor redColor]];
 
-                ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
+                ALChannel *channel = [self.channelDatabaseService loadChannelByKey:self.channelKeyID];
                 NSString *labelTitle;
                 if (channel.isBroadcastGroup) {
                     labelTitle = NSLocalizedStringWithDefaultValue(@"deleteBroadcast", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete Broadcast", @"");
@@ -651,8 +647,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)setMemberIcon:(NSInteger)row withCell:(ALGroupDetailsMemberCell*)memberCell {
 
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-    ALChannelUserX *alChannelUserX = [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    ALChannelUserX *alChannelUserX = [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
 
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:memberIds[row]];
@@ -834,8 +829,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         return;
     }
 
-    ALChannelService *channelService = [ALChannelService new];
-    if ([channelService isChannelLeft:self.channelKeyID] || [ALChannelService isChannelDeleted:self.channelKeyID]) {
+    if ([self.channelService isChannelLeft:self.channelKeyID] || [ALChannelService isChannelDeleted:self.channelKeyID]) {
         [ALUIUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"yourNotAparticipantOfGroup", nil, [NSBundle mainBundle], @"You are not a participant of this group", @"")   andTitle:NSLocalizedStringWithDefaultValue(@"unableToProcess", nil, [NSBundle mainBundle], @"Unable process !!!", @"")];
         return;
     }
@@ -929,9 +923,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     ALMuteRequest *alMuteRequest = [ALMuteRequest new];
     alMuteRequest.id = self.channelKeyID;
     alMuteRequest.notificationAfterTime= time;
-    ALChannelService *alChannelService = [[ALChannelService alloc]init];
     [[self activityIndicator] startAnimating];
-    [alChannelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
+    [self.channelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"actionSheet response from server:: %@", response.status);
         [[self activityIndicator] stopAnimating];
         self.alChannel.notificationAfterTime= alMuteRequest.notificationAfterTime;

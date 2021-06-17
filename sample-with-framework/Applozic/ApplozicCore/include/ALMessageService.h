@@ -18,6 +18,9 @@
 #import "ALMQTTConversationService.h"
 #import "ALRealTimeUpdate.h"
 #import "ALConversationProxy.h"
+#import "ALMessageClientService.h"
+#import "ALUserService.h"
+#import "ALChannelService.h"
 
 static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
 static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted";
@@ -27,7 +30,12 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 + (ALMessageService *)sharedInstance;
 
+@property (nonatomic, strong) ALMessageClientService *messageClientService;
+@property (nonatomic, strong) ALUserService *userService;
+@property (nonatomic, strong) ALChannelService *channelService;
+
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                withCompletion:(void(^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray)) completion;
@@ -45,34 +53,34 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 + (ALMessage*)processFileUploadSucess:(ALMessage *)message;
 
-+ (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
-+ (void )deleteMessage:( NSString *)keyString andContactId:(NSString * )contactId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void )deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
 
 - (void)processPendingMessages;
 
-+ (ALMessage*)getMessagefromKeyValuePair:(NSString*)key andValue:(NSString*)value;
++ (ALMessage*)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString*)value;
 
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
-                     withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion;
+                      withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion;
 
 + (void)multiUserSendMessage:(ALMessage *)alMessage
                   toContacts:(NSMutableArray *)contactIdsArray
                     toGroups:(NSMutableArray *)channelKeysArray
               withCompletion:(void(^)(NSString * json, NSError * error)) completion;
 
-+ (void)getMessageSENT:(ALMessage*)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
++ (void)getMessageSENT:(ALMessage *)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
-+ (void)getMessageSENT:(ALMessage*)alMessage
++ (void)getMessageSENT:(ALMessage *)alMessage
           withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
         withCompletion:(void (^)(NSMutableArray *, NSError *))completion;
 
 + (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text;
 
-+ (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList*)alMessageList
+- (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList *)alMessageList
                                                  withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion;
 
-+ (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion;
+- (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion;
 
 + (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString*)text;
 
@@ -87,7 +95,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 - (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
-- (ALMessage *)getALMessageByKey:(NSString*)messageReplyId;
+- (ALMessage *)getALMessageByKey:(NSString *)messageReplyId;
 
 + (void)syncMessages;
 + (void)getLatestMessageForUser:(NSString *)deviceKeyString
@@ -107,13 +115,13 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 + (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
-                     withMetadata: (NSMutableDictionary *)metadata
-                   withCompletion:(void(^)(ALAPIResponse *theJson, NSError *theError)) completion;
+                      withMetadata: (NSMutableDictionary *)metadata
+                    withCompletion:(void(^)(ALAPIResponse *theJson, NSError *theError)) completion;
 
 - (void)fetchReplyMessages:(NSMutableArray<NSString *> *)keys withCompletion: (void(^)(NSMutableArray<ALMessage *>*messages))completion;
 
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
-                    withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
+                    withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 /// This method is used for getting total unread message count.
 /// @param completion will have total unread message count if there is no error in fetching.

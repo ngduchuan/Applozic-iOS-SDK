@@ -14,6 +14,8 @@
 #import "MessageListRequest.h"
 #import "ALConversationListRequest.h"
 
+@class ALMessageService;
+
 @protocol ALMessagesDelegate <NSObject>
 
 - (void)getMessagesArray:(NSMutableArray*)messagesArray;
@@ -26,13 +28,16 @@
 
 @property(nonatomic,weak) id <ALMessagesDelegate>delegate;
 
+@property(nonatomic, retain) ALMessageService *messageService;
+
 //Add Message APIS
 - (NSMutableArray *)addMessageList:(NSMutableArray*)messageList skipAddingMessageInDb:(BOOL)skip;
 - (DB_Message*)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
-- (void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
+- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
 
 - (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID;
 - (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString*) value;

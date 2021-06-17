@@ -25,6 +25,20 @@
 
 @implementation ALMessageDBService
 
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
+
+-(void)setupServices {
+    self.messageService = [[ALMessageService alloc] init];
+}
+
 //Add message APIS
 - (NSMutableArray *)addMessageList:(NSMutableArray *)messageList
              skipAddingMessageInDb:(BOOL)skip {
@@ -209,10 +223,12 @@
         NSPredicate *predicate;
         if (key != nil) {
             predicate = [NSPredicate predicateWithFormat:@"groupId = %@",key];
-            [ALChannelService setUnreadCountZeroForGroupID:key];
+            ALChannelService *channelService = [[ALChannelService alloc] init];
+            [channelService setUnreadCountZeroForGroupID:key];
         } else {
             predicate = [NSPredicate predicateWithFormat:@"contactId = %@ AND groupId = %@",contactId,nil];
-            [ALUserService setUnreadCountZeroForContactId:contactId];
+            ALUserService *userService = [[ALUserService alloc] init];
+            [userService setUnreadCountZeroForContactId:contactId];
         }
 
         [fetchRequest setEntity:entity];
@@ -360,7 +376,8 @@
 //------------------------------------------------------------------------------------------------------------------
 
 - (void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray *theArray)) completion {
-    [ALMessageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
+
+    [self.messageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"%@",error);
@@ -373,7 +390,7 @@
 
 
 - (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
-    [ALMessageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
+    [self.messageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
         completion(messages, error);
     }];
 }

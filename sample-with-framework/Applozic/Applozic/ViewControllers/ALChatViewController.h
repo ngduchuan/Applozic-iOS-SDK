@@ -79,7 +79,6 @@ extern NSString *const ALDidSelectStartCallOptionKey;
 - (void) reloadView;
 
 - (void)markConversationRead;
-- (void)markSingleMessageRead:(ALMessage *)almessage;
 
 - (void)handleNotification:(UIGestureRecognizer*)gestureRecognizer;
 
