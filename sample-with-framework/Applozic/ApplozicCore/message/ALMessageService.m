@@ -707,13 +707,18 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
                       withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion {
+
+    if (!messageKey) {
+        NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
+                                                    code:MessageNotPresent
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Message key passed is nil"}];
+        completion(nil, messageKeyError);
+        return;
+    }
+
     [self.messageClientService getCurrentMessageInformation:messageKey withCompletionHandler:^(ALMessageInfoResponse *msgInfo, NSError *theError) {
 
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"ERROR IN MSG INFO RESPONSE : %@", theError);
-        } else {
-            completion(msgInfo, theError);
-        }
+        completion(msgInfo, theError);
     }];
 }
 
@@ -951,14 +956,36 @@ static ALMessageClientService *alMsgClientService;
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata
                     withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+
+    if (!messageKey || !metadata) {
+        NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
+                                                       code:MessageNotPresent
+                                                   userInfo:@{NSLocalizedDescriptionKey : @"Message key or meta data passed is nil"}];
+        
+        completion(nil, messageKeyError);
+        return;
+    }
+
     [self.messageClientService updateMessageMetadataOfKey:messageKey withMetadata:metadata withCompletion:^(id theJson, NSError *theError) {
-        ALAPIResponse *alAPIResponse;
-        if(!theError) {
+
+        if (theError) {
+            completion(nil, theError);
+            return;
+        }
+
+        ALAPIResponse *alAPIResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        if ([alAPIResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
             [messagedb updateMessageMetadataOfKey:messageKey withMetadata:metadata];
-            alAPIResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+            completion(alAPIResponse, nil);
+            return;
+        } else {
+            NSError *apiError = [NSError errorWithDomain:@"Applozic"
+                                                    code:MessageNotPresent
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Failed to update message meta data due to api error"}];
+            completion(nil, apiError);
+            return;
         }
-        completion(alAPIResponse,theError);
     }];
 }
 

@@ -19,6 +19,8 @@
 #import "ALRealTimeUpdate.h"
 #import "ALMuteRequest.h"
 #import "ALChannelService.h"
+#import "ALContactService.h"
+#import "ALContactDBService.h"
 
 @interface ALUserService : NSObject
 
@@ -26,6 +28,8 @@
 
 @property (nonatomic, strong) ALUserClientService *userClientService;
 @property (nonatomic, strong) ALChannelService *channelService;
+@property (nonatomic, strong) ALContactDBService *contactDBService;
+@property (nonatomic, strong) ALContactService *contactService;
 
 - (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
 
@@ -111,7 +115,7 @@
                withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
-                                 withCompletion:(void(^)(NSMutableArray *contcatArray, NSError *error))completion;
+                                 withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion;
 
 - (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
 

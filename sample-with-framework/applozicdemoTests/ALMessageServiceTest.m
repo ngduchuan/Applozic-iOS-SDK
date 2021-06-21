@@ -2,7 +2,7 @@
 //  ALMessageServiceTest.m
 //  applozicdemoTests
 //
-//  Created by apple on 11/06/21.
+//  Created by Sunil on 11/06/21.
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
@@ -79,8 +79,6 @@
 }
 
 - (void)test_whenTextMessageSentUnsuccessful_thatErrorIsPresent {
-    OCMStub([mockMessageService sendMessages:testMessage withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue], networkError, nil])]);
-
     OCMStub([mockMessageClientService sendMessage:[testMessage dictionary] WithCompletionHandler:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue] , networkError, nil])]);
 
     [messageService sendMessages:testMessage withCompletion:^(NSString *message, NSError *error) {
@@ -205,11 +203,6 @@
 
 - (void)test_deleteMessageForAllIsUnsuccessful_thatErrorIsPresent {
 
-    OCMStub([mockMessageService deleteMessageForAllWithKey:@"messagekey1"
-                                            withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
-                                                             networkError,
-                                                             nil])]);
-
     OCMStub([mockMessageClientService deleteMessageForAllWithKey:@"messagekey1"
                                                   withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
                                                                    networkError,
@@ -283,12 +276,6 @@
 
 - (void)test_deleteMessageThreadForUserIsUnsuccessful_thatErrorIsPresent {
 
-    OCMStub([mockMessageService deleteMessageThread:@"userId"
-                                       orChannelKey:nil
-                                     withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
-                                                      networkError,
-                                                      nil])]);
-
     OCMStub([mockMessageClientService deleteMessageThread:@"userId"
                                              orChannelKey:nil
                                            withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
@@ -305,12 +292,6 @@
 }
 
 - (void)test_deleteMessageThreadForUserIsSuccessful {
-
-    OCMStub([mockMessageService deleteMessageThread:@"userId"
-                                       orChannelKey:nil
-                                     withCompletion:([OCMArg invokeBlockWithArgs:@"success",
-                                                      [OCMArg defaultValue],
-                                                      nil])]);
 
     OCMStub([mockMessageClientService deleteMessageThread:@"userId"
                                              orChannelKey:nil
@@ -329,12 +310,6 @@
 
 - (void)test_deleteMessageThreadForChannelIsSuccessful {
 
-    OCMStub([mockMessageService deleteMessageThread:nil
-                                       orChannelKey:@1234
-                                     withCompletion:([OCMArg invokeBlockWithArgs:@"success",
-                                                      [OCMArg defaultValue],
-                                                      nil])]);
-
     OCMStub([mockMessageClientService deleteMessageThread:nil orChannelKey:@1234 withCompletion:([OCMArg invokeBlockWithArgs:@"success" ,[OCMArg defaultValue], nil])]);
 
     [messageService deleteMessageThread:nil orChannelKey:@1234  withCompletion:^(NSString *status, NSError *error) {
@@ -346,15 +321,9 @@
 
 // MARK: - Message delete by message key
 
--(void)test_deleteMessageForMessageKeyIsSuccessful {
+- (void)test_deleteMessageForMessageKeyIsSuccessful {
 
     NSString *messageKey = @"messageKey1";
-
-    OCMStub([mockMessageService deleteMessage:messageKey
-                                 andContactId:nil
-                               withCompletion:([OCMArg invokeBlockWithArgs:@"success",
-                                                [OCMArg defaultValue],
-                                                nil])]);
 
     OCMStub([mockMessageClientService deleteMessage:messageKey
                                        andContactId:nil
@@ -371,15 +340,9 @@
     }];
 }
 
--(void)test_deleteMessageForMessageKeyIsUnsuccessful_thatErrorIsPresent {
+- (void)test_deleteMessageForMessageKeyIsUnsuccessful_thatErrorIsPresent {
 
     NSString *messageKey = @"messageKey1";
-
-    OCMStub([mockMessageService deleteMessage:messageKey
-                                 andContactId:nil
-                               withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
-                                                networkError,
-                                                nil])]);
 
     OCMStub([mockMessageClientService deleteMessage:messageKey
                                        andContactId:nil
@@ -399,10 +362,156 @@
 - (void)test_deleteMessageForMessageKeyIsNil {
 
     NSString *messageKey = nil;
-
+    
     [messageService deleteMessage:messageKey andContactId:nil withCompletion:^(NSString *status, NSError *error) {
         XCTAssertNotNil(error);
         XCTAssertNil(status);
+    }];
+}
+
+- (void)test_messageinfoWithMessageKeyIsSuccessful_thatErrorIsNotPresent {
+
+    NSString *messageKey = @"messageKey1";
+
+    ALMessageInfo *messageInfo = [[ALMessageInfo alloc] init];
+    messageInfo.status = 1l;
+    messageInfo.userId = @"userId1";
+    ALMessageInfoResponse *info = [[ALMessageInfoResponse alloc] init];
+
+    NSMutableArray<ALMessageInfo *> *messageArray = [[NSMutableArray alloc] init];
+    [messageArray addObject:messageInfo];
+    info.msgInfoList = messageArray;
+
+    OCMStub([mockMessageClientService getCurrentMessageInformation:messageKey
+                                             withCompletionHandler:([OCMArg invokeBlockWithArgs:info,
+                                                                     [OCMArg defaultValue],
+                                                                     nil])]);
+
+    [messageService getMessageInformationWithMessageKey:messageKey withCompletionHandler:^(ALMessageInfoResponse *msgInfo, NSError *theError) {
+        XCTAssertNil(theError);
+        XCTAssertNotNil(msgInfo);
+    }];
+
+}
+
+- (void)test_messageinfoWithMessageKeyIsUnsuccessful_thatErrorIsPresent {
+
+    NSString *messageKey = @"messageKey1";
+
+    ALMessageInfo *messageInfo = [[ALMessageInfo alloc] init];
+    messageInfo.status = 1l;
+    messageInfo.userId = @"userId1";
+    ALMessageInfoResponse *info = [[ALMessageInfoResponse alloc] init];
+
+    NSMutableArray<ALMessageInfo *> *messageArray = [[NSMutableArray alloc] init];
+    [messageArray addObject:messageInfo];
+    info.msgInfoList = messageArray;
+
+    OCMStub([mockMessageClientService getCurrentMessageInformation:messageKey
+                                             withCompletionHandler:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
+                                                                     networkError,
+                                                                     nil])]);
+
+    [messageService getMessageInformationWithMessageKey:messageKey withCompletionHandler:^(ALMessageInfoResponse *msgInfo, NSError *theError) {
+        XCTAssertNotNil(theError);
+        XCTAssertNil(msgInfo);
+    }];
+
+}
+
+
+- (void)test_messageinfoWithMessageKeyIsUnsuccessful_thatParameterIsNil {
+
+    [messageService getMessageInformationWithMessageKey:nil withCompletionHandler:^(ALMessageInfoResponse *msgInfo, NSError *theError) {
+        XCTAssertNotNil(theError);
+        XCTAssertNil(msgInfo);
+    }];
+}
+
+- (void)test_updateMessageMetadataWithMessageKeyIsSuccessful_thatErrorIsNotPresent {
+
+    id mockMessageClientService  = OCMClassMock([ALMessageClientService class]);
+    [mockMessageClientService setResponseHandler:mockResponseHandler];
+    messageService.messageClientService = mockMessageClientService;
+
+    NSString *messageKey = @"messageKey1";
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+    [metadata setValue:@"value1" forKey:@"key1"];
+    [metadata setValue:@"value2" forKey:@"key2"];
+    [metadata setValue:@"value3" forKey:@"key3"];
+
+    ALAPIResponse *mockApiResponse = [[ALAPIResponse alloc] init];
+    mockApiResponse.generatedAt = @1623926734139;
+    mockApiResponse.response = @"success";
+    mockApiResponse.status = @"success";
+
+    NSMutableDictionary *jsonDictionary = [[NSMutableDictionary alloc] init];
+    [jsonDictionary setValue:@1623664309876 forKey:@"generatedAt"];
+    [jsonDictionary setValue:@"success" forKey:@"status"];
+
+    OCMStub([mockMessageClientService updateMessageMetadataOfKey:messageKey
+                                                    withMetadata:metadata
+                                                  withCompletion:([OCMArg invokeBlockWithArgs:jsonDictionary,
+                                                                   [OCMArg defaultValue],
+                                                                   nil])]);
+    [messageService updateMessageMetadataOfKey:messageKey
+                                  withMetadata:metadata
+                                withCompletion:^(ALAPIResponse *theJson, NSError *theError) {
+        XCTAssertNil(theError);
+        XCTAssertNotNil(theJson);
+
+    }];
+
+}
+
+
+- (void)test_updateMessageMetadataWithMessageKeyIsUnsuccessful_thatErrorIsPresent {
+
+    id mockMessageClientService  = OCMClassMock([ALMessageClientService class]);
+    [mockMessageClientService setResponseHandler:mockResponseHandler];
+    messageService.messageClientService = mockMessageClientService;
+
+    NSString *messageKey = @"messageKey1";
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+    [metadata setValue:@"value1" forKey:@"key1"];
+    [metadata setValue:@"value2" forKey:@"key2"];
+    [metadata setValue:@"value3" forKey:@"key3"];
+
+    ALAPIResponse *mockApiResponse = [[ALAPIResponse alloc] init];
+    mockApiResponse.generatedAt = @1623926734139;
+    mockApiResponse.response = @"success";
+    mockApiResponse.status = @"success";
+
+    NSMutableDictionary *jsonDictionary = [[NSMutableDictionary alloc] init];
+    [jsonDictionary setValue:@1623664309876 forKey:@"generatedAt"];
+    [jsonDictionary setValue:@"success" forKey:@"status"];
+
+    OCMStub([mockMessageClientService updateMessageMetadataOfKey:messageKey
+                                                    withMetadata:metadata
+                                                  withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],
+                                                                   networkError,
+                                                                   nil])]);
+
+
+
+    [messageService updateMessageMetadataOfKey:messageKey
+                                  withMetadata:metadata
+                                withCompletion:^(ALAPIResponse *theJson, NSError *theError) {
+        XCTAssertNotNil(theError);
+        XCTAssertNil(theJson);
+    }];
+
+}
+
+- (void)test_updateMessageMetadataWithMessageKeyIsUnsuccessful_thatParameterIsNil {
+
+    [messageService updateMessageMetadataOfKey:nil
+                                  withMetadata:nil
+                                withCompletion:^(ALAPIResponse *theJson, NSError *theError) {
+        XCTAssertNotNil(theError);
+        XCTAssertNil(theJson);
     }];
 }
 
