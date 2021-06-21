@@ -44,6 +44,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     NSUserDefaults * userDefaults = [[NSUserDefaults alloc] init];
     if([userDefaults boolForKey:@"sendLogs"] == YES) {
         self.sendLogsButton.hidden = NO;
@@ -239,8 +240,7 @@
     if(![ALDataNetworkConnection noInternetConnectionNotification])
     {
         [self.activityView startAnimating];
-        ALConversationProxy * newProxy = [[ALConversationProxy alloc] init];
-        newProxy = [self makeupConversationDetails];
+        ALConversationProxy * newProxy  = [self makeupConversationDetails];
         
         ALChatManager * chatManager = [[ALChatManager alloc] init];
         [chatManager createAndLaunchChatWithSellerWithConversationProxy:newProxy fromViewController:self];
@@ -315,6 +315,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self.activityView stopAnimating];
     [self.activityView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION  object:nil];
