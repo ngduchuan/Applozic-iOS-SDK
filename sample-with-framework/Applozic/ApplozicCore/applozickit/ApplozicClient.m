@@ -20,12 +20,6 @@
 
 NSString *const ApplozicClientDomain = @"ApplozicClient";
 
-/**
- This is for initialization the applicationKey
-
- @param applicationKey pass applicationKey you will get applicationKey from applozic.com
- @return return will be Class object
- */
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey {
     self = [super init];
     if (self) {
@@ -35,15 +29,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     return self;
 }
 
-
-/**
- This is for initialization the applicationKey
-
- @param applicationKey pass applicationKey you will get applicationKey from applozic.com
- @param delegate ApplozicUpdatesDelegate is for  subscribing/unSubscribing MQTT updates
- @return self
-
- */
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     self = [super init];
     if (self) {
@@ -74,14 +59,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 //==============================================================================================================================================
 #pragma mark - Login method
 //==============================================================================================================================================
-
-
-/**
- Login user to apploizc using this method once login success then you can perform other tasks
-
- @param alUser ALUser object  which will be having deatils about user like userId, displayName and other
- @param completion will have ALRegistrationResponse which will be having details about user
- */
 
 - (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
 
@@ -126,11 +103,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Logout method
 //==============================================================================================================================================
 
-/**
- This method is Logout user from applozic
-
- @param completion ALAPIResponse will be having a complete response like status  else it NSError
- */
 - (void)logoutUserWithCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
     ALRegisterUserClientService *alUserClientService = [[ALRegisterUserClientService alloc] init];
@@ -146,13 +118,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 //==============================================================================================================================================
 #pragma mark - Updte APNS device token  method
 //==============================================================================================================================================
-
-/**
- This method is for updating APNS  device token  applozic server for sending a APNS push notification to iphone device
-
- @param apnDeviceToken apnDeviceToken  is and apple device token which is required for sending for APNS push notification to device
- @param completion completion it as ALRegistrationResponse which will be havign user deatils response
- */
 
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
     if (![ALUserDefaultsHandler getApplicationKey]) {
@@ -185,15 +150,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Messages list and indivaul chat   methods
 //==============================================================================================================================================
 
-
-
-/**
- This getLatestMessages method is for  getting latest messages list  of user and group, Grouped by latest  messages with createdAtTime of the messages
-
- @param isNextPage  is send YES or true in case if you want to fetch next set of messaages else Make NO or false to load first set of messages
- @param completion NSMutableArray will have list of ALMessage object, NSError if any error comes
- */
-
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
     [_messageDbService getLatestMessages:isNextPage withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
         completion(messageListArray,error);
@@ -201,12 +157,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 }
 
 
-/**
- This getMessages method will give user or group deatils
-
- @param messageListRequest MessageListRequest it has parameters for
- @param completion completion description
- */
 - (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
     [_messageService getMessageListForUser:messageListRequest  withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
         completion(messages,error);
@@ -219,12 +169,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Converstion read mark methods
 //==============================================================================================================================================
 
-/**
- This method is for mark conversation as read for group chat where unread count will be there that will be marked as read
-
- @param groupId  Pass groupId where you want to mark conversation as read
- @param completion as response and error, response is will have success or error response string else it will have NSError
- */
 - (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
     if (groupId != nil && groupId.integerValue != 0) {
         [_channelService markConversationAsRead:groupId withCompletion:^(NSString *conversationResponse, NSError *error) {
@@ -240,13 +184,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
 }
 
-
-/**
- This method is for mark conversation as read for one to one chat where unread count will be there that will be marked as read
-
- @param userId Pass userId where you want to mark conversation as read
- @param completion  as response and error, response is will have success or error response string else it will have NSError
- */
 - (void)markConversationReadForOnetoOne:(NSString*)userId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
 
     if (userId) {
@@ -265,13 +202,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 //==============================================================================================================================================
 #pragma mark - Send  text message method
 //==============================================================================================================================================
-
-/**
- This method is used for sending a text messages to group or one to one chat
-
- @param alMessage it accept ALMessage object
- @param completion it has resonse where the messagekey is updated and it as createdAtTime of message which is created in our server else it as NSError
- */
 
 - (void)sendTextMessage:(ALMessage*)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion{
 
@@ -302,12 +232,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Send  Attachment message method
 //==============================================================================================================================================
 
-/**
- This method is for sending an Attachment message in chat
-
- @param attachmentMessage it as groupId and userId where you can send to group or one to one chat and pass the message text string,file path of file
- */
-
 - (void)sendMessageWithAttachment:(ALMessage*)attachmentMessage {
     
     if (!attachmentMessage || !attachmentMessage.imageFilePath) {
@@ -320,11 +244,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Download  Attachment message method
 //==============================================================================================================================================
 
-/**
- downloadMessageAttachment  method is for downloading an Attachment in chat
- @param alMessage pass ALMessage object which you want to download the attachment from  server
- */
-
 - (void)downloadMessageAttachment:(ALMessage*)alMessage {
     if (!alMessage) {
         return;
@@ -336,19 +255,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Channel/Group methods
 //==============================================================================================================================================
 
-/**
- createChannelWithChannelInfo  This method is for creating a group like public group,open group group,private group
-
- PRIVATE = 1,
- PUBLIC = 2,
- BROADCAST = 5,
- OPEN = 6,
- GROUP_OF_TWO = 7
- 
- @param channelInfo pass information about group deatils
- @param completion  it will be having complete  deatils about channel and status, if its error or success else NSError
- */
-
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
 
     ALChannelService *channelService = [[ALChannelService alloc] init];
@@ -357,14 +263,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }];
 }
 
-
-/**
- This method is used for removing a member from group
- @param userId Pass userId whom you want to remove from group/channel
- @param channelKey its channelKey for the group you want to remove a member
- @param clientChannelKey if you your own client channelKey then you can pass it
- @param completion ALAPIResponse will be having a complete response like status and when user is removed else it NSError
- */
 - (void)removeMemberFromChannelWithUserId:(NSString *)userId
                             andChannelKey:(NSNumber *)channelKey
                        orClientChannelKey:(NSString *)clientChannelKey
@@ -377,15 +275,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }];
 }
 
-/**
- This method for leave member from group/channel
-
- @param userId Pass login userId here to leave from group
- @param channelKey will be channelkey of group you want to leave from
- @param clientChannelKey pass here the client channelKey which you have stored at your end or passed during group/channel create
- @param completion  ALAPIResponse will be having a complete response like status and when user is removed else it NSError
-
- */
 - (void)leaveMemberFromChannelWithUserId:(NSString *)userId
                            andChannelKey:(NSNumber *)channelKey
                       orClientChannelKey:(NSString *)clientChannelKey
@@ -398,15 +287,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 }
 
-
-/**
- This method for add  member from group/channel
-
- @param userId Pass userId that you want to add in group/channel
- @param channelKey it's  channelkey of group/channel you want to add in the group/channel
- @param clientChannelKey pass here the client channelKey which you have stored at your end or passed during group/channel create
- @param completion ALAPIResponse will be having a complete response like status and when user is removed else it NSError
- */
 - (void)addMemberToChannelWithUserId:(NSString *)userId
                        andChannelKey:(NSNumber *)channelKey
                   orClientChannelKey:(NSString *)clientChannelKey
@@ -418,19 +298,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }];
 
 }
-
-/**
- This method is used for updating channel/group
-
- @param channelKey Pass channelKey which you wan to update
- @param newName Pass if you want to change the group name then pass new name here
- @param imageURL Pass image url if you want to update group/channel image
- @param clientChannelKey clientChannelKey description
- @param flag if you are updating metadata of group then pass YES else NO
- @param metaData meta data can be extra information you want to pass in group/channel and use it later when its required
- @param channelUsers if you want to update group users role like admin, member
- @param completion  ALAPIResponse will be having a complete response like status and when user is updated else it NSError
- */
 
 - (void)updateChannelWithChannelKey:(NSNumber *)channelKey
                          andNewName:(NSString *)newName
@@ -448,14 +315,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 }
 
-
-/**
- This method is for getting channel/group information
-
- @param channelKey Pass channelKey for the group/channel you want a deatils of
- @param clientChannelKey if you have stored the client channelKey else pass nil
- @param completion ALChannel object will have complete details of channel/group and AlChannelFeedResponse if any error API error comes in group then check channelResponse else check NSError
- */
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
                              withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion {
@@ -467,30 +326,16 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 }
 
-
 //==============================================================================================================================================
 #pragma mark - User block or unblock method
 //==============================================================================================================================================
 
-/**
- This method blockUserWithUserId is used for to a block user
-
- @param userId Pass userId whom you want to block
- @param completion BOOL userBlock if its YES or true then its unblocked else NO or false
- */
 - (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion{
 
     [_userService blockUser:userId withCompletionHandler:^(NSError *error, BOOL userBlock) {
         completion(error,userBlock);
     }];
 }
-
-/**
- This method unBlockUserWithUserId is used for unblocking user which is already blocked
-
- @param userId Pass userId whom you want to unblock
- @param completion BOOL userUnblock if its YES or true then its unblocked else NO or false
- */
 
 - (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion{
 
@@ -503,14 +348,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 //==============================================================================================================================================
 #pragma mark - Mute/unmute Group method
 //==============================================================================================================================================
-
-/**
- This method is for mute and unmute a group/channel based on time and channelKey
-
- @param channelKey Pass channelkey which you want to mute or unmute a group/channel
- @param notificationTime Pass time you want to mute or unmute group/chanel
- @param completion ALAPIResponse will have status else NSError
- */
 
 - (void)muteChannelOrUnMuteWithChannelKey:(NSNumber *)channelKey
                                   andTime:(NSNumber *)notificationTime
@@ -527,19 +364,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 }
 
-
-
 //==============================================================================================================================================
 #pragma mark - SubscribeToConversation/UnsubscribeToConversation for updates
 //==============================================================================================================================================
 
-
-/**
- This method is for handing the APNS or VOIP push notification messages
-
- @param application UIApplication is required to pass
- @param userInfo NSDictionary its notification data Dictionary
- */
 - (void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo {
 
     if (alPushNotificationService) {
@@ -547,60 +375,35 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
 }
 
-/**
- This method subscribeToConversation  is used for subscribing  to mqtt conversation
- */
-
 - (void)subscribeToConversation {
     if (alMQTTConversationService) {
         [alMQTTConversationService  subscribeToConversation];
     }
 }
 
-/**
- This method unsubscribeToConversation  is used for unSubscribing  to mqtt conversation
- */
 - (void)unsubscribeToConversation {
     if (alMQTTConversationService) {
         [alMQTTConversationService  unsubscribeToConversation];
     }
 }
 
-/**
- This method subscribeToTypingStatusForOneToOne is used subscribing to one to one typing status events
- */
 - (void)subscribeToTypingStatusForOneToOne {
     if (alMQTTConversationService) {
         [alMQTTConversationService subscribeToChannelConversation:nil];
     }
 }
 
-/**
- This method subscribeToTypingStatusForGroup is used subscribing to group/channel typing status events
-
- @param channelKey Pass channel/group channelKey which your looking for typing events
- */
 - (void)subscribeToTypingStatusForChannel:(NSNumber *)channelKey {
     if (alMQTTConversationService) {
         [alMQTTConversationService  subscribeToChannelConversation:channelKey];
     }
 }
 
-/**
- This method unSubscribeToTypingStatusForOneToOne is used for unSubscribing the typing status events for one to one
-
- */
 - (void)unSubscribeToTypingStatusForOneToOne {
     if (alMQTTConversationService) {
         [alMQTTConversationService unSubscribeToChannelConversation:nil];
     }
 }
-
-/**
- This method unSubscribeToTypingStatusForChannel is used for
-
- @param chanelKey Pass channelKey of group/channel that you want to unSubscribe
- */
 
 - (void)unSubscribeToTypingStatusForChannel:(NSNumber *)chanelKey {
     if (alMQTTConversationService) {
@@ -608,38 +411,18 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
 }
 
-/**
- This method  sendTypingStatusForChannelKey is  used for for channel/group sending typing status
-
- @param chanelKey its channelKey for group/channel which you want to send typing status
- @param isTyping if your typing pass YES in isTyping else on stop pass NO to stop the typing
- */
-- (void)sendTypingStatusForChannelKey:(NSNumber *)chanelKey withTyping:(BOOL)isTyping {
+- (void)sendTypingStatusForChannelKey:(NSNumber *)chanelKey
+                           withTyping:(BOOL)isTyping {
     if (alMQTTConversationService) {
         [alMQTTConversationService sendTypingStatus:nil userID:nil andChannelKey:chanelKey typing:isTyping];
     }
 }
 
-/**
- This method  sendTypingStatusForUserId is  used for for one to one sending typing status
-
- @param userId Pass userId for one to one which you want to send a typing status
- @param isTyping if your typing pass YES else on stop pass NO to stop the typing
- */
 - (void)sendTypingStatusForUserId:(NSString *)userId withTyping:(BOOL)isTyping {
     if (alMQTTConversationService) {
         [alMQTTConversationService sendTypingStatus:nil userID:userId andChannelKey:nil typing:isTyping];
     }
 }
-
-/**
- This method sendTypingStatusForUserId method is for sending a typing status in one to one or group/channel chat
-
- @param userId if its one to one chat  then pass your userId else pass nil
- @param channelKey its channelKey for group/channel which you want to send typing status else psas nil
- @param isTyping if your typing pass YES in isTyping else on stop pass NO to stop the typing
-
- */
 
 - (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL)isTyping {
     if (channelKey != nil) {
