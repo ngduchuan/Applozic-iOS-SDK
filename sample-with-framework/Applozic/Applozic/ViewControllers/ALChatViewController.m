@@ -820,14 +820,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     UIAlertController *alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"OOPS !!!", @"")
                                 message:
-                                NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
+                                    NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
                                 preferredStyle:UIAlertControllerStyleAlert];
 
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
 
     UIAlertAction *ok = [UIAlertAction
                          actionWithTitle:
-                         NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
+                             NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
                          style:UIAlertActionStyleDefault
                          handler:^(UIAlertAction *action)
                          {
@@ -1158,7 +1158,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                             ThirdPartyDetailVCNotificationChannelKey : self.channelKey
-            }];
+                                                                                                                          }];
         } else {
 
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
@@ -4118,7 +4118,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
      object:nil
      userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                 ThirdPartyDetailVCNotificationALContact : userId}
-     ];
+    ];
     BOOL tapFlag = ([ALApplozicSettings isChatOnTapUserProfile] && [self isGroup]);
 
     if (!tapFlag) {
@@ -4372,7 +4372,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
             if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                                 ThirdPartyDetailVCNotificationALContact : contact
-                }];
+                                                                                                                              }];
             } else {
                 [self.mActivityIndicator startAnimating];
 

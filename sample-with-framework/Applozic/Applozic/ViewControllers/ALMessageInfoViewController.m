@@ -9,6 +9,7 @@
 #import "ALMessageInfoViewController.h"
 #import "UIImageView+WebCache.h"
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 @interface ALMessageInfoViewController () {
     NSMutableArray *arrayList;
@@ -48,7 +49,26 @@
 -(void)navigationBarColor {
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+            [navigationBarAppearance setTitleTextAttributes:@{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes: @{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        }
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
     }
 }

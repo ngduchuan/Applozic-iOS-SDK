@@ -10,6 +10,7 @@
 #import "UIImageView+WebCache.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 @interface ALMapViewController ()
 
@@ -61,7 +62,27 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tabBarController.tabBar setHidden: YES];
-    [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+        navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+        [navigationBarAppearance setTitleTextAttributes:@{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        }];
+        self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+    } else {
+        [self.navigationController.navigationBar setTitleTextAttributes: @{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        }];
+        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+    }
+
     [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     [self.navigationController.navigationBar setBackgroundColor: [ALApplozicSettings getColorForNavigation]];
     

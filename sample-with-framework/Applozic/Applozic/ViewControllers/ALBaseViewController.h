@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <ApplozicCore/ApplozicCore.h>
 
+static CGFloat AL_NAVIGATION_TEXT_SIZE = 20;
+static CGFloat AL_LAST_SEEN_LABEL_SIZE = 10;
+static CGFloat AL_TYPING_LABEL_SIZE = 12.5;
+
 @interface ALBaseViewController : UIViewController <UITextViewDelegate>
 
 @property (nonatomic, strong) NSString *placeHolderTxt;

@@ -6,10 +6,6 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-static CGFloat NAVIGATION_TEXT_SIZE = 20;
-static CGFloat LAST_SEEN_LABEL_SIZE = 10;
-static CGFloat TYPING_LABEL_SIZE = 12.5;
-
 #import "ALBaseViewController.h"
 #import "ALChatLauncher.h"
 #import "ALMessagesViewController.h"
@@ -151,14 +147,14 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     
     self.label = [[UILabel alloc] init];
     self.label.backgroundColor = [UIColor clearColor];
-    [self.label setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:LAST_SEEN_LABEL_SIZE]];
+    [self.label setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:AL_LAST_SEEN_LABEL_SIZE]];
     self.label.textAlignment = NSTextAlignmentCenter;
     [self.navigationController.navigationBar addSubview:self.label];
     
     typingIndicatorHeight = 30;
     self.typingLabel.backgroundColor = [ALApplozicSettings getBGColorForTypingLabel];
     self.typingLabel.textColor = [ALApplozicSettings getTextColorForTypingLabel];
-    [self.typingLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:TYPING_LABEL_SIZE]];
+    [self.typingLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:AL_TYPING_LABEL_SIZE]];
     self.typingLabel.textAlignment = NSTextAlignmentLeft;
 
     if ([ALApplozicSettings isDropShadowInNavigationBarEnabled]) {
@@ -207,23 +203,37 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [self.navigationController.navigationBar setTitleTextAttributes: @{
         NSForegroundColorAttributeName:[UIColor whiteColor],
         NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                            size:NAVIGATION_TEXT_SIZE]
+                                            size:AL_NAVIGATION_TEXT_SIZE]
     }];
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:NAVIGATION_TEXT_SIZE]
-        }];
+
         self.navigationController.navigationBar.translucent = NO;
-        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
 
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
 
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+            [navigationBarAppearance setTitleTextAttributes:@{
+                            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                                size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes: @{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        }
     }
 
     [self sendButtonUI];

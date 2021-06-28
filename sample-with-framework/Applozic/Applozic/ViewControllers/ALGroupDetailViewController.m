@@ -164,14 +164,30 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)setNavigationColor {
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                 size:18]
-        }];
 
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+            [navigationBarAppearance setTitleTextAttributes:@{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes: @{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        }
+
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     }
 }
@@ -320,7 +336,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             [self checkAndconfirm: NSLocalizedStringWithDefaultValue(@"confirmText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirm", @"")
                       withMessage:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?", @"")
                  otherButtonTitle: NSLocalizedStringWithDefaultValue(@"yes", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Yes", @"")
-             ];
+            ];
 
         }break;
 
@@ -728,7 +744,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
      object:nil
      userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                 ThirdPartyDetailVCNotificationALContact : userId}
-     ];
+    ];
 }
 
 #pragma mark Row Height

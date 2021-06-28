@@ -18,6 +18,7 @@
 #import "ALNotificationHelper.h"
 #import "ALUIUtilityClass.h"
 #import "ALChannelCreateResponse.h"
+#import "ALBaseViewController.h"
 
 const int DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 const int DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -179,14 +180,28 @@ static const int SHOW_GROUP = 102;
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:18]
-        }];
-        
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+            [navigationBarAppearance setTitleTextAttributes:@{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes: @{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        }
+
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
         
     }
@@ -1472,7 +1487,7 @@ static const int SHOW_GROUP = 102;
 }
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
-
+    
     [self.uiAlertController dismissViewControllerAnimated:YES completion:nil];
     if (self.directContactVCLaunch) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];

@@ -15,11 +15,11 @@
 #import <Applozic/Applozic-Swift.h>
 #import "ALSearchResultViewController.h"
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 static const int LAUNCH_GROUP_OF_TWO = 4;
 static const int REGULAR_CONTACTS = 0;
 static const int BROADCAST_GROUP_CREATION = 5;
-static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -229,24 +229,32 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
                                                  name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
 
 
-    [self.navigationController.navigationBar setTitleTextAttributes: @{
-        NSForegroundColorAttributeName:[UIColor whiteColor],
-        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                            size:NAVIGATION_TEXT_SIZE]
-    }];
     
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"chatTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForConversationScreen], @"");
     
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:NAVIGATION_TEXT_SIZE]
-        }];
-        
         self.navigationController.navigationBar.translucent = NO;
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+            [navigationBarAppearance setTitleTextAttributes:@{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes: @{
+                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                    size:AL_NAVIGATION_TEXT_SIZE]
+            }];
+            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        }
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
     }
 
