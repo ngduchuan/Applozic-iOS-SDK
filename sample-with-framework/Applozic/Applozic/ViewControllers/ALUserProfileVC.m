@@ -165,24 +165,22 @@
 }
 
 - (void)commonNavBarTheme:(UINavigationController *)navigationController {
+    
+    NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:AL_NAVIGATION_TEXT_SIZE]
+    };
     if (@available(iOS 13.0, *)) {
         UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
 
         navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
 
-        [navigationBarAppearance setTitleTextAttributes:@{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:AL_NAVIGATION_TEXT_SIZE]
-        }];
+        [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
         self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
         self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
     } else {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:AL_NAVIGATION_TEXT_SIZE]
-        }];
+        [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
     }
     
@@ -568,7 +566,7 @@
                     [self.userStatusLabel setText: statusText];
                     [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
                 }
-
+                
                 [self.activityIndicator stopAnimating];
 
             }];

@@ -28,12 +28,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    
     [self setUpProfileItems];
     [self setTapGesture];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMuteInfo:)
                                                  name:@"Update_user_mute_info" object:nil];
-
+    
 }
 
 -(void)updateMuteInfo:(NSNotification*)notification {
@@ -79,27 +79,27 @@
     
     
     [theController addAction:[UIAlertAction actionWithTitle:[@"8 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"hrs", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Hrs", @"")] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
+        
         [self sendMuteRequestWithButtonIndex:0];
     }]];
-
+    
     
     [theController addAction:[UIAlertAction actionWithTitle: [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"week", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Week", @"")] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
+        
         [self sendMuteRequestWithButtonIndex:1];
     }]];
-
+    
     
     [theController addAction:[UIAlertAction actionWithTitle: [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"year", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Year", @"")]  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
+        
         [self sendMuteRequestWithButtonIndex:2];
     }]];
-
+    
     [self presentViewController:theController animated:YES completion:nil];
 }
 
 -(void)sendMuteRequestWithButtonIndex:(NSInteger)buttonIndex {
-
+    
     long currentTimeStemp = [[NSNumber numberWithLong:([[NSDate date] timeIntervalSince1970]*1000)] longValue];
     
     
@@ -126,7 +126,7 @@
     if (notificationAfterTime) {
         [self sendMuteRequestWithTime:notificationAfterTime];
     }
-
+    
 }
 
 -(void) unmuteUser {
@@ -157,7 +157,7 @@
                 }
                 
             });
-
+            
         }
     }];
     
@@ -195,28 +195,25 @@
     }
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-
+        
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
         if (@available(iOS 13.0, *)) {
             UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
-
+            
             navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
-
-            [navigationBarAppearance setTitleTextAttributes:@{
-                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                    size:AL_NAVIGATION_TEXT_SIZE]
-            }];
+            
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
             self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
             self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
         } else {
-            [self.navigationController.navigationBar setTitleTextAttributes: @{
-                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                    size:AL_NAVIGATION_TEXT_SIZE]
-            }];
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
             [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         }
-
+        
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
     }

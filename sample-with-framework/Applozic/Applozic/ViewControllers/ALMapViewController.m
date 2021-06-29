@@ -62,27 +62,24 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tabBarController.tabBar setHidden: YES];
+    NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:AL_NAVIGATION_TEXT_SIZE]
+    };
     if (@available(iOS 13.0, *)) {
         UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
-
+        
         navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
-
-        [navigationBarAppearance setTitleTextAttributes:@{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:AL_NAVIGATION_TEXT_SIZE]
-        }];
+        
+        [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
         self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
         self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
     } else {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:AL_NAVIGATION_TEXT_SIZE]
-        }];
+        [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
     }
-
+    
     [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     [self.navigationController.navigationBar setBackgroundColor: [ALApplozicSettings getColorForNavigation]];
     
@@ -153,30 +150,30 @@
         NSString *title;
         title = (status == kCLAuthorizationStatusDenied) ? @"Location services are off" : @"Background location is not enabled";
         NSString *message = @"To use background location you must turn on 'Always' in the Location Services Settings";
-
+        
         UIAlertController *uiAlertController = [UIAlertController
                                                 alertControllerWithTitle:title
                                                 message:message
                                                 preferredStyle:UIAlertControllerStyleAlert];
-
+        
         UIAlertAction *settingButton = [UIAlertAction
                                         actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings", @"")
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction *action) {
             NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             [[UIApplication sharedApplication] openURL:settingsURL options:@{} completionHandler:nil];
-
+            
         }];
-
+        
         UIAlertAction *cancelButton = [UIAlertAction
                                        actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")
                                        style:UIAlertActionStyleDefault
                                        handler:^(UIAlertAction *action) {
-
+            
         }];
         [uiAlertController addAction:settingButton];
         [uiAlertController addAction:cancelButton];
-
+        
         [self.presentedViewController.navigationController presentViewController:uiAlertController animated:YES completion:nil];
     } else if (status == kCLAuthorizationStatusNotDetermined) {
         // The user has not enabled any location services. Request background authorization.
