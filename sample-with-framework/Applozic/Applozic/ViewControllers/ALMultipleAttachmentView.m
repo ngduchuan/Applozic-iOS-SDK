@@ -61,31 +61,34 @@ static NSString *const reuseIdentifier = @"collectionCell";
     [super viewWillAppear:YES];
 
     [self.navigationItem setRightBarButtonItem:self.sendButton];
-    [self navigationBarColor];
+    [self setupNavigationBar];
 }
 
-- (void)navigationBarColor {
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
+- (void)setupNavigationBar {
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+
+    if (navigationBarColor && navigationBarTintColor) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
 
         NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSForegroundColorAttributeName:navigationBarTintColor,
             NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
                                                 size:AL_NAVIGATION_TEXT_SIZE]
         };
         if (@available(iOS 13.0, *)) {
             UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
 
-            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
 
             [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
             self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
             self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
         } else {
             [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
-            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
         }
-        [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
     }
 }
 

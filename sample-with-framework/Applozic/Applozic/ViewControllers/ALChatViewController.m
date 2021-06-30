@@ -171,6 +171,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [super viewDidLoad];
     self.mqttRetryCount = 0;
     [self setupServices];
+    self.extendedLayoutIncludesOpaqueBars = true;
     // Setup quick recording if it's enabled in the settings
     if ([ALApplozicSettings isQuickAudioRecordingEnabled]) {
         if ([ALApplozicSettings isNewAudioDesignEnabled]) {
@@ -195,7 +196,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.attachmentOutlet setTintColor:[ALApplozicSettings getAttachmentIconColour]];
     [self.sendButton setTintColor:[ALApplozicSettings getSendIconColour]];
     self.alphabetiColorCodesDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -220,7 +220,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.isVisible = YES;
-
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
 

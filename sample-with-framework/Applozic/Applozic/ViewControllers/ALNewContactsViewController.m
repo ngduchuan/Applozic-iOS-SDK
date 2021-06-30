@@ -75,6 +75,9 @@ static const int SHOW_GROUP = 102;
     [self setupServices];
     [[self activityIndicator] startAnimating];
     self.selectedSegment = 0;
+    if (@available(iOS 15.0, *)) {
+        self.contactsTableView.sectionHeaderTopPadding = 0;
+    }
     [ALUserDefaultsHandler setContactServerCallIsDone:NO];
 
     self.contactService = [[ALContactService alloc] init];
@@ -178,31 +181,7 @@ static const int SHOW_GROUP = 102;
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"");
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
-    
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:AL_NAVIGATION_TEXT_SIZE]
-        };
-        if (@available(iOS 13.0, *)) {
-            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
-
-            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
-
-            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
-            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
-            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
-        } else {
-            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
-            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
-        }
-
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
-        
-    }
-    
+    [self setupNavigationBar];
     BOOL groupRegular = [self.forGroup isEqualToNumber:[NSNumber numberWithInt:REGULAR_CONTACTS]];
     BOOL subGroupContacts = [self.forGroup isEqualToNumber:[NSNumber numberWithInt:LAUNCH_GROUP_OF_TWO]];
     
@@ -233,6 +212,34 @@ static const int SHOW_GROUP = 102;
     self.searchBar.frame = CGRectMake(0,y, self.view.frame.size.width, 40);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:@"USER_DETAIL_OTHER_VC" object:nil];
+}
+
+- (void)setupNavigationBar {
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+
+    if (navigationBarColor && navigationBarTintColor) {
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:navigationBarTintColor,
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+        [self.navigationController.navigationBar setTintColor: navigationBarTintColor];
+
+    }
 }
 
 - (void)showMQTTNotification:(NSNotification *)notifyObject {

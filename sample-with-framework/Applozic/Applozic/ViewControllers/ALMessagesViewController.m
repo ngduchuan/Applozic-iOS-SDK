@@ -96,7 +96,6 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
     [super viewDidLoad];
     [self setupServices];
     self.extendedLayoutIncludesOpaqueBars = true;
-
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
 
@@ -104,7 +103,6 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
 
     CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
     [UIApplication sharedApplication].statusBarFrame.size.height;
-    
     self.emptyConversationText = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.origin.x,
                                                                            self.view.frame.size.height/2 - navigationHeight,
                                                                            self.view.frame.size.width, 30)];
@@ -119,6 +117,7 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
     }
     [_mTableView setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
+    [self setupNavigationBar];
 }
 
 - (void)setupNavigationButtons {
@@ -179,13 +178,14 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
             ALSLog(ALLoggerSeverityInfo, @"MQTT subscribe to conversation faild in ALMessagesViewController");
         }
     }];
+
     /// Setup the delegate in viewWillAppear
     self.alMqttConversationService.mqttConversationDelegate = self;
     if ([ALApplozicSettings isDropShadowInNavigationBarEnabled]) {
         [self dropShadowInNavigationBar];
     }
 
-    [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
 
     if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
@@ -231,31 +231,35 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
 
     
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"chatTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForConversationScreen], @"");
-    
-    
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
+
+    [self callLastSeenStatusUpdate];
+}
+
+-(void)setupNavigationBar {
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+    [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    self.navigationController.navigationBar.backgroundColor = navigationBarColor;
+
+    if (navigationBarColor && navigationBarTintColor) {
         self.navigationController.navigationBar.translucent = NO;
         NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSForegroundColorAttributeName:navigationBarTintColor,
             NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
                                                 size:AL_NAVIGATION_TEXT_SIZE]
         };
         if (@available(iOS 13.0, *)) {
             UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
-
-            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
-
+            navigationBarAppearance.backgroundColor = navigationBarColor;
             [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
             self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
-            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = navigationBarAppearance;
         } else {
             [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
-            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
         }
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
     }
-
-    [self callLastSeenStatusUpdate];
 }
 
 - (void)prepareViewController {

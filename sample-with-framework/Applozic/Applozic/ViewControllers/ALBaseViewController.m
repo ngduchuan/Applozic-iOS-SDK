@@ -200,44 +200,53 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
 
+    [self setupNavigationBar];
+    [self sendButtonUI];
+    
+    tempFrame = self.noConversationLabel.frame;
+    
+    paddingForTextMessageViewHeight  = 2;
+}
+
+-(void)setupNavigationBar {
     [self.navigationController.navigationBar setTitleTextAttributes: @{
         NSForegroundColorAttributeName:[UIColor whiteColor],
         NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
                                             size:AL_NAVIGATION_TEXT_SIZE]
     }];
-    
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
+
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+
+    if (navigationBarColor && navigationBarTintColor) {
 
         self.navigationController.navigationBar.translucent = NO;
-        [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
 
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
+        [self.label setTextColor:navigationBarTintColor];
 
         NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSForegroundColorAttributeName:navigationBarTintColor,
             NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
                                                 size:AL_NAVIGATION_TEXT_SIZE]
         };
+
+        self.navigationController.navigationBar.backgroundColor = navigationBarColor;
+
         if (@available(iOS 13.0, *)) {
             UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
 
-            navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
 
             [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
             self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
             self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
         } else {
             [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
-            [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
         }
     }
-
-    [self sendButtonUI];
-    
-    tempFrame = self.noConversationLabel.frame;
-    
-    paddingForTextMessageViewHeight  = 2;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
