@@ -134,7 +134,7 @@ static int CONTACT_PAGE_SIZE = 100;
             if (phoneNumber) {
                 [contact setContactNumber:phoneNumber];
             }
-            [self.contactDBService updateContact:contact];
+            [self.contactDBService updateContactInDatabase:contact];
             completion(YES);
             return;
         }
@@ -694,7 +694,7 @@ static int CONTACT_PAGE_SIZE = 100;
     [user setMetadata: metadata];
     [self.userClientService updateUserDisplayName:nil andUserImageLink:nil userStatus:nil metadata:metadata withCompletion:^(id theJson, NSError *error) {
         if (!error) {
-            [self.contactDBService updateContact: alContact];
+            [self.contactDBService updateContactInDatabase: alContact];
             [ALUserDefaultsHandler disableChat: disable];
             completion(YES, nil);
         } else {

@@ -111,7 +111,7 @@
     
     for (ALContact *contact in contacts) {
         
-        result = [self updateContact:contact];
+        result = [self updateContactInDatabase:contact];
 
         if (!result) {
             ALSLog(ALLoggerSeverityInfo, @"Failure to update the contacts %@",contact.userId);
@@ -121,7 +121,7 @@
     return result;
 }
 
-- (BOOL)updateContact:(ALContact *)contact {
+- (BOOL)updateContactInDatabase:(ALContact *)contact {
     
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
 
@@ -238,7 +238,7 @@
 
     for (ALContact *contact in contacts) {
 
-        result = [self addContact:contact];
+        result = [self addContactInDatabase:contact];
 
         if (!result) {
             ALSLog(ALLoggerSeverityInfo, @"Failure to add/update the contacts %@",contact.userId);
@@ -307,10 +307,10 @@
     return nil;
 }
 
-- (BOOL)addContact:(ALContact *)userContact {
+- (BOOL)addContactInDatabase:(ALContact *)userContact {
     DB_CONTACT* existingContact = [self getContactByKey:@"userId" value:[userContact userId]];
     if (existingContact) {
-        [self updateContact:userContact];
+        [self updateContactInDatabase:userContact];
         return(NO);
     }
     return([self insertNewContact:userContact]);
@@ -424,7 +424,7 @@
                 contact.notificationAfterTime = userDetail.notificationAfterTime;
             }
             contact.status = userDetail.status;
-            [self addContact:contact];
+            [self addContactInDatabase:contact];
         }
 
         NSError *error = [dbHandler saveContext];

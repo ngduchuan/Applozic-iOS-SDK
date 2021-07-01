@@ -167,7 +167,7 @@
                 contact.roleType  =  [NSNumber numberWithShort:response.roleType];
                 contact.metadata  =  response.metadata;
                 contact.userStatus = response.statusMessage;
-                [alContactDBService addContact:contact];
+                [alContactDBService addContactInDatabase:contact];
 
             } @catch (NSException *exception) {
                 ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);

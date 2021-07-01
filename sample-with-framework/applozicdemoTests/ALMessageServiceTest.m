@@ -25,6 +25,7 @@
     ALMessageDBService *messageDBService;
 }
 
+
 - (void)setUp {
     [super setUp];
 
@@ -43,7 +44,9 @@
         alMessageBuilder.to = @"userId";
         alMessageBuilder.message = @"messageText";
     }];
+
     networkError = [NSError errorWithDomain:@"Network Error" code:999 userInfo:nil];
+  
 }
 
 
@@ -514,5 +517,6 @@
         XCTAssertNil(theJson);
     }];
 }
+
 
 @end

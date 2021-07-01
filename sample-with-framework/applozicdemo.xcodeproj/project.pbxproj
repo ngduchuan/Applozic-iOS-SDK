@@ -12,6 +12,7 @@
 		181AED562617603F00F77B10 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 181AED542617603F00F77B10 /* MainInterface.storyboard */; };
 		181AED5A2617603F00F77B10 /* ApplozicShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 181AED4F2617603F00F77B10 /* ApplozicShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1821A76726738618006FBBFE /* ALMessageServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821A76626738618006FBBFE /* ALMessageServiceTest.m */; };
+		1856D91A268E26D8003E34CD /* ALContactServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856D919268E26D8003E34CD /* ALContactServiceTest.m */; };
 		187D679225DD9699008BE643 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; };
 		187D679325DD9699008BE643 /* ApplozicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 187361B825DD67A500C02F5D /* ApplozicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		18A3A170267C7EB200BE9E49 /* ALUserServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3A16F267C7EB200BE9E49 /* ALUserServiceTest.m */; };
@@ -126,6 +127,7 @@
 		181AED572617603F00F77B10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		181AED632617609D00F77B10 /* ApplozicShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ApplozicShare.entitlements; sourceTree = "<group>"; };
 		1821A76626738618006FBBFE /* ALMessageServiceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALMessageServiceTest.m; sourceTree = "<group>"; };
+		1856D919268E26D8003E34CD /* ALContactServiceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALContactServiceTest.m; sourceTree = "<group>"; };
 		18A3A16F267C7EB200BE9E49 /* ALUserServiceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALUserServiceTest.m; sourceTree = "<group>"; };
 		18BCB98A25F6401000F27095 /* ContinerListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContinerListViewController.h; sourceTree = "<group>"; };
 		18BCB98C25F6401000F27095 /* ContinerListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContinerListViewController.m; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				8B1BFF5221D35C8000768400 /* MqttConversationDelegateObjectMock.m */,
 				1821A76626738618006FBBFE /* ALMessageServiceTest.m */,
 				18A3A16F267C7EB200BE9E49 /* ALUserServiceTest.m */,
+				1856D919268E26D8003E34CD /* ALContactServiceTest.m */,
 			);
 			path = applozicdemoTests;
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				1821A76726738618006FBBFE /* ALMessageServiceTest.m in Sources */,
 				8B1461A520DA33DB00785DF2 /* ALRegisterUserClientServiceTests.m in Sources */,
 				8B1BFF5021D3590F00768400 /* ALMqttConversationServiceTests.m in Sources */,
+				1856D91A268E26D8003E34CD /* ALContactServiceTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
