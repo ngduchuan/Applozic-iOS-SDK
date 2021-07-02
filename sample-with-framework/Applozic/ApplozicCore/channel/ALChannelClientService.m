@@ -52,7 +52,20 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 @implementation ALChannelClientService
 
-+ (void)getChannelInfo:(NSNumber *)channelKey
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
+
+-(void)setupServices {
+    self.responseHandler = [[ALResponseHandler alloc] init];
+}
+
+- (void)getChannelInfo:(NSNumber *)channelKey
     orClientChannelKey:(NSString *)clientChannelKey
         withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
@@ -63,7 +76,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
@@ -97,7 +110,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)createChannel:(NSString *)channelName
+- (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
    orClientChannelKey:(NSString *)clientChannelKey
        andMembersList:(NSMutableArray *)memberArray
@@ -113,7 +126,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)createChannel:(NSString *)channelName
+- (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
    orClientChannelKey:(NSString *)clientChannelKey
        andMembersList:(NSMutableArray *)memberArray
@@ -158,7 +171,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING :: %@", theParamString);
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALChannelCreateResponse *response = nil;
 
@@ -173,7 +186,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)addMemberToChannel:(NSString *)userId
+- (void)addMemberToChannel:(NSString *)userId
         orClientChannelKey:(NSString *)clientChannelKey
              andChannelKey:(NSNumber *)channelKey
             withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
@@ -185,7 +198,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_NEW_MEMBER_TO_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_NEW_MEMBER_TO_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
         ALAPIResponse *response = nil;
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN ADD_NEW_MEMBER_TO_CHANNEL :: %@", error);
@@ -197,7 +210,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)removeMemberFromChannel:(NSString *)userId
+- (void)removeMemberFromChannel:(NSString *)userId
              orClientChannelKey:(NSString *)clientChannelKey
                   andChannelKey:(NSNumber *)channelKey
                  withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
@@ -209,7 +222,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_MEMBER_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_MEMBER_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -222,7 +235,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)deleteChannel:(NSNumber *)channelKey
+- (void)deleteChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
        withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, DELETE_CHANNEL_URL];
@@ -232,7 +245,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -245,7 +258,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)leaveChannel:(NSNumber *)channelKey
+- (void)leaveChannel:(NSNumber *)channelKey
   orClientChannelKey:(NSString *)clientChannelKey
           withUserId:(NSString *)userId
        andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
@@ -256,7 +269,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"LEAVE_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"LEAVE_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -269,7 +282,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)addMultipleUsersToChannel:(NSMutableArray *)channelKeys
+- (void)addMultipleUsersToChannel:(NSMutableArray *)channelKeys
                      channelUsers:(NSMutableArray *)channelUsers
                     andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, Add_USERS_TO_MANY_GROUPS];
@@ -289,7 +302,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_MANY_USERS" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_MANY_USERS" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -302,7 +315,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)updateChannel:(NSNumber *)channelKey
+- (void)updateChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
            andNewName:(NSString *)newName
           andImageURL:(NSString *)imageURL
@@ -352,7 +365,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -366,7 +379,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 }
 
-+ (void)updateChannelMetaData:(NSNumber *)channelKey
+- (void)updateChannelMetaData:(NSNumber *)channelKey
            orClientChannelKey:(NSString *)clientChannelKey
                      metadata:(NSMutableDictionary *)metaData
                 andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
@@ -392,7 +405,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALAPIResponse *response = nil;
         if (error) {
@@ -406,7 +419,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 }
 
-+ (void)syncCallForChannel:(NSNumber *)updatedAt
+- (void)syncCallForChannel:(NSNumber *)updatedAt
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_SYNC_URL];
@@ -418,7 +431,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)theJson);
         ALChannelSyncResponse *response = nil;
@@ -469,7 +482,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)addChildKeyList:(NSMutableArray *)childKeyList
+- (void)addChildKeyList:(NSMutableArray *)childKeyList
            andParentKey:(NSNumber *)parentKey
          withCompletion:(void (^)(id json, NSError *error))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,ADD_MULTIPLE_SUB_GROUP];
@@ -483,7 +496,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString *theParamString = [NSString stringWithFormat:@"groupId=%@&%@",parentKey,tempString];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_CHANNEL_UPDATE :: %@", theParamString);
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)theJson);
         if (theError) {
@@ -495,7 +508,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)removeChildKeyList:(NSMutableArray *)childKeyList
+- (void)removeChildKeyList:(NSMutableArray *)childKeyList
               andParentKey:(NSNumber *)parentKey
             withCompletion:(void (^)(id json, NSError *error))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,REMOVE_MULTIPLE_SUB_GROUP];
@@ -509,7 +522,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString *theParamString = [NSString stringWithFormat:@"groupId=%@&%@",parentKey,tempString];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_CHANNEL_UPDATE :: %@", theParamString);
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CHILD_TO_PARENT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CHILD_TO_PARENT" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT :: %@", (NSString *)theJson);
         if (theError) {
@@ -525,7 +538,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark ADD/REMOVING VIA CLIENT KEYS
 //=================================================
 
-+ (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
+- (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
            andClientParentKey:(NSString *)clientParentKey
                withCompletion:(void (^)(id json, NSError *error))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,ADD_MULTIPLE_SUB_GROUP];
@@ -540,7 +553,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", theParamString);
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)theJson);
         if (theError) {
@@ -552,7 +565,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
+- (void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
               andClientParentKey:(NSString *)clientParentKey
                   withCompletion:(void (^)(id json, NSError *error))completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,REMOVE_MULTIPLE_SUB_GROUP];
@@ -567,7 +580,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", theParamString);
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)theJson);
         if (theError) {
@@ -588,7 +601,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN MARK_CONVERSATION_AS_READ :: %@", theError);
             completion(nil, theError);
@@ -612,7 +625,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"MUTE_GROUP" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MUTE_GROUP" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityInfo, @" muteChannel :: %@", theError);
@@ -647,7 +660,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
@@ -682,7 +695,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityInfo, @"ERROR IN CHANNEL_LIST SERVER CALL REQUEST %@", error);
@@ -726,7 +739,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_FILTER" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_FILTER" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in Channel filter call Request %@", error);
@@ -750,7 +763,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
+- (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
                           withMembers: (NSMutableArray *)membersArray
                         withGroupType:(short)groupType
                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -768,7 +781,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER_BY_TYPE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER_BY_TYPE" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityInfo, @" Contcats group :: %@", theError);
@@ -780,7 +793,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)addMemberToContactGroup:(NSString *)contactsGroupId
+- (void)addMemberToContactGroup:(NSString *)contactsGroupId
                     withMembers:(NSMutableArray *)membersArray
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
@@ -796,7 +809,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
             ALSLog(ALLoggerSeverityInfo, @" Contcats group :: %@", theError);
@@ -808,16 +821,16 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)getMembersFromContactGroup:(NSString *)contactGroupId
+- (void)getMembersFromContactGroup:(NSString *)contactGroupId
                     withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
-    [ALChannelClientService getMembersFromContactGroupOfType:contactGroupId withGroupType:0 withCompletion:^(NSError *error, ALChannel *channel) {
+    [self getMembersFromContactGroupOfType:contactGroupId withGroupType:0 withCompletion:^(NSError *error, ALChannel *channel) {
         
         completion(error, channel);
         
     }];
 }
 
-+ (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
+- (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
                            withGroupType:(short)groupType
                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
     
@@ -830,7 +843,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);
@@ -864,10 +877,10 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-+ (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
+- (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
                           withUserId:(NSString *)userId
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
-    [ALChannelClientService removeMemberFromContactGroupOfType:contactsGroupId
+    [self removeMemberFromContactGroupOfType:contactsGroupId
                                                  withGroupType:0 withUserId:userId withCompletion:^(ALAPIResponse *response, NSError *error) {
 
         completion(response, error);
@@ -876,7 +889,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 }
 
-+ (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
+- (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                              withGroupType:(short)groupType
                                 withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -895,7 +908,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @" Remove contacts group :: %@", error);
@@ -908,7 +921,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 }
 
 
-+ (void)getChannelInformationResponse:(NSNumber *)channelKey
+- (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
                        withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion {
     NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
@@ -918,7 +931,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
@@ -969,7 +982,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);

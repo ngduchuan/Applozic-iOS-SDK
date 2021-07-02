@@ -15,6 +15,7 @@
 #import "AlChannelFeedResponse.h"
 #import "ALRealTimeUpdate.h"
 #import "ALChannelInfo.h"
+#import "ALChannelClientService.h"
 
 static NSString *const AL_CREATE_GROUP_MESSAGE = @"CREATE_GROUP_MESSAGE";
 static NSString *const AL_REMOVE_MEMBER_MESSAGE = @"REMOVE_MEMBER_MESSAGE";
@@ -34,6 +35,9 @@ extern NSString *const AL_MESSAGE_LIST;
 extern NSString *const AL_MESSAGE_SYNC;
 
 + (ALChannelService *)sharedInstance;
+
+@property (nonatomic, strong) ALChannelClientService *channelClientService;
+
 
 - (void)callForChannelServiceForDBInsertion:(id)theJson;
 
@@ -373,7 +377,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupId  pass the channel key you can get it from  channel.key.
  @param completion if error is nil then the  channel is closed.
  */
-+ (void)closeGroupConverstion:(NSNumber *)groupId withCompletion:(void(^)(NSError *error))completion ;
+- (void)closeGroupConverstion:(NSNumber *)groupId withCompletion:(void(^)(NSError *error))completion ;
 
 /**
  This method is used to check if the channel is muted or not.
@@ -386,7 +390,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /**
  This method is internal, used to set channel unread cout to zero
  */
-+ (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey;
+- (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey;
 
 /**
  This method is used to fetch the total unread count of channels
@@ -549,7 +553,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 
  @param completion if error is nil and ALAPIResponse has status if its  success  then member is added in contacts group
  */
-+ (void) addMemberToContactGroupOfType:(NSString *)contactsGroupId
+- (void) addMemberToContactGroupOfType:(NSString *)contactsGroupId
                            withMembers:(NSMutableArray *)membersArray
                         withGroupType :(short)groupType
                         withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
@@ -562,7 +566,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param membersArray pass members userId that you want to add
  @param completion if error is nil and ALAPIResponse has status if its  success  then member is added in contacts group
  */
-+ (void) addMemberToContactGroup:(NSString *)contactsGroupId
+- (void) addMemberToContactGroup:(NSString *)contactsGroupId
                      withMembers:(NSMutableArray *)membersArray
                   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
@@ -573,7 +577,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupType pass  type as 9 for contacts group
  @param completion if error is nil and ALAPIResponse has status if its  success  then you will get members userId who are in contacts group
  */
-+ (void) getMembersFromContactGroupOfType:(NSString *)contactGroupId
+- (void) getMembersFromContactGroupOfType:(NSString *)contactGroupId
                             withGroupType:(short)groupType
                            withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
@@ -590,7 +594,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param userId of the user you want to remove the member from the contacts group.
  @param completion  if error is nil and ALAPIResponse has status if its  success  then member is removed from  contacts group.
  */
-+ (void) removeMemberFromContactGroup:(NSString *)contactsGroupId
+- (void) removeMemberFromContactGroup:(NSString *)contactsGroupId
                           withUserId :(NSString *)userId
                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
@@ -602,7 +606,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param userId for the user you want to remove from contacts group.
  @param completion  if error is nil and ALAPIResponse has status if its  success  then member is removed from  contacts group.
  */
-+ (void) removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
+- (void) removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                               withGroupType:(short) groupType
                                 withUserId :(NSString *)userId
                              withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
@@ -613,7 +617,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param contactGroupIds pass contactGroupIds to get the member userIds.
  @param completion  if error is nil and ALAPIResponse has status if status is succes then you will get the list of members userId
  */
-+ (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion;
+- (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion;
 
 
 /**

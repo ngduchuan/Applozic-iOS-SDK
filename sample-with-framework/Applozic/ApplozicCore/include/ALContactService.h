@@ -10,8 +10,11 @@
 #import "ALContact.h"
 #import "DB_CONTACT.h"
 #import "ALUserDetail.h"
+#import "ALContactDBService.h"
 
 @interface ALContactService : NSObject
+
+@property (nonatomic, strong) ALContactDBService *alContactDBService;
 
 - (BOOL)purgeListOfContacts:(NSArray *)contacts;
 

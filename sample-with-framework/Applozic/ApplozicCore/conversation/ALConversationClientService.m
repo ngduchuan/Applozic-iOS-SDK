@@ -17,8 +17,20 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 
 @implementation ALConversationClientService
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self setupServices];
+    }
+    return self;
+}
 
-+ (void)createConversation:(ALConversationProxy *)alConversationProxy
+-(void)setupServices {
+   self.responseHandler = [[ALResponseHandler alloc] init];
+}
+
+- (void)createConversation:(ALConversationProxy *)alConversationProxy
             withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion {
     
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
@@ -29,7 +41,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionaryToSend options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALConversationCreateResponse *response = nil;
         
@@ -43,7 +55,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     }];
 }
 
-+ (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
+- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
             andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
     
     NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL, FETCH_CONVERSATION_DETAILS];
@@ -51,7 +63,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     
     NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_TOPIC_DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_TOPIC_DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALAPIResponse *response = nil;
         if (theError) {

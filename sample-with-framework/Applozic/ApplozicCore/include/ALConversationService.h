@@ -8,8 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "ALConversationProxy.h"
+#import "ALConversationClientService.h"
+#import "ALConversationDBService.h"
 
 @interface ALConversationService : NSObject
+
+@property (nonatomic, strong) ALConversationClientService *conversationClientService;
+
+@property (nonatomic, strong) ALConversationDBService *conversationDBService;
 
 - (ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey;
 

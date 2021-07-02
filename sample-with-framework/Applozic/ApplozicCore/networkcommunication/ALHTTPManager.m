@@ -24,6 +24,7 @@ static dispatch_semaphore_t semaphore;
     }
     if (self) {
         self.buffer = [[NSMutableData alloc]init];
+        self.responseHandler = [[ALResponseHandler alloc] init];
     }
     return self;
 }
@@ -175,7 +176,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     ALSLog(ALLoggerSeverityInfo, @"FILE_PATH : %@",filePath);
     NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
+    [self.responseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
 
         if (error) {
             if (self.attachmentProgressDelegate) {
@@ -430,7 +431,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     }
     NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+    [self.responseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
 
         if (error) {
             completion(nil, error);
@@ -510,7 +511,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
         completion(theRequest, nil);
     } else {
         NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString:fileURL paramString:nil];
-        [ALResponseHandler authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+        [self.responseHandler authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
             if (error) {
                 completion(nil, error);
                 return;

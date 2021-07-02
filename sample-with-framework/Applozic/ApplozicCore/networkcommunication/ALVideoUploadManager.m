@@ -18,13 +18,18 @@
 
 @implementation ALVideoUploadManager
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
-        self.messageDatabaseService  = [[ALMessageDBService alloc]init];
+        [self setupServices];
     }
     return self;
+}
+
+-(void)setupServices {
+    self.messageDatabaseService  = [[ALMessageDBService alloc]init];
+    self.clientService = [[ALMessageClientService alloc] init];
+    self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
 - (void)URLSession:(NSURLSession *)session
@@ -64,8 +69,7 @@
             NSDictionary * userInfo = [message dictionary];
             [[ALDBHandler sharedInstance] saveContext];
 
-            ALMessageClientService *clientService = [[ALMessageClientService alloc] init];
-            [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
+            [self.clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
                 if (error) {
                     [self handleUploadFailedStateWithMessage:message];
@@ -119,8 +123,7 @@
     /// If the thumbnailUrl exist then will directly upload the video else will upload the thumbnail and call the video upload.
     if (message.fileMeta.thumbnailUrl.length > 0 &&
         message.fileMeta.thumbnailFilePath.length > 0) {
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc] init];
-        [clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *url, NSError *error) {
+        [self.clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *url, NSError *error) {
             if (error) {
                 [self handleUploadFailedStateWithMessage:message];
                 return;
@@ -142,8 +145,7 @@
         alUploadTask.videoThumbnailName = imageFilePath.lastPathComponent;
         self.uploadTask = alUploadTask;
 
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc] init];
-        [clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *uploadURL, NSError *error) {
+        [self.clientService sendPhotoForUserInfo:nil withCompletion:^(NSString *uploadURL, NSError *error) {
 
             if (error) {
                 [self handleUploadFailedStateWithMessage:message];
@@ -152,7 +154,7 @@
 
             NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-            [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
+            [self.responseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
 
                 if (error) {
                     [self handleUploadFailedStateWithMessage:message];

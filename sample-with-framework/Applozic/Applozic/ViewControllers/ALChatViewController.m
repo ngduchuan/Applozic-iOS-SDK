@@ -98,6 +98,11 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 //============Message Reply outlets END====================================//
 
 
+@property (strong, nonatomic)  ALMessageDBService *dbService;
+@property (strong, nonatomic)  ALMessageService *messageService;
+@property (strong, nonatomic)  ALChannelService *channelService;
+@property (strong, nonatomic)  ALUserService *userService;
+
 - (IBAction)loadEarlierButtonAction:(id)sender;
 - (void)markConversationRead;
 - (void)fetchAndRefresh:(BOOL)flag;
@@ -148,16 +153,20 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     CGRect previousRect;
     CGRect maxHeight;
     CGRect minHeight;
-
-    ALMessageDBService *dbService;
 }
 
+-(void)setupServices {
+    self.channelService = [[ALChannelService alloc] init];
+    self.messageService = [[ALMessageService alloc] init];
+    self.userService = [[ALUserService alloc] init];
+}
 //==============================================================================================================================================
 #pragma mark - VIEW LIFECYCLE
 //==============================================================================================================================================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupServices];
     // Setup quick recording if it's enabled in the settings
     if ([ALApplozicSettings isQuickAudioRecordingEnabled]) {
         if ([ALApplozicSettings isNewAudioDesignEnabled]) {
@@ -375,7 +384,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         [self deleteMessageFromView:msg]; // Removes message from U.I.
 
-        [ALMessageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString *response, NSError *error) {
+        [self.messageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString *response, NSError *error) {
 
             ALSLog(ALLoggerSeverityInfo, @"Message Deleted upon APPLOZIC_05 and response: %@", response);
 
@@ -467,8 +476,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read channel %@",self.channelKey);
             } else {
-                ALUserService *userService = [[ALUserService alloc] init];
-                [userService processResettingUnreadCount];
+                [self.userService processResettingUnreadCount];
 
             }
         }];
@@ -479,33 +487,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
             } else {
-                ALUserService *userService = [[ALUserService alloc] init];
-                [userService processResettingUnreadCount];
-
+                [self.userService processResettingUnreadCount];
             }
         }];
-    }
-}
-
-- (void)markSingleMessageRead:(ALMessage *)almessage {
-    if (almessage.groupId != NULL) {
-        if ([self.channelKey isEqualToNumber:almessage.groupId]) {
-            [ALUserService markMessageAsRead:almessage withPairedkeyValue:almessage.pairedMessageKey withCompletion:^(NSString *completion, NSError *error) {
-
-                if (error) {
-                    ALSLog(ALLoggerSeverityError, @"GROUP: Marking message read error:%@",error);
-                }
-            }];
-        }
-    } else {
-        if ([self.contactIds isEqualToString:almessage.contactIds]) {
-            [ALUserService markMessageAsRead:almessage withPairedkeyValue:almessage.pairedMessageKey withCompletion:^(NSString *completion, NSError *error) {
-
-                if (error) {
-                    ALSLog(ALLoggerSeverityError, @"Individual: Marking message read error:%@",error);
-                }
-            }];
-        }
     }
 }
 
@@ -652,8 +636,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if ([self isGroup]
         && (![channel isGroupOfTwo])) {
         if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
-            ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-            [self.label setText:[alChannelService stringFromChannelUserList:channel.key]];
+            [self.label setText:[self.channelService stringFromChannelUserList:channel.key]];
         } else {
             [self.label setText:@""];
         }
@@ -723,14 +706,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALSLog(ALLoggerSeverityInfo, @"MQTT object is nil");
         return;
     }
-    ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-
-    ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
+    ALChannel *alChannel = [self.channelService getChannelByKey:self.channelKey];
     if (alChannel && alChannel.type == OPEN) {
         [self.mqttObject subscribeToOpenChannel:self.channelKey];
     }
 
-    if (![alChannelService isChannelLeft:self.channelKey] && ![ALChannelService isChannelDeleted:self.channelKey]) {
+    if (![self.channelService isChannelLeft:self.channelKey] && ![ALChannelService isChannelDeleted:self.channelKey]) {
         [self.mqttObject subscribeToChannelConversation:self.channelKey];
     }
 
@@ -860,8 +841,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self showNoDataNotification];
             return;
         }
-        ALUserService *userService = [ALUserService new];
-        [userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
+        [self.userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
 
             if (userBlock) {
 
@@ -937,7 +917,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (self.channelKey && !self.contactIds) {
 
-        [ALChannelService closeGroupConverstion : self.channelKey withCompletion:^(NSError *error) {
+        [self.channelService closeGroupConverstion : self.channelKey withCompletion:^(NSError *error) {
 
             if (!error) {
 
@@ -1091,15 +1071,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)fetchConversationProfileDetailsWithUserId:(NSString *)userId
                                    withChannelKey:(NSNumber *)channelKey
                                    withCompletion:(void (^)( ALChannel *channel, ALContact *contact))completion {
-    ALUserService *userService = [[ALUserService alloc] init];
 
     if (channelKey) {
-
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+        [self.channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
             if (alChannel && [alChannel isGroupOfTwo]) {
                 NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
-                [userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
+                [self.userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
                     completion(alChannel, contact);
                     return;
                 }];
@@ -1113,7 +1090,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             ALContact *contact = [contactService loadOrAddContactByKeyWithDisplayName:userId value: self.displayName];
             completion(nil, contact);
         } else {
-            [userService getUserDetail:userId withCompletion:^(ALContact *contact) {
+            [self.userService getUserDetail:userId withCompletion:^(ALContact *contact) {
                 completion(nil, contact);
             }];
         }
@@ -2324,9 +2301,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)deleteMessasgeforAll:(ALMessage *) message {
 
     [self.mActivityIndicator startAnimating];
-    ALMessageService *messageService = [[ALMessageService alloc] init];
     ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
-    [messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+    [self.messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         [self.mActivityIndicator stopAnimating];
         if (!error) {
             [message setAsDeletedForAll];
@@ -2951,7 +2927,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         userId = self.contactIds;
     }
 
-    [ALMessageService deleteMessageThread:userId orChannelKey:groupId
+    [self.messageService deleteMessageThread:userId orChannelKey:groupId
                            withCompletion:^(NSString *string, NSError *error) {
 
         if (error) {
@@ -3546,8 +3522,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (!receiverId) {
         return;
     }
-    [ALUserService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail)
-     {
+    [self.userService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail) {
         if (alUserDetail) {
             [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
             alUserDetail.unreadCount = 0;
@@ -3898,7 +3873,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 - (void)updateUserDetail:(NSString *)userId {
     ALSLog(ALLoggerSeverityInfo, @"ALCHATVC : USER_DETAIL_CHANGED_CALL_UPDATE");
 
-    [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
         if (!userDetail) {
             return;
@@ -4066,8 +4041,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (BOOL)isOpenGroup {
-    ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-    ALChannel *channel = [alChannelService getChannelByKey:self.channelKey];
+    ALChannel *channel = [self.channelService getChannelByKey:self.channelKey];
     return channel && [channel isOpenGroup];
 }
 

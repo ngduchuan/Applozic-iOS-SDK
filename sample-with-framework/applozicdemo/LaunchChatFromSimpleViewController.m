@@ -179,10 +179,10 @@
     ALContactService *contactService = [ALContactService new];
     ALContactDBService *contacDB = [ALContactDBService new];
     ALContact * contact = [contactService loadOrAddContactByKeyWithDisplayName:userId value: displayName];
-    
+    ALUserService *userService = [[ALUserService alloc] init];
     if(![contacDB getContactByKey:@"userId" value:userId])
     {
-        [ALUserService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [userService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
             
             [contacDB updateUserDetail:alUserDetail];
             ALContact * alContact = [contacDB loadContactByKey:@"userId" value:userId];
