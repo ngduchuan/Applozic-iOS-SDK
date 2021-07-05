@@ -64,7 +64,7 @@
 }
 
 - (void)test_loadContact_successfull {
-
+    
     ALContact *contact = [[ALContact alloc] init];
     contact.userId = @"userId";
     contact.displayName = @"user display name";
