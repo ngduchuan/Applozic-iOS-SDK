@@ -38,6 +38,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 @property (nonatomic, strong) ALChannelClientService *channelClientService;
 
+@property (nonatomic, strong) ALChannelDBService *channelDBService;
 
 - (void)callForChannelServiceForDBInsertion:(id)theJson;
 
