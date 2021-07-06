@@ -293,7 +293,7 @@ static ALMessageClientService *alMsgClientService;
     }
 
     //DB insert if objectID is null
-    DB_Message* dbMessage;
+    DB_Message *dbMessage;
     ALMessageDBService *dbService = [[ALMessageDBService alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversationTableNotification" object:alMessage userInfo:nil];
 

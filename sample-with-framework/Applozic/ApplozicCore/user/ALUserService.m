@@ -465,7 +465,7 @@ static int CONTACT_PAGE_SIZE = 100;
                    userStatus:(NSString *)status
                withCompletion:(void (^)(id theJson, NSError *error))completion {
 
-    if (!displayName && !imageLink && !status ){
+    if (!displayName && !imageLink && !status){
         NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update login user details parameters passed are nil"
                                                                                  forKey:NSLocalizedDescriptionKey]];
@@ -704,10 +704,6 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-/// This method will give registered contacts and contacts from local DB.
-/// @param nextPage If nextPage is NO or false it will get contacts from starting and return the array of contact.
-/// If nextPage is YES or true it will return the next older contacts
-/// @param completion Returns an array of ALContact in case of successfully fetched else it will return NSError.
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion {
 

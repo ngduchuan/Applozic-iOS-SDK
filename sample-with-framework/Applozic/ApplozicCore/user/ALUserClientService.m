@@ -559,7 +559,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, theError);
             return;
         }
-        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         completion(response, nil);
     }];
 }

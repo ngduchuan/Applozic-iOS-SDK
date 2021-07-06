@@ -1144,8 +1144,6 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-/// This method will return all the channels for the logged-in user.
-/// @param completion will have a channel array of ALChannel or will have an error in case of while fetching channels.
 - (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError *error))completion {
 
     [self.channelClientService syncCallForChannel:[ALUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
