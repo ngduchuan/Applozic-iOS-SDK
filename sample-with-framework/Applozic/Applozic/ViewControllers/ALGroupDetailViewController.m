@@ -917,7 +917,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [self sendMuteRequestWithTime:[NSNumber numberWithLong:secsUtc1970]];
 }
 
-
 - (void)sendMuteRequestWithTime:(NSNumber*) time{
 
     ALMuteRequest *alMuteRequest = [ALMuteRequest new];
@@ -925,12 +924,20 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     alMuteRequest.notificationAfterTime= time;
     [[self activityIndicator] startAnimating];
     [self.channelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
-        ALSLog(ALLoggerSeverityInfo, @"actionSheet response from server:: %@", response.status);
         [[self activityIndicator] stopAnimating];
-        self.alChannel.notificationAfterTime= alMuteRequest.notificationAfterTime;
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
-        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
 
+        if (error) {
+            ALSLog(ALLoggerSeverityInfo, @"Got error in mute the channel");
+            return;
+        }
+
+        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+            ALSLog(ALLoggerSeverityInfo, @"actionSheet response from server:: %@", response.status);
+            self.alChannel.notificationAfterTime= alMuteRequest.notificationAfterTime;
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
+            [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+        }
     }];
 }
+
 @end

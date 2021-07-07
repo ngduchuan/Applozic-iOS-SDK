@@ -142,7 +142,6 @@
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);
-
             ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:response.response];
             NSMutableArray *proxyArray = [[NSMutableArray alloc] initWithObjects:conversationProxy, nil];
             [self addConversations:proxyArray];

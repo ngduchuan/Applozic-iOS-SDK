@@ -602,6 +602,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
 
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
+
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN MARK_CONVERSATION_AS_READ :: %@", theError);
             completion(nil, theError);
@@ -664,19 +665,19 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
-            completion(nil,error);
+            completion(nil, error);
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
 
-        ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         NSMutableArray *array = (NSMutableArray *)response.response;
 
         for (NSMutableDictionary *dic  in array) {
             ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
             [channelinfoList addObject:channel];
         }
-        completion(channelinfoList,error);
+        completion(channelinfoList, error);
     }];
 }
 
@@ -743,23 +744,29 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in Channel filter call Request %@", error);
-            completion(nil,error);
+            completion(nil, error);
             return;
         }
 
-        ALSLog(ALLoggerSeverityInfo, @" Channel response : %@", theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Channel response : %@", theJson);
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+            NSNumber *lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
+            [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
 
-        ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
-        NSNumber *lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
-        [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
+            NSDictionary *theChannelFeedDict = [response.response valueForKey:@"groups"];
 
-        NSDictionary *theChannelFeedDict = [response.response valueForKey:@"groups"];
-
-        for (NSMutableDictionary *dic  in theChannelFeedDict) {
-            ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
-            [channelinfoList addObject:channel];
+            for (NSMutableDictionary *dic in theChannelFeedDict) {
+                ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
+                [channelinfoList addObject:channel];
+            }
+            completion(channelinfoList, error);
+        } else {
+            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+                                                         code:1
+                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to get list of channel"}];
+            completion(nil, responseError);
         }
-        completion(channelinfoList,error);
     }];
 }
 
@@ -866,8 +873,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                     ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
-                    completion(error, response.alChannel);
-
+                    completion(theError, response.alChannel);
                 }];
             } else {
                 ALSLog(ALLoggerSeverityWarn, @"NO USER details ");
@@ -881,10 +887,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                           withUserId:(NSString *)userId
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     [self removeMemberFromContactGroupOfType:contactsGroupId
-                                                 withGroupType:0 withUserId:userId withCompletion:^(ALAPIResponse *response, NSError *error) {
-
+                               withGroupType:0 withUserId:userId withCompletion:^(ALAPIResponse *response, NSError *error) {
         completion(response, error);
-
     }];
 
 }
@@ -895,7 +899,10 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
     if (userId == nil) {
-        completion(nil, nil);
+        NSError *responseError = [NSError errorWithDomain:@"Applozic"
+                                                     code:1
+                                                 userInfo:@{NSLocalizedDescriptionKey : @"UserId is nil in removing a member from contact group"}];
+        completion(nil, responseError);
         return;
     }
     
@@ -903,7 +910,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSString *theParamString = nil;
     
-    if  (groupType != 0) {
+    if (groupType != 0) {
         theParamString = [NSString stringWithFormat:@"userId=%@&groupType=%i",userId, groupType];
     }
     
@@ -915,7 +922,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
-        ALAPIResponse * response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         completion(response, nil);
     }];
 }
@@ -948,17 +955,16 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                     if (![contactService isContactExist:userId]) {
                         [userNotPresentIds addObject:userId];
                     }
-                } if (userNotPresentIds.count>0) {
+                }
+                if (userNotPresentIds.count>0) {
                     ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
 
                     ALUserService *alUserService = [ALUserService new];
                     [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                         ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                         completion(error, response);
-
                     }];
                 } else {
-
                     ALSLog(ALLoggerSeverityWarn, @"No user for userDetails");
                     completion(error, response);
                 }
@@ -987,7 +993,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);
             completion(error, nil);
-
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS  :: %@", theJson);
 
@@ -1017,11 +1022,10 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                     ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                     completion(error, theChannelFeedArray);
-
                 }];
             } else {
                 ALSLog(ALLoggerSeverityWarn, @"NO USER details");
-                completion(error,theChannelFeedArray);
+                completion(error, theChannelFeedArray);
             }
         }
     }];
