@@ -64,7 +64,7 @@
                     return;
                 }
                 NSString *imageDownloadURL = (NSString *)theJson;
-                ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
+                ALSLog(ALLoggerSeverityInfo, @"Response URL for image or attachment : %@",imageDownloadURL);
                 completion(imageDownloadURL, nil);
             }];
         } else {
@@ -124,7 +124,7 @@
                 return;
             }
             NSString *imageDownloadURL = (NSString *)theJson;
-            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
+            ALSLog(ALLoggerSeverityInfo, @"Response URL For Thumbnail is : %@",imageDownloadURL);
             completion(imageDownloadURL, nil);
         }];
     } else {
@@ -204,7 +204,7 @@
         }
 
         ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"message list response THE JSON %@",theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Message list response JSON : %@",theJson);
 
         if (theJson) {
             [ALUserDefaultsHandler setInitialMessageListCallDone:YES];
@@ -258,8 +258,7 @@
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                 withOpenGroup:(BOOL)isOpenGroup
                withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
-    ALSLog(ALLoggerSeverityInfo, @"CHATVC_OPENS_1st TIME_CALL");
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
+    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
 
@@ -296,7 +295,7 @@
         [channelService callForChannelServiceForDBInsertion:theJson];
 
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
-        ALSLog(ALLoggerSeverityInfo, @"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Message thread response : %@",(NSString *)theJson);
 
     }];
 }
@@ -338,7 +337,7 @@
             }
 
             NSString *imagePostingURL = (NSString *)theJson;
-            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imagePostingURL);
+            ALSLog(ALLoggerSeverityInfo, @"Upload Image or attachment URL : %@",imagePostingURL);
             completion(imagePostingURL, nil);
         }];
     }
@@ -366,7 +365,7 @@
         }
 
         NSString *status = (NSString *)theJson;
-        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE: %@", status);
+        ALSLog(ALLoggerSeverityInfo, @"Response of delete message: %@", status);
         if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(status, nil);
             return;
@@ -396,12 +395,12 @@
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_THREAD" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
-            ALSLog(ALLoggerSeverityError, @"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
+            ALSLog(ALLoggerSeverityError, @"Error in delete message thread: %@", theError.description);
             completion(nil, theError);
             return;
         }
         NSString *status = (NSString *)theJson;
-        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)theJson);
         if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
@@ -445,10 +444,10 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MESSSAGE_INFORMATION" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
-            ALSLog(ALLoggerSeverityError, @"ERROR IN MESSAGE INFORMATION API RESPONSE : %@", theError);
+            ALSLog(ALLoggerSeverityError, @"Error in message information API: %@", theError);
             completion(nil, theError);
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"RESPONSE MESSSAGE_INFORMATION API JSON : %@", (NSString *)theJson);
+            ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)theJson);
             ALMessageInfoResponse *msgInfoObject = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)theJson];
             completion(msgInfoObject, theError);
         }

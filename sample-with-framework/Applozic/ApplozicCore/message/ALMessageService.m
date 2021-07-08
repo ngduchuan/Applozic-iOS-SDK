@@ -112,7 +112,7 @@ static ALMessageClientService *alMsgClientService;
         }];
     }
     [[ALMessageService sharedInstance] fetchReplyMessages:replyMessageKeys withCompletion:^(NSMutableArray<ALMessage *> *messages) {
-        ALSLog(ALLoggerSeverityInfo, @"reply message api called");
+        ALSLog(ALLoggerSeverityInfo, @"Reply message api called");
         completion(alMessageList.messageList, nil, nil);
     }];
 }
@@ -153,7 +153,7 @@ static ALMessageClientService *alMsgClientService;
         completion(messageList, nil, nil);
         return;
     } else {
-        ALSLog(ALLoggerSeverityInfo, @"message list is coming from DB %ld", (unsigned long)messageList.count);
+        ALSLog(ALLoggerSeverityInfo, @"Message thread fetching from server");
     }
 
     if (messageListRequest.channelKey != nil) {
@@ -220,10 +220,8 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
             if (userNotPresentIds.count>0) {
-                ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                     completion(messages, error, userDetailArray);
                 }];
             } else {
@@ -308,7 +306,7 @@ static ALMessageClientService *alMsgClientService;
             dbMessage = [dbService addMessage:alMessage];
         }
     } else {
-        ALSLog(ALLoggerSeverityInfo, @"Message found in DB just getting it not inserting new one...");
+        ALSLog(ALLoggerSeverityInfo, @"Message found in DB just getting it not inserting new one.");
         dbMessage = (DB_Message*)[dbService getMeesageById:alMessage.msgDBObjectId];
     }
     //convert to dic
@@ -577,7 +575,7 @@ static ALMessageClientService *alMsgClientService;
 
         if (!error) {
             //delete sucessfull
-            ALSLog(ALLoggerSeverityInfo, @"sucessfully deleted !");
+            ALSLog(ALLoggerSeverityInfo, @"Sucessfully deleted the message thread");
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
 
@@ -622,7 +620,7 @@ static ALMessageClientService *alMsgClientService;
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
 
     NSMutableArray *pendingMessageArray = [dbService getPendingMessages];
-    ALSLog(ALLoggerSeverityInfo, @"service called....%lu",(unsigned long)pendingMessageArray.count);
+    ALSLog(ALLoggerSeverityInfo, @"Found pending messages: %lu",(unsigned long)pendingMessageArray.count);
 
     for (ALMessage *msg in pendingMessageArray) {
 
@@ -682,7 +680,7 @@ static ALMessageClientService *alMsgClientService;
         [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
             if (error) {
-                ALSLog(ALLoggerSeverityError, @"ERROR IN LATEST MSG APNs CLASS : %@",error);
+                ALSLog(ALLoggerSeverityError, @"Error in fetching latest sync messages : %@",error);
             }
         }];
     }
@@ -861,8 +859,6 @@ static ALMessageClientService *alMsgClientService;
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                     if (!theError) {
-                        ALSLog(ALLoggerSeverityInfo, @"User detail fetched sucessfull.");
-
                         [[ALMessageService sharedInstance] saveAndPostMessage:message withSkipMessage:YES withDelegate:delegate];
                     }
                 }];

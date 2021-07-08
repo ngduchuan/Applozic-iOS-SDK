@@ -60,7 +60,7 @@
 
             NSError *deleteError = [dbHandler saveContext];
             if (deleteError) {
-                ALSLog(ALLoggerSeverityError, @" Unable to save managed object context %@, %@", deleteError, deleteError.localizedDescription);
+                ALSLog(ALLoggerSeverityError, @"Unable to save managed object context %@, %@", deleteError, deleteError.localizedDescription);
                 return NO;
             } else {
                 return YES;
@@ -139,7 +139,7 @@
         NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
 
         if (fetchError) {
-            ALSLog(ALLoggerSeverityError, @"updateContactFERROR :%@",fetchError);
+            ALSLog(ALLoggerSeverityError, @"Update contact in database failed with error :%@",fetchError);
             return NO;
         }
 
@@ -189,7 +189,7 @@
         NSError *error = [dbHandler saveContext];
 
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"updateContactFERROR :%@",error);
+            ALSLog(ALLoggerSeverityError, @"Update contact in database failed to save with error :%@",error);
             return NO;
         } else {
             return YES;
@@ -221,7 +221,7 @@
         }
 
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
+            ALSLog(ALLoggerSeverityError, @"Unread count update in database failed to save with error :%@", error);
             return NO;
         } else {
             return YES;
@@ -429,7 +429,7 @@
 
         NSError *error = [dbHandler saveContext];
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
+            ALSLog(ALLoggerSeverityError, @"Update user detail in database failed to save with error :%@", error);
             return NO;
         }
     }
@@ -456,7 +456,7 @@
             dbContact.lastSeenAt = userDetail.lastSeenAtTime;
             NSError *error = [dbHandler saveContext];
             if (error) {
-                ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
+                ALSLog(ALLoggerSeverityError, @"Update last seen status in database failed to save with error :%@", error);
                 return NO;
             } else {
                 return YES;
@@ -597,7 +597,7 @@
                 }
             }
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"NO BLOCKED USER FOUND");
+            ALSLog(ALLoggerSeverityError, @"Blocked users list is empty in database");
         }
     }
 
@@ -705,7 +705,7 @@
 
         NSError *error = [dbHandler saveContext];
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"addContact DB ERROR :%@",error);
+            ALSLog(ALLoggerSeverityError, @"Failed to insert a new contact in database got some error: %@",error);
             return NO;
         } else {
             return YES;

@@ -94,11 +94,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 }
             }
             if (userNotPresentIds.count>0) {
-                ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
-
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                     completion(error, response.alChannel);
 
                 }];
@@ -456,10 +453,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                     }
 
                     if (userNotPresentIds.count>0) {
-                        ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
                         ALUserService *alUserService = [ALUserService new];
                         [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                            ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                             completion(error, response);
                         }];
                     } else {
@@ -791,7 +786,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER_BY_TYPE" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
-            ALSLog(ALLoggerSeverityInfo, @" Contcats group :: %@", theError);
+            ALSLog(ALLoggerSeverityInfo, @"Contcats group :: %@", theError);
             completion(nil, theError);
             return;
         }
@@ -819,7 +814,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
-            ALSLog(ALLoggerSeverityInfo, @" Contcats group :: %@", theError);
+            ALSLog(ALLoggerSeverityInfo, @"Contcats group :: %@", theError);
             completion(nil, theError);
             return;
         }
@@ -918,7 +913,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REMOVE_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *error) {
 
         if (error) {
-            ALSLog(ALLoggerSeverityError, @" Remove contacts group :: %@", error);
+            ALSLog(ALLoggerSeverityError, @"Error in Remove contacts group :: %@", error);
             completion(nil, error);
             return;
         }
@@ -957,15 +952,11 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                     }
                 }
                 if (userNotPresentIds.count>0) {
-                    ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
-
                     ALUserService *alUserService = [ALUserService new];
                     [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                        ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                         completion(error, response);
                     }];
                 } else {
-                    ALSLog(ALLoggerSeverityWarn, @"No user for userDetails");
                     completion(error, response);
                 }
             } else {
@@ -1016,15 +1007,11 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             }
 
             if (userNotPresentIds.count>0) {
-                ALSLog(ALLoggerSeverityInfo, @"CALLING user deatils for the users..");
-
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                     completion(error, theChannelFeedArray);
                 }];
             } else {
-                ALSLog(ALLoggerSeverityWarn, @"NO USER details");
                 completion(error, theChannelFeedArray);
             }
         }

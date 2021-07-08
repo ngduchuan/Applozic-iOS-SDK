@@ -533,7 +533,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             [theDBHandler deleteObject:manageOBJ];
             [theDBHandler saveContext];
         } else {
-            ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+            ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping removing member from channel for channelKey :%@", channelKey);
         }
     }
 }
@@ -560,7 +560,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             // Delete all members
             [self deleteMembers:channelKey];
         } else {
-            ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
+            ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping delete channel for channelKey :%@", channelKey);
         }
     }
 }
@@ -602,7 +602,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                 [alChannels addObject:channel];
             }
         } else {
-            ALSLog(ALLoggerSeverityWarn, @"NO ENTRY FOUND");
+            ALSLog(ALLoggerSeverityWarn, @"Channels not found in database count of channels is zero");
         }
     }
     return alChannels;
@@ -669,7 +669,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             }
             [dbHandler saveContext];
         } else {
-            ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
+            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update channel with chnnelKey : %@", channelKey);
         }
     }
 }
@@ -701,7 +701,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             
             [dbHandler saveContext];
         } else {
-            ALSLog(ALLoggerSeverityError, @"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
+            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update metadata with channelKey : %@", channelKey);
         }
     }
 }
@@ -765,7 +765,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             dbChannel.unreadCount = unreadCount;
             [dbHandler saveContext];
         } else {
-            ALSLog(ALLoggerSeverityError, @"NO CHANNEL FOUND");
+            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update unread count with channelKey : %@", channelKey);
         }
     }
 }
@@ -779,7 +779,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         dbChannel.isLeft = flag;
         [dbHandler saveContext];
     } else {
-        ALSLog(ALLoggerSeverityError, @"NO CHANNEL : %@ FOUND",groupId);
+        ALSLog(ALLoggerSeverityError, @"Channel not found in database to set the leave flag with channelKey : %@", groupId);
     }
 }
 
@@ -1048,7 +1048,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                 }
             }
         } else{
-            ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+            ALSLog(ALLoggerSeverityWarn, @"No member found in channel");
         }
         completion(memberList);
     }];
@@ -1077,7 +1077,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             DB_CHANNEL_USER_X *user = resultArray[0];
             completion(user.userId);
         } else {
-            ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+            ALSLog(ALLoggerSeverityWarn, @"No member found in support group");
             completion(nil);
         }
     }];

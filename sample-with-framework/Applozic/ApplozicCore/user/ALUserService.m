@@ -552,10 +552,8 @@ static int CONTACT_PAGE_SIZE = 100;
 - (void)processResettingUnreadCount {
     ALUserService *userService = [ALUserService new];
     int count = [[userService getTotalUnreadCount] intValue];
-    NSLog(@"CHATVC_UNREAD_COUNT :: %i",count);
     if (count == 0) {
         [userService resettingUnreadCountWithCompletion:^(NSString *json, NSError *error) {
-            NSLog(@"RESET_UNREAD_COUNT CALL :: %@ and ERROR :: %@",json, error.description);
         }];
     }
 }
