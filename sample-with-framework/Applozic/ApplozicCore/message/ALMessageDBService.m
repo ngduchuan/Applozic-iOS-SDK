@@ -74,7 +74,7 @@
 
     NSError *error = [theDBHandler saveContext];
     if (error) {
-        ALSLog(ALLoggerSeverityError, @"Unable to save error :%@",error);
+        ALSLog(ALLoggerSeverityError, @"Unable to save Messages in addMessageList error :%@",error);
     }
 
     return messageArray;
@@ -175,7 +175,7 @@
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in updating Message Delivery Report %@", error);
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"updateMessageDeliveryReport DB update Success %@", messageKeyString);
+            ALSLog(ALLoggerSeverityInfo, @"Update message delivery report in DB update Success %@", messageKeyString);
         }
     }
 }
@@ -191,7 +191,7 @@
         if (error) {
             ALSLog(ALLoggerSeverityInfo, @"Message deliverd status updated Failed  %@", error);
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"message found and maked as deliverd");
+            ALSLog(ALLoggerSeverityInfo, @"Message found and maked as deliverd");
         }
     }
 }
@@ -206,10 +206,10 @@
         [dbHandler deleteObject:message];
         NSError *error = [dbHandler saveContext];
         if (error) {
-            ALSLog(ALLoggerSeverityInfo, @"Failed to delete the message %@",error);
+            ALSLog(ALLoggerSeverityInfo, @"Failed to delete the message got some error: %@", error);
         }
     } else {
-        ALSLog(ALLoggerSeverityInfo, @"message not found with this key");
+        ALSLog(ALLoggerSeverityInfo, @"Failed to delete the Message not found with this key: %@", keyString);
     }
 }
 
@@ -361,7 +361,7 @@
 
     [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"GetLatestMsg Error%@",error);
+            ALSLog(ALLoggerSeverityError, @"Failed to fetch the latest messages for user with error: %@",error);
             completion (nil, error);
             return;
         }
@@ -380,7 +380,7 @@
     [self.messageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
 
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"%@",error);
+            ALSLog(ALLoggerSeverityError, @"Failed to fetch the list of messages group by contacts with error: %@",error);
             completion(NO,nil);
             return;
         }
@@ -791,7 +791,7 @@
         }
     }
 
-    ALSLog(ALLoggerSeverityInfo, @" get pending messages ...getPendingMessages ..%lu",(unsigned long)msgArray.count);
+    ALSLog(ALLoggerSeverityInfo, @"Found the number of pending messages: %lu",(unsigned long)msgArray.count);
     return msgArray;
 }
 

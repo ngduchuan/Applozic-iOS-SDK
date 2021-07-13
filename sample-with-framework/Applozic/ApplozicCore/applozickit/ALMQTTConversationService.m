@@ -620,7 +620,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     if (!self.session) {
         return;
     }
-    ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to: %@", typing, userId);
+    if (channelKey) {
+        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to channel: %@", typing, channelKey);
+    } else {
+        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
+    }
 
     NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [ALUserDefaultsHandler getApplicationKey],
                             [ALUserDefaultsHandler getUserId], typing ? 1 : 0];

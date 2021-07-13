@@ -121,7 +121,6 @@
                 [ALUserDefaultsHandler setLastSyncTime:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
                 [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
 
-
                 if (user.pushNotificationFormat) {
                     [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
                 }
@@ -171,8 +170,6 @@
 
             } @catch (NSException *exception) {
                 ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
-            } @finally {
-                ALSLog(ALLoggerSeverityInfo, @"..");
             }
 
             [self connect];
@@ -487,7 +484,6 @@
     
     NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
     NSString *paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
-    NSLog(@"sending data to server from sendServerRequestForAppUpdate ");
 
     NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];
@@ -507,12 +503,11 @@
 
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
 
+        ALSLog(ALLoggerSeverityInfo, @"Response of account Status :: %@",(NSString *)theJson);
         if (theError) {
-            ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
+            ALSLog(ALLoggerSeverityError, @"Failed to sync the account status of App with error :: %@", theError.description);
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
-
 }
 
 - (ALRegistrationResponse *)getLoginRegistrationResponse {
