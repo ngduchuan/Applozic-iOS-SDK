@@ -38,21 +38,21 @@
 
     if (self->_uploadTask != nil) {
 
-        DB_Message * dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
-        ALMessage * message = [self.messageDatabaseService createMessageEntity:dbMessage];
+        DB_Message *dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
+        ALMessage *message = [self.messageDatabaseService createMessageEntity:dbMessage];
 
-        NSError *theJsonError = nil;
-        NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&theJsonError];
+        NSError *jsonError = nil;
+        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
 
-        if (theJsonError == nil) {
+        if (jsonError == nil) {
             ALMessage *fileMetaMessage = [[ALMessage alloc] init];
             ALFileMetaInfo *fileMeta = [[ALFileMetaInfo alloc] init];
             fileMetaMessage.fileMeta = fileMeta;
 
             if (ALApplozicSettings.isS3StorageServiceEnabled) {
-                [fileMetaMessage.fileMeta populate:theJson];
+                [fileMetaMessage.fileMeta populate:jsonDictionary];
             } else {
-                NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
+                NSDictionary *fileInfo = [jsonDictionary objectForKey:@"fileMeta"];
                 [fileMetaMessage.fileMeta populate:fileInfo];
             }
 
@@ -66,7 +66,7 @@
             dbMessage.fileMetaInfo.thumbnailFilePath = self.uploadTask.videoThumbnailName;
             dbMessage.fileMetaInfo.thumbnailUrl = message.fileMeta.thumbnailUrl;
 
-            NSDictionary * userInfo = [message dictionary];
+            NSDictionary *userInfo = [message dictionary];
             [[ALDBHandler sharedInstance] saveContext];
 
             [self.clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
@@ -88,7 +88,7 @@
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler{
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     completionHandler(NSURLSessionResponseAllow);
 }
 
@@ -98,22 +98,22 @@
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
 
     if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
-        NSURLSessionDataTask *nsurlSessionDataTask = [session dataTaskWithRequest: urlRequest];
-        [nsurlSessionDataTask resume];
+        NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest: urlRequest];
+        [sessionDataTask resume];
     }
 }
 
 - (void)uploadTheVideo:(ALMessage *)message {
-    NSMutableArray * urlSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    NSMutableArray *urlSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
     for (NSURLSession *session in urlSessionArray) {
         NSURLSessionConfiguration *config = session.configuration;
-        NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-        if (array && array.count > 1) {
+        NSArray *sessionConfigurationIdentifier =  [config.identifier componentsSeparatedByString:@","];
+        if (sessionConfigurationIdentifier && sessionConfigurationIdentifier.count > 1) {
             //Check if message key are same and first argumnent is not THUMBNAIL and FILE
-            if (![array[0] isEqual: @"THUMBNAIL"]
-                && ![array[0] isEqual: @"FILE"]
-                && [array[1] isEqualToString: message.key]) {
+            if (![sessionConfigurationIdentifier[0] isEqual: @"THUMBNAIL"]
+                && ![sessionConfigurationIdentifier[0] isEqual: @"FILE"]
+                && [sessionConfigurationIdentifier[1] isEqualToString: message.key]) {
                 ALSLog(ALLoggerSeverityInfo, @"Already present in upload video Queue returing for key %@",message.key);
                 return;
             }
@@ -139,7 +139,7 @@
         UIImage *thumbnailImage = [ALUtilityClass setVideoThumbnail:filePath];
         NSString *imageFilePath = [ALUtilityClass saveImageToDocDirectory:thumbnailImage];
 
-        ALUploadTask * alUploadTask = [[ALUploadTask alloc] init];
+        ALUploadTask *alUploadTask = [[ALUploadTask alloc] init];
         alUploadTask.identifier = message.key;
         alUploadTask.message = message;
         alUploadTask.videoThumbnailName = imageFilePath.lastPathComponent;

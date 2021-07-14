@@ -39,16 +39,16 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)userLastSeenDetail:(NSNumber *)lastSeenAt
             withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/status",KBASE_URL];
+    NSString *userStatusURLString = [NSString stringWithFormat:@"%@/rest/ws/user/status",KBASE_URL];
     if (lastSeenAt == nil) {
         lastSeenAt = [ALUserDefaultsHandler getLastSyncTime];
         ALSLog(ALLoggerSeverityInfo, @"The lastSeenAt is coming as null seeting default vlaue to %@", lastSeenAt);
     }
-    NSString *theParamString = [NSString stringWithFormat:@"lastSeenAt=%@",lastSeenAt];
-    ALSLog(ALLoggerSeverityInfo, @"Calling last seen at api with %@", theParamString);
+    NSString *userStatusParamString = [NSString stringWithFormat:@"lastSeenAt=%@",lastSeenAt];
+    ALSLog(ALLoggerSeverityInfo, @"Calling last seen at api with %@", userStatusParamString);
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_LAST_SEEN_NEW" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *userStatusRequest = [ALRequestHandler createGETRequestWithUrlString:userStatusURLString paramString:userStatusParamString];
+    [self.responseHandler authenticateAndProcessRequest:userStatusRequest andTag:@"USER_LAST_SEEN_NEW" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error in last seen fetching: %@", theError);
             completionMark(nil);
@@ -64,13 +64,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)userDetailServerCall:(NSString *)contactId
               withCompletion:(void(^)(ALUserDetail *))completionMark {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
-    NSString *theParamString = [NSString stringWithFormat:@"userIds=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *userDetailURLString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
+    NSString *userDetailParamString = [NSString stringWithFormat:@"userIds=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
     
     ALSLog(ALLoggerSeverityInfo, @"Callig user detail API for the userId: %@", contactId);
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *userDetailRequest = [ALRequestHandler createGETRequestWithUrlString:userDetailURLString paramString:userDetailParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_LAST_SEEN" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userDetailRequest andTag:@"USER_LAST_SEEN" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error while fetching user detail : %@", theError);
@@ -91,12 +91,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)updateUserDisplayName:(ALContact *)alContact
                withCompletion:(void(^)(id theJson, NSError *theError))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/name", KBASE_URL];
-    NSString *theParamString = [NSString stringWithFormat:@"userId=%@&displayName=%@", [alContact.userId urlEncodeUsingNSUTF8StringEncoding],
-                                [alContact.displayName urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *updateDisplayNameURLString = [NSString stringWithFormat:@"%@/rest/ws/user/name", KBASE_URL];
+    NSString *updateDisplayNameParamString = [NSString stringWithFormat:@"userId=%@&displayName=%@", [alContact.userId urlEncodeUsingNSUTF8StringEncoding],
+                                              [alContact.displayName urlEncodeUsingNSUTF8StringEncoding]];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_DISPLAY_NAME_UPDATE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *updateDisplayNameRequest = [ALRequestHandler createGETRequestWithUrlString:updateDisplayNameURLString paramString:updateDisplayNameParamString];
+    [self.responseHandler authenticateAndProcessRequest:updateDisplayNameRequest andTag:@"USER_DISPLAY_NAME_UPDATE" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (theError) {
             completion(nil, theError);
@@ -112,11 +112,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 - (void)markConversationAsReadforContact:(NSString *)contactId
                           withCompletion:(void (^)(NSString *, NSError *))completion {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
-    NSString *theParamString;
-    theParamString = [NSString stringWithFormat:@"userId=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSString *conversationReadURL = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
+    NSString *conversationReadParamString = [NSString stringWithFormat:@"userId=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
+    NSMutableURLRequest *conversationReadRequest = [ALRequestHandler createGETRequestWithUrlString:conversationReadURL paramString:conversationReadParamString];
+    [self.responseHandler authenticateAndProcessRequest:conversationReadRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             completion(nil, theError);
             return;
@@ -132,13 +131,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)userBlockServerCall:(NSString *)userId
              withCompletion:(void (^)(NSString *json, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/block",KBASE_URL];
-    NSString *theParamString;
-    theParamString = [NSString stringWithFormat:@"userId=%@",[userId urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *userBlockURLString = [NSString stringWithFormat:@"%@/rest/ws/user/block",KBASE_URL];
+    NSString *userBlockParamString = [NSString stringWithFormat:@"userId=%@",[userId urlEncodeUsingNSUTF8StringEncoding]];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *userBlockRequest = [ALRequestHandler createGETRequestWithUrlString:userBlockURLString paramString:userBlockParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_BLOCKED" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userBlockRequest andTag:@"USER_BLOCKED" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"USER_BLOCKED RESPONSE JSON: %@", (NSString *)theJson);
         if (theError) {
@@ -153,13 +151,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime
                  withCompletion:(void (^)(NSString *json, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/blocked/sync",KBASE_URL];
-    NSString *theParamString;
-    theParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
+    NSString *userBlockSyncURLString = [NSString stringWithFormat:@"%@/rest/ws/user/blocked/sync",KBASE_URL];
+    NSString *userBlockSyncParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *userBlockSyncRequest = [ALRequestHandler createGETRequestWithUrlString:userBlockSyncURLString paramString:userBlockSyncParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_BLOCK_SYNC" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userBlockSyncRequest andTag:@"USER_BLOCK_SYNC" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"USER_BLOCKED SYNC RESPONSE JSON: %@", (NSString *)theJson);
         if (theError) {
@@ -176,12 +173,11 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 //==============================================
 - (void)userUnblockServerCall:(NSString *)userId
                withCompletion:(void (^)(NSString *json, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/unblock",KBASE_URL];
-    NSString *theParamString;
-    theParamString = [NSString stringWithFormat:@"userId=%@",[userId urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *userUnblockURLString = [NSString stringWithFormat:@"%@/rest/ws/user/unblock",KBASE_URL];
+    NSString *userUnblockParamString = [NSString stringWithFormat:@"userId=%@",[userId urlEncodeUsingNSUTF8StringEncoding]];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_UNBLOCKED" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *userUnblockRequest = [ALRequestHandler createGETRequestWithUrlString:userUnblockURLString paramString:userUnblockParamString];
+    [self.responseHandler authenticateAndProcessRequest:userUnblockRequest andTag:@"USER_UNBLOCKED" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"USER_UNBLOCKED RESPONSE JSON: %@", (NSString *)theJson);
         if (theError) {
@@ -200,13 +196,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 - (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey
                               withCompletion:(void (^)(NSString *, NSError *))completion {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/read",KBASE_URL];
-    NSString *theParamString;
-    theParamString = [NSString stringWithFormat:@"key=%@",pairedMessageKey];
+    NSString *messageReadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/read",KBASE_URL];
+    NSString *messageReadParamString = [NSString stringWithFormat:@"key=%@",pairedMessageKey];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *messageReadRequest = [ALRequestHandler createGETRequestWithUrlString:messageReadURLString paramString:messageReadParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MARK_MESSAGE_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageReadRequest andTag:@"MARK_MESSAGE_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error in marking a message as read: %@", theError.localizedDescription);
             completion(nil,theError);
@@ -225,7 +220,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                     toGroups:(NSMutableArray *)channelKeysArray
               withCompletion:(void (^)(NSString *json, NSError *error))completion {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/sendall",KBASE_URL];
+    NSString *sendAllURLString = [NSString stringWithFormat:@"%@/rest/ws/message/sendall",KBASE_URL];
     
     NSMutableDictionary *channelDictionary = [NSMutableDictionary new];
     [channelDictionary setObject:contactIdsArray forKey:@"userNames"];
@@ -234,10 +229,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:channelDictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-    NSMutableURLRequest *theRequest =  [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSString *sendAllParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSMutableURLRequest *messageToAllRequest =  [ALRequestHandler createPOSTRequestWithUrlString:sendAllURLString paramString:sendAllParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MULTI_USER_SEND" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageToAllRequest andTag:@"MULTI_USER_SEND" WithCompletionHandler:^(id theJson, NSError *theError) {
         completion(theJson,theError);
     }];
 }
@@ -245,18 +240,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 - (void)getListOfRegisteredUsers:(NSNumber *)startTime
                      andPageSize:(NSUInteger)pageSize
                   withCompletion:(void(^)(ALContactsResponse *response, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/filter",KBASE_URL];
+    NSString *registeredUserURLString = [NSString stringWithFormat:@"%@/rest/ws/user/filter",KBASE_URL];
     NSString *pageSizeString = [NSString stringWithFormat:@"%lu", (unsigned long)pageSize];
     
-    NSString *theParamString = @"";
-    theParamString = [NSString stringWithFormat:@"pageSize=%@", pageSizeString];
+    NSString *registeredUserParamString = @"";
+    registeredUserParamString = [NSString stringWithFormat:@"pageSize=%@", pageSizeString];
     if (startTime != nil) {
-        theParamString = [NSString stringWithFormat:@"pageSize=%@&startTime=%@", pageSizeString, startTime];
+        registeredUserParamString = [NSString stringWithFormat:@"pageSize=%@&startTime=%@", pageSizeString, startTime];
     }
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *registeredUserRequest = [ALRequestHandler createGETRequestWithUrlString:registeredUserURLString paramString:registeredUserParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_REGISTERED_CONTACT_WITH_PAGE_SIZE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:registeredUserRequest andTag:@"FETCH_REGISTERED_CONTACT_WITH_PAGE_SIZE" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (theError) {
             completion(nil, theError);
@@ -264,9 +259,9 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
         
-        NSString *jsonString = (NSString *)theJson;
-        if ([jsonString isKindOfClass:[NSString class]] &&
-            [jsonString isEqualToString:AL_RESPONSE_ERROR]) {
+        NSString *responseJSONString = (NSString *)theJson;
+        if ([responseJSONString isKindOfClass:[NSString class]] &&
+            [responseJSONString isEqualToString:AL_RESPONSE_ERROR]) {
             NSError * error = [NSError
                                errorWithDomain:@"Applozic"
                                code:1
@@ -275,8 +270,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
         
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", jsonString);
-        ALContactsResponse * contactResponse = [[ALContactsResponse alloc] initWithJSONString:jsonString];
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", responseJSONString);
+        ALContactsResponse *contactResponse = [[ALContactsResponse alloc] initWithJSONString:responseJSONString];
         [ALUserDefaultsHandler setContactViewLoadStatus:YES];
         completion(contactResponse, nil);
     }];
@@ -284,12 +279,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)fetchOnlineContactFromServer:(NSUInteger)limit
                       withCompletion:(void (^)(id json, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/ol/list",KBASE_URL];
-    NSString *theParamString = [NSString stringWithFormat:@"startIndex=0&pageSize=%lu",(unsigned long)limit];
+    NSString *onlineUserURLString = [NSString stringWithFormat:@"%@/rest/ws/user/ol/list",KBASE_URL];
+    NSString *onlineUserParamString = [NSString stringWithFormat:@"startIndex=0&pageSize=%lu",(unsigned long)limit];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *onlineUserRequest = [ALRequestHandler createGETRequestWithUrlString:onlineUserURLString paramString:onlineUserParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CONTACT_FETCH_WITH_LIMIT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:onlineUserRequest andTag:@"CONTACT_FETCH_WITH_LIMIT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (theError) {
             completion(nil, theError);
@@ -307,10 +302,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                         withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *theError))completionMark {
     
     @try {
-        NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
-        NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+        NSString *userDetailURLString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
+        NSMutableURLRequest *userDetailRequest = [ALRequestHandler createGETRequestWithUrlString:userDetailURLString paramString:paramString];
         
-        [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT" WithCompletionHandler:^(id theJson, NSError *theError) {
+        [self.responseHandler authenticateAndProcessRequest:userDetailRequest andTag:@"USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT" WithCompletionHandler:^(id theJson, NSError *theError) {
             
             if (theError) {
                 completionMark(nil, theError);
@@ -321,14 +316,14 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_FOR_ONLINE_CONTACT_LIMIT_JSON : %@", (NSString *)theJson);
             NSArray *jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
             if (jsonArray.count) {
-                NSMutableArray * ALLUserDetailArray = [NSMutableArray new];
+                NSMutableArray * userDetailArray = [NSMutableArray new];
                 NSDictionary * JSONDictionary = (NSDictionary *)theJson;
                 for (NSDictionary * theDictionary in JSONDictionary) {
                     ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
                     userDetail.unreadCount = 0;
-                    [ALLUserDetailArray addObject:userDetail];
+                    [userDetailArray addObject:userDetail];
                 }
-                completionMark(ALLUserDetailArray, theError);
+                completionMark(userDetailArray, theError);
             } else {
                 NSError *error = [NSError
                                   errorWithDomain:@"Applozic"
@@ -348,10 +343,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 //========================================================================================================================
 
 - (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/read",KBASE_URL];
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
+    NSString *resetUnreadCountURLString = [NSString stringWithFormat:@"%@/rest/ws/user/read",KBASE_URL];
+    NSMutableURLRequest *resetUnreadCountRequest = [ALRequestHandler createGETRequestWithUrlString:resetUnreadCountURLString paramString:nil];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"RESETTING_UNREAD_COUNT" WithCompletionHandler:^(id theJson, NSError * theError) {
+    [self.responseHandler authenticateAndProcessRequest:resetUnreadCountRequest andTag:@"RESETTING_UNREAD_COUNT" WithCompletionHandler:^(id theJson, NSError * theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)theJson);
         if (theError) {
@@ -374,29 +369,29 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                      metadata:(NSMutableDictionary *)metadata
                withCompletion:(void (^)(id theJson, NSError * error))completionHandler {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/update",KBASE_URL];
+    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update",KBASE_URL];
     
-    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    NSMutableDictionary *userUpdateDictionary = [NSMutableDictionary new];
     if (displayName) {
-        [dictionary setObject:displayName forKey:@"displayName"];
+        [userUpdateDictionary setObject:displayName forKey:@"displayName"];
     }
     if (imageLink) {
-        [dictionary setObject:imageLink forKey:@"imageLink"];
+        [userUpdateDictionary setObject:imageLink forKey:@"imageLink"];
     }
     if (status) {
-        [dictionary setObject:status forKey:@"statusMessage"];
+        [userUpdateDictionary setObject:status forKey:@"statusMessage"];
     }
     if (metadata) {
-        [dictionary setObject:metadata forKey:@"metadata"];
+        [userUpdateDictionary setObject:metadata forKey:@"metadata"];
     }
     
     NSError *error;
-    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:userUpdateDictionary options:0 error:&error];
+    NSString *userUpdateParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *userUpdateRequest = [ALRequestHandler createPOSTRequestWithUrlString:userUpdateURLString paramString:userUpdateParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userUpdateRequest andTag:@"UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)theJson);
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
@@ -415,24 +410,24 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
              email:(NSString *)email
             ofUser:(NSString *)userId
     withCompletion:(void (^)(id, NSError *))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/update", KBASE_URL];
-    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update", KBASE_URL];
+    NSMutableDictionary *userUpdateDictionary = [NSMutableDictionary new];
     if (phoneNumber) {
-        [dictionary setObject:phoneNumber forKey:@"phoneNumber"];
+        [userUpdateDictionary setObject:phoneNumber forKey:@"phoneNumber"];
     }
     if (email) {
-        [dictionary setObject:email forKey:@"email"];
+        [userUpdateDictionary setObject:email forKey:@"email"];
     }
     
     NSError *error;
-    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:userUpdateDictionary options:0 error:&error];
+    NSString *userUpdateParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString
-                                                                           paramString:theParamString
-                                                                              ofUserId:userId];
+    NSMutableURLRequest *userUpdateRequest = [ALRequestHandler createPOSTRequestWithUrlString:userUpdateURLString
+                                                                                  paramString:userUpdateParamString
+                                                                                     ofUserId:userId];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userUpdateRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id theJson, NSError *theError) {
         ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)theJson);
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
@@ -457,12 +452,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:ob.dictionary options:0 error:&error];
-    NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    NSString *userDetailParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
     
-    ALSLog(ALLoggerSeverityInfo, @"PARAM_POST_CALL : %@",paramString);
+    ALSLog(ALLoggerSeverityInfo, @"PARAM_POST_CALL : %@",userDetailParamString);
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USERS_DETAILS_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *userDetailRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:userDetailParamString];
+    [self.responseHandler authenticateAndProcessRequest:userDetailRequest andTag:@"USERS_DETAILS_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (error) {
             completionMark(nil, error);
@@ -491,12 +486,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
        withNewPassword:(NSString *)newPassword
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/update/password", KBASE_URL];
-    NSString *theParamString = [NSString stringWithFormat:@"oldPassword=%@&newPassword=%@", oldPassword,
-                                newPassword];
+    NSString *passwordUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update/password", KBASE_URL];
+    NSString *passwordUpdateParamString = [NSString stringWithFormat:@"oldPassword=%@&newPassword=%@", oldPassword,
+                                           newPassword];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_USER_PASSWORD" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *passwordUpdateRequest = [ALRequestHandler createGETRequestWithUrlString:passwordUpdateURLString paramString:passwordUpdateParamString];
+    [self.responseHandler authenticateAndProcessRequest:passwordUpdateRequest andTag:@"UPDATE_USER_PASSWORD" WithCompletionHandler:^(id theJson, NSError *theError) {
         ALAPIResponse *apiResponse = nil;
         if (!theError){
             apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
@@ -507,13 +502,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)getListOfUsersWithUserName:(NSString *)userName
                     withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/search/contact",KBASE_URL];
+    NSString *searchContactURLString = [NSString stringWithFormat:@"%@/rest/ws/user/search/contact",KBASE_URL];
     
-    NSString *theParamString = [NSString stringWithFormat:@"name=%@", [userName urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *searchContactParamString = [NSString stringWithFormat:@"name=%@", [userName urlEncodeUsingNSUTF8StringEncoding]];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *searchContactRequest = [ALRequestHandler createGETRequestWithUrlString:searchContactURLString paramString:searchContactParamString];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_LIST_OF_USERS_WITH_NAME" WithCompletionHandler:^(id theJson, NSError * theError) {
+    [self.responseHandler authenticateAndProcessRequest:searchContactRequest andTag:@"FETCH_LIST_OF_USERS_WITH_NAME" WithCompletionHandler:^(id theJson, NSError * theError) {
         
         if (theError) {
             completion(nil, theError);
@@ -529,10 +524,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 }
 
 - (void)getMutedUserListWithCompletion:(void(^)(id theJson, NSError *error))completion {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute/list",KBASE_URL];
+    NSString *mutedUserURLString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute/list",KBASE_URL];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_MUTED_USER_LIST" WithCompletionHandler:^(id theJson, NSError * theError) {
+    NSMutableURLRequest *mutedUserRequest = [ALRequestHandler createGETRequestWithUrlString:mutedUserURLString paramString:nil];
+    [self.responseHandler authenticateAndProcessRequest:mutedUserRequest andTag:@"FETCH_MUTED_USER_LIST" WithCompletionHandler:^(id theJson, NSError * theError) {
         
         if (theError) {
             completion(nil, theError);
@@ -549,11 +544,11 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 - (void)muteUser:(ALMuteRequest *)alMuteRequest
   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute?userId=%@&notificationAfterTime=%@",KBASE_URL,[alMuteRequest.userId urlEncodeUsingNSUTF8StringEncoding],alMuteRequest.notificationAfterTime];
+    NSString *muteURLString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute?userId=%@&notificationAfterTime=%@",KBASE_URL,[alMuteRequest.userId urlEncodeUsingNSUTF8StringEncoding],alMuteRequest.notificationAfterTime];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
+    NSMutableURLRequest *muteUserRequest = [ALRequestHandler createPOSTRequestWithUrlString:muteURLString paramString:nil];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"MUTE_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:muteUserRequest andTag:@"MUTE_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error in mute user : %@", theError);
@@ -576,11 +571,11 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         return;
     }
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/report?messageKey=%@", KBASE_URL, messageKey];
+    NSString *reportMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/message/report?messageKey=%@", KBASE_URL, messageKey];
     
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
+    NSMutableURLRequest *reportMessageRequest = [ALRequestHandler createPOSTRequestWithUrlString:reportMessageURLString paramString:nil];
     
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"REPORT_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:reportMessageRequest andTag:@"REPORT_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError){
             ALSLog(ALLoggerSeverityError, @"Error in reporting  user : %@", theError);
             completion(nil, theError);

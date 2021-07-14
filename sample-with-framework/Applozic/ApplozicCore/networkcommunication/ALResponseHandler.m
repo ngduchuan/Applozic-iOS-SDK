@@ -31,9 +31,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 andTag:(NSString *)tag
  WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion {
 
-    NSURLSessionDataTask *nsurlSessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
+    NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
 
-        NSHTTPURLResponse *theHttpResponse = (NSHTTPURLResponse *)response;
+        NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)response;
 
         if (connectionError.code == kCFURLErrorUserCancelledAuthentication) {
             NSString *failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
@@ -58,7 +58,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             return;
         }
 
-        if (theHttpResponse.statusCode != 200 && theHttpResponse.statusCode != 201) {
+        if (httpURLResponse.statusCode != 200 && httpURLResponse.statusCode != 201) {
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             ALSLog(ALLoggerSeverityError, @"api error : %@ - %@",tag,errorString);
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -151,7 +151,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             reponseCompletion(theJson,nil);
         });
     }];
-    [nsurlSessionDataTask resume];
+    [sessionDataTask resume];
 }
 
 

@@ -24,9 +24,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 -(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
     if (![ALUserDefaultsHandler isLoggedIn] || ![ALUserDefaultsHandler getApplicationKey]) {
-        NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in or applicationId is nil"
-                                                                                      forKey:NSLocalizedDescriptionKey]];
+        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in or applicationId is nil"
+                                                                                     forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
         return;
     }
@@ -37,25 +37,25 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSString *refreshTokenParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
-    NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
+    NSString *refreshTokenURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
 
-    NSMutableURLRequest *theRequest = [self createPostRequestWithURL:theUrlString withParamString:theParamString];
+    NSMutableURLRequest *refreshTokenRequest = [self createPostRequestWithURL:refreshTokenURLString withParamString:refreshTokenParamString];
 
-    [self processRequest:theRequest andTag:@"REFRESH_AUTH_TOKEN_OF_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if(theError){
+    [self processRequest:refreshTokenRequest andTag:@"REFRESH_AUTH_TOKEN_OF_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+        if (theError) {
             ALSLog(ALLoggerSeverityError, @"Error in refreshing a auth token for user  : %@", theError);
             completion(nil, theError);
             return;
         }
 
-        NSString *responseString  = (NSString *)theJson;
+        NSString *responseString = (NSString *)theJson;
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REFRESH_AUTH_TOKEN_OF_USER : %@",responseString);
 
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
 
-        if([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
+        if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError * reponseError =
             [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR REFRESH AUTH TOKEN"
                                                                                              forKey:NSLocalizedDescriptionKey]];
@@ -69,34 +69,34 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 -(NSMutableURLRequest *)createPostRequestWithURL:(NSString *)urlString
                                  withParamString:(NSString *)paramString {
 
-    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
-    [theRequest setTimeoutInterval:600];
-    [theRequest setHTTPMethod:@"POST"];
+    NSMutableURLRequest *postURLRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    [postURLRequest setTimeoutInterval:600];
+    [postURLRequest setHTTPMethod:@"POST"];
 
     if (paramString != nil) {
-        NSData *thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
-        [theRequest setHTTPBody:thePostData];
-        [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
+        NSData *postRequestData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        [postURLRequest setHTTPBody:postRequestData];
+        [postURLRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[postRequestData length]] forHTTPHeaderField:@"Content-Length"];
     }
-    [theRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [postURLRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
     if (appMoudle) {
-        [theRequest addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
+        [postURLRequest addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
     }
     NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
 
     if (deviceKeyString) {
-        [theRequest addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
+        [postURLRequest addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
     }
-    [theRequest addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
-    return theRequest;
+    [postURLRequest addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
+    return postURLRequest;
 }
 
 - (void)processRequest:(NSMutableURLRequest *)theRequest
                 andTag:(NSString *)tag
  WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion {
 
-    NSURLSessionDataTask *nsurlSessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
+    NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
 
         NSHTTPURLResponse *theHttpResponse = (NSHTTPURLResponse *)response;
 
@@ -216,7 +216,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             reponseCompletion(theJson,nil);
         });
     }];
-    [nsurlSessionDataTask resume];
+    [sessionDataTask resume];
 }
 
 - (NSError *)errorWithDescription:(NSString *)reason {

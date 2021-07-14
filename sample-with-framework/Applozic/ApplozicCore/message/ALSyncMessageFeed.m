@@ -24,13 +24,13 @@
     return self;
 }
 
-- (void)parseMessagseArray:(id) theMessageDict {
-    NSMutableArray * theMessagesArray = [NSMutableArray new];
-    for (NSDictionary * theDictionary in theMessageDict) {
+- (void)parseMessagseArray:(id)theMessageDict {
+    NSMutableArray *messagesArray = [NSMutableArray new];
+    for (NSDictionary *theDictionary in theMessageDict) {
         ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary ];
-        [theMessagesArray addObject:message];
+        [messagesArray addObject:message];
     }
-    self.messagesList = theMessagesArray;
+    self.messagesList = messagesArray;
 }
 
 @end

@@ -24,26 +24,26 @@
 }
 
 -(ALFileMetaInfo *)populate:(NSDictionary *)dict {
-    self.blobKey=[dict objectForKey:@"blobKey"];
-    self.thumbnailBlobKey=[dict objectForKey:@"thumbnailBlobKey"];
-    self.contentType=[dict objectForKey:@"contentType"];
-    self.createdAtTime= @([[dict objectForKey:@"createdAtTime"] doubleValue]);
-    self.key=[dict objectForKey:@"key"];
-    self.name=[dict objectForKey:@"name"];
+    self.blobKey = [dict objectForKey:@"blobKey"];
+    self.thumbnailBlobKey = [dict objectForKey:@"thumbnailBlobKey"];
+    self.contentType = [dict objectForKey:@"contentType"];
+    self.createdAtTime = @([[dict objectForKey:@"createdAtTime"] doubleValue]);
+    self.key = [dict objectForKey:@"key"];
+    self.name = [dict objectForKey:@"name"];
     if([dict objectForKey:@"size"]) {
         // If the type of size is number then convert to string otherwise it's a string.
         self.size = [[dict objectForKey:@"size"] isKindOfClass:[NSNumber class]]? [[dict objectForKey:@"size"] stringValue]:[dict objectForKey:@"size"];
     } else {
         self.size = nil;
     }
-    self.userKey=[dict objectForKey:@"suUserKeyString"];
+    self.userKey = [dict objectForKey:@"suUserKeyString"];
     NSString *thumbnail = [self getFullThumbnailUrl:[dict objectForKey:@"thumbnailUrl"]];
-    self.thumbnailUrl= thumbnail;
-    self.url= [dict objectForKey:@"url"];
+    self.thumbnailUrl = thumbnail;
+    self.url = [dict objectForKey:@"url"];
     return self;
 }
 
-- (NSString *) getFullThumbnailUrl:(NSString*)url {
+- (NSString *)getFullThumbnailUrl:(NSString*)url {
     if (ALApplozicSettings.isStorageServiceEnabled) {
         NSString *fullUrl = [[NSString alloc] initWithFormat:@"%@%@%@",KBASE_FILE_URL,AL_IMAGE_THUMBNAIL_ENDPOIT,url];
         return fullUrl;

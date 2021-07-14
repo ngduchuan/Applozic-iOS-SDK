@@ -29,7 +29,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:@"showNotificationAndLaunchChat"];
 }
 
-- (BOOL) isOurViewOnTop {
+- (BOOL)isOurViewOnTop {
     NSArray *VCList = [ALApplozicSettings getListOfViewControllers];
     if (VCList) {
         for (NSString * className in VCList) {

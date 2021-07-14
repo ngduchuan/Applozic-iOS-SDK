@@ -24,7 +24,7 @@
 }
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService updateDeliveryReportForContact:contactId withStatus:status];
     //Todo: update ui
 }
@@ -45,7 +45,7 @@
 
 - (void)updateConnectedStatus:(ALUserDetail *)alUserDetail {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:alUserDetail];
-    ALContactDBService* contactDBService = [[ALContactDBService alloc] init];
+    ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
     [contactDBService updateLastSeenDBUpdate:alUserDetail];
 }
 
@@ -53,7 +53,7 @@
                                    ConversationID:(NSString *)conversationID
                                        ChannelKey:(NSNumber *)channelKey {
     
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService deleteAllMessagesByContact:contactID orChannelKey:channelKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETION"
                                                         object:(contactID ? contactID :channelKey)];

@@ -114,12 +114,12 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
         return nil;
     }
 
-    NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
-    NSMutableDictionary * metaDataDictionary;
+    NSMutableDictionary *metaDataDictionary;
 
     @try {
-        NSError * error;
+        NSError *error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
@@ -129,13 +129,13 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     return metaDataDictionary;
 }
 
-- (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+- (NSMutableDictionary *)appendMetadataIn:(NSString *)metadataString {
 
-    NSMutableDictionary * existingMetadata = [self getMetaDataDictionary:metadataString];
+    NSMutableDictionary *existingMetadata = [self getMetaDataDictionary:metadataString];
     
     if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
 
-        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
+        NSString *flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
 
         if (!_metadata) {
             _metadata = [[NSMutableDictionary alloc]init];

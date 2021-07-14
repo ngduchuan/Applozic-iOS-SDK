@@ -18,7 +18,6 @@
 const int GROUP_ADDITION = 2;
 
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate> {
-    NSMutableOrderedSet *memberIds;
     CGFloat screenWidth;
     NSArray *colors;
     ALChannel *alchannel;
@@ -32,6 +31,7 @@ const int GROUP_ADDITION = 2;
 @property (nonatomic, strong) ALChannelDBService *channelDatabaseService;
 @property (nonatomic, strong) ALChannelService *channelService;
 @property (nonatomic, strong) ALMessageService *messageService;
+@property (strong, nonatomic) NSMutableOrderedSet *memberIds;
 
 @end
 
@@ -204,8 +204,8 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [[self activityIndicator] startAnimating];
     [self.channelDatabaseService fetchChannelMembersAsyncWithChannelKey:self.channelKeyID witCompletion:^(NSMutableArray *membersArray) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self->memberIds = [NSMutableOrderedSet orderedSetWithArray:membersArray];
-            self.memberCount = self->memberIds.count;
+            self.memberIds = [NSMutableOrderedSet orderedSetWithArray:membersArray];
+            self.memberCount = self.memberIds.count;
             [self.tableView setHidden:NO];
             [self.tableView reloadData];
             [[self activityIndicator] stopAnimating];
@@ -252,7 +252,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                 return 2;
         }break;
         case 1: {
-            return memberIds.count;
+            return self.memberIds.count;
         }break;
         case 2: {
             if ([ALApplozicSettings getGroupExitOption]) {
@@ -339,7 +339,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     ALNewContactsViewController *contactsVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
 
-    contactsVC.contactsInGroup = [NSMutableArray arrayWithArray:[memberIds array]];
+    contactsVC.contactsInGroup = [NSMutableArray arrayWithArray:[self.memberIds array]];
     contactsVC.forGroup = [NSNumber numberWithInt:GROUP_ADDITION];
     contactsVC.delegate = self;
 
@@ -354,16 +354,15 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)addNewMembertoGroup:(ALContact *)alcontact withCompletion:(void(^)(NSError *error,ALAPIResponse *response))completion {
     [[self activityIndicator] startAnimating];
-    self.memberIdToAdd = alcontact.userId;
-    [self.channelService addMemberToChannel:self.memberIdToAdd andChannelKey:self.channelKeyID orClientChannelKey:nil
+    __weak typeof(self) weakSelf = self;
+    [self.channelService addMemberToChannel:alcontact.userId andChannelKey:self.channelKeyID orClientChannelKey:nil
                              withCompletion:^(NSError *error, ALAPIResponse *response) {
 
         if (!error && [response.status isEqualToString:@"success"]) {
-            [self->memberIds addObject:self.memberIdToAdd];
-            [self.tableView reloadData];
-
+            [weakSelf.memberIds addObject:alcontact.userId];
+            [weakSelf.tableView reloadData];
         }
-        [[self activityIndicator] stopAnimating];
+        [[weakSelf activityIndicator] stopAnimating];
         completion(error,response);
     }];
 }
@@ -472,7 +471,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
 
-    NSString *channelMemberID = [NSString stringWithFormat:@"%@",memberIds[row]];
+    NSString *channelMemberID = [NSString stringWithFormat:@"%@",self.memberIds[row]];
 
     if ([channelMemberID isEqualToString:[ALUserDefaultsHandler getUserId]]) { return; }
 
@@ -502,7 +501,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                       orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
 
                 if (!error) {
-                    [self->memberIds removeObjectAtIndex:row];
+                    [self.memberIds removeObjectAtIndex:row];
                     [self setupView];
                     [self.tableView reloadData];
                 }
@@ -516,7 +515,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     }
 
     ALChannel *channel = [self.channelDatabaseService loadChannelByKey:self.channelKeyID];
-    ALChannelUserX *alChannelUserX =  [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    ALChannelUserX *alChannelUserX =  [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:self.memberIds[row]];
 
     if (!alChannelUserX.isAdminUser  && !channel.isBroadcastGroup && !isLoginUserLeftChannel && alChannelUserXLoggedInUser.isAdminUser) {
 
@@ -527,7 +526,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
             ALChannelUser *alChannelUsers = [ALChannelUser new];
             alChannelUsers.role = [NSNumber numberWithInt:1];
-            alChannelUsers.userId = self->memberIds[row];
+            alChannelUsers.userId = self.memberIds[row];
             NSMutableArray *channelUsers = [NSMutableArray new];
             [channelUsers addObject:alChannelUsers.dictionary];
 
@@ -647,10 +646,10 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)setMemberIcon:(NSInteger)row withCell:(ALGroupDetailsMemberCell*)memberCell {
 
-    ALChannelUserX *alChannelUserX = [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    ALChannelUserX *alChannelUserX = [self.channelDatabaseService loadChannelUserXByUserId:self.channelKeyID andUserId:self.memberIds[row]];
 
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-    ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:memberIds[row]];
+    ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:self.memberIds[row]];
 
 
     if (alChannelUserX.isAdminUser) {
@@ -717,13 +716,13 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 /// Profile Icon Tap UITapGestureRecognizer
 - (void)profileIconTap:(UITapGestureRecognizer*)sender {
     
-    if (memberIds.count < 1) {
+    if (self.memberIds.count < 1) {
         return;
     }
     
     UIView *view = sender.view;
     NSInteger selectedRow = view.tag;
-    NSString *userId = memberIds[selectedRow];
+    NSString *userId = self.memberIds[selectedRow];
     
     [[NSNotificationCenter defaultCenter]
      postNotificationName:ThirdPartyProfileTapNotification

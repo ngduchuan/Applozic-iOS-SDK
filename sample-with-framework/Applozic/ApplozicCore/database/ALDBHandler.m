@@ -169,7 +169,7 @@
 
 - (NSError *)saveContext {
     NSError *error = nil;
-    NSManagedObjectContext * context = self.persistentContainer.viewContext;
+    NSManagedObjectContext *context = self.persistentContainer.viewContext;
     @try {
         if (context) {
             if ([context hasChanges] && ![context  save:&error]) {
@@ -196,7 +196,7 @@
 - (void)saveWithContext:(NSManagedObjectContext *)context
              completion:(void (^)(NSError*error))completion {
     @try {
-        NSError* error;
+        NSError *error;
         if (!context) {
             error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil"}];
             completion(error);
@@ -222,7 +222,7 @@
     if (!self.persistentContainer) {
         return nil;
     }
-    NSArray * fetchResultArray = nil;
+    NSArray *fetchResultArray = nil;
     NSManagedObjectContext *context = self.persistentContainer.viewContext;
 
     if (context) {

@@ -38,8 +38,8 @@ NSCache<NSString *, ALContact *> *contactCache;
     }
 }
 
--(ALContact *) parseUserDetail: (ALUserDetail *) userDetail {
-    ALContact * contact = [[ALContact alloc] init];
+- (ALContact *)parseUserDetail: (ALUserDetail *) userDetail {
+    ALContact *contact = [[ALContact alloc] init];
     contact.userId = userDetail.userId;
     contact.connected = userDetail.connected;
     contact.lastSeenAt = userDetail.lastSeenAtTime;
@@ -53,7 +53,7 @@ NSCache<NSString *, ALContact *> *contactCache;
     contact.roleType = userDetail.roleType;
     contact.metadata = userDetail.metadata;
 
-    if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
+    if (userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0) {
         contact.notificationAfterTime = userDetail.notificationAfterTime;
     }
     return contact;

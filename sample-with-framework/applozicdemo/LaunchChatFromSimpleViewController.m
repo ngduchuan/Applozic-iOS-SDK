@@ -150,26 +150,32 @@
 
 - (IBAction)mChatLaunchButton:(id)sender {
     
-    ALMessageService * service = [[ALMessageService alloc] init];
-    [service getTotalUnreadMessageCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
+//    ALMessageService * service = [[ALMessageService alloc] init];
+//    [service getTotalUnreadMessageCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
+//
+//        if (error){
+//            NSLog(@"ERRROR in fetching count");
+//            return;
+//        }
+//
+//        NSLog(@"Current count is now @@ :%lu",(unsigned long)unreadCount);
+//
+//
+//        [service getTotalUnreadConversationCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
+//
+//            if (error){
+//                NSLog(@"ERRROR in fetching getTotalUnreadConversationCountWithCompletionHandler");
+//                return;
+//            }
+//
+//            NSLog(@"Current count is now getTotalUnreadConversationCountWithCompletionHandler  @@ :%lu",(unsigned long)unreadCount);
+//        }];
+//    }];
 
-        if (error){
-            NSLog(@"ERRROR in fetching count");
-            return;
-        }
 
-        NSLog(@"Current count is now @@ :%lu",(unsigned long)unreadCount);
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    [channelService getAllChannelsForApplications:nil withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
 
-
-        [service getTotalUnreadConversationCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
-
-            if (error){
-                NSLog(@"ERRROR in fetching getTotalUnreadConversationCountWithCompletionHandler");
-                return;
-            }
-
-            NSLog(@"Current count is now getTotalUnreadConversationCountWithCompletionHandler  @@ :%lu",(unsigned long)unreadCount);
-        }];
     }];
 
 }

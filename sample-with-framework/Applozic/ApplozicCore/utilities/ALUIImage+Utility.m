@@ -14,15 +14,15 @@
 @implementation UIImage (Utility)
 
 - (double)getImageSizeInMb {
-    NSData * imageData = UIImageJPEGRepresentation(self, 1);
+    NSData *imageData = UIImageJPEGRepresentation(self, 1);
     return (imageData.length/1024.0)/1024.0;
 }
 
 - (UIImage *)getCompressedImageLessThanSize:(double)sizeInMb {
     
-    UIImage * originalImage = self;
+    UIImage *originalImage = self;
     
-    NSData * theImageData = nil;
+    NSData *theImageData = nil;
     
     int numberOfAttempts = 0;
     
@@ -41,7 +41,7 @@
     
     CGFloat compression = 1.0f;
     CGFloat maxCompression = [ALApplozicSettings getMaxCompressionFactor];
-    NSInteger maxSize =( [ALApplozicSettings getMaxImageSizeForUploadInMB]==0 )? DEFAULT_MAX_FILE_UPLOAD_SIZE : [ALApplozicSettings getMaxImageSizeForUploadInMB];
+    NSInteger maxSize = ([ALApplozicSettings getMaxImageSizeForUploadInMB] == 0) ? DEFAULT_MAX_FILE_UPLOAD_SIZE : [ALApplozicSettings getMaxImageSizeForUploadInMB];
     NSData *imageData = UIImageJPEGRepresentation(self, compression);
     
     while (((imageData.length/1024.0)/1024.0) > maxSize & compression > maxCompression) {

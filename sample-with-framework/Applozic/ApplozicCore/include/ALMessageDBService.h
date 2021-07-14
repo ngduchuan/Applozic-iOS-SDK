@@ -64,7 +64,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)almessage;
+- (void)updateFileMetaInfo:(ALMessage *)alMessage;
 
 //Delete Message APIS
 - (void)deleteMessageByKey:(NSString *)keyString;
@@ -74,9 +74,9 @@
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)theMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
-- (ALMessage *)createMessageEntity:(DB_Message *)theEntity;
+- (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;
 
 - (NSMutableArray*)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;

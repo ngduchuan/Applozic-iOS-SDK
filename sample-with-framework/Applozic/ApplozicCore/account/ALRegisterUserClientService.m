@@ -45,7 +45,7 @@
         return;
     }
 
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/client",KBASE_URL];
+    NSString *loginURLString = [NSString stringWithFormat:@"%@/rest/ws/register/client",KBASE_URL];
     
     [ALUserDefaultsHandler setUserId:user.userId];
     [ALUserDefaultsHandler setPassword:user.password];
@@ -63,7 +63,7 @@
     [user setDeviceType:4];
     [user setAppVersionCode:AL_VERSION_CODE];
 
-    NSString * registrationId = [self getRegistrationId];
+    NSString *registrationId = [self getRegistrationId];
     if (registrationId) {
         [user setRegistrationId:registrationId];
     }
@@ -83,27 +83,26 @@
     }
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
     
-    //NSString * theParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
-    NSError * error;
-    NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    NSError *error;
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
+    NSString *loginParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
 
     NSString *logParamText = [self getUserParamTextForLogging:user];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:loginURLString paramString:loginParamString];
 
     [self.responseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
-        NSString *statusStr = (NSString *)theJson;
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", statusStr);
+        NSString *loginAPIResponseJSON = (NSString *)theJson;
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
         
         if (theError) {
             completion(nil, theError);
             return;
         }
         
-        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
+        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:loginAPIResponseJSON];
 
         // Only save the UserDefaults for successful register.
         if ([response isRegisteredSuccessfully]) {
@@ -293,7 +292,7 @@
     }];
 }
 
-+ (void) updateNotificationMode:(short)notificationMode withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion {
++ (void)updateNotificationMode:(short)notificationMode withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion {
 
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:notificationMode];
@@ -307,7 +306,7 @@
 - (void)updateUser:(ALUser *)alUser
     withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion {
 
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
+    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
 
     ALUser *user = [ALUser new];
 
@@ -366,19 +365,19 @@
 
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
-    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    NSString *userUpdateParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
 
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *userUpdateRequest = [ALRequestHandler createPOSTRequestWithUrlString:userUpdateURLString paramString:userUpdateParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:userUpdateRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
         ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
 
-        NSString *statusStr = (NSString *)theJson;
+        NSString *updateUserAPIResponse = (NSString *)theJson;
         if (theError) {
             completion(nil,theError);
             return ;
         }
-        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
+        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:updateUserAPIResponse];
 
         if (response && response.isRegisteredSuccessfully) {
 
@@ -429,8 +428,8 @@
 }
 
 - (void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
-    NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
+    NSString *logoutURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
+    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:logoutURLString paramString:nil];
 
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 
@@ -482,10 +481,10 @@
 
 + (void)sendServerRequestForAppUpdate {
     
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
+    NSString *appUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
     NSString *paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
 
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:appUpdateURLString paramString:paramString];
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];
     [responseHandler authenticateAndProcessRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
@@ -496,10 +495,10 @@
 }
 
 - (void)syncAccountStatus {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
+    NSString *accountURLString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
     NSString *paramString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
 
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:accountURLString paramString:paramString];
 
     [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
 
@@ -515,7 +514,7 @@
     registrationResponse.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     registrationResponse.userKey = [ALUserDefaultsHandler getUserKeyString];
     registrationResponse.message = [ALInternalSettings getRegistrationStatusMessage];
-    ALContactDBService * contactDatabase = [[ALContactDBService alloc]init];
+    ALContactDBService *contactDatabase = [[ALContactDBService alloc]init];
     ALContact *loginUserContact = [contactDatabase loadContactByKey:@"userId"value:[ALUserDefaultsHandler getUserId]];
     registrationResponse.contactNumber = loginUserContact.contactNumber;
     registrationResponse.lastSyncTime = [ALUserDefaultsHandler.getLastSyncTime stringValue];

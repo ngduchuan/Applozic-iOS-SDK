@@ -45,14 +45,14 @@
     [self.conversationDBService insertConversationProxyTopicDetails:conversations];
 }
 
-- (ALConversationProxy *) convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
+- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
     
-    ALConversationProxy *alConversationProxy =  [[ALConversationProxy alloc]init];
-    alConversationProxy.groupId=dbConversation.groupId;
-    alConversationProxy.userId=dbConversation.userId;
-    alConversationProxy.topicDetailJson=dbConversation.topicDetailJson;
-    alConversationProxy.topicId=dbConversation.topicId;
-    alConversationProxy.Id =dbConversation.iD;
+    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc]init];
+    alConversationProxy.groupId = dbConversation.groupId;
+    alConversationProxy.userId = dbConversation.userId;
+    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
+    alConversationProxy.topicId = dbConversation.topicId;
+    alConversationProxy.Id = dbConversation.iD;
     return alConversationProxy;
 }
 
@@ -63,8 +63,8 @@
     if (!list.count) {
         return result;
     }
-    for (DB_ConversationProxy *object in list) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:object];
+    for (DB_ConversationProxy *dbConversation in list) {
+        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     
@@ -79,8 +79,8 @@
     if (!list.count) {
         return result;
     }
-    for (DB_ConversationProxy *object in list) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:object];
+    for (DB_ConversationProxy *dbConversation in list) {
+        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     return result;
@@ -96,22 +96,21 @@
     }
     
     return  result;
-
+    
 }
 
 - (void)createConversation:(ALConversationProxy *)alConversationProxy
             withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion {
     
-
+    
     NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:alConversationProxy.userId andTopicId:alConversationProxy.topicId]];
-
+    
     
     if (conversationArray.count != 0) {
         ALConversationProxy *conversationProxy = conversationArray[0];
         ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",conversationProxy.topicDetailJson);
         completion(nil,conversationProxy);
-    } else{
-        
+    } else {
         [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
             
             if (!error) {
@@ -123,28 +122,28 @@
             completion(error,response.alConversationProxy);
         }];
     }
-
+    
 }
 
 
 - (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
            withCompletion:(void(^)(NSError *error, ALConversationProxy *alConversationProxy))completion {
-
+    
     ALConversationProxy *alConversationProxy = [self getConversationByKey:alConversationProxyID];
-
+    
     if (alConversationProxy != nil){
         ALSLog(ALLoggerSeverityInfo, @"Conversation/Topic Alerady exists");
         completion(nil,alConversationProxy);
         return;
     }
-
+    
     [self.conversationClientService fetchTopicDetails:alConversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);
             ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:response.response];
-            NSMutableArray *proxyArray = [[NSMutableArray alloc] initWithObjects:conversationProxy, nil];
-            [self addConversations:proxyArray];
+            NSMutableArray *conversationProxyArray = [[NSMutableArray alloc] initWithObjects:conversationProxy, nil];
+            [self addConversations:conversationProxyArray];
             completion(nil,conversationProxy);
         } else {
             ALSLog(ALLoggerSeverityError, @"ALAPIResponse : Error FETCHING TOPIC DEATILS ");

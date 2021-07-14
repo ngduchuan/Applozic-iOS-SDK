@@ -61,21 +61,21 @@ static int CONTACT_PAGE_SIZE = 100;
 //1. call this when each message comes
 - (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
     
-    NSMutableOrderedSet *contactIdsArr = [[NSMutableOrderedSet alloc] init ];
+    NSMutableOrderedSet *contactIdsArray = [[NSMutableOrderedSet alloc] init ];
     
-    for (ALMessage *msg in messagesArr) {
-        NSString *contactId = msg.contactIds;
+    for (ALMessage *alMessage in messagesArr) {
+        NSString *contactId = alMessage.contactIds;
         if (contactId.length > 0 && ![self.contactService isContactExist:contactId]) {
-            [contactIdsArr addObject:contactId];
+            [contactIdsArray addObject:contactId];
         }
     }
     
-    if ([contactIdsArr count] == 0) {
+    if ([contactIdsArray count] == 0) {
         completionMark();
         return;
     }
     
-    NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArr array]];
+    NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArray array]];
     [self fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
         if(error || !userDetailArray){
             completionMark();
@@ -322,9 +322,9 @@ static int CONTACT_PAGE_SIZE = 100;
     [self.userClientService userBlockSyncServerCall:lastSyncTime withCompletion:^(NSString *json, NSError *error) {
         
         if (!error) {
-            ALUserBlockResponse *block = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
-            [self updateBlockUserStatusToLocalDB:block];
-            [ALUserDefaultsHandler setUserBlockLastTimeStamp:block.generatedAt];
+            ALUserBlockResponse *userBlockResponse = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
+            [self updateBlockUserStatusToLocalDB:userBlockResponse];
+            [ALUserDefaultsHandler setUserBlockLastTimeStamp:userBlockResponse.generatedAt];
         }
     }];
 }
@@ -483,10 +483,10 @@ static int CONTACT_PAGE_SIZE = 100;
 
 - (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *array, NSError *error))completion {
     
-    ALUserDetailListFeed *ob = [ALUserDetailListFeed new];
-    [ob setArray:userArray];
+    ALUserDetailListFeed *userDetailListFeed = [ALUserDetailListFeed new];
+    [userDetailListFeed setArray:userArray];
     
-    [self.userClientService subProcessUserDetailServerCallPOST:ob withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+    [self.userClientService subProcessUserDetailServerCallPOST:userDetailListFeed withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
         
         if (userDetailArray && userDetailArray.count) {
             [self.contactDBService addUserDetailsWithoutUnreadCount:userDetailArray];
@@ -570,13 +570,13 @@ static int CONTACT_PAGE_SIZE = 100;
     [self.userClientService getListOfUsersWithUserName:userName withCompletion:^(ALAPIResponse *response, NSError *error) {
         
         if (error) {
-            completion(response,error);
+            completion(response, error);
             return;
         }
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             
-            NSMutableArray *array = (NSMutableArray*)response.response;
-            for (NSDictionary *userDeatils in array) {
+            NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
+            for (NSDictionary *userDeatils in userDetailArray) {
                 ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
                 userDeatil.unreadCount = 0;
                 [self.contactDBService updateUserDetail:userDeatil];

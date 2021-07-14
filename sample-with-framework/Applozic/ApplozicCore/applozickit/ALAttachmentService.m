@@ -26,8 +26,7 @@
     return sharedInstance;
 }
 
-
-- (void)sendMessageWithAttachment:(ALMessage*) attachmentMessage
+- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
                      withDelegate:(id<ApplozicUpdatesDelegate>)delegate
            withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
     

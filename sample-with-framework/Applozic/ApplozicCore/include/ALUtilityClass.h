@@ -17,7 +17,7 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 @property (nonatomic, strong) NSString *msgdate;
 @property (nonatomic, strong) NSString *msgtime;
 
-+ (NSString *)formatTimestamp:(NSTimeInterval)timeInterval toFormat:(NSString *)forMatStr;
++ (NSString *)formatTimestamp:(NSTimeInterval)timeInterval toFormat:(NSString *)formatString;
 
 + (NSString *)generateJsonStringFromDictionary:(NSDictionary *)dictionary;
 
@@ -27,9 +27,9 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
-+ (NSString*)getLocationUrl:(ALMessage *)almessage;
++ (NSString *)getLocationUrl:(ALMessage *)alMessage;
 
-+ (NSString*)getLocationUrl:(ALMessage *)almessage size: (CGRect) withSize;
++ (NSString *)getLocationUrl:(ALMessage *)alMessage size:(CGRect)withSize;
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId

@@ -104,13 +104,13 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 + (BOOL)isConversationClosed:(NSNumber *)groupId {
-    ALChannelDBService *dbSerivce = [[ALChannelDBService alloc] init];
-    return [dbSerivce isConversaionClosed:groupId];
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    return [channelDBService isConversaionClosed:groupId];
 }
 
 + (BOOL)isChannelDeleted:(NSNumber *)groupId {
-    ALChannelDBService *dbSerivce = [[ALChannelDBService alloc] init];
-    BOOL flag = [dbSerivce isChannelDeleted:groupId];
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    BOOL flag = [channelDBService isChannelDeleted:groupId];
     return flag;
 }
 
