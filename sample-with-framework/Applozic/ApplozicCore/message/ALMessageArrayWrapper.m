@@ -101,7 +101,7 @@
         }
     }
     //final addintion of date at top ....
-    ALMessage * message = [self.messageArray firstObject];
+    ALMessage *message = [self.messageArray firstObject];
     if (message) {
         NSString *dateString = [self msgAtTop:message];
         ALMessage *dateLabel = [self getDatePrototype:dateString andAlMessageObject:message];

@@ -90,8 +90,8 @@
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *list = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     
-    for (DB_ConversationProxy*object in list) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:object];
+    for (DB_ConversationProxy *dbConversation in list) {
+        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     
@@ -109,7 +109,7 @@
     if (conversationArray.count != 0) {
         ALConversationProxy *conversationProxy = conversationArray[0];
         ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",conversationProxy.topicDetailJson);
-        completion(nil,conversationProxy);
+        completion(nil, conversationProxy);
     } else {
         [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
             
@@ -119,7 +119,7 @@
             } else {
                 ALSLog(ALLoggerSeverityError, @"ALConversationService : Error creatingConversation ");
             }
-            completion(error,response.alConversationProxy);
+            completion(error, response.alConversationProxy);
         }];
     }
     
@@ -133,7 +133,7 @@
     
     if (alConversationProxy != nil){
         ALSLog(ALLoggerSeverityInfo, @"Conversation/Topic Alerady exists");
-        completion(nil,alConversationProxy);
+        completion(nil, alConversationProxy);
         return;
     }
     
@@ -144,10 +144,10 @@
             ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:response.response];
             NSMutableArray *conversationProxyArray = [[NSMutableArray alloc] initWithObjects:conversationProxy, nil];
             [self addConversations:conversationProxyArray];
-            completion(nil,conversationProxy);
+            completion(nil, conversationProxy);
         } else {
             ALSLog(ALLoggerSeverityError, @"ALAPIResponse : Error FETCHING TOPIC DEATILS ");
-            completion(error,nil);
+            completion(error, nil);
         }
     }];
 }

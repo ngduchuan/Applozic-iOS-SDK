@@ -166,8 +166,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:channelDictionary options:0 error:&error];
     NSString *channelCreateParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING :: %@", channelCreateParamString);
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:channelCreateURLString paramString:channelCreateParamString];
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *channelCreateRequest = [ALRequestHandler createPOSTRequestWithUrlString:channelCreateURLString paramString:channelCreateParamString];
+    [self.responseHandler authenticateAndProcessRequest:channelCreateRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALChannelCreateResponse *response = nil;
 
@@ -637,7 +637,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSString *channelListURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_INFO_ON_IDS];
     NSString *channelListParamString = nil;
-    NSMutableArray *channelinfoList = [[NSMutableArray alloc] init];
+    NSMutableArray *channelInfoList = [[NSMutableArray alloc] init];
     //For client groupId
     if (clientChannelIds) {
         
@@ -667,9 +667,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         for (NSMutableDictionary *dic  in array) {
             ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
-            [channelinfoList addObject:channel];
+            [channelInfoList addObject:channel];
         }
-        completion(channelinfoList, error);
+        completion(channelInfoList, error);
     }];
 }
 
@@ -678,7 +678,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSString *channelCategoryURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_SYNC_URL];
     NSString *channelCategoryParamString = nil;
-    NSMutableArray *channelinfoList = [[NSMutableArray alloc] init];
+    NSMutableArray *channelInfoList = [[NSMutableArray alloc] init];
     
     if (category) {
         channelCategoryParamString = [NSString stringWithFormat:@"category=%@", category];
@@ -704,9 +704,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
             for (NSMutableDictionary *dic  in array) {
                 ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
-                [channelinfoList addObject:channel];
+                [channelInfoList addObject:channel];
             }
-            completion(channelinfoList, nil);
+            completion(channelInfoList, nil);
         } else {
             NSError *responseError = [NSError errorWithDomain:@"Applozic"
                                                          code:1

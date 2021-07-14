@@ -16,7 +16,6 @@
 -(NSString *)getTheSize {
     
     if ((self.size.intValue/1024.0)/1024.0 >= 1) {
-        
         return [NSString stringWithFormat:@" %.1f mb",(self.size.intValue/1024.0)/1024.0];
     } else {
         return [NSString stringWithFormat:@" %d kb",self.size.intValue/1024];
@@ -43,7 +42,7 @@
     return self;
 }
 
-- (NSString *)getFullThumbnailUrl:(NSString*)url {
+- (NSString *)getFullThumbnailUrl:(NSString *)url {
     if (ALApplozicSettings.isStorageServiceEnabled) {
         NSString *fullUrl = [[NSString alloc] initWithFormat:@"%@%@%@",KBASE_FILE_URL,AL_IMAGE_THUMBNAIL_ENDPOIT,url];
         return fullUrl;

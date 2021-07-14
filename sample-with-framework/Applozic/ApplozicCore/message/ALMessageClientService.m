@@ -588,11 +588,11 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     }
 
     NSString *messageSerarchURLString = [NSString stringWithFormat:@"%@/rest/ws/message/search", KBASE_URL];
-    NSString *paramString = [request getParamString];
+    NSString *messageSearchParamString = [request getParamString];
 
     NSMutableURLRequest *messageURLRequest = [ALRequestHandler
                                               createGETRequestWithUrlString:messageSerarchURLString
-                                              paramString: paramString];
+                                              paramString: messageSearchParamString];
 
     [self.responseHandler
      authenticateAndProcessRequest: messageURLRequest
@@ -689,9 +689,9 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
         /// We have an extra ampersand.
         [paramMessageKeyString deleteCharactersInRange:NSMakeRange([paramMessageKeyString length] - 1, 1)];
     }
-    NSMutableURLRequest *request = [ALRequestHandler createGETRequestWithUrlString: messageInfoURLString paramString: paramMessageKeyString];
+    NSMutableURLRequest *messageInfoRequest = [ALRequestHandler createGETRequestWithUrlString: messageInfoURLString paramString: paramMessageKeyString];
 
-    [self.responseHandler authenticateAndProcessRequest:request andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageInfoRequest andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"Fetching message error %@", (NSString *)theJson);
             completion(nil, theError);

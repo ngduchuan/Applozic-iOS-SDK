@@ -187,7 +187,6 @@ static NSString * const AL_TRUE = @"true";
 
     NSString *formattedString = @"hh:mm a";
     NSString *formattedDateString = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedString];
-
     return formattedDateString;
 }
 - (BOOL)isDownloadRequired {
@@ -428,19 +427,19 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (ALFileMetaInfo *)getFileMetaInfo {
-    ALFileMetaInfo *info = [ALFileMetaInfo new];
+    ALFileMetaInfo *fileMetaInfo = [ALFileMetaInfo new];
     
-    info.blobKey = nil;
-    info.contentType = @"";
-    info.createdAtTime = nil;
-    info.key = nil;
-    info.name = @"";
-    info.size = @"";
-    info.userKey = @"";
-    info.thumbnailUrl = @"";
-    info.progressValue = 0;
+    fileMetaInfo.blobKey = nil;
+    fileMetaInfo.contentType = @"";
+    fileMetaInfo.createdAtTime = nil;
+    fileMetaInfo.key = nil;
+    fileMetaInfo.name = @"";
+    fileMetaInfo.size = @"";
+    fileMetaInfo.userKey = @"";
+    fileMetaInfo.thumbnailUrl = @"";
+    fileMetaInfo.progressValue = 0;
     
-    return info;
+    return fileMetaInfo;
 }
 
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder {

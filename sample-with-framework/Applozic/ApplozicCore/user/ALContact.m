@@ -47,11 +47,11 @@
     NSMutableDictionary *metaDataDictionary;
     
     @try {
-        NSError * error;
+        NSError *error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    } @catch(NSException * exp) {
+    } @catch(NSException *exp) {
 
     }
     

@@ -196,7 +196,7 @@ static ALMessageClientService *alMsgClientService;
             }
             /// If its a reply message add the reply message key to array
             if (message.metadata) {
-                NSString* replyKey = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+                NSString *replyKey = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
                 if (replyKey && ![messageDBService getMessageByKey:@"key" value: replyKey] && ![replyMessageKeys containsObject: replyKey]) {
                     [replyMessageKeys addObject: replyKey];
                 }
@@ -491,7 +491,7 @@ static ALMessageClientService *alMsgClientService;
 + (BOOL)resetUnreadCountAndUpdate:(ALMessage *)message {
 
     if ([message isResetUnreadCountMessage]) {
-        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
         [channelDBService updateUnreadCountChannel:message.groupId unreadCount:[NSNumber numberWithInt:0]];
         return YES;
     }
@@ -1025,7 +1025,7 @@ static ALMessageClientService *alMsgClientService;
         ALContact *contact = [contactDBService loadContactByKey:@"userId" value:alMessage.to];
         if (contact && [contact isDisplayNameUpdateRequired] ) {
             [[ALUserService sharedInstance] updateDisplayNameWith:alMessage.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
-                if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                if (apiResponse && [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                     [contactDBService addOrUpdateMetadataWithUserId:alMessage.to withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"true"];
                 }
             }];
@@ -1053,7 +1053,7 @@ static ALMessageClientService *alMsgClientService;
 }
 
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion {
-    ALUserService * alUserService = [[ALUserService alloc] init];
+    ALUserService *alUserService = [[ALUserService alloc] init];
     if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService getLatestMessages:NO

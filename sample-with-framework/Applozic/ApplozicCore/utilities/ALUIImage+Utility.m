@@ -22,7 +22,7 @@
     
     UIImage *originalImage = self;
     
-    NSData *theImageData = nil;
+    NSData *imageData = nil;
     
     int numberOfAttempts = 0;
     
@@ -30,9 +30,9 @@
         
         numberOfAttempts = numberOfAttempts + 1;
         
-        theImageData = UIImageJPEGRepresentation(self,0.9);
+        imageData = UIImageJPEGRepresentation(self,0.9);
         
-        originalImage = [UIImage imageWithData:theImageData];
+        originalImage = [UIImage imageWithData:imageData];
     }
     return originalImage;
 }

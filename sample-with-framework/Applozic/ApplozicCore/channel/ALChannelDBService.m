@@ -383,7 +383,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     DB_CHANNEL_USER_X *channelUserX = [self getChannelUserXByUserId:channelKey andUserId:userId];
 
     if (channelUserX) {
-        ALDBHandler * alDBHandler = [ALDBHandler sharedInstance];
+        ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
         channelUserX.role = role;
         [alDBHandler saveContext];
     }

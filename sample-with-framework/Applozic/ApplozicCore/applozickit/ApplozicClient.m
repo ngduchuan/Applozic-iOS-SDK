@@ -377,13 +377,13 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)subscribeToConversation {
     if (alMQTTConversationService) {
-        [alMQTTConversationService  subscribeToConversation];
+        [alMQTTConversationService subscribeToConversation];
     }
 }
 
 - (void)unsubscribeToConversation {
     if (alMQTTConversationService) {
-        [alMQTTConversationService  unsubscribeToConversation];
+        [alMQTTConversationService unsubscribeToConversation];
     }
 }
 
@@ -395,7 +395,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)subscribeToTypingStatusForChannel:(NSNumber *)channelKey {
     if (alMQTTConversationService) {
-        [alMQTTConversationService  subscribeToChannelConversation:channelKey];
+        [alMQTTConversationService subscribeToChannelConversation:channelKey];
     }
 }
 

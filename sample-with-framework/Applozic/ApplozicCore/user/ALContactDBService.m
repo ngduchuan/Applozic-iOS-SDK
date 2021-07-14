@@ -381,7 +381,7 @@
 
         if (result.count > 0) {
 
-            DB_CONTACT * dbContact = [result objectAtIndex:0];
+            DB_CONTACT *dbContact = [result objectAtIndex:0];
             dbContact.lastSeenAt = userDetail.lastSeenAtTime;
             dbContact.connected = userDetail.connected;
             if (userDetail.unreadCount != nil &&
@@ -582,7 +582,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler  entityDescriptionWithEntityForName:@"DB_CONTACT"];
 
-    NSMutableArray * userList = [[NSMutableArray alloc] init];
+    NSMutableArray *userList = [[NSMutableArray alloc] init];
     if (contactEntity) {
         [fetchRequest setEntity:contactEntity];
 
@@ -665,7 +665,7 @@
 }
 
 - (BOOL)isUserDeleted:(NSString *)userId {
-    ALContact * contact = [self loadContactByKey:@"userId" value:userId];
+    ALContact *contact = [self loadContactByKey:@"userId" value:userId];
     return contact.deletedAtTime != nil ? YES : NO;
 }
 
@@ -764,7 +764,7 @@
         NSError *fetchError = nil;
         NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
         if (result.count > 0) {
-            DB_CONTACT * dbContact = [result objectAtIndex:0];
+            DB_CONTACT *dbContact = [result objectAtIndex:0];
 
             NSString * metadataString = dbContact.metadata;
             if (!metadataString) {
@@ -780,7 +780,7 @@
                 return YES;
             }
             
-            ALContact * contact = [[ALContact alloc] init];
+            ALContact *contact = [[ALContact alloc] init];
             NSMutableDictionary * existingMetadata = [contact getMetaDataDictionary:metadataString];
 
             if (existingMetadata) {

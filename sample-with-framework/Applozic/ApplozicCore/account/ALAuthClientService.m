@@ -31,12 +31,12 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         return;
     }
 
-    NSMutableDictionary *dictionary = [NSMutableDictionary new];
-    [dictionary setObject:[ALUserDefaultsHandler getUserId] forKey:USERID];
-    [dictionary setObject:[ALUserDefaultsHandler getApplicationKey] forKey:APPLICATIONID];
+    NSMutableDictionary *JSONDictionary = [NSMutableDictionary new];
+    [JSONDictionary setObject:[ALUserDefaultsHandler getUserId] forKey:USERID];
+    [JSONDictionary setObject:[ALUserDefaultsHandler getApplicationKey] forKey:APPLICATIONID];
 
     NSError *error;
-    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:JSONDictionary options:0 error:&error];
     NSString *refreshTokenParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
     NSString *refreshTokenURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];

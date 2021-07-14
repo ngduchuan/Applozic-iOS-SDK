@@ -165,7 +165,7 @@
 
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
 
-    NSManagedObject *dbMessage = [self getMessageByKey:@"key"  value:messageKeyString];
+    NSManagedObject *dbMessage = [self getMessageByKey:@"key" value:messageKeyString];
 
     if (dbMessage) {
         [dbMessage setValue:@(status) forKey:@"status"];
@@ -483,8 +483,8 @@
             if (groupMessageArray.count > 0) {
                 DB_Message *dbMessageEntity = groupMessageArray.firstObject;
                 if (groupMessageArray.count) {
-                    ALMessage * theMessage = [self createMessageEntity:dbMessageEntity];
-                    [messagesArray addObject:theMessage];
+                    ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+                    [messagesArray addObject:alMessage];
                 }
             }
         }
@@ -518,10 +518,10 @@
 
             NSArray *fetchArray =  [alDBHandler executeFetchRequest:dbMessageFetchRequest withError:nil];
             if (fetchArray.count > 0) {
-                DB_Message * dbMessageEntity = fetchArray.firstObject;
+                DB_Message *dbMessageEntity = fetchArray.firstObject;
                 if (fetchArray.count) {
-                    ALMessage * theMessage = [self createMessageEntity:dbMessageEntity];
-                    [messagesArray addObject:theMessage];
+                    ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+                    [messagesArray addObject:alMessage];
                 }
             }
         }
@@ -719,9 +719,9 @@
     NSArray *messageArray = [alDBHandler executeFetchRequest:messageFetchRequest withError:nil];
     NSMutableArray *msgArray = [[NSMutableArray alloc]init];
     if (messageArray.count) {
-        for (DB_Message * theEntity in messageArray) {
-            ALMessage *theMessage = [self createMessageEntity:theEntity];
-            [msgArray addObject:theMessage];
+        for (DB_Message *theEntity in messageArray) {
+            ALMessage *alMessage = [self createMessageEntity:theEntity];
+            [msgArray addObject:alMessage];
         }
     }
     return msgArray;
@@ -757,8 +757,8 @@
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
     if (messages.count > 0) {
         for (DB_Message * theEntity in messages) {
-            ALMessage * theMessage = [self createMessageEntity:theEntity];
-            [messageArray addObject:theMessage];
+            ALMessage * alMessage = [self createMessageEntity:theEntity];
+            [messageArray addObject:alMessage];
         }
     }
 

@@ -47,16 +47,16 @@
     }
     self.messageList = messagesArray;
     
-    NSDictionary *theUserDetailsDict = [messagejson valueForKey:@"userDetails"];
+    NSDictionary *userDetailsDictionary = [messagejson valueForKey:@"userDetails"];
 
-    for (NSDictionary *theDictionary in theUserDetailsDict) {
+    for (NSDictionary *theDictionary in userDetailsDictionary) {
         ALUserDetail *alUserDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
         [userDetailArray addObject:alUserDetail];
     }
     
-    NSDictionary *theConversationProxyDict = [messagejson valueForKey:@"conversationPxys"];
+    NSDictionary *conversationProxyDictionary = [messagejson valueForKey:@"conversationPxys"];
     
-    for (NSDictionary *theDictionary in theConversationProxyDict) {
+    for (NSDictionary *theDictionary in conversationProxyDictionary) {
         ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:theDictionary];
         conversationProxy.userId = self.userId;
         conversationProxy.groupId = self.groupId;

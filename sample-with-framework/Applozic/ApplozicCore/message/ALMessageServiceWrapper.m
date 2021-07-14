@@ -25,7 +25,7 @@
 
 @implementation ALMessageServiceWrapper
 
-- (void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId {
+- (void)sendTextMessage:(NSString*)text andtoContact:(NSString *)toContactId {
     
     ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
@@ -117,19 +117,19 @@ andWithStatusDelegate:(id)statusDelegate
 
 
 - (ALFileMetaInfo *)getFileMetaInfo {
-    ALFileMetaInfo *info = [ALFileMetaInfo new];
+    ALFileMetaInfo *fileMetaInfo = [ALFileMetaInfo new];
     
-    info.blobKey = nil;
-    info.contentType = @"";
-    info.createdAtTime = nil;
-    info.key = nil;
-    info.name = @"";
-    info.size = @"";
-    info.userKey = @"";
-    info.thumbnailUrl = @"";
-    info.progressValue = 0;
+    fileMetaInfo.blobKey = nil;
+    fileMetaInfo.contentType = @"";
+    fileMetaInfo.createdAtTime = nil;
+    fileMetaInfo.key = nil;
+    fileMetaInfo.name = @"";
+    fileMetaInfo.size = @"";
+    fileMetaInfo.userKey = @"";
+    fileMetaInfo.thumbnailUrl = @"";
+    fileMetaInfo.progressValue = 0;
     
-    return info;
+    return fileMetaInfo;
 }
 
 - (ALMessage *)createMessageEntityOfContentType:(int)contentType

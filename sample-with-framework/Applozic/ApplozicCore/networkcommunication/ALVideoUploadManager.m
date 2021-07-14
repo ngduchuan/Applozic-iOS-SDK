@@ -211,18 +211,18 @@
     // post body
     NSMutableData *body = [NSMutableData data];
 
-    NSString* FileParamConstant;
+    NSString* fileParamConstant;
     if (ALApplozicSettings.isS3StorageServiceEnabled) {
-        FileParamConstant = @"file";
+        fileParamConstant = @"file";
     } else {
-        FileParamConstant = @"files[]";
+        fileParamConstant = @"files[]";
     }
     NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
     ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
     //Assuming data is not nil we add this to the multipart form
     if (imageData) {
         [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant,name] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", fileParamConstant, name] dataUsingEncoding:NSUTF8StringEncoding]];
 
         [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", type] dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:imageData];

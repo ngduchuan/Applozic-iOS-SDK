@@ -124,7 +124,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
         title = contact.getDisplayName;
     }
 
-    ALPushAssist *top = [[ALPushAssist alloc] init];
+    ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
     UIImage *appIcon = [UIImage imageNamed: [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0]];
 
     [[TSMessageView appearance] setTitleFont:[UIFont fontWithName:@"Helvetica Neue" size:18.0]];
@@ -132,7 +132,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
     [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
 
-    [TSMessage showNotificationInViewController:top.topViewController
+    [TSMessage showNotificationInViewController:pushAssist.topViewController
                                           title:title
                                        subtitle:toastMessage
                                           image:appIcon
@@ -193,13 +193,13 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 }
 
 + (NSString *)getDevieUUID {
-    NSString * uuid = [[NSUUID UUID] UUIDString];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
     return uuid;
 }
 
 + (BOOL)checkDeviceKeyString:(NSString *)string {
-    NSArray * array = [string componentsSeparatedByString:@":"];
-    NSString * deviceString = (NSString *)[array firstObject];
+    NSArray *array = [string componentsSeparatedByString:@":"];
+    NSString *deviceString = (NSString *)[array firstObject];
     return [deviceString isEqualToString:[ALUtilityClass getDevieUUID]];
 }
 

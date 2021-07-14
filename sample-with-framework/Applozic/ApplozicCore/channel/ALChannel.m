@@ -120,7 +120,7 @@
         metadataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    } @catch(NSException * exp) {
+    } @catch(NSException *exp) {
     }
     
     return metadataDictionary;
