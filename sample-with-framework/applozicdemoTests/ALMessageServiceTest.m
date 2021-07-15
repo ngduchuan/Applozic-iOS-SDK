@@ -74,7 +74,7 @@
     [jsonDictionary setObject:responseDictionary forKey:@"response"];
     [jsonDictionary setValue:@"success" forKey:@"status"];
 
-    OCMStub([mockMessageClientService sendMessage:[testMessage dictionary] WithCompletionHandler:([OCMArg invokeBlockWithArgs:jsonDictionary,[OCMArg defaultValue], nil])]);
+    OCMStub([mockMessageClientService sendMessage:[testMessage dictionary] withCompletionHandler:([OCMArg invokeBlockWithArgs:jsonDictionary,[OCMArg defaultValue], nil])]);
     [messageService sendMessages:testMessage withCompletion:^(NSString *message, NSError *error) {
         XCTAssert(error == nil);
         XCTAssert(message == nil);
@@ -82,7 +82,7 @@
 }
 
 - (void)test_whenTextMessageSentUnsuccessful_thatErrorIsPresent {
-    OCMStub([mockMessageClientService sendMessage:[testMessage dictionary] WithCompletionHandler:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue] , networkError, nil])]);
+    OCMStub([mockMessageClientService sendMessage:[testMessage dictionary] withCompletionHandler:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue] , networkError, nil])]);
 
     [messageService sendMessages:testMessage withCompletion:^(NSString *message, NSError *error) {
         XCTAssert(error.code == 999);

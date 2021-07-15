@@ -117,7 +117,7 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 - (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 
-- (void) addMemberToContactGroupOfType:(NSString *)contactsGroupId
+- (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
                            withMembers:(NSMutableArray *)membersArray
                          withGroupType:(short)groupType
                         withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
@@ -127,7 +127,7 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
                     withMembers:(NSMutableArray *)membersArray
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-- (void) getMembersFromContactGroupOfType:(NSString *)contactGroupId
+- (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
                             withGroupType:(short)groupType
                            withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 

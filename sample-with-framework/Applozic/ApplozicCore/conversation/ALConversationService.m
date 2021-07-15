@@ -34,7 +34,7 @@
     if (dbConversation == nil) {
         return nil;
     }
-    return [self convertAlConversationProxy:dbConversation];;
+    return [self convertAlConversationProxy:dbConversation];
 }
 
 - (void)addConversations:(NSMutableArray *)conversations {

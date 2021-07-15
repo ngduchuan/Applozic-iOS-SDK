@@ -90,9 +90,9 @@
     NSString *logParamText = [self getUserParamTextForLogging:user];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:loginURLString paramString:loginParamString];
+    NSMutableURLRequest * loginUserRequest = [ALRequestHandler createPOSTRequestWithUrlString:loginURLString paramString:loginParamString];
 
-    [self.responseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler processRequest:loginUserRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSString *loginAPIResponseJSON = (NSString *)theJson;
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
@@ -429,9 +429,9 @@
 
 - (void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
     NSString *logoutURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:logoutURLString paramString:nil];
+    NSMutableURLRequest *logoutRequest = [ALRequestHandler createPOSTRequestWithUrlString:logoutURLString paramString:nil];
 
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:logoutRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
@@ -450,7 +450,7 @@
             ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
             [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         }
-        completion(response,error);
+        completion(response, error);
     }];
 }
 
@@ -484,9 +484,9 @@
     NSString *appUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
     NSString *paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
 
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:appUpdateURLString paramString:paramString];
+    NSMutableURLRequest *appUpdateRequest = [ALRequestHandler createGETRequestWithUrlString:appUpdateURLString paramString:paramString];
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];
-    [responseHandler authenticateAndProcessRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [responseHandler authenticateAndProcessRequest:appUpdateRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"error:%@",theError);
         }
@@ -496,11 +496,11 @@
 
 - (void)syncAccountStatus {
     NSString *accountURLString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
-    NSString *paramString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
+    NSString *accountParamString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
 
-    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:accountURLString paramString:paramString];
+    NSMutableURLRequest *syncAccountRequest = [ALRequestHandler createGETRequestWithUrlString:accountURLString paramString:accountParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:syncAccountRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         ALSLog(ALLoggerSeverityInfo, @"Response of account Status :: %@",(NSString *)theJson);
         if (theError) {

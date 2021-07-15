@@ -10,7 +10,7 @@
 #import "ALDBHandler.h"
 #import "ALConstant.h"
 #import "DB_Message.h"
-#import "SearchResultCache.h"
+#import "ALSearchResultCache.h"
 #import "ALLogger.h"
 
 @implementation ALContactDBService
@@ -253,7 +253,7 @@
     if (!value) {
         return nil;
     }
-    ALContact *cachedContact = [[SearchResultCache shared] getContactWithId: value];
+    ALContact *cachedContact = [[ALSearchResultCache shared] getContactWithId: value];
     if (cachedContact != nil) {
         return cachedContact;
     }

@@ -244,7 +244,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Download  Attachment message method
 //==============================================================================================================================================
 
-- (void)downloadMessageAttachment:(ALMessage*)alMessage {
+- (void)downloadMessageAttachment:(ALMessage *)alMessage {
     if (!alMessage) {
         return;
     }
@@ -308,7 +308,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     ALChannelService *alChannelService = [[ALChannelService alloc] init];
-
     [alChannelService updateChannelWithChannelKey:channelKey andNewName:newName andImageURL:imageURL orClientChannelKey:clientChannelKey isUpdatingMetaData:flag metadata:metaData orChildKeys:nil orChannelUsers:channelUsers withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];

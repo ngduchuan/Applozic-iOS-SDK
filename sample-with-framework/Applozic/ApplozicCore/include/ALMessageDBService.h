@@ -20,7 +20,7 @@
 
 - (void)getMessagesArray:(NSMutableArray*)messagesArray;
 
--(void)updateMessageList:(NSMutableArray*)messagesArray;
+- (void)updateMessageList:(NSMutableArray*)messagesArray;
 
 @end
 
@@ -31,8 +31,8 @@
 @property(nonatomic, retain) ALMessageService *messageService;
 
 //Add Message APIS
-- (NSMutableArray *)addMessageList:(NSMutableArray*)messageList skipAddingMessageInDb:(BOOL)skip;
-- (DB_Message*)addMessage:(ALMessage *)message;
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
+- (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
@@ -79,7 +79,7 @@
 - (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;
 
-- (NSMutableArray*)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
 
 - (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler;
 

@@ -721,9 +721,14 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [topicsArray addObject:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
         }
 
-        [topicsArray addObject:topic];
+        if (topic) {
+            [topicsArray addObject:topic];
+        }
+
         /// Unsubscribe from both the topics with encr prefix and without encr prefix
-        [self.session unsubscribeTopics: [topicsArray copy]];
+        if (topicsArray.count) {
+            [self.session unsubscribeTopics: [topicsArray copy]];
+        }
 
         [self.session closeWithDisconnectHandler:^(NSError *error) {
             if (error) {

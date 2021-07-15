@@ -13,7 +13,7 @@
 #import "ALContactDBService.h"
 #import "ALContact.h"
 #import "ALChannelUser.h"
-#import "SearchResultCache.h"
+#import "ALSearchResultCache.h"
 #import "ALChannelService.h"
 #import "ALLogger.h"
 
@@ -196,7 +196,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 }
 
 - (ALChannel *)loadChannelByKey:(NSNumber *)key {
-    ALChannel *cachedChannel = [[SearchResultCache shared] getChannelWithId: key];
+    ALChannel *cachedChannel = [[ALSearchResultCache shared] getChannelWithId: key];
     if (cachedChannel != nil) {
         return cachedChannel;
     }
@@ -370,7 +370,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     DB_CHANNEL_USER_X *channelUserX =  [self getChannelUserXByUserId:channelKey andUserId:userId];
     if (channelUserX) {
-        ALDBHandler * alDBHandler = [ALDBHandler sharedInstance];
+        ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
         channelUserX.parentGroupKey = parentKey;
         [alDBHandler saveContext];
     }
@@ -454,7 +454,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return nil;
 }
 
-- (NSString *)stringFromChannelUserList:(NSNumber *)key {
+- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key {
     NSString *listString = @"";
     NSString *str = @"";
     NSMutableArray *listOfUsersinChannel = [self getListOfAllUsersInChannel:key withLimit:CHANNEL_MEMBER_FETCH_LMIT];

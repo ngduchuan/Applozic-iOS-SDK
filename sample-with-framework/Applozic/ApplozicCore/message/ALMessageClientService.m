@@ -25,7 +25,7 @@
 #import "ALApplozicSettings.h"
 #import "ALConnectionQueueHandler.h"
 #import "ALApplozicSettings.h"
-#import "SearchResultCache.h"
+#import "ALSearchResultCache.h"
 #import "ALLogger.h"
 
 @implementation ALMessageClientService
@@ -44,7 +44,7 @@
 
 - (void)downloadImageUrl:(NSString *)blobKey
           withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
-    [self getNSMutableURLRequestForImage:blobKey withCompletion:^(NSMutableURLRequest *urlRequest, NSString *fileUrl) {
+    [self getURLRequestForImage:blobKey withCompletion:^(NSMutableURLRequest *urlRequest, NSString *fileUrl) {
 
         if (!urlRequest
             && !fileUrl) {
@@ -75,7 +75,7 @@
 
 }
 
-- (void)getNSMutableURLRequestForImage:(NSString *)blobKey
+- (void)getURLRequestForImage:(NSString *)blobKey
                         withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
 
     NSMutableURLRequest *urlRequest = nil;
@@ -417,7 +417,7 @@
 }
 
 - (void)sendMessage:(NSDictionary *)userInfo
-WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
+withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     NSString *messageSendURLString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/send",KBASE_URL];
     NSString *messageSendParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
 
@@ -567,7 +567,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
-        [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
+        [[ALSearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
         completion(messages, nil);
         return;
     }];
@@ -629,7 +629,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
-        [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
+        [[ALSearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
         completion(messages, nil);
         return;
     }];
@@ -665,7 +665,7 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: dict];
             [userDetails addObject: userDetail];
         }
-        [[SearchResultCache shared] saveUserDetails: userDetails];
+        [[ALSearchResultCache shared] saveUserDetails: userDetails];
 
         ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:theJson];
 

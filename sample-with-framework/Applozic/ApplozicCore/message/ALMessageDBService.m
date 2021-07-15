@@ -527,8 +527,7 @@
         }
     }
 
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
     NSArray *sortedMessageArray = [NSArray arrayWithObject:sortDescriptor];
     NSMutableArray *sortedArray = [[messagesArray sortedArrayUsingDescriptors:sortedMessageArray] mutableCopy];
 
@@ -699,7 +698,7 @@
 
     NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"createdAt < 0"];
 
-    NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];;
+    NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];
 
     if (messageListRequest.endTimeStamp
         != nil) {
@@ -1153,7 +1152,7 @@
     if (dbMessage) {
         dbMessage.inProgress = [NSNumber numberWithBool:NO];
         dbMessage.isUploadFailed = [NSNumber numberWithBool:YES];
-        dbMessage.sentToServer= [NSNumber numberWithBool:NO];;
+        dbMessage.sentToServer= [NSNumber numberWithBool:NO];
         [[ALDBHandler sharedInstance] saveContext];
     }
     return message;

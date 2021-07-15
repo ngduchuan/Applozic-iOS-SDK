@@ -322,7 +322,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString *updateChanelURLString;
     if (imageURL && [imageURL isEqualToString:@""]) {
         updateChanelURLString = [NSString stringWithFormat:@"%@%@?resetGroupImageUrl=true", KBASE_URL, UPDATE_CHANNEL_URL];
-    } else{
+    } else {
         updateChanelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
     }
 
@@ -337,7 +337,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         [updateChannelDictionary setObject:channelKey forKey:@"groupId"];
     }
     
-    if (imageURL){
+    if (imageURL) {
         [updateChannelDictionary setObject:imageURL forKey:@"imageUrl"];
     }
     
@@ -435,7 +435,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(error, nil);
             return;
         } else {
-            NSMutableArray *userNotPresentIds =[NSMutableArray new];
+            NSMutableArray *userNotPresentIds = [NSMutableArray new];
             response = [[ALChannelSyncResponse alloc] initWithJSONString:theJson];
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (fetchUserDetails) {
@@ -763,7 +763,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 }
 
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
-                          withMembers: (NSMutableArray *)membersArray
+                          withMembers:(NSMutableArray *)membersArray
                         withGroupType:(short)groupType
                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
@@ -772,7 +772,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableDictionary *addContactsGroupDictionary = [NSMutableDictionary new];
     [addContactsGroupDictionary setObject:membersArray forKey:@"groupMemberList"];
-    
     [addContactsGroupDictionary setObject:[NSString stringWithFormat:@"%i", groupType] forKey:@"type"];
 
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:addContactsGroupDictionary options:0 error:&error];
@@ -801,8 +800,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSMutableDictionary *addContactsGroupDictionary = [NSMutableDictionary new];
     [addContactsGroupDictionary setObject:membersArray forKey:@"groupMemberList"];
-    
-    
+
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:addContactsGroupDictionary options:0 error:&error];
     NSString *addMemberToContactGroupParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
@@ -860,15 +858,11 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 }
             }
             if (userNotPresentIds.count>0) {
-                ALSLog(ALLoggerSeverityInfo, @"CALLING user deatils for the users..");
-
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
                     completion(theError, response.alChannel);
                 }];
             } else {
-                ALSLog(ALLoggerSeverityWarn, @"NO USER details ");
                 completion(error, response.alChannel);
             }
         }

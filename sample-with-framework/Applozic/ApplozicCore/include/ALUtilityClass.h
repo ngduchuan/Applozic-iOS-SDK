@@ -23,7 +23,7 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 + (BOOL)isToday:(NSDate *)todayDate;
 
-+ (NSString*) fileMIMEType:(NSString *)filePath;
++ (NSString *)fileMIMEType:(NSString *)filePath;
 
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
@@ -33,10 +33,10 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId
-                       withGroupId:(NSNumber *)groupID completionHandler:(void (^)(BOOL))handler;
+                       withGroupId:(NSNumber *)groupID
+                 completionHandler:(void (^)(BOOL))handler;
 
 + (NSString *)getFileNameWithCurrentTimeStamp;
-
 - (void)getExactDate:(NSNumber *)dateValue;
 + (BOOL)isThisDebugBuild;
 
@@ -50,7 +50,7 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 + (NSURL *)getApplicationDirectoryWithFilePath:(NSString *)path;
 + (NSData *)compressImage:(NSData *)data;
 + (NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
-+ (NSBundle*)getBundle;
++ (NSBundle *)getBundle;
 + (NSString *)getPathFromDirectory:(NSString *)imageFilePath;
 + (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 + (NSString *)saveImageToDocDirectory:(UIImage *)image;

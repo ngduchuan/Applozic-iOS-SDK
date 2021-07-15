@@ -211,7 +211,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
                     theUrl = [NSURL fileURLWithPath:filePath];
                 }
 
-                [ALUIUtilityClass subVideoImage:theUrl withCompletion:^(UIImage *image) {
+                [ALUIUtilityClass imageGeneratorForVideoWithURL:theUrl withCompletion:^(UIImage *image) {
                     dispatch_async(dispatch_get_main_queue(), ^(void) {
                         [self.attachmentImage setImage:image];
                         return;

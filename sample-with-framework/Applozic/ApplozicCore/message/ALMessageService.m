@@ -311,7 +311,7 @@ static ALMessageClientService *alMsgClientService;
     }
     //convert to dic
     NSDictionary *messageDictionary = [alMessage dictionary];
-    [self.messageClientService sendMessage:messageDictionary WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.messageClientService sendMessage:messageDictionary withCompletionHandler:^(id theJson, NSError *theError) {
 
         NSString *statusStr = nil;
 
@@ -752,7 +752,7 @@ static ALMessageClientService *alMsgClientService;
 }
 
 + (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString *)text {
-    return [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_CUSTOM toSendTo:to withText:text];;
+    return [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_CUSTOM toSendTo:to withText:text];
 }
 
 + (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString *)text {

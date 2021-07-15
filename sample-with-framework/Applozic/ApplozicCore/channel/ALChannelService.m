@@ -134,8 +134,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     return [self.channelDBService getListOfAllUsersInChannel:channelKey];
 }
 
-- (NSString *)stringFromChannelUserList:(NSNumber *)key {
-    return [self.channelDBService stringFromChannelUserList: key];
+- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key {
+    return [self.channelDBService userNamesWithCommaSeparatedForChannelkey: key];
 }
 
 - (NSNumber *)getOverallUnreadCountForChannel {

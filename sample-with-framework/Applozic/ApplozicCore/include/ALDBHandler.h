@@ -32,7 +32,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
 
-- (NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID;
+- (NSManagedObject *)existingObjectWithID:(NSManagedObjectID *)objectID;
 
 - (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName;
 
