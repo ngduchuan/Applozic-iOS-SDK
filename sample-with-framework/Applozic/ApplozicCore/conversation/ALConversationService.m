@@ -59,11 +59,11 @@
 - (NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [self.conversationDBService getConversationProxyListFromDBForUserID:userId];
-    if (!list.count) {
+    NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBForUserID:userId];
+    if (!conversationArray.count) {
         return result;
     }
-    for (DB_ConversationProxy *dbConversation in list) {
+    for (DB_ConversationProxy *dbConversation in conversationArray) {
         ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
@@ -75,11 +75,11 @@
                                           andTopicId:(NSString*)topicId {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [self.conversationDBService getConversationProxyListFromDBForUserID:userId andTopicId:topicId];
-    if (!list.count) {
+    NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBForUserID:userId andTopicId:topicId];
+    if (!conversationArray.count) {
         return result;
     }
-    for (DB_ConversationProxy *dbConversation in list) {
+    for (DB_ConversationProxy *dbConversation in conversationArray) {
         ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
@@ -88,9 +88,9 @@
 
 - (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber*)channelKey {
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSArray *list = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
+    NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     
-    for (DB_ConversationProxy *dbConversation in list) {
+    for (DB_ConversationProxy *dbConversation in conversationArray) {
         ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }

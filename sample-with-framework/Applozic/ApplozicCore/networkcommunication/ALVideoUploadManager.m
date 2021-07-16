@@ -92,8 +92,8 @@
     completionHandler(NSURLSessionResponseAllow);
 }
 
-- (void)startSession:(NSURLSession *) session
-         withRequest:(NSURLRequest *) urlRequest {
+- (void)startSession:(NSURLSession *)session
+         withRequest:(NSURLRequest *)urlRequest {
 
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
 

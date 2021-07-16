@@ -262,7 +262,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         NSString *responseJSONString = (NSString *)theJson;
         if ([responseJSONString isKindOfClass:[NSString class]] &&
             [responseJSONString isEqualToString:AL_RESPONSE_ERROR]) {
-            NSError * error = [NSError
+            NSError *error = [NSError
                                errorWithDomain:@"Applozic"
                                code:1
                                userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
@@ -316,10 +316,10 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_FOR_ONLINE_CONTACT_LIMIT_JSON : %@", (NSString *)theJson);
             NSArray *jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
             if (jsonArray.count) {
-                NSMutableArray * userDetailArray = [NSMutableArray new];
-                NSDictionary * JSONDictionary = (NSDictionary *)theJson;
-                for (NSDictionary * theDictionary in JSONDictionary) {
-                    ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                NSMutableArray *userDetailArray = [NSMutableArray new];
+                NSDictionary *JSONDictionary = (NSDictionary *)theJson;
+                for (NSDictionary *theDictionary in JSONDictionary) {
+                    ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
                     userDetail.unreadCount = 0;
                     [userDetailArray addObject:userDetail];
                 }
@@ -332,7 +332,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                 completionMark(nil, error);
             }
         }];
-    } @catch(NSException * exp) {
+    } @catch(NSException *exp) {
         ALSLog(ALLoggerSeverityError, @"EXCEPTION : UserDetail :: %@",exp.description);
         
     }
@@ -346,7 +346,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSString *resetUnreadCountURLString = [NSString stringWithFormat:@"%@/rest/ws/user/read",KBASE_URL];
     NSMutableURLRequest *resetUnreadCountRequest = [ALRequestHandler createGETRequestWithUrlString:resetUnreadCountURLString paramString:nil];
     
-    [self.responseHandler authenticateAndProcessRequest:resetUnreadCountRequest andTag:@"RESETTING_UNREAD_COUNT" WithCompletionHandler:^(id theJson, NSError * theError) {
+    [self.responseHandler authenticateAndProcessRequest:resetUnreadCountRequest andTag:@"RESETTING_UNREAD_COUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)theJson);
         if (theError) {
@@ -396,7 +396,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)theJson);
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
-            NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
+            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
                                                      userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
                                                                                           forKey:NSLocalizedDescriptionKey]];
             completionHandler(theJson, reponseError);
@@ -518,8 +518,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_LIST_OF_USERS_WITH_NAME_JSON : %@",(NSString *)theJson);
         
-        ALAPIResponse *aLAPIResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
-        completion(aLAPIResponse, theError);
+        ALAPIResponse *alAPIResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
+        completion(alAPIResponse, theError);
     }];
 }
 

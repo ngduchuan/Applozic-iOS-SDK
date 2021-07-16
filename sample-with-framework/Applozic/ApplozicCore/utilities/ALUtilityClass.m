@@ -222,21 +222,21 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return stringTime;
 }
 
-+ (NSString *)getLocationUrl:(ALMessage *)alMessage {
++ (NSString *)getLocationURL:(ALMessage *)alMessage {
     NSString *latLongArgument = [self formatLocationJson:alMessage];
     NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
-+ (NSString *)getLocationUrl:(ALMessage *)alMessage size:(CGRect)withSize {
++ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize {
 
     NSString *latLongArgument = [self formatLocationJson:alMessage];
 
-    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
+    NSString *staticMapURL = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
                               [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
     
-    return staticMapUrl;
+    return staticMapURL;
 }
 
 + (NSString *)formatLocationJson:(ALMessage *)locationALMessage {
@@ -249,14 +249,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     NSArray *latLog = [[NSArray alloc] initWithObjects:[jsonStringDictionary valueForKey:@"lat"],[jsonStringDictionary valueForKey:@"lon"], nil];
     
     if (!latLog.count) {
-        return [self processMapUrl:locationALMessage];
+        return [self processMapURL:locationALMessage];
     }
     
     NSString *latLongArgument = [NSString stringWithFormat:@"%@,%@", latLog[0], latLog[1]];
     return latLongArgument;
 }
 
-+ (NSString *)processMapUrl:(ALMessage *)message {
++ (NSString *)processMapURL:(ALMessage *)message {
     NSArray *arrayOfURL = [message.message componentsSeparatedByString:@"="];
     NSString *coordinate = (NSString *)[arrayOfURL lastObject];
     return coordinate;

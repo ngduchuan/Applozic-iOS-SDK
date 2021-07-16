@@ -532,10 +532,10 @@ static ALMessageClientService *alMsgClientService;
 
     //db
     ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
-    ALMessageDBService *dbService = [[ALMessageDBService alloc]init];
-    DB_Message *dbMessage = (DB_Message *)[dbService getMessageByKey:@"key" value:keyString];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
+    DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:@"key" value:keyString];
     [dbMessage setDeletedFlag:[NSNumber numberWithBool:YES]];
-    ALMessage *message = [dbService createMessageEntity:dbMessage];
+    ALMessage *message = [messageDBService createMessageEntity:dbMessage];
     bool isUsedForReply = (message.getReplyType == AL_A_REPLY);
 
     if (isUsedForReply) {
@@ -553,7 +553,7 @@ static ALMessageClientService *alMsgClientService;
         if (!error) {
             //none error then delete from DB.
             if (!isUsedForReply) {
-                [dbService deleteMessageByKey:keyString];
+                [messageDBService deleteMessageByKey:keyString];
             }
         }
         completion(response,error);
@@ -576,8 +576,8 @@ static ALMessageClientService *alMsgClientService;
         if (!error) {
             //delete sucessfull
             ALSLog(ALLoggerSeverityInfo, @"Sucessfully deleted the message thread");
-            ALMessageDBService *dbService = [[ALMessageDBService alloc] init];
-            [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
 
             if (channelKey != nil) {
                 [self.channelService setUnreadCountZeroForGroupID:channelKey];
@@ -591,8 +591,8 @@ static ALMessageClientService *alMsgClientService;
 
 + (ALMessage*)processFileUploadSucess: (ALMessage *) message {
 
-    ALMessageDBService *dbService = [[ALMessageDBService alloc] init];
-    DB_Message *dbMessage = (DB_Message*)[dbService getMessageByKey:@"key" value:message.key];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message *dbMessage = (DB_Message*)[messageDBService getMessageByKey:@"key" value:message.key];
 
     dbMessage.fileMetaInfo.blobKeyString = message.fileMeta.blobKey;
     dbMessage.fileMetaInfo.thumbnailBlobKeyString = message.fileMeta.thumbnailBlobKey;
@@ -616,10 +616,10 @@ static ALMessageClientService *alMsgClientService;
 }
 
 - (void)processPendingMessages {
-    ALMessageDBService *dbService = [[ALMessageDBService alloc] init];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
 
-    NSMutableArray *pendingMessageArray = [dbService getPendingMessages];
+    NSMutableArray *pendingMessageArray = [messageDBService getPendingMessages];
     ALSLog(ALLoggerSeverityInfo, @"Found pending messages: %lu",(unsigned long)pendingMessageArray.count);
 
     for (ALMessage *alMessage in pendingMessageArray) {
@@ -648,7 +648,7 @@ static ALMessageClientService *alMsgClientService;
             }];
         } else if (alMessage.contentType == ALMESSAGE_CONTENT_VCARD) {
             ALSLog(ALLoggerSeverityInfo, @"REACH_PRESENT");
-            DB_Message *dbMessage = (DB_Message*)[dbService getMessageByKey:@"key" value:alMessage.key];
+            DB_Message *dbMessage = (DB_Message*)[messageDBService getMessageByKey:@"key" value:alMessage.key];
             dbMessage.inProgress = [NSNumber numberWithBool:YES];
             dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
 
@@ -666,7 +666,7 @@ static ALMessageClientService *alMsgClientService;
             [self.messageClientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *responseUrl, NSError *error) {
 
                 if (!error) {
-                    [httpManager processUploadFileForMessage:[dbService createMessageEntity:dbMessage] uploadURL:responseUrl];
+                    [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:dbMessage] uploadURL:responseUrl];
                 }
             }];
         } else {

@@ -27,9 +27,9 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
-+ (NSString *)getLocationUrl:(ALMessage *)alMessage;
++ (NSString *)getLocationURL:(ALMessage *)alMessage;
 
-+ (NSString *)getLocationUrl:(ALMessage *)alMessage size:(CGRect)withSize;
++ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize;
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId

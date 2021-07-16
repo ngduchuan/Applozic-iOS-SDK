@@ -178,7 +178,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
         [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
     } else if (replyMessage.isLocationMessage) {
         if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
-            NSString * finalURl = [ALUtilityClass getLocationUrl:replyMessage size:self.attachmentImage.frame];
+            NSString * finalURl = [ALUtilityClass getLocationURL:replyMessage size:self.attachmentImage.frame];
             NSURL *url = [NSURL URLWithString:finalURl]  ;
             [self.attachmentImage sd_setImageWithURL:url];
         } else {

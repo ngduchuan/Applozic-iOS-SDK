@@ -68,7 +68,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
 
 - (BOOL)isFirstCall {
     
-    NSString * key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
+    NSString *key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
     return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
 }
 

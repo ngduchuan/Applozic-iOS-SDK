@@ -629,7 +629,7 @@
     NSArray *userArray = [alDBHandler  executeFetchRequest:contactListRequest withError:&fetchError];
 
     if (userArray.count) {
-        for (DB_CONTACT * dbContact in userArray) {
+        for (DB_CONTACT *dbContact in userArray) {
             ALContact *contact = [[ALContact alloc] init];
 
             contact.userId = dbContact.userId;

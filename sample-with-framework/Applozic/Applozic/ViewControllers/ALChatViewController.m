@@ -4306,7 +4306,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
         NSURL *theUrl = nil;
         if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
-            NSString *finalURl = [ALUtilityClass getLocationUrl:message];
+            NSString *finalURl = [ALUtilityClass getLocationURL:message];
             theUrl = [NSURL URLWithString:finalURl];
             [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
         } else {

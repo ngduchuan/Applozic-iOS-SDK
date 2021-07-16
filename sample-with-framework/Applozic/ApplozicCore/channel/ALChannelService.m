@@ -357,10 +357,10 @@ dispatch_queue_t channelUserbackgroundQueue;
     
     if (memberArray.count) {
         NSMutableArray *nameArray = [NSMutableArray new];
-        ALContactService *cnService = [ALContactService new];
+        ALContactService *contactService = [ALContactService new];
         
         for (NSString *userId in memberArray) {
-            ALContact *alContact = [cnService loadContactByKey:@"userId" value:userId];
+            ALContact *alContact = [contactService loadContactByKey:@"userId" value:userId];
             [nameArray addObject:[alContact getDisplayName]];
         }
         NSString *broadcastName = @"";

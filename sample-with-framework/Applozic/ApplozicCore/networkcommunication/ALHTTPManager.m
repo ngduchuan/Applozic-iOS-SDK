@@ -54,8 +54,8 @@ static dispatch_semaphore_t semaphore;
             if (ALApplozicSettings.isS3StorageServiceEnabled) {
                 [message.fileMeta populate:fileMetaJSONDictionary];
             } else {
-                NSDictionary *fileInfo = [fileMetaJSONDictionary objectForKey:@"fileMeta"];
-                [message.fileMeta populate:fileInfo];
+                NSDictionary *fileMetadataDictionary = [fileMetaJSONDictionary objectForKey:@"fileMeta"];
+                [message.fileMeta populate:fileMetadataDictionary];
             }
 
             if ([message.fileMeta.contentType hasPrefix:@"video"]) {
@@ -429,9 +429,9 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
         completion(nil, fileError);
         return;
     }
-    NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
+    NSMutableURLRequest *uploadImageRequest = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-    [self.responseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+    [self.responseHandler authenticateRequest:uploadImageRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
 
         if (error) {
             completion(nil, error);
@@ -508,7 +508,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
         NSMutableURLRequest *downloadRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
         completion(downloadRequest, nil);
     } else {
-        NSMutableURLRequest *downloadRequest =  [ALRequestHandler createGETRequestWithUrlString:fileURL paramString:nil];
+        NSMutableURLRequest *downloadRequest = [ALRequestHandler createGETRequestWithUrlString:fileURL paramString:nil];
         [self.responseHandler authenticateRequest:downloadRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
             if (error) {
                 completion(nil, error);

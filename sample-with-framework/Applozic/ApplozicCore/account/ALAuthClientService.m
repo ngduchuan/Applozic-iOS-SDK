@@ -56,7 +56,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
 
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
-            NSError * reponseError =
+            NSError *reponseError =
             [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR REFRESH AUTH TOKEN"
                                                                                              forKey:NSLocalizedDescriptionKey]];
             completion(nil, reponseError);

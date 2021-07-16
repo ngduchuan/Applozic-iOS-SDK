@@ -85,24 +85,24 @@ andWithStatusDelegate:(id)statusDelegate
     message.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
     
     //DB Addition
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
-    message.msgDBObjectId = [theMessageEntity objectID];
-    theMessageEntity.inProgress = [NSNumber numberWithBool:YES];
-    theMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message *dbMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
+    message.msgDBObjectId = [dbMessageEntity objectID];
+    dbMessageEntity.inProgress = [NSNumber numberWithBool:YES];
+    dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
     NSError * error =  [[ALDBHandler sharedInstance] saveContext];
 
     if (self.messageServiceDelegate && error) {
-        theMessageEntity.inProgress = [NSNumber numberWithBool:NO];
-        theMessageEntity.isUploadFailed = [NSNumber numberWithBool:YES];
+        dbMessageEntity.inProgress = [NSNumber numberWithBool:NO];
+        dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:YES];
         [self.messageServiceDelegate uploadDownloadFailed:alMessage];
         return;
     }
 
-    NSDictionary * userInfo = [alMessage dictionary];
+    NSDictionary *messageDictionary = [alMessage dictionary];
     
     ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
-    [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *message, NSError *error) {
+    [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             [self.messageServiceDelegate uploadDownloadFailed:alMessage];
@@ -110,7 +110,7 @@ andWithStatusDelegate:(id)statusDelegate
         }
         ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
         httpManager.attachmentProgressDelegate = self;
-        [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:theMessageEntity] uploadURL:message];
+        [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:dbMessageEntity] uploadURL:message];
     }];
     
 }
@@ -160,7 +160,7 @@ andWithStatusDelegate:(id)statusDelegate
 
 - (void)downloadMessageAttachment:(ALMessage*)alMessage {
 
-    ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
+    ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
     [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
 
