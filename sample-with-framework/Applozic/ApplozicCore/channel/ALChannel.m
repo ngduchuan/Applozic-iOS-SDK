@@ -67,7 +67,7 @@
 }
 
 - (NSNumber *)getChannelMemberParentKey:(NSString *)userId {
-    for (ALChannelUser * channelUser in self.groupUsers) {
+    for (ALChannelUser *channelUser in self.groupUsers) {
         if (userId && [userId isEqualToString:channelUser.userId]) {
             return channelUser.parentGroupKey;
         }
@@ -113,17 +113,17 @@
     }
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
-    NSMutableDictionary * dictionary;
+    NSMutableDictionary *metadataDictionary;
 
     @try {
-        NSError * error;
-        dictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
-                                                                format:&format
-                                                                 error:&error];
-    } @catch(NSException * exp) {
+        NSError *error;
+        metadataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
+                                                                        format:&format
+                                                                         error:&error];
+    } @catch(NSException *exp) {
     }
     
-    return dictionary;
+    return metadataDictionary;
 }
 
 - (BOOL)isGroupMutedByDefault {

@@ -104,13 +104,13 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 + (BOOL)isConversationClosed:(NSNumber *)groupId {
-    ALChannelDBService *dbSerivce = [[ALChannelDBService alloc] init];
-    return [dbSerivce isConversaionClosed:groupId];
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    return [channelDBService isConversaionClosed:groupId];
 }
 
 + (BOOL)isChannelDeleted:(NSNumber *)groupId {
-    ALChannelDBService *dbSerivce = [[ALChannelDBService alloc] init];
-    BOOL flag = [dbSerivce isChannelDeleted:groupId];
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    BOOL flag = [channelDBService isChannelDeleted:groupId];
     return flag;
 }
 
@@ -134,8 +134,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     return [self.channelDBService getListOfAllUsersInChannel:channelKey];
 }
 
-- (NSString *)stringFromChannelUserList:(NSNumber *)key {
-    return [self.channelDBService stringFromChannelUserList: key];
+- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key {
+    return [self.channelDBService userNamesWithCommaSeparatedForChannelkey: key];
 }
 
 - (NSNumber *)getOverallUnreadCountForChannel {
@@ -357,10 +357,10 @@ dispatch_queue_t channelUserbackgroundQueue;
     
     if (memberArray.count) {
         NSMutableArray *nameArray = [NSMutableArray new];
-        ALContactService *cnService = [ALContactService new];
+        ALContactService *contactService = [ALContactService new];
         
         for (NSString *userId in memberArray) {
-            ALContact *alContact = [cnService loadContactByKey:@"userId" value:userId];
+            ALContact *alContact = [contactService loadContactByKey:@"userId" value:userId];
             [nameArray addObject:[alContact getDisplayName]];
         }
         NSString *broadcastName = @"";
@@ -386,19 +386,19 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 - (NSMutableDictionary *)getChannelMetaData {
-    NSMutableDictionary *grpMetaData = [NSMutableDictionary new];
+    NSMutableDictionary *groupMetaData = [NSMutableDictionary new];
     
-    [grpMetaData setObject:@":adminName created group" forKey:AL_CREATE_GROUP_MESSAGE];
-    [grpMetaData setObject:@":userName removed" forKey:AL_REMOVE_MEMBER_MESSAGE];
-    [grpMetaData setObject:@":userName added" forKey:AL_ADD_MEMBER_MESSAGE];
-    [grpMetaData setObject:@":userName joined" forKey:AL_JOIN_MEMBER_MESSAGE];
-    [grpMetaData setObject:@"Group renamed to :groupName" forKey:AL_GROUP_NAME_CHANGE_MESSAGE];
-    [grpMetaData setObject:@":groupName icon changed" forKey:AL_GROUP_ICON_CHANGE_MESSAGE];
-    [grpMetaData setObject:@":userName left" forKey:AL_GROUP_LEFT_MESSAGE];
-    [grpMetaData setObject:@":groupName deleted" forKey:AL_DELETED_GROUP_MESSAGE];
-    [grpMetaData setObject:@(NO) forKey:@"HIDE"];
+    [groupMetaData setObject:@":adminName created group" forKey:AL_CREATE_GROUP_MESSAGE];
+    [groupMetaData setObject:@":userName removed" forKey:AL_REMOVE_MEMBER_MESSAGE];
+    [groupMetaData setObject:@":userName added" forKey:AL_ADD_MEMBER_MESSAGE];
+    [groupMetaData setObject:@":userName joined" forKey:AL_JOIN_MEMBER_MESSAGE];
+    [groupMetaData setObject:@"Group renamed to :groupName" forKey:AL_GROUP_NAME_CHANGE_MESSAGE];
+    [groupMetaData setObject:@":groupName icon changed" forKey:AL_GROUP_ICON_CHANGE_MESSAGE];
+    [groupMetaData setObject:@":userName left" forKey:AL_GROUP_LEFT_MESSAGE];
+    [groupMetaData setObject:@":groupName deleted" forKey:AL_DELETED_GROUP_MESSAGE];
+    [groupMetaData setObject:@(NO) forKey:@"HIDE"];
     
-    return grpMetaData;
+    return groupMetaData;
 }
 
 /************************************
@@ -713,9 +713,9 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate {
 
-    NSNumber *updateAt = [ALUserDefaultsHandler getLastSyncChannelTime];
+    NSNumber *updateAtTime = [ALUserDefaultsHandler getLastSyncChannelTime];
 
-    [self.channelClientService syncCallForChannel:updateAt withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (!error) {
             [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
             [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];

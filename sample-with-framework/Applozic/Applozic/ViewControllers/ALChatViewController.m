@@ -636,7 +636,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if ([self isGroup]
         && (![channel isGroupOfTwo])) {
         if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
-            [self.label setText:[self.channelService stringFromChannelUserList:channel.key]];
+            [self.label setText:[self.channelService userNamesWithCommaSeparatedForChannelkey:channel.key]];
         } else {
             [self.label setText:@""];
         }
@@ -4267,7 +4267,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
                 theUrl = [NSURL fileURLWithPath:filePath];
             }
 
-            globalThumbnail = [ALUIUtilityClass subProcessThumbnail:theUrl];
+            globalThumbnail = [ALUIUtilityClass generateImageThumbnailForVideoWithURL:theUrl];
 
             if ([message.message length] != 0) {
                 self.replyMessageText.text = message.message;
@@ -4306,7 +4306,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
         NSURL *theUrl = nil;
         if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
-            NSString *finalURl = [ALUtilityClass getLocationUrl:message];
+            NSString *finalURl = [ALUtilityClass getLocationURL:message];
             theUrl = [NSURL URLWithString:finalURl];
             [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
         } else {

@@ -273,7 +273,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
             [self.imageWithText setHidden:NO];
             self.imageWithText.backgroundColor = [UIColor clearColor];
-            self.imageWithText.textColor = [ALApplozicSettings getSendMsgTextColor];;
+            self.imageWithText.textColor = [ALApplozicSettings getSendMsgTextColor];
             self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
                                                     0, viewSize.width - BUBBLE_PADDING_WIDTH,
                                                     viewSize.width - BUBBLE_PADDING_HEIGHT

@@ -39,7 +39,7 @@
     ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
     channelInfo.groupName = @"channel name";
     channelInfo.clientGroupId = @"client groupId";
-    channelInfo.groupMemberList = [[NSMutableArray alloc] initWithObjects:@"user1",@"user2", nil];;
+    channelInfo.groupMemberList = [[NSMutableArray alloc] initWithObjects:@"user1",@"user2", nil];
 
     OCMStub([channelClientServiceMock createChannel:channelInfo.groupName
                                 andParentChannelKey:channelInfo.parentKey
@@ -149,7 +149,7 @@
     ALMuteRequest *alMuteRequest = [ALMuteRequest new];
     alMuteRequest.clientGroupId = @"clientGroupId";
     long currentTimeStemp = [[NSNumber numberWithLong:([[NSDate date] timeIntervalSince1970]*1000)] longValue];
-    alMuteRequest.notificationAfterTime = [NSNumber numberWithLong:(currentTimeStemp + 8*60*60*1000)];;
+    alMuteRequest.notificationAfterTime = [NSNumber numberWithLong:(currentTimeStemp + 8*60*60*1000)];
 
     OCMStub([channelClientServiceMock muteChannel:alMuteRequest
                                    withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],

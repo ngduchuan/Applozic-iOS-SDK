@@ -30,7 +30,7 @@ static NSString *const VALID_UPTO = @"validUpto";
 - (NSError *)decodeAndSaveToken:(NSString *)authToken {
     NSError * jwtError;
     if (!authToken) {
-        NSError * error = [NSError errorWithDomain:@"Applozic"
+        NSError *error = [NSError errorWithDomain:@"Applozic"
                                               code:1
                                           userInfo:@{NSLocalizedDescriptionKey : @"AuthToken is nil"}];
         return error;
@@ -41,7 +41,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     ALJWT *jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
 
     if (!jwtError && jwt.body) {
-        NSDictionary * jwtBody = jwt.body;
+        NSDictionary *jwtBody = jwt.body;
         NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
         NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
@@ -58,8 +58,8 @@ static NSString *const VALID_UPTO = @"validUpto";
 
 - (BOOL)isAuthTokenValid {
 
-    NSNumber * authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
-    NSNumber * authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
+    NSNumber *authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
+    NSNumber *authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
 
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 

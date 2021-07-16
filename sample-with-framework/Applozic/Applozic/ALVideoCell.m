@@ -356,7 +356,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         [self.delegate thumbnailDownloadWithMessageObject:self.mMessage];
     } else if (imagePath) {
-        [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:imagePath]];
+        [self.mImageView setImage:[ALUIUtilityClass generateVideoThumbnailImage:imagePath]];
     }
 }
 

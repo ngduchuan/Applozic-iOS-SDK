@@ -261,7 +261,7 @@
     ALMuteRequest *alMuteRequest = [ALMuteRequest new];
     alMuteRequest.userId = @"userId";
     long currentTimeStemp = [[NSNumber numberWithLong:([[NSDate date] timeIntervalSince1970]*1000)] longValue];
-    alMuteRequest.notificationAfterTime = [NSNumber numberWithLong:(currentTimeStemp + 8*60*60*1000)];;
+    alMuteRequest.notificationAfterTime = [NSNumber numberWithLong:(currentTimeStemp + 8*60*60*1000)];
     
     OCMStub([userClientServiceMock muteUser:alMuteRequest
                              withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue],

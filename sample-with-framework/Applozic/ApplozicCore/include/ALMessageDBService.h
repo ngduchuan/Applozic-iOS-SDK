@@ -20,7 +20,7 @@
 
 - (void)getMessagesArray:(NSMutableArray*)messagesArray;
 
--(void)updateMessageList:(NSMutableArray*)messagesArray;
+- (void)updateMessageList:(NSMutableArray*)messagesArray;
 
 @end
 
@@ -31,8 +31,8 @@
 @property(nonatomic, retain) ALMessageService *messageService;
 
 //Add Message APIS
-- (NSMutableArray *)addMessageList:(NSMutableArray*)messageList skipAddingMessageInDb:(BOOL)skip;
-- (DB_Message*)addMessage:(ALMessage *)message;
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
+- (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
@@ -64,7 +64,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)almessage;
+- (void)updateFileMetaInfo:(ALMessage *)alMessage;
 
 //Delete Message APIS
 - (void)deleteMessageByKey:(NSString *)keyString;
@@ -74,12 +74,12 @@
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)theMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
-- (ALMessage *)createMessageEntity:(DB_Message *)theEntity;
+- (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;
 
-- (NSMutableArray*)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
 
 - (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler;
 

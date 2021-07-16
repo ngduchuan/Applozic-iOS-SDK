@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) ALAuthService *authService;
 
-- (void) processRequest:(NSMutableURLRequest *)theRequest
+- (void)processRequest:(NSMutableURLRequest *)theRequest
                  andTag:(NSString *)tag
   WithCompletionHandler:(void(^)(id theJson , NSError *theError))reponseCompletion;
 

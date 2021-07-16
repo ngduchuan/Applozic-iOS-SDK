@@ -159,7 +159,7 @@ static NSString *const reuseIdentifier = @"collectionCell";
                 if (isMovie)
                 {
                     NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-                    UIImage *image = [ALUIUtilityClass subProcessThumbnail:videoURL];
+                    UIImage *image = [ALUIUtilityClass generateImageThumbnailForVideoWithURL:videoURL];
                     ALMultimediaData *object = [[ALMultimediaData new] getMultimediaDataOfType:ALMultimediaTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
                     completion(image, object);
                     return;

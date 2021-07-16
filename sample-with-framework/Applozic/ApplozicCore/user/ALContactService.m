@@ -75,7 +75,7 @@
 
 - (void)updateOrInsertListOfContacts:(NSMutableArray *)contacts {
     
-    for(ALContact *conatct in contacts){
+    for (ALContact *conatct in contacts) {
         [self updateOrInsert:conatct];
     }
 }
@@ -104,9 +104,9 @@
 }
 
 #pragma mark fetching OR SAVE
-- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName{
+- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName {
     
-    DB_CONTACT * dbContact = [self.alContactDBService getContactByKey:@"userId" value:contactId];
+    DB_CONTACT *dbContact = [self.alContactDBService getContactByKey:@"userId" value:contactId];
     
     ALContact *contact = [[ALContact alloc] init];
     if (!dbContact) {
