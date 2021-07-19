@@ -59,7 +59,7 @@
                        completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
 - (void)downloadImageThumbnailUrl:(ALMessage *)message
-                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion __attribute__((deprecated));
+                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion DEPRECATED_ATTRIBUTE;
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
