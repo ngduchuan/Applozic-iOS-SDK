@@ -83,7 +83,7 @@ extern NSString *const AL_MESSAGE_SYNC;
    orClientChannelKey:(NSString *)clientChannelKey
        andMembersList:(NSMutableArray *)memberArray
          andImageLink:(NSString *)imageLink
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
 
 /// This method is used to create a channel where it needs below details to pass while creating.
 /// @param channelName Pass the channel name that wanted to be set for the channel.
@@ -100,7 +100,7 @@ extern NSString *const AL_MESSAGE_SYNC;
          andImageLink:(NSString *)imageLink
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
 
 /// This method is used to create a channel where it needs the below details to pass while creating.
 /// @param channelName Pass the channel name that you want to set for the channel.
@@ -119,7 +119,7 @@ extern NSString *const AL_MESSAGE_SYNC;
          andImageLink:(NSString *)imageLink
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
 
 /// This method is used to create a channel where it needs the below details to pass while creating
 /// @param channelName Pass the channel name that wanted to be set for the channel.
@@ -138,7 +138,7 @@ extern NSString *const AL_MESSAGE_SYNC;
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
 
 /// This method is used for creating a channel with parent channelKey
 /// @param channelName Pass the channel name that wanted to be set for the channel.
@@ -159,7 +159,7 @@ extern NSString *const AL_MESSAGE_SYNC;
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
 
 /// This method is used to add a member to a channel.
 /// @param userId Pass the userId that wanted to add in a channel.
@@ -381,26 +381,26 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param membersArray Pass members userId that you want to add.
 /// @param groupType Pass type as 9 for contacts group.
 /// @param completion If error is nil and ALAPIResponse has status if its success then member is added in contacts group.
-- (void) addMemberToContactGroupOfType:(NSString *)contactsGroupId
-                           withMembers:(NSMutableArray *)membersArray
-                        withGroupType :(short)groupType
-                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
+                          withMembers:(NSMutableArray *)membersArray
+                       withGroupType :(short)groupType
+                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// This method is used to add or create contacts group with default type.
 /// @param contactsGroupId Pass contactsGroupId which will be unique string.
 /// @param membersArray Pass members userId that you want to add.
 /// @param completion If error is nil and ALAPIResponse has status if its success then member is added in contacts group.
-- (void) addMemberToContactGroup:(NSString *)contactsGroupId
-                     withMembers:(NSMutableArray *)membersArray
-                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)addMemberToContactGroup:(NSString *)contactsGroupId
+                    withMembers:(NSMutableArray *)membersArray
+                 withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// This method is used to get the members from contacts group with the type where it will have members id who are in this contacts group
 /// @param contactGroupId Pass contactsGroupId which will be unique string.
 /// @param groupType Pass type as 9 for contacts group.
 /// @param completion if error is nil and ALAPIResponse has status if its success then you will get members userId who are in contacts group.
-- (void) getMembersFromContactGroupOfType:(NSString *)contactGroupId
-                            withGroupType:(short)groupType
-                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+- (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
+                           withGroupType:(short)groupType
+                          withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 /// This method is for internal purpose to get the members by channel name.
 /// @param channelName Pass the client channel id or channel name to fetch the users from contacts group.
@@ -410,19 +410,19 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param contactsGroupId Pass contactsGroupId which will be unique string.
 /// @param userId Pass the user wanted to remove the member from the contacts group
 /// @param completion If error is nil and ALAPIResponse has status if its success then member is removed from contacts group.
-- (void) removeMemberFromContactGroup:(NSString *)contactsGroupId
-                          withUserId :(NSString *)userId
-                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
+                         withUserId :(NSString *)userId
+                      withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// This method is used to remove a member from contacts group with type.
 /// @param contactsGroupId Pass contactsGroupId which will be unique string.
 /// @param groupType Pass type as 9 for contacts group.
 /// @param userId Pass the userId that wanted to remove from contacts group.
 /// @param completion if error is nil and ALAPIResponse has status if its success then member is removed from contacts group else If the error is there then NSError will not be nil.
-- (void) removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
-                              withGroupType:(short) groupType
-                                withUserId :(NSString *)userId
-                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
+                             withGroupType:(short) groupType
+                               withUserId :(NSString *)userId
+                            withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// This method is used to get the members from multiple contacts groups.
 /// @param contactGroupIds Pass contactGroupIds to get the member userIds.
