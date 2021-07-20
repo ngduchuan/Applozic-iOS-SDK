@@ -997,7 +997,7 @@ static const int SHOW_GROUP = 102;
             [[self activityIndicator] stopAnimating];
 
             if (!error
-                && [response.status isEqual:AL_RESPONSE_SUCCESS]) {
+                && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
 
                 for (UIViewController *aViewController in allViewControllers) {

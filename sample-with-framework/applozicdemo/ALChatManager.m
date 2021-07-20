@@ -148,7 +148,7 @@
                                               withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
 
                     if (!error
-                        && [response.status isEqual:AL_RESPONSE_SUCCESS]) {
+                        && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                         [self launchChatForUserWithDisplayName:nil withGroupId:response.alChannel.key
                                             andwithDisplayName:nil andFromViewController:viewController];
                     }
