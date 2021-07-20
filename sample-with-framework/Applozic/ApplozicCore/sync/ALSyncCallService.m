@@ -32,7 +32,7 @@
 - (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     
     if (delegate) {
-        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION){
+        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
             [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
         }
     }

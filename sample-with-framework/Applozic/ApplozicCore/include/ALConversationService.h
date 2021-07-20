@@ -24,9 +24,11 @@
 - (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation;
 
 - (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId;
+
 - (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber *)channelKey;
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
+- (void)createConversation:(ALConversationProxy *)alConversationProxy
+            withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
 
 - (void)fetchTopicDetails:(NSNumber *)alConversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
 

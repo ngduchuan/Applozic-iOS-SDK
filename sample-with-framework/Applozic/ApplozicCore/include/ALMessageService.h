@@ -62,8 +62,9 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 /// @param contactId Pass the userId in case deleting the conversation for one-to-one; otherwise, it will be nil.
 /// @param channelKey Pass the channelKey in case of deleting conversation for group chat, else it will be nil.
 /// @param completion If success in deleting the thread then NSError is nil; else, if failure in deleting then NSError will not be nil.
-- (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
-
+- (void)deleteMessageThread:(NSString *)contactId
+               orChannelKey:(NSNumber *)channelKey
+             withCompletion:(void (^)(NSString *, NSError *))completion;
 
 /// This method is used for deleting a message
 /// @param keyString Pass the message key from the message object to delete the message.

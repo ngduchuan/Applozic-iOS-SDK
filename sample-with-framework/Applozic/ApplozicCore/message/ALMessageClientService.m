@@ -184,19 +184,19 @@
 
     NSString *messageListURLString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
 
-    NSString *messageLIstParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&deletedGroupIncluded=%@",
+    NSString *messageListParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&deletedGroupIncluded=%@",
                                         @"0",(unsigned long)mainPageSize,@(YES)];
 
     if (startTime != nil) {
-        messageLIstParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&endTime=%@&deletedGroupIncluded=%@",
+        messageListParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&endTime=%@&deletedGroupIncluded=%@",
                                   @"0", (unsigned long)mainPageSize, startTime,@(YES)];
     }
     if ([ALApplozicSettings getCategoryName]) {
-        messageLIstParamString = [messageLIstParamString stringByAppendingString:[NSString stringWithFormat:@"&category=%@",
+        messageListParamString = [messageListParamString stringByAppendingString:[NSString stringWithFormat:@"&category=%@",
                                                                                   [ALApplozicSettings getCategoryName]]];
     }
 
-    NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageLIstParamString];
+    NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageListParamString];
 
     [self.responseHandler authenticateAndProcessRequest:messageListRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
 
@@ -314,7 +314,7 @@
     }];
 }
 
-- (void)sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString * message, NSError *error)) completion {
+- (void)sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString *message, NSError *error)) completion {
     if (ALApplozicSettings.isStorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);

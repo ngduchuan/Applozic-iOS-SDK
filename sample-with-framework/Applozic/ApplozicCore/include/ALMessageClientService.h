@@ -80,7 +80,7 @@
 - (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys
               withCompletion:(void(^)(ALAPIResponse* response, NSError *error))completion;
 
-- (void)deleteMessageForAllWithKey:(NSString *) keyString
+- (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 @end

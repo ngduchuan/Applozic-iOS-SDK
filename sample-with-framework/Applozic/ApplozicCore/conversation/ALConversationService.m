@@ -41,11 +41,11 @@
     [self.conversationDBService insertConversationProxy:conversations];
 }
 
-- (void)addTopicDetails:(NSMutableArray*)conversations {
+- (void)addTopicDetails:(NSMutableArray *)conversations {
     [self.conversationDBService insertConversationProxyTopicDetails:conversations];
 }
 
-- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
+- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
     ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc]init];
     alConversationProxy.groupId = dbConversation.groupId;
@@ -86,7 +86,7 @@
     return result;
 }
 
-- (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber*)channelKey {
+- (NSMutableArray *)getConversationProxyListForChannelKey:(NSNumber *)channelKey {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     

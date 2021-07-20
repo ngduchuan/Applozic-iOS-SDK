@@ -199,7 +199,7 @@
 }
 
 - (NSData *)requestUploadBodyDataWithFilePath:(NSString *)filePath
-                                  withRequest: (NSMutableURLRequest *)urlRequest
+                                  withRequest:(NSMutableURLRequest *)urlRequest
                                      withName:(NSString *)name
                               withContentType:(NSString *)type {
 

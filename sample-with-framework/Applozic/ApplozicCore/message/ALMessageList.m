@@ -29,7 +29,7 @@
     return self;
 }
 
-- (void)parseMessagseArray:(id) messagejson {
+- (void)parseMessagseArray:(id)messagejson {
     NSMutableArray *messagesArray = [NSMutableArray new];
     NSMutableArray *userDetailArray = [NSMutableArray new];
     NSMutableArray *conversationProxyList = [NSMutableArray new];

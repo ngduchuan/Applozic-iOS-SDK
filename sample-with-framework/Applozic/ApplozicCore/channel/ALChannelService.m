@@ -459,7 +459,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)addMemberToChannel:(NSString *)userId
              andChannelKey:(NSNumber *)channelKey
         orClientChannelKey:(NSString *)clientChannelKey
-            withCompletion:(void(^)(NSError *error,ALAPIResponse *response))completion {
+            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     if ((channelKey != nil || clientChannelKey != nil) && userId != nil) {
         __weak typeof(self) weakSelf = self;
         [self.channelClientService addMemberToChannel:userId orClientChannelKey:clientChannelKey
@@ -663,7 +663,8 @@ dispatch_queue_t channelUserbackgroundQueue;
                            andNewName:(NSString *)newName
                           andImageURL:(NSString *)imageURL
                    orClientChannelKey:(NSString *)clientChannelKey
-                   isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData
+                   isUpdatingMetaData:(BOOL)flag
+                             metadata:(NSMutableDictionary *)metaData
                           orChildKeys:(NSMutableArray *)childKeysList
                        orChannelUsers:(NSMutableArray *)channelUsers
                         withResponse :(ALAPIResponse *) response {
@@ -882,7 +883,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactsGroupId
-                           withGroupType:(short) groupType
+                           withGroupType:(short)groupType
                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
 
 
@@ -969,7 +970,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     
 }
 
-- (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion {
+- (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds
+                       withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion {
     NSMutableArray *memberUserIds = [NSMutableArray new];
     
     if (contactGroupIds) {

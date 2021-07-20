@@ -313,7 +313,7 @@ static ALMessageClientService *alMsgClientService;
     NSDictionary *messageDictionary = [alMessage dictionary];
     [self.messageClientService sendMessage:messageDictionary withCompletionHandler:^(id theJson, NSError *theError) {
 
-        NSString *statusStr = nil;
+        NSString *responseString = nil;
 
         if (!theError) {
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
@@ -351,7 +351,7 @@ static ALMessageClientService *alMsgClientService;
         } else {
             ALSLog(ALLoggerSeverityError, @"Got error while sending messages");
         }
-        completion(statusStr,theError);
+        completion(responseString,theError);
     }];
 
 }

@@ -345,7 +345,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// alMuteRequest.id = channelKey;
 /// alMuteRequest.notificationAfterTime= notificationTime;
 /// @param completion If an error is nil then check for ALAPIResponse it has status where if its success or error.
-- (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion;
+- (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// This method is used to create a broadcast channel.
 /// @param memberArray Pass member userId whom wanted to add in the broadcast channel.

@@ -46,7 +46,8 @@
 
 - (void)fetchOnlineContactFromServer:(NSUInteger)limit withCompletion:(void (^)(id json, NSError *error))completion;
 
-- (void)subProcessUserDetailServerCall:(NSString *)paramString withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
+- (void)subProcessUserDetailServerCall:(NSString *)paramString
+                        withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
 
 - (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion;
 
@@ -74,6 +75,6 @@
 
 - (void)muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-- (void)reportUserWithMessageKey:(NSString *)messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+- (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 @end

@@ -89,7 +89,7 @@
     && [[_metadata objectForKey:AL_DISPLAY_NAME_UPDATED] isEqualToString:@"false"];
 }
 
-- (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+- (NSMutableDictionary *)appendMetadataIn:(NSString *)metadataString {
 
     NSMutableDictionary *existingMetadata = [self getMetaDataDictionary:metadataString];
 

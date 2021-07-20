@@ -214,7 +214,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
 }
 
-- (void)setUnreadCountZeroForContactId:(NSString*)contactId {
+- (void)setUnreadCountZeroForContactId:(NSString *)contactId {
     ALContact *contact = [self.contactService loadContactByKey:@"userId" value:contactId];
     contact.unreadCount = [NSNumber numberWithInt:0];
     [self.contactService setUnreadCountInDB:contact];
@@ -380,7 +380,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (![ALUserDefaultsHandler isContactServerCallIsDone]) {
         startTime = 0;
     } else {
-        startTime  = [ALApplozicSettings getStartTime];
+        startTime = [ALApplozicSettings getStartTime];
     }
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
     
@@ -491,7 +491,7 @@ static int CONTACT_PAGE_SIZE = 100;
         if (userDetailArray && userDetailArray.count) {
             [self.contactDBService addUserDetailsWithoutUnreadCount:userDetailArray];
         }
-        completion(userDetailArray,theError);
+        completion(userDetailArray, theError);
     }];
 }
 

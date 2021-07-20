@@ -24,7 +24,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 + (ALDBHandler *)sharedInstance;
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
-             completion:(void (^)(NSError*error))completion;
+             completion:(void (^)(NSError *error))completion;
 
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
 
@@ -40,6 +40,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (void)deleteObject:(NSManagedObject *)managedObject;
 
-- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError: (NSError **)fetchError;
+- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError;
 
 @end

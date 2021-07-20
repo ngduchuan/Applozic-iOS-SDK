@@ -96,7 +96,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                 ALUserService *alUserService = [ALUserService new];
                 [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                     completion(error, response.alChannel);
-
                 }];
             } else {
                 ALSLog(ALLoggerSeverityWarn, @"No user for userDetails");
@@ -135,7 +134,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSString *channelCreateURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CHANNEL_URL];
     NSMutableDictionary *channelDictionary = [NSMutableDictionary new];
-    
     [channelDictionary setObject:channelName forKey:@"groupName"];
     [channelDictionary setObject:memberArray forKey:@"groupMemberList"];
     [channelDictionary setObject:[NSString stringWithFormat:@"%i", type] forKey:@"type"];
@@ -187,7 +185,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
              andChannelKey:(NSNumber *)channelKey
             withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     NSString *addMemberURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, ADD_MEMBER_TO_CHANNEL_URL];
-    NSString *addMemberParamString = [NSString stringWithFormat:@"groupId=%@&userId=%@",channelKey,[userId urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *addMemberParamString = [NSString stringWithFormat:@"groupId=%@&userId=%@",
+                                      channelKey,
+                                      [userId urlEncodeUsingNSUTF8StringEncoding]];
     if (clientChannelKey) {
         addMemberParamString = [NSString stringWithFormat:@"clientGroupId=%@&userId=%@",[clientChannelKey urlEncodeUsingNSUTF8StringEncoding],[userId urlEncodeUsingNSUTF8StringEncoding]];
     }
@@ -354,7 +354,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:updateChannelDictionary options:0 error:&error];
-    NSString *updateChannelParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSString *updateChannelParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
     
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_CHANNEL_UPDATE :: %@", updateChannelParamString);
     
