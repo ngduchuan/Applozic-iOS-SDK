@@ -88,7 +88,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
     NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
-    //    [self.mDowloadRetryButton setHidden:NO];
     self.mDowloadRetryButton.alpha = 1;
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     

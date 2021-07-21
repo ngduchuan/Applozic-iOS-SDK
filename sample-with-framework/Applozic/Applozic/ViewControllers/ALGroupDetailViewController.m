@@ -164,7 +164,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 - (void)setNavigationColor {
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        //        self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setTitleTextAttributes: @{
             NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
             NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -805,7 +804,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             [memberSectionHeaderTitle setTextAlignment:NSTextAlignmentLeft];
         }
         [view addSubview:memberSectionHeaderTitle];
-        //        view.backgroundColor=[UIColor colorWithWhite:0.7 alpha:1];
         view.backgroundColor = [UIColor colorWithRed:245.0/255 green:245.0/255 blue:245.0/255 alpha:1];
         return view;
 

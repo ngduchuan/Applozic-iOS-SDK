@@ -119,7 +119,6 @@
     [ALLogger saveLogArray];
 }
 
-//receiver
 - (void)onAppDidBecomeActive:(NSNotification *)notification {
     [self proactivelyConnectMQTT];
     [ALMessageService syncMessages];

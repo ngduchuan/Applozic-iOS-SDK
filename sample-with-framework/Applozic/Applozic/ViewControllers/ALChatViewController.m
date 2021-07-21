@@ -427,7 +427,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALSLog(ALLoggerSeverityInfo, @"ALChatVC: Individual launch ...unsubscribeToConversation to mqtt..");
         if (self.mqttObject) {
             [self.mqttObject unsubscribeToConversation];
-            ALSLog(ALLoggerSeverityInfo, @"ALChatVC: In ViewWillDisapper .. MQTTObject in ==IF== now");
         } else {
             ALSLog(ALLoggerSeverityInfo, @"mqttObject is not found...");
         }
@@ -3225,12 +3224,6 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
      userId != nil && [self.contactIds isEqualToString:userId]);
 }
 
-- (void)reloadViewfor3rdParty {
-    [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
-    self.startIndex = 0;
-    [self fetchMessageFromDB];
-}
-
 - (void)handleNotification:(UIGestureRecognizer *)gestureRecognizer {
     ALNotificationView *notificationView = (ALNotificationView*)gestureRecognizer.view;
     self.contactIds = notificationView.contactId;
@@ -3651,30 +3644,6 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
     return self.label.text;
 }
-- (NSMutableArray *)getLastSeenForGroupDetails {
-    NSMutableArray *userDetailsArray = [[NSMutableArray alloc] init];
-    ALContactService *contactDBService = [[ALContactService alloc] init];
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-
-    NSMutableArray *memberIdArray= [NSMutableArray arrayWithArray:[channelDBService getListOfAllUsersInChannel:self.channelKey]];
-
-    for (NSString *userID in memberIdArray) {
-        ALContact *contact = [contactDBService loadContactByKey:@"userId" value:userID];
-        ALUserDetail *userDetails = [[ALUserDetail alloc] init];
-        userDetails.userId = userID;
-        userDetails.lastSeenAtTime = contact.lastSeenAt;
-        double value = contact.lastSeenAt.doubleValue;
-        ALSLog(ALLoggerSeverityInfo, @"Contact :: %@ && Value :: %@", contact.userId, contact.lastSeenAt);
-        if (contact.lastSeenAt == NULL) {
-            [userDetailsArray addObject:@" "];
-        } else {
-            [userDetailsArray addObject:[self formatDateTime:userDetails andValue:value]];
-        }
-    }
-
-    return userDetailsArray;
-}
-
 //==============================================================================================================================================
 #pragma TEXT VIEW DELEGATE + PLUS HELPER METHODS
 //==============================================================================================================================================

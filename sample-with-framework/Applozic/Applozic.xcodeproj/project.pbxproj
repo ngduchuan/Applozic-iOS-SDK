@@ -1958,7 +1958,6 @@
 				6D6DF1E41BC5387B00EBA00F /* contact */,
 				8B170C1E2122CEFF003A14B3 /* CustomPicker.storyboard */,
 				6D6DF1E31BC5386400EBA00F /* message */,
-				6D6DF1E51BC5389B00EBA00F /* notification */,
 				18A2BA2320C44E5E00AD47A2 /* ViewModel */,
 				1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */,
 				185B6AB124EBE7D20028AB75 /* ALTappableView.h */,
@@ -1994,13 +1993,6 @@
 				6D6DF0B51BC5364C00EBA00F /* ALContactCell.h */,
 			);
 			name = contact;
-			sourceTree = "<group>";
-		};
-		6D6DF1E51BC5389B00EBA00F /* notification */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = notification;
 			sourceTree = "<group>";
 		};
 		6D73B2F91D4F0F02007D3D72 /* LoggedInUserProfile */ = {

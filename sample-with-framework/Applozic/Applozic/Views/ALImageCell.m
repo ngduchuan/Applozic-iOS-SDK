@@ -455,7 +455,6 @@ UIViewController *modalCon;
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
-    // NSLog(@"##observer is called....%f",self.progresLabel.endDegree );
 }
 
 - (void)imageFullScreen:(UITapGestureRecognizer*)sender {

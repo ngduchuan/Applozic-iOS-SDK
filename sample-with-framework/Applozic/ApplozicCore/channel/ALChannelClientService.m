@@ -621,7 +621,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:muteChannelRequest andTag:@"MUTE_GROUP" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
-            ALSLog(ALLoggerSeverityInfo, @" muteChannel :: %@", theError);
+            ALSLog(ALLoggerSeverityInfo, @"Channel Mute error :: %@", theError);
             completion(nil, theError);
             return;
         }

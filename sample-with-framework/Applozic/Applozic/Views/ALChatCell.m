@@ -446,7 +446,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
 }
 
-- (void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+- (void)proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
 
     UIView *superView = [longPressGestureRecognizer.view superview];
     UIView *gestureView = longPressGestureRecognizer.view;
@@ -691,7 +691,6 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     if (replyMessage == nil) {
         return;
-
     }
 
     self.replyParentView.hidden=NO;

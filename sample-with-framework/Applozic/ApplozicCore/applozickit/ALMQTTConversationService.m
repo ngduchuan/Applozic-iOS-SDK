@@ -606,8 +606,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     if (self.realTimeUpdate) {
         [self.realTimeUpdate onMqttConnectionClosed];
     }
-
-    //Todo: inform controller about connection closed.
 }
 
 - (void)handleEvent:(MQTTSession *)session

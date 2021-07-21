@@ -75,7 +75,6 @@ extern NSString *const ALDidSelectStartCallOptionKey;
 - (void)subProcessTextViewDidChange:(UITextView *)textView;
 
 - (void) updateLastSeenAtStatus: (ALUserDetail *) alUserDetail;
-- (void) reloadViewfor3rdParty;
 - (void) reloadView;
 
 - (void)markConversationRead;
