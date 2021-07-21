@@ -254,7 +254,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
         
-        if ([response isEqual:AL_RESPONSE_SUCCESS]) {
+        if ([response isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(response, nil);
         } else {
             NSError *apiError = [NSError

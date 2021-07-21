@@ -588,7 +588,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
         
-        if (![apiResponse.status isEqual:AL_RESPONSE_SUCCESS]) {
+        if (![apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSError *error = [NSError errorWithDomain:ApplozicDomain
                                                  code:MessageKeyNotPresent
                                              userInfo:@{NSLocalizedDescriptionKey : @"Failed to report message api error occurred"}];

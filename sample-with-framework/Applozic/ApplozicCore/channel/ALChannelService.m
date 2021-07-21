@@ -15,6 +15,7 @@
 #import "ALContactService.h"
 #import "ALRealTimeUpdate.h"
 #import "ALLogger.h"
+#import "ALChannelCreateResponse.h"
 
 @implementation ALChannelService
 
@@ -370,13 +371,26 @@ dispatch_queue_t channelUserbackgroundQueue;
         } else {
             broadcastName = [nameArray componentsJoinedByString:@","];
         }
-        
-        [self createChannel:broadcastName orClientChannelKey:nil andMembersList:memberArray
-               andImageLink:nil
-                channelType:BROADCAST
-                andMetaData:metaData
-             withCompletion:^(ALChannel *alChannel, NSError *error) {
-            completion(alChannel, error);
+
+        ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+        channelInfo.groupName = broadcastName;
+        channelInfo.groupMemberList = memberArray;
+        channelInfo.type = BROADCAST;
+        channelInfo.metadata = metaData;
+
+        [self createChannelWithChannelInfo:channelInfo
+                            withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+            if (error) {
+                completion(nil, error);
+                return;
+            }
+
+            if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                completion(response.alChannel, nil);
+            } else {
+                NSError *failError = [NSError errorWithDomain:@"Applozic" code:0 userInfo:[NSDictionary dictionaryWithObject:@"Failed to report message api error occurred." forKey:NSLocalizedDescriptionKey]];
+                completion(nil, failError);
+            }
         }];
     } else {
         ALSLog(ALLoggerSeverityError, @"EMPTY_BROADCAST_MEMBER_LIST");

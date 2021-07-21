@@ -137,15 +137,22 @@
             }
             else
             {
-                //Create new one channel and launch:;;
+                ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+                channelInfo.clientGroupId = clientGroupId;
+                channelInfo.groupName = clientGroupId;
+                channelInfo.groupMemberList = [[NSMutableArray alloc] initWithObjects:userId, nil];
+                channelInfo.metadata = metadata;
+                channelInfo.type = GROUP_OF_TWO;
 
-                [channelService createChannel:clientGroupId orClientChannelKey:clientGroupId andMembersList: [[NSMutableArray alloc]initWithObjects:userId, nil]
-                                 andImageLink:nil channelType:GROUP_OF_TWO
-                                  andMetaData:metadata withCompletion:^(ALChannel *alChannelInRespose, NSError *error) {
-                                      NSLog(@" group of two id %@", alChannelInRespose.key);
-                                      [self launchChatForUserWithDisplayName:nil withGroupId:alChannelInRespose.key
-                                                          andwithDisplayName:nil andFromViewController:viewController];
-                                  }];
+                [channelService createChannelWithChannelInfo:channelInfo
+                                              withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+
+                    if (!error
+                        && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                        [self launchChatForUserWithDisplayName:nil withGroupId:response.alChannel.key
+                                            andwithDisplayName:nil andFromViewController:viewController];
+                    }
+                }];
             }
         }];
     
