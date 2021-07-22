@@ -15,6 +15,8 @@
 
 @implementation ALConversationService
 
+#pragma mark - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -23,10 +25,14 @@
     return self;
 }
 
+#pragma mark - Setup service
+
 -(void)setupServices {
     self.conversationClientService = [[ALConversationClientService alloc] init];
     self.conversationDBService = [[ALConversationDBService alloc] init];
 }
+
+#pragma mark - Get conversation by key
 
 - (ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey {
     
@@ -36,6 +42,8 @@
     }
     return [self convertAlConversationProxy:dbConversation];
 }
+
+#pragma mark - Add conversation
 
 - (void)addConversations:(NSMutableArray *)conversations {
     [self.conversationDBService insertConversationProxy:conversations];
@@ -56,7 +64,9 @@
     return alConversationProxy;
 }
 
-- (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId {
+#pragma mark - Get conversation list for UserId
+
+- (NSMutableArray *)getConversationProxyListForUserID:(NSString *)userId {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBForUserID:userId];
@@ -70,6 +80,8 @@
     
     return result;
 }
+
+#pragma mark - Get conversation list for UserId and topicId
 
 - (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId
                                           andTopicId:(NSString *)topicId {
@@ -94,10 +106,10 @@
         ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
-    
     return  result;
-    
 }
+
+#pragma mark - Create conversation
 
 - (void)createConversation:(ALConversationProxy *)alConversationProxy
             withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion {
@@ -125,6 +137,7 @@
     
 }
 
+#pragma mark - Fetch topic detail
 
 - (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
            withCompletion:(void(^)(NSError *error, ALConversationProxy *alConversationProxy))completion {

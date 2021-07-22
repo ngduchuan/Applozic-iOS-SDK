@@ -30,6 +30,8 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
    self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
+#pragma mark - Create conversation
+
 - (void)createConversation:(ALConversationProxy *)alConversationProxy
             withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion {
     

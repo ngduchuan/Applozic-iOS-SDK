@@ -103,7 +103,7 @@
     return [self.alContactDBService loadContactByKey:key value:value];
 }
 
-#pragma mark fetching OR SAVE
+#pragma mark fetching or save
 - (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName {
     
     DB_CONTACT *dbContact = [self.alContactDBService getContactByKey:@"userId" value:contactId];

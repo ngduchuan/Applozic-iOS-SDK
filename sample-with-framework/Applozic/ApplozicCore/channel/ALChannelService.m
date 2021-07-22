@@ -36,6 +36,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     return sharedInstance;
 }
 
+#pragma mark - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -43,6 +45,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
     return self;
 }
+
+#pragma mark - Setup services
 
 -(void)setupServices {
     self.channelClientService = [[ALChannelClientService alloc] init];
@@ -72,6 +76,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
     return [self.channelDBService loadChannelUserX:channelKey];
 }
+
+#pragma mark - Channel information
 
 - (void)getChannelInformation:(NSNumber *)channelKey
            orClientChannelKey:(NSString *)clientChannelKey
@@ -103,10 +109,14 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
+#pragma mark - Conversation Closed
+
 + (BOOL)isConversationClosed:(NSNumber *)groupId {
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     return [channelDBService isConversaionClosed:groupId];
 }
+
+#pragma mark - Channel Deleted
 
 + (BOOL)isChannelDeleted:(NSNumber *)groupId {
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
@@ -114,16 +124,22 @@ dispatch_queue_t channelUserbackgroundQueue;
     return flag;
 }
 
+#pragma mark - Channel Muted
+
 + (BOOL)isChannelMuted:(NSNumber *)groupId {
     ALChannelService *channelService = [[ALChannelService alloc] init];
     ALChannel *channel = [channelService getChannelByKey:groupId];
     return [channel isNotificationMuted];
 }
 
+#pragma mark - Login User left channel
+
 - (BOOL)isChannelLeft:(NSNumber *)groupID {
     BOOL flag = [self.channelDBService isChannelLeft:groupID];
     return flag;
 }
+
+#pragma mark - Get channel by channelkey from Database
 
 - (ALChannel *)getChannelByKey:(NSNumber *)channelKey {
     ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
@@ -142,6 +158,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     return [self.channelDBService getOverallUnreadCountForChannelFromDB];
 }
 
+#pragma mark - Get channel by client channelkey from Database
+
 - (ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey {
     ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
     return channel;
@@ -151,6 +169,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     NSMutableArray *memberList = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:channelKey]];
     return ([memberList containsObject:[ALUserDefaultsHandler getUserId]]);
 }
+
+#pragma mark - Get list of channels from Database
 
 - (NSMutableArray *)getAllChannelList {
     return [self.channelDBService getAllChannelKeyAndName];
@@ -175,9 +195,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
-//==========================================================================================================================================
-#pragma mark PARENT AND SUB GROUPS METHODS
-//==========================================================================================================================================
+#pragma mark - Parent and sub groups method
 
 - (NSMutableArray *)fetchChildChannelsWithParentKey:(NSNumber *)parentGroupKey {
     return [self.channelDBService fetchChildChannels:parentGroupKey];
@@ -217,9 +235,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//=================================================
-#pragma mark ADD/REMOVING VIA CLIENT KEYS
-//=================================================
+#pragma mark - Add/Remove via Client keys
 
 - (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
                  andParentKey:(NSString *)clientParentKey
@@ -258,14 +274,6 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-
-//==========================================================================================================================================
-#pragma mark CHANNEL API
-//==========================================================================================================================================
-
-//===========================================================================================================================
-#pragma mark CREATE CHANNEL
-//===========================================================================================================================
 
 - (void)createChannel:(NSString *)channelName
    orClientChannelKey:(NSString *)clientChannelKey
@@ -351,6 +359,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 
+#pragma mark - Create Broadcast Channel
+
 - (void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
                                   andMetaData:(NSMutableDictionary *)metaData
                                withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
@@ -401,9 +411,6 @@ dispatch_queue_t channelUserbackgroundQueue;
     return groupMetaData;
 }
 
-/************************************
- #pragma mark : SUB GROUP CREATION
- *************************************/
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
    orClientChannelKey:(NSString *)clientChannelKey
@@ -452,9 +459,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//===========================================================================================================================
-#pragma mark ADD NEW MEMBER TO CHANNEL
-//===========================================================================================================================
+#pragma mark - Add a new memeber to Channel
 
 - (void)addMemberToChannel:(NSString *)userId
              andChannelKey:(NSNumber *)channelKey
@@ -481,9 +486,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//===========================================================================================================================
-#pragma mark REMOVE MEMBER FROM CHANNEL
-//===========================================================================================================================
+#pragma mark - Remove memeber from Channel
 
 - (void)removeMemberFromChannel:(NSString *)userId
                   andChannelKey:(NSNumber *)channelKey
@@ -509,9 +512,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//===========================================================================================================================
-#pragma mark DELETE CHANNEL
-//===========================================================================================================================
+#pragma mark - Delete Channel by admin of Channel
 
 - (void)deleteChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
@@ -542,9 +543,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     return [channel.adminKey isEqualToString:[ALUserDefaultsHandler getUserId]];
 }
 
-//===========================================================================================================================
-#pragma mark LEAVE CHANNEL
-//===========================================================================================================================
+#pragma mark - Leave Channel
 
 - (void)leaveChannel:(NSNumber *)channelKey
            andUserId:(NSString *)userId
@@ -581,6 +580,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
+#pragma mark - Leave Channel with response
+
 - (void)leaveChannelWithChannelKey:(NSNumber *)channelKey
                          andUserId:(NSString *)userId
                 orClientChannelKey:(NSString *)clientChannelKey
@@ -597,9 +598,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//===========================================================================================================================
-#pragma mark UPDATE CHANNEL (FROM DEVICE SIDE)
-//===========================================================================================================================
+#pragma mark - Add multiple users in Channels
 
 - (void)addMultipleUsersToChannel:(NSMutableArray *)channelKeys
                      channelUsers:(NSMutableArray *)channelUsers
@@ -616,6 +615,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         }];
     }
 }
+
+#pragma mark - Update Channel
 
 - (void)updateChannel:(NSNumber *)channelKey
            andNewName:(NSString *)newName
@@ -637,6 +638,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         completion(failError);
     }
 }
+
+#pragma mark - Update Channel with response
 
 - (void)updateChannelWithChannelKey:(NSNumber *)channelKey
                          andNewName:(NSString *)newName
@@ -681,6 +684,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
+#pragma mark - Update Channel metadata
 
 - (void)updateChannelMetaData:(NSNumber *)channelKey
            orClientChannelKey:(NSString *)clientChannelKey
@@ -705,9 +709,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-//===========================================================================================================================
-#pragma mark CHANNEL SYNCHRONIZATION
-//===========================================================================================================================
+#pragma mark - Channel Sync
+
 - (void)syncCallForChannel {
     [self syncCallForChannelWithDelegate:nil];
 }
@@ -727,10 +730,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 }
 
-
-//===========================================================================================================================
-#pragma mark MARK READ FOR GROUP
-//===========================================================================================================================
+#pragma mark - Mark conversation as read
 
 - (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion {
 
@@ -764,6 +764,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
     channel.unreadCount = [NSNumber numberWithInt:0];
 }
+
+#pragma mark - Mute/Unmute Channel
 
 - (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
@@ -809,6 +811,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     
 }
 
+#pragma mark - List of Channel with category
 - (void)getChannelListForCategory:(NSString *)category
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
 
@@ -830,6 +833,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
+#pragma mark - List of Channels in Application
+
 - (void)getAllChannelsForApplications:(NSNumber *)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
 
     [self.channelClientService getAllChannelsForApplications:endTime withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
@@ -841,10 +846,12 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
+#pragma mark - Add member to contacts group with type
 
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
                           withMembers: (NSMutableArray *)membersArray
-                       withGroupType :(short) groupType withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
+                        withGroupType:(short) groupType
+                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
@@ -861,6 +868,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         
     }];
 }
+
+#pragma mark - Add member to contacts group
 
 - (void)addMemberToContactGroup:(NSString *)contactsGroupId
                     withMembers:(NSMutableArray *)membersArray
@@ -881,6 +890,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         completion(response, error);
     }];
 }
+
+#pragma mark - Get members From contacts group with type
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactsGroupId
                            withGroupType:(short)groupType
@@ -918,8 +929,10 @@ dispatch_queue_t channelUserbackgroundQueue;
     return [self.channelDBService getListOfAllUsersInChannelByNameForContactsGroup:channelName];
 }
 
+#pragma mark - Remove member From contacts group
+
 - (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
-                         withUserId :(NSString *)userId
+                          withUserId:(NSString *)userId
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId || !userId) {
@@ -936,9 +949,11 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
+#pragma mark - Remove member From contacts group with type
+
 - (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                              withGroupType:(short)groupType
-                               withUserId :(NSString *)userId
+                                withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId || !userId) {
@@ -970,6 +985,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     
 }
 
+#pragma mark - Get members userIds from contacts group
+
 - (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds
                        withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion {
     NSMutableArray *memberUserIds = [NSMutableArray new];
@@ -990,6 +1007,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         }];
     }
 }
+
+#pragma mark - Channel information with response
 
 - (void)getChannelInformationByResponse:(NSNumber *)channelKey
                      orClientChannelKey:(NSString *)clientChannelKey
@@ -1057,6 +1076,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     metadata[@"hide"] = @"true";
     return metadata;
 }
+
+#pragma mark - Channel Create with response
 
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
                       withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
@@ -1224,6 +1245,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
     }
 }
+
+#pragma mark - List of Channels where Login user in Channel
 
 - (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError *error))completion {
 

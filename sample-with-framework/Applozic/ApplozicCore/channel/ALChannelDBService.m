@@ -25,6 +25,8 @@
 
 static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
+#pragma mark - Add member in Channel
+
 - (void)addMemberToChannel:(NSString *)userId
              andChannelKey:(NSNumber *)channelKey {
     ALChannelUserX *channelUser = [[ALChannelUserX alloc] init];
@@ -42,6 +44,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         ALSLog(ALLoggerSeverityError, @"ERROR IN Add member to channel  %@",error);
     }
 }
+
+#pragma mark - Insert Channel in Database
 
 - (void)insertChannel:(NSMutableArray *)channelList {
     NSMutableArray *channelArray = [[NSMutableArray alloc] init];
@@ -89,6 +93,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
     return dbChannelEntity;
 }
+
+#pragma mark - Delete member from channel
 
 - (void)deleteMembers:(NSNumber *)key {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -195,6 +201,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return memberList;
 }
 
+#pragma mark - Load channel by channelKey
+
 - (ALChannel *)loadChannelByKey:(NSNumber *)key {
     ALChannel *cachedChannel = [[ALSearchResultCache shared] getChannelWithId: key];
     if (cachedChannel != nil) {
@@ -249,11 +257,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return nil;
 }
 
-
-//------------------------------------------
-#pragma mark CONTACTS GROUP TYPE and NAME GET CHANNEL
-//------------------------------------------
-
+#pragma mark - Contacts group type
 
 - (DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -435,11 +439,6 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return count;
 }
 
-//------------------------------------------
-#pragma mark GET ALL USERS OF CONTACT GROUP BY CHANNEL NAME
-//------------------------------------------
-
-
 - (NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName {
     
     if (channelName == nil) {
@@ -453,6 +452,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
     return nil;
 }
+
+#pragma mark - User names Comma Separated
 
 - (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key {
     NSString *listString = @"";
@@ -513,6 +514,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
+#pragma mark - Remove member from channel in Database
+
 - (void)removeMemberFromChannel:(NSString *)userId
                   andChannelKey:(NSNumber *)channelKey {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -537,6 +540,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         }
     }
 }
+
+#pragma mark - Delete Channel
 
 - (void)deleteChannel:(NSNumber *)channelKey {
     //Delete channel
@@ -566,7 +571,6 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 }
 
 #pragma mark- Fetch All Channels
-//==============================
 
 - (NSMutableArray *)getAllChannelKeyAndName {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -618,6 +622,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
     return unreadCount;
 }
+
+#pragma mark - Update Channel
 
 - (void)updateChannel:(NSNumber *)channelKey
            andNewName:(NSString *)newName
@@ -781,15 +787,21 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
+#pragma mark - Channel left
+
 - (BOOL)isChannelLeft:(NSNumber *)groupId {
     DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
     return dbChannel.isLeft;
 }
 
+#pragma mark - Channel Deleted
+
 - (BOOL)isChannelDeleted:(NSNumber *)groupId {
     DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
     return (dbChannel.deletedAtTime != nil);
 }
+
+#pragma mark - Conversaion Closed
 
 - (BOOL)isConversaionClosed:(NSNumber *)groupId {
     DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
@@ -811,10 +823,6 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return (metadata &&
             [[metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"]);
 }
-
-//------------------------------------------
-#pragma mark AFTER LEAVE LOGOUT and LOGIN
-//------------------------------------------
 
 - (void)removedMembersArray:(NSMutableArray *)memberArray
               andChannelKey:(NSNumber *)channelKey {
@@ -838,9 +846,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
-//-----------------------------
-#pragma mark Marking Group Read
-//-----------------------------
+#pragma mark - Marking Group Read
 
 - (NSUInteger)markConversationAsRead:(NSNumber *)channelKey {
     NSArray *messages;
@@ -898,6 +904,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     return result;
 }
+
+#pragma mark - Get Channel by client key
 
 - (DB_CHANNEL *)getChannelByClientChannelKey:(NSString *)clientChannelKey {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -1026,6 +1034,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return memberList;
 }
 
+#pragma mark - Get Channel members async
 
 - (void)fetchChannelMembersAsyncWithChannelKey:(NSNumber *)channelKey
                                  witCompletion:(void(^)(NSMutableArray *membersArray))completion {
@@ -1061,6 +1070,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         completion(nil);
     }
 }
+
+#pragma mark - Get users in support group
 
 - (void)getUserInSupportGroup:(NSNumber *)channelKey
                withCompletion:(void(^)(NSString *userId)) completion {

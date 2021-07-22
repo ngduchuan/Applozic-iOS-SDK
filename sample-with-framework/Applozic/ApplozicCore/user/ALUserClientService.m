@@ -25,6 +25,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 @implementation ALUserClientService
 
+#pragma mark - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -33,9 +35,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     return self;
 }
 
+#pragma mark - Setup services
+
 -(void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
+
+#pragma mark - Fetch last seen status of users
 
 - (void)userLastSeenDetail:(NSNumber *)lastSeenAt
             withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark {
@@ -61,6 +67,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         }
     }];
 }
+
+#pragma mark - User Detail
 
 - (void)userDetailServerCall:(NSString *)contactId
               withCompletion:(void(^)(ALUserDetail *))completionMark {
@@ -88,6 +96,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
+#pragma mark - Update user display, profile image or user status
+
 - (void)updateUserDisplayName:(ALContact *)alContact
                withCompletion:(void(^)(id theJson, NSError *theError))completion {
     NSString *updateDisplayNameURLString = [NSString stringWithFormat:@"%@/rest/ws/user/name", KBASE_URL];
@@ -108,6 +118,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
 }
 
+#pragma mark - Mark Conversation as read
+
 - (void)markConversationAsReadforContact:(NSString *)contactId
                           withCompletion:(void (^)(NSString *, NSError *))completion {
     
@@ -124,9 +136,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
-//==============================================
-#pragma BLOCK USER SERVER CALL
-//==============================================
+#pragma mark - Block user
 
 - (void)userBlockServerCall:(NSString *)userId
              withCompletion:(void (^)(NSString *json, NSError *error))completion {
@@ -148,6 +158,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
 }
 
+#pragma mark - Block/Unblock sync
+
 - (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime
                  withCompletion:(void (^)(NSString *json, NSError *error))completion {
     NSString *userBlockSyncURLString = [NSString stringWithFormat:@"%@/rest/ws/user/blocked/sync",KBASE_URL];
@@ -167,9 +179,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
-//==============================================
-#pragma UNBLOCK USER SERVER CALL
-//==============================================
+#pragma mark - Unblock user
+
 - (void)userUnblockServerCall:(NSString *)userId
                withCompletion:(void (^)(NSString *json, NSError *error))completion {
     NSString *userUnblockURLString = [NSString stringWithFormat:@"%@/rest/ws/user/unblock",KBASE_URL];
@@ -189,8 +200,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
-#pragma mark - Mark Message Read
-//==============================
+#pragma mark - Mark message as read
 
 - (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey
                               withCompletion:(void (^)(NSString *, NSError *))completion {
@@ -212,7 +222,6 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 }
 
 #pragma mark - Multi User Send Message
-//===================================
 
 - (void)multiUserSendMessage:(NSDictionary *)messageDictionary
                   toContacts:(NSMutableArray *)contactIdsArray
@@ -235,6 +244,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         completion(theJson,theError);
     }];
 }
+
+#pragma mark - Fetch Registered contacts
 
 - (void)getListOfRegisteredUsers:(NSNumber *)startTime
                      andPageSize:(NSUInteger)pageSize
@@ -262,9 +273,9 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if ([responseJSONString isKindOfClass:[NSString class]] &&
             [responseJSONString isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *error = [NSError
-                               errorWithDomain:@"Applozic"
-                               code:1
-                               userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
+                              errorWithDomain:@"Applozic"
+                              code:1
+                              userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
             completion(nil, error);
             return;
         }
@@ -275,6 +286,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         completion(contactResponse, nil);
     }];
 }
+
+#pragma mark - Fetch Online contacts
 
 - (void)fetchOnlineContactFromServer:(NSUInteger)limit
                       withCompletion:(void (^)(id json, NSError *error))completion {
@@ -337,9 +350,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }
 }
 
-//========================================================================================================================
-# pragma mark CALL FOR RESETTING UNREAD COUNT
-//========================================================================================================================
+# pragma mark - Call for resetting unread count
 
 - (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion {
     NSString *resetUnreadCountURLString = [NSString stringWithFormat:@"%@/rest/ws/user/read",KBASE_URL];
@@ -358,9 +369,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
 }
 
-//========================================================================================================================
-#pragma mark UPDATE USER Display Name/Status/Profile Image
-//========================================================================================================================
+#pragma mark - Update user display name/Status/Profile Image
 
 - (void)updateUserDisplayName:(NSString *)displayName
              andUserImageLink:(NSString *)imageLink
@@ -396,14 +405,16 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
-                                                                                          forKey:NSLocalizedDescriptionKey]];
+                                                    userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
+                                                                                         forKey:NSLocalizedDescriptionKey]];
             completionHandler(theJson, reponseError);
             return;
         }
         completionHandler(theJson, theError);
     }];
 }
+
+#pragma mark - Update phone number, email of user with admin user
 
 - (void)updateUser:(NSString *)phoneNumber
              email:(NSString *)email
@@ -443,7 +454,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
-// POST CALL
+#pragma mark - Fetch Users Detail
 
 - (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob
                             withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *theError))completionMark {
@@ -481,6 +492,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
+#pragma mark - Update user password
+
 - (void)updatePassword:(NSString *)oldPassword
        withNewPassword:(NSString *)newPassword
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
@@ -498,6 +511,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         completion(apiResponse, theError);
     }];
 }
+
+#pragma mark - User or Contact search
 
 - (void)getListOfUsersWithUserName:(NSString *)userName
                     withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -522,6 +537,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
+#pragma mark - Muted user list.
+
 - (void)getMutedUserListWithCompletion:(void(^)(id theJson, NSError *error))completion {
     NSString *mutedUserURLString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute/list",KBASE_URL];
     
@@ -539,6 +556,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         completion(theJson, theError);
     }];
 }
+
+#pragma mark - Mute or Unmute user.
 
 - (void)muteUser:(ALMuteRequest *)alMuteRequest
   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -558,6 +577,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         completion(response, nil);
     }];
 }
+
+#pragma mark - Report user for message
 
 - (void)reportUserWithMessageKey:(NSString *)messageKey
                   withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {

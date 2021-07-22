@@ -43,6 +43,8 @@ static int CONTACT_PAGE_SIZE = 100;
     return sharedInstance;
 }
 
+#pragma mark - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -51,6 +53,8 @@ static int CONTACT_PAGE_SIZE = 100;
     return self;
 }
 
+#pragma mark - Setup services
+
 -(void)setupServices {
     self.userClientService = [[ALUserClientService alloc] init];
     self.channelService = [[ALChannelService alloc] init];
@@ -58,7 +62,8 @@ static int CONTACT_PAGE_SIZE = 100;
     self.contactService = [[ALContactService alloc] init];
 }
 
-//1. call this when each message comes
+#pragma mark - Fetch users from messages
+
 - (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
     
     NSMutableOrderedSet *contactIdsArray = [[NSMutableOrderedSet alloc] init ];
@@ -85,6 +90,8 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
+#pragma mark - Fetch last seen status of users
+
 - (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark {
     
     [self.userClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed *messageFeed) {
@@ -109,6 +116,8 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
+#pragma mark - Update user detail
+
 - (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
     [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
         
@@ -119,6 +128,8 @@ static int CONTACT_PAGE_SIZE = 100;
         completionMark(userDetail);
     }];
 }
+
+#pragma mark - Update phone number, email of user with admin user
 
 - (void)updateUser:(NSString *)phoneNumber email:(NSString *)email ofUser:(NSString *)userId withCompletion:(void (^)(BOOL))completion {
     [self.userClientService updateUser:phoneNumber email:email ofUser:userId withCompletion:^(id theJson, NSError *theError) {
@@ -159,6 +170,8 @@ static int CONTACT_PAGE_SIZE = 100;
     }
 }
 
+#pragma mark - Update display name user who is not registered
+
 - (void)updateDisplayNameWith:(NSString *)userId
               withDisplayName:(NSString *)displayName
                withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error)) completion {
@@ -188,6 +201,8 @@ static int CONTACT_PAGE_SIZE = 100;
         }
     }];
 }
+
+#pragma mark - Mark Conversation as read
 
 - (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
     
@@ -219,8 +234,9 @@ static int CONTACT_PAGE_SIZE = 100;
     contact.unreadCount = [NSNumber numberWithInt:0];
     [self.contactService setUnreadCountInDB:contact];
 }
-#pragma mark- Mark message READ
-//===========================================
+
+#pragma mark - Mark message as read
+
 - (void)markMessageAsRead:(ALMessage *)alMessage
        withPairedkeyValue:(NSString *)pairedkeyValue
            withCompletion:(void (^)(NSString *, NSError *))completion {
@@ -280,9 +296,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }
 }
 
-//===============================================================================================
-#pragma BLOCK USER API
-//===============================================================================================
+#pragma mark - Block user
 
 - (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion {
     if (!userId) {
@@ -314,9 +328,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-//===============================================================================================
-#pragma BLOCK/UNBLOCK USER SYNCHRONIZATION API
-//===============================================================================================
+#pragma mark - Block/Unblock sync
 
 - (void)blockUserSync:(NSNumber *)lastSyncTime {
     [self.userClientService userBlockSyncServerCall:lastSyncTime withCompletion:^(NSString *json, NSError *error) {
@@ -334,9 +346,7 @@ static int CONTACT_PAGE_SIZE = 100;
     [self.contactDBService blockByUserInList:userblock.blockByUserList];
 }
 
-//===============================================================================================
-#pragma UNBLOCK USER API
-//===============================================================================================
+#pragma mark - Unblock user
 
 - (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion {
     
@@ -375,6 +385,8 @@ static int CONTACT_PAGE_SIZE = 100;
     return blockedUsersList;
 }
 
+#pragma mark - Fetch Registered contacts
+
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion {
     NSNumber *startTime;
     if (![ALUserDefaultsHandler isContactServerCallIsDone]) {
@@ -398,9 +410,8 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
     
 }
-//===============================================================================================
-#pragma ONLINE FETCH CONTACT API
-//===============================================================================================
+
+#pragma mark - Fetch Online contacts
 
 - (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion {
     [self.userClientService fetchOnlineContactFromServer:[ALApplozicSettings getOnlineContactLimit] withCompletion:^(id json, NSError *error) {
@@ -436,9 +447,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-//=========================================================================================================================
-#pragma OVER ALL UNREAD COUNT (CHANNEL + CONTACTS)
-//=========================================================================================================================
+#pragma mark - Over all unread count (CHANNEL + CONTACTS)
 
 - (NSNumber *)getTotalUnreadCount {
     NSNumber *contactUnreadCount = [self.contactService getOverallUnreadCountForContact];
@@ -459,9 +468,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-//=========================================================================================================================
-#pragma UPDATE USER DISPLAY NAME AND PROFILE PICTURE
-//=========================================================================================================================
+#pragma mark - Update user display, profile image or user status
 
 - (void)updateUserDisplayName:(NSString *)displayName
                  andUserImage:(NSString *)imageLink
@@ -481,6 +488,8 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
+#pragma mark - Fetch Users Detail
+
 - (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *array, NSError *error))completion {
     
     ALUserDetailListFeed *userDetailListFeed = [ALUserDetailListFeed new];
@@ -494,6 +503,8 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(userDetailArray, theError);
     }];
 }
+
+#pragma mark - User Detail
 
 - (void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion {
     
@@ -516,6 +527,8 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(alContact);
     }
 }
+
+#pragma mark - Update user password
 
 - (void)updatePassword:(NSString *)oldPassword
       withNewPassword :(NSString *)newPassword
@@ -545,10 +558,6 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-//==============================================================================================================================================
-#pragma mark - REST UNREAD COUNT + CONVERSATION READ HELPER METHODS
-//==============================================================================================================================================
-
 - (void)processResettingUnreadCount {
     ALUserService *userService = [ALUserService new];
     int count = [[userService getTotalUnreadCount] intValue];
@@ -557,6 +566,8 @@ static int CONTACT_PAGE_SIZE = 100;
         }];
     }
 }
+
+#pragma mark - User or Contact search
 
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
@@ -601,6 +612,8 @@ static int CONTACT_PAGE_SIZE = 100;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_unread_count" object:dict];
 }
 
+#pragma mark - Muted user list.
+
 - (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
                       withCompletion:(void (^)(NSMutableArray *, NSError *))completion {
     
@@ -621,6 +634,8 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(userDetailArray, error);
     }];
 }
+
+#pragma mark - Mute or Unmute user.
 
 - (void)muteUser:(ALMuteRequest *)alMuteRequest
   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -658,6 +673,8 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(nil, reponseError);
     }];
 }
+
+#pragma mark - Report user for message.
 
 - (void)reportUserWithMessageKey:(NSString *)messageKey
                   withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
@@ -705,6 +722,8 @@ static int CONTACT_PAGE_SIZE = 100;
         }
     }];
 }
+
+#pragma mark - Registered users/contacts in Application
 
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion {
