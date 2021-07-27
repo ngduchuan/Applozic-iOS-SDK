@@ -38,7 +38,7 @@ NSCache<NSString *, ALContact *> *contactCache;
     }
 }
 
-- (ALContact *)parseUserDetail: (ALUserDetail *) userDetail {
+- (ALContact *)parseUserDetail: (ALUserDetail *)userDetail {
     ALContact *contact = [[ALContact alloc] init];
     contact.userId = userDetail.userId;
     contact.connected = userDetail.connected;

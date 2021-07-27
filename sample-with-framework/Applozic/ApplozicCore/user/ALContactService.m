@@ -47,7 +47,7 @@
     return [self.alContactDBService updateContactInDatabase:contact];
 }
 
-- (BOOL)setUnreadCountInDB:(ALContact*)contact {
+- (BOOL)setUnreadCountInDB:(ALContact *)contact {
     return [self.alContactDBService setUnreadCountDB:contact];
 }
 
@@ -62,7 +62,7 @@
     return [self.alContactDBService getOverallUnreadCountForContactsFromDB];
 }
 
-- (BOOL)isContactExist:(NSString *) value {
+- (BOOL)isContactExist:(NSString *)value {
 
     DB_CONTACT *contact= [self.alContactDBService getContactByKey:@"userId" value:value];
     return contact != nil && contact.userId != nil;

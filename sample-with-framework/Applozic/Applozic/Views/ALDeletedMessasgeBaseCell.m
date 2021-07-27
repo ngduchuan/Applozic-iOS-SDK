@@ -133,7 +133,7 @@
     return action == @selector(delete:);
 }
 
-- (void) delete:(id)sender {
+- (void)delete:(id)sender {
     //UI
     ALSLog(ALLoggerSeverityInfo, @"Message to deleteUI %@",self.mMessage.message);
     [self.delegate deleteMessageFromView:self.mMessage];

@@ -28,7 +28,7 @@
     self.conversationDBService = [[ALConversationDBService alloc] init];
 }
 
-- (ALConversationProxy *)getConversationByKey:(NSNumber*)conversationKey {
+- (ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey {
     
     DB_ConversationProxy *dbConversation = [self.conversationDBService getConversationProxyByKey:conversationKey];
     if (dbConversation == nil) {
@@ -41,11 +41,11 @@
     [self.conversationDBService insertConversationProxy:conversations];
 }
 
-- (void)addTopicDetails:(NSMutableArray*)conversations {
+- (void)addTopicDetails:(NSMutableArray *)conversations {
     [self.conversationDBService insertConversationProxyTopicDetails:conversations];
 }
 
-- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
+- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
     ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc]init];
     alConversationProxy.groupId = dbConversation.groupId;
@@ -56,7 +56,7 @@
     return alConversationProxy;
 }
 
-- (NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId {
+- (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBForUserID:userId];
@@ -71,8 +71,8 @@
     return result;
 }
 
-- (NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId
-                                          andTopicId:(NSString*)topicId {
+- (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId
+                                          andTopicId:(NSString *)topicId {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBForUserID:userId andTopicId:topicId];
@@ -86,7 +86,7 @@
     return result;
 }
 
-- (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber*)channelKey {
+- (NSMutableArray *)getConversationProxyListForChannelKey:(NSNumber *)channelKey {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     

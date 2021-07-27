@@ -87,7 +87,6 @@
 
             return true;
         }
-        //TODO : check if notification is alreday received and processed...
 
         if ([type isEqualToString:self.notificationTypes[@(AL_SYNC)]]) {
             ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
@@ -195,7 +194,6 @@
         } else if ([type isEqualToString:@"APPLOZIC_15"]) {
             ALChannelService *channelService = [[ALChannelService alloc] init];
             [channelService syncCallForChannel];
-            // TODO HANDLE
         } else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] ||
                    [type isEqualToString:@"CONVERSATION_DELETED"]) {
 

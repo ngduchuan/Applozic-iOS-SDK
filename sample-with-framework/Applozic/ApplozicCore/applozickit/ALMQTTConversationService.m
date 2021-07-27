@@ -606,8 +606,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     if (self.realTimeUpdate) {
         [self.realTimeUpdate onMqttConnectionClosed];
     }
-
-    //Todo: inform controller about connection closed.
 }
 
 - (void)handleEvent:(MQTTSession *)session
@@ -615,7 +613,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
               error:(NSError *)error {
 }
 
-- (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing; {
+- (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing {
     if (!self.session) {
         return;
     }
@@ -640,7 +638,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (BOOL)publishCustomData:(NSString *)dataString
-            withTopicName:(NSString *) topic {
+            withTopicName:(NSString *)topic {
     @try {
         if (!self.session ||
             !(self.session.status == MQTTSessionStatusConnected) ||
@@ -706,7 +704,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     [self unsubscribeToConversationForUser: userKey WithTopic: topic];
 }
 
-- (BOOL)unsubscribeToConversationForUser:(NSString *) userKey WithTopic:(NSString *)topic {
+- (BOOL)unsubscribeToConversationForUser:(NSString *)userKey WithTopic:(NSString *)topic {
     @try {
         if (self.session == nil) {
             return NO;
@@ -831,11 +829,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 }
 
-- (void)syncReceivedMessage :(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary {
+- (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary {
 
     ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
 
-    [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *message, NSError *error) {
+    [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString]
+                                 withDelegate:self.realTimeUpdate
+                               withCompletion:^(NSMutableArray *message, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"ALMQTTConversationService SYNC CALL");
         if (!pushAssist.isOurViewOnTop) {

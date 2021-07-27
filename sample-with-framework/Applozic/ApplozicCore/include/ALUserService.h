@@ -51,7 +51,9 @@
 /// @param alMessage Pass the ALMessage object for marking the message as read.
 /// @param pairedkeyValue Pass the paired message key from the ALMessage object.
 /// @param completion In case of a successful message marked as read, the error will be nil. Otherwise, in case of failure, the error will not be nil.
-- (void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markMessageAsRead:(ALMessage *)alMessage
+       withPairedkeyValue:(NSString *)pairedkeyValue
+           withCompletion:(void (^)(NSString *, NSError *))completion;
 
 /// This method is used for blocking the user.
 /// @param userId Pass the userId for blocking the user.

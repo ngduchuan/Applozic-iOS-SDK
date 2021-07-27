@@ -261,8 +261,6 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 - (void)intializeSubgroupMessages {
     ALChannelService *channelService = [ALChannelService new];
     self.childGroupList = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:self.parentGroupKey]];
-    //    ALChannel * parentChannel = [channelService getChannelByKey:self.parentGroupKey];
-    //    [self.childGroupList addObject:parentChannel];
 }
 
 // Channel details update notification
@@ -1128,7 +1126,6 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)dealloc {
-    //    NSLog(@"dealloc called. Unsubscribing with mqtt.");
     [self.alMqttConversationService unsubscribeToConversation];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAILS_UPDATE_CALL" object:nil];
@@ -1180,15 +1177,9 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [view addSubview:imageView];
     [view addSubview:label];
     
-    //    UIButton * button = [[UIButton alloc] initWithFrame:view.frame];
-    //    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-    
     UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
     backTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:backTap];
-    
-    //    [button addSubview:view];
-    //    [view addSubview:button];
     return view;
 }
 

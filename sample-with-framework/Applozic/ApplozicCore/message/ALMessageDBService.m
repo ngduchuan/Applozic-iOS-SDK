@@ -80,7 +80,7 @@
 }
 
 
-- (DB_Message*)addMessage:(ALMessage *)message {
+- (DB_Message *)addMessage:(ALMessage *)message {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     DB_Message *dbMessage = [self createMessageEntityForDBInsertionWithMessage:message];
 
@@ -928,7 +928,7 @@
     return [self createMessageEntity:dbMessage];
 }
 
-- (void)updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime:(NSNumber *)createdAtTime withDbMessage:(DB_Message *)dbMessage {
+- (void)updateMessageSentDetails:(NSString *)messageKeyString withCreatedAtTime:(NSNumber *)createdAtTime withDbMessage:(DB_Message *)dbMessage {
 
     if (!dbMessage) {
         return;

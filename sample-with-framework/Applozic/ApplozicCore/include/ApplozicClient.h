@@ -94,7 +94,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// This method is for getting the latest messages list of user and group, grouped by the latest messages with createdAtTime of the messages.
 /// @param isNextPage Pass YES or true in case if want to fetch the next set of messages else Make NO or false to load the first set of messages.
 /// @param completion NSMutableArray will have a list of ALMessage objects else it will have NSError in case of any error comes.
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error))completion;
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
 /// This method is used for fetching one-to-one or group chat messages.
 /// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
@@ -114,7 +114,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// GROUP_OF_TWO = 7
 /// @param channelInfo Pass information about group deatils.
 /// @param completion it will be having complete  deatils about channel and status, if its error or success else it will have NSError.
-- (void)createChannelWithChannelInfo:(ALChannelInfo*)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
 /// This method is used for removing a member from the group.
 /// @param userId Pass userId that wanted to remove from group/channel.

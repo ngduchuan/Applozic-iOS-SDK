@@ -116,7 +116,6 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 - (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
-
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
                            withMembers:(NSMutableArray *)membersArray
                          withGroupType:(short)groupType

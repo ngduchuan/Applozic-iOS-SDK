@@ -90,7 +90,7 @@ andWithStatusDelegate:(id)statusDelegate
     message.msgDBObjectId = [dbMessageEntity objectID];
     dbMessageEntity.inProgress = [NSNumber numberWithBool:YES];
     dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-    NSError * error =  [[ALDBHandler sharedInstance] saveContext];
+    NSError *error =  [[ALDBHandler sharedInstance] saveContext];
 
     if (self.messageServiceDelegate && error) {
         dbMessageEntity.inProgress = [NSNumber numberWithBool:NO];
@@ -101,7 +101,7 @@ andWithStatusDelegate:(id)statusDelegate
 
     NSDictionary *messageDictionary = [alMessage dictionary];
     
-    ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+    ALMessageClientService *clientService  = [[ALMessageClientService alloc] init];
     [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
@@ -133,8 +133,8 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 - (ALMessage *)createMessageEntityOfContentType:(int)contentType
-                                       toSendTo:(NSString*)to
-                                       withText:(NSString*)text {
+                                       toSendTo:(NSString *)to
+                                       withText:(NSString *)text {
     
     ALMessage *alMessage = [ALMessage new];
     
@@ -158,7 +158,7 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 
-- (void)downloadMessageAttachment:(ALMessage*)alMessage {
+- (void)downloadMessageAttachment:(ALMessage *)alMessage {
 
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;

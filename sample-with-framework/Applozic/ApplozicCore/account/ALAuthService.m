@@ -28,7 +28,7 @@ static NSString *const VALID_UPTO = @"validUpto";
 }
 
 - (NSError *)decodeAndSaveToken:(NSString *)authToken {
-    NSError * jwtError;
+    NSError *jwtError;
     if (!authToken) {
         NSError *error = [NSError errorWithDomain:@"Applozic"
                                               code:1

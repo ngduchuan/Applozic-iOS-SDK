@@ -10,7 +10,7 @@
 
 @interface UIImage (Utility)
 
-- (double) getImageSizeInMb;
+- (double)getImageSizeInMb;
 - (UIImage *)getCompressedImageLessThanSize:(double)sizeInMb;
 - (NSData *)getCompressedImageData;
 

@@ -31,9 +31,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.connected = [[NSString stringWithFormat:@"%@",[JSONString valueForKey:@"connected"]] intValue];
     
     self.lastSeenAtTime = [JSONString valueForKey:@"lastSeenAtTime"];
-    
-    //self.lastSeenAtTime = [self getNSNumberFromJsonValue:[JSONString valueForKey:@"lastSeenAtTime"]];
-    
+
     self.unreadCount = [JSONString valueForKey:@"unreadCount"];
     
     self.imageLink = [JSONString valueForKey:@"imageLink"];
@@ -49,10 +47,6 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.notificationAfterTime = [JSONString valueForKey:@"notificationAfterTime"];
     self.email = [JSONString valueForKey:@"email"];
     self.status = [JSONString valueForKey:@"status"];
-}
-
-- (void)userDetail {
-    
 }
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary {
@@ -88,13 +82,11 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.keyArray = [NSArray arrayWithArray:[JSONDictionary allKeys]];
     self.valueArray = [NSArray arrayWithArray:[JSONDictionary allValues]];
     
-    for(NSString *str in self.keyArray)
-    {
-        tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&userIds=%@",str]];
+    for (NSString *userIdString in self.keyArray) {
+        tempString = [tempString stringByAppendingString:[NSString stringWithFormat:@"&userIds=%@", userIdString]];
     }
     
-    if(self.keyArray.count)
-    {
+    if (self.keyArray.count) {
         self.userIdString = [tempString substringFromIndex:1];
     }
 }
@@ -123,7 +115,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    } @catch(NSException * exp) {
+    } @catch(NSException *exp) {
         ALSLog(ALLoggerSeverityError, @"GETTING ERROR in Meta data Serialization");
     }
     return metaDataDictionary;

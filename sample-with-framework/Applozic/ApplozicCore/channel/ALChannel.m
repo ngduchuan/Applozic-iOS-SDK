@@ -76,7 +76,7 @@
 }
 
 - (BOOL)isNotificationMuted {
-    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
+    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue]*1000L;
     if (_notificationAfterTime != nil) {
         return ([_notificationAfterTime longValue]> secsUtc1970);
     } else {
@@ -92,13 +92,13 @@
     return self.membersId;
 }
 
-- (NSString*)getReceiverIdInGroupOfTwo {
+- (NSString *)getReceiverIdInGroupOfTwo {
     
     if (self.type!=GROUP_OF_TWO) {
         return nil;
     }
     
-    for (NSString* userId in self.membersName) {
+    for (NSString *userId in self.membersName) {
         if (!([userId isEqualToString:[ALUserDefaultsHandler getUserId]])) {
             return userId;
         }
@@ -133,7 +133,6 @@
     }
     return NO;
 }
-
 
 - (BOOL)isConversationClosed {
 

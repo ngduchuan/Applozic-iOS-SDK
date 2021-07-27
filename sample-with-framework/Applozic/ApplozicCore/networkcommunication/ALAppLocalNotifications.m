@@ -23,7 +23,7 @@
 
 
 + (ALAppLocalNotifications *)appLocalNotificationHandler {
-    static ALAppLocalNotifications * localNotificationHandler = nil;
+    static ALAppLocalNotifications *localNotificationHandler = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
@@ -119,7 +119,6 @@
     [ALLogger saveLogArray];
 }
 
-//receiver
 - (void)onAppDidBecomeActive:(NSNotification *)notification {
     [self proactivelyConnectMQTT];
     [ALMessageService syncMessages];

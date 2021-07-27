@@ -22,14 +22,13 @@
     
     ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc] init];
     
-    alConversationProxy.created =dbConversation.created.boolValue;
+    alConversationProxy.created = dbConversation.created.boolValue;
     alConversationProxy.closed = dbConversation.closed.boolValue;
     alConversationProxy.Id = dbConversation.iD;
     alConversationProxy.topicId = dbConversation.topicId;
-    alConversationProxy.topicDetailJson =dbConversation.topicDetailJson;
+    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
     alConversationProxy.groupId = dbConversation.groupId;
-    alConversationProxy.userId =  dbConversation.userId;
-    ALSLog(ALLoggerSeverityInfo, @" parseMessage  called for conversation proxy topicDetailJson : %@",self.topicDetailJson);
+    alConversationProxy.userId = dbConversation.userId;
     return alConversationProxy;
 }
 
@@ -69,7 +68,6 @@
     return requestDictionary;
 
 }
-
 
 
 - (void)setSenderSMSFormat:(NSString *)senderFormatString {

@@ -92,7 +92,7 @@
             persistentStoreDescription.shouldInferMappingModelAutomatically = YES;
             container.persistentStoreDescriptions = @[persistentStoreDescription];
 
-            [container loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription * description, NSError * error) {
+            [container loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *description, NSError *error) {
                 if (error) {
                     NSLog(@"Failed to load Core Data stack: %@", error);
                     self->_isStoreLoaded = NO;
@@ -260,7 +260,7 @@
     return 0;
 }
 
-- (NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID {
+- (NSManagedObject *)existingObjectWithID:(NSManagedObjectID *)objectID {
     NSManagedObject *managedObject = nil;
     if (!self.persistentContainer) {
         return nil;

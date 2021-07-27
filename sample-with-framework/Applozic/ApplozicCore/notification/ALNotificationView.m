@@ -22,7 +22,7 @@
  *********************/
 
 
-- (instancetype)initWithAlMessage:(ALMessage*)alMessage withAlertMessage:(NSString *)alertMessage {
+- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage:(NSString *)alertMessage {
     self = [super init];
     self.text =[self getNotificationText:alMessage];
     self.textColor = [UIColor whiteColor];

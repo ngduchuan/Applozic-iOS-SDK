@@ -27,7 +27,8 @@ static NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
 
-+ (void)updateNotificationMode:(short)notificationMode withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
++ (void)updateNotificationMode:(short)notificationMode
+                withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 - (void)connect;
 
 - (void)disconnect;

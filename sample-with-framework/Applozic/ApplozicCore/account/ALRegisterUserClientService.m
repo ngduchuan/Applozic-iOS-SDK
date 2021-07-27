@@ -90,7 +90,7 @@
     NSString *logParamText = [self getUserParamTextForLogging:user];
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
-    NSMutableURLRequest * loginUserRequest = [ALRequestHandler createPOSTRequestWithUrlString:loginURLString paramString:loginParamString];
+    NSMutableURLRequest *loginUserRequest = [ALRequestHandler createPOSTRequestWithUrlString:loginURLString paramString:loginParamString];
 
     [self.responseHandler processRequest:loginUserRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
@@ -273,7 +273,7 @@
 }
 
 - (NSString *)getRegistrationId {
-    NSString * registrationId = nil;
+    NSString *registrationId = nil;
     if ([ALApplozicSettings isAudioVideoEnabled]) {
         registrationId = [self getAPNsAndVOIPDeviceToken];
     } else {

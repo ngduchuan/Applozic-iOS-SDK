@@ -119,7 +119,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Updte APNS device token  method
 //==============================================================================================================================================
 
-- (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
+- (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
+                            withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
     if (![ALUserDefaultsHandler getApplicationKey]) {
         NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil its not passed"}];
         completion(nil, applicationKeyNilError);
@@ -157,7 +158,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 }
 
 
-- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
+- (void)getMessages:(MessageListRequest *)messageListRequest
+withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
     [_messageService getMessageListForUser:messageListRequest  withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
         completion(messages, error);
     }];
@@ -184,7 +186,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
 }
 
-- (void)markConversationReadForOnetoOne:(NSString*)userId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
+- (void)markConversationReadForOnetoOne:(NSString *)userId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
 
     if (userId) {
         [_userService markConversationAsRead:userId withCompletion:^(NSString *conversationResponse, NSError *error) {
@@ -232,7 +234,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Send  Attachment message method
 //==============================================================================================================================================
 
-- (void)sendMessageWithAttachment:(ALMessage*)attachmentMessage {
+- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage {
     
     if (!attachmentMessage || !attachmentMessage.imageFilePath) {
         return;
@@ -255,7 +257,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 #pragma mark - Channel/Group methods
 //==============================================================================================================================================
 
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
+- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
+                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
 
     ALChannelService *channelService = [[ALChannelService alloc] init];
     [channelService createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {

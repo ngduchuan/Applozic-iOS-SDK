@@ -88,12 +88,6 @@ static const int SHOW_GROUP = 102;
     [self handleFrameForOrientation];
     [self.contactsTableView setBackgroundColor:[UIColor whiteColor]];
 
-    //    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"< Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
-    //    [self.navigationItem setLeftBarButtonItem:barButtonItem];
-    
-    //    if (![ALUserDefaultsHandler getContactViewLoaded] && [ALApplozicSettings getFilterContactsStatus]) // COMMENTED for INTERNAL PURPOSE
-    //    {
-    
     float y = self.navigationController.navigationBar.frame.origin.y+self.navigationController.navigationBar.frame.size.height;
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,y, self.view.frame.size.width, 40)];
     self.searchBar.delegate = self;
@@ -185,7 +179,6 @@ static const int SHOW_GROUP = 102;
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        //        self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setTitleTextAttributes: @{
             NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
             NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -546,10 +539,6 @@ static const int SHOW_GROUP = 102;
             }];
         }break;
         case IMAGE_SHARE:{
-            // TODO : Send Image
-            /* ALContact * contact = self.filteredContactList[indexPath.row];
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"SHARE_IMAGE" object:contact];
-             */
         }break;
         case LAUNCH_GROUP_OF_TWO: {
             if (self.selectedSegment == 0) {

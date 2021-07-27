@@ -842,7 +842,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 #pragma mark Marking Group Read
 //-----------------------------
 
-- (NSUInteger)markConversationAsRead:(NSNumber*)channelKey {
+- (NSUInteger)markConversationAsRead:(NSNumber *)channelKey {
     NSArray *messages;
     
     if (channelKey != nil) {
@@ -871,7 +871,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return messages.count;
 }
 
-- (NSArray *)getUnreadMessagesForGroup:(NSNumber*)groupId {
+- (NSArray *)getUnreadMessagesForGroup:(NSNumber *)groupId {
     
     //Runs at Opening AND Leaving ChatVC AND Opening MessageList..
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -1062,7 +1062,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
-- (void)getUserInSupportGroup:(NSNumber *) channelKey
+- (void)getUserInSupportGroup:(NSNumber *)channelKey
                withCompletion:(void(^)(NSString *userId)) completion {
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DB_CHANNEL_USER_X"];

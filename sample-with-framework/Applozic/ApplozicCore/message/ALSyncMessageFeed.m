@@ -17,7 +17,6 @@
 - (id)initWithJSONString:(NSString *)syncMessageResponse {
     
     self.lastSyncTime = [syncMessageResponse valueForKey:@"lastSyncTime"];
-    //self.isRegisterdIdInvalid = [syncMessageResponse valueForKey:@"regIdInvalid"];
     NSMutableArray *messageList = [syncMessageResponse valueForKey:@"messages"];
     [self parseMessagseArray:messageList];
     self.deliveredMessageKeys = [syncMessageResponse valueForKey:@"deliveredMessageKeys"];

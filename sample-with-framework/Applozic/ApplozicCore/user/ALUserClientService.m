@@ -81,7 +81,6 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if (((NSArray*)theJson).count > 0) {
             ALSLog(ALLoggerSeverityInfo, @"User detail response JSON : %@", (NSString *)theJson);
             ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
-            [userDetailObject userDetail];
             completionMark(userDetailObject);
         } else {
             completionMark(nil);

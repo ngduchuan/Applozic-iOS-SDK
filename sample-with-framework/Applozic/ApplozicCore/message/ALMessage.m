@@ -37,7 +37,7 @@ static NSString * const AL_TRUE = @"true";
     return self;
 }
 
-- (void)parseMessage:(id) messageJson {
+- (void)parseMessage:(id)messageJson {
 
     // key String
 
