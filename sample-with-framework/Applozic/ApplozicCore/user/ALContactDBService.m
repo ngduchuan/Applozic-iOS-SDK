@@ -15,7 +15,7 @@
 
 @implementation ALContactDBService
 
-#pragma mark - Delete Contacts API -
+#pragma mark - Delete Contacts API
 
 - (BOOL)purgeListOfContacts:(NSArray *)contacts {
     BOOL result = NO;
@@ -103,7 +103,7 @@
     return NO;
 }
 
-#pragma mark - Update Contacts API -
+#pragma mark - Update Contacts API
 
 - (BOOL)updateListOfContacts:(NSArray *)contacts {
     
@@ -120,6 +120,8 @@
     
     return result;
 }
+
+#pragma mark - Update contact in Database
 
 - (BOOL)updateContactInDatabase:(ALContact *)contact {
     
@@ -198,6 +200,8 @@
     return NO;
 }
 
+#pragma mark - Set unread count in Database
+
 - (BOOL)setUnreadCountDB:(ALContact *)contact {
     
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -230,7 +234,7 @@
     return NO;
 }
 
-#pragma mark - Add Contacts API -
+#pragma mark - Add Contacts API
 
 - (BOOL)addListOfContacts:(NSArray *)contacts {
 
@@ -247,6 +251,8 @@
 
     return result;
 }
+
+#pragma mark - Load contact from database
 
 - (ALContact *)loadContactByKey:(NSString *)key
                           value:(NSString*)value {
@@ -287,6 +293,7 @@
     return contact;
 }
 
+#pragma mark - Database Contact
 
 - (DB_CONTACT *)getContactByKey:(NSString *)key
                           value:(NSString*)value {
@@ -695,6 +702,7 @@
     return originalContact;
 }
 
+#pragma mark - Insert new contact in Database
 - (BOOL)insertNewContact:(ALContact*)contact {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     DB_CONTACT *dbContact = (DB_CONTACT *)[alDBHandler insertNewObjectForEntityForName:@"DB_CONTACT"];
@@ -713,13 +721,14 @@
     return NO;
 }
 
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId
-{
+#pragma mark - Update mute time in Database
+
+- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     
     DB_CONTACT *dbContact = [self getContactByKey:@"userId" value:userId];
     
-    if(dbContact){
+    if (dbContact) {
         dbContact.notificationAfterTime = notificationAfterTime;
         [alDBHandler saveContext];
     }
@@ -744,6 +753,7 @@
     return userDetail;
 }
 
+#pragma mark - Add or Update metadata for user
 - (BOOL)addOrUpdateMetadataWithUserId:(NSString *)userId withMetadataKey:(NSString *)key withMetadataValue:(NSString *)value {
 
     BOOL isSuccess = NO;

@@ -49,6 +49,8 @@ static ALMessageClientService *alMsgClientService;
     return sharedInstance;
 }
 
+#pragma mark - Init
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -56,6 +58,8 @@ static ALMessageClientService *alMsgClientService;
     }
     return self;
 }
+
+#pragma mark - Setup service
 
 - (void)setUpServices {
     self.messageClientService = [[ALMessageClientService alloc] init];
@@ -116,6 +120,8 @@ static ALMessageClientService *alMsgClientService;
         completion(alMessageList.messageList, nil, nil);
     }];
 }
+
+#pragma mark - Message thread
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
@@ -231,8 +237,6 @@ static ALMessageClientService *alMsgClientService;
     }];
 }
 
-
-
 + (void)getMessageListForContactId:(NSString *)contactIds
                            isGroup:(BOOL)isGroup
                         channelKey:(NSNumber *)channelKey
@@ -273,6 +277,7 @@ static ALMessageClientService *alMsgClientService;
     completion(messageArray);
 }
 
+#pragma mark - Send message
 
 - (void)sendMessages:(ALMessage *)alMessage withCompletion:(void(^)(NSString *message, NSError *error)) completion {
 
@@ -355,6 +360,8 @@ static ALMessageClientService *alMsgClientService;
     }];
 
 }
+
+#pragma mark - Sync latest messages with delegate
 
 + (void) getLatestMessageForUser:(NSString *)deviceKeyString
                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
@@ -520,6 +527,8 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
+#pragma mark - Delete message
+
 - (void)deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
 
     if (!keyString) {
@@ -561,6 +570,8 @@ static ALMessageClientService *alMsgClientService;
 
 }
 
+#pragma mark - Delete message thread
+
 - (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion {
 
     if (!contactId && !channelKey) {
@@ -589,7 +600,7 @@ static ALMessageClientService *alMsgClientService;
     }];
 }
 
-+ (ALMessage*)processFileUploadSucess: (ALMessage *) message {
++ (ALMessage *)processFileUploadSucess:(ALMessage *)message {
 
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     DB_Message *dbMessage = (DB_Message*)[messageDBService getMessageByKey:@"key" value:message.key];
@@ -675,6 +686,8 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
+#pragma mark - Sync latest messages
+
 + (void)syncMessages {
     if ([ALUserDefaultsHandler isLoggedIn]) {
         [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
@@ -691,6 +704,8 @@ static ALMessageClientService *alMsgClientService;
     DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:key value:value];
     return [messageDBService createMessageEntity:dbMessage];
 }
+
+#pragma mark - Message information with message key
 
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
                       withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion {
@@ -710,6 +725,8 @@ static ALMessageClientService *alMsgClientService;
     }];
 }
 
+#pragma mark - Sent message sync with delegate
+
 + (void)getMessageSENT:(ALMessage *)alMessage
           withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
         withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
@@ -724,15 +741,16 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
+#pragma mark - Sent message sync
+
 + (void)getMessageSENT:(ALMessage *)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
 
     [self getMessageSENT:alMessage withDelegate:nil withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         completion(messageArray, error);
     }];
-
 }
+
 #pragma mark - Multi Receiver API
-//================================
 
 + (void)multiUserSendMessage:(ALMessage *)alMessage
                   toContacts:(NSMutableArray *)contactIdsArray
@@ -799,9 +817,7 @@ static ALMessageClientService *alMsgClientService;
     return [messageDBService getMessagesCountFromDBForUser:userId];
 }
 
-//============================================================================================================
-#pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
-//============================================================================================================
+#pragma mark Get latest message for User/Channel
 
 - (ALMessage *)getLatestMessageForUser:(NSString *)userId {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
@@ -894,9 +910,11 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
+#pragma mark - Message list for one to one or Channel/Group
+
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion{
+    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
     ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
 
@@ -910,6 +928,8 @@ static ALMessageClientService *alMsgClientService;
     return [messageDBServce handleMessageFailedStatus:message];
 }
 
+#pragma mark - Get Message by key
+
 - (ALMessage *)getMessageByKey:(NSString *)messageKey {
     if (!messageKey) {
         return nil;
@@ -918,6 +938,8 @@ static ALMessageClientService *alMsgClientService;
     ALMessageDBService *messageDBServce = [[ALMessageDBService alloc]init];
     return [messageDBServce getMessageByKey:messageKey];
 }
+
+#pragma mark - Sync message metadata
 
 + (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
     if (!alMsgClientService) {
@@ -943,6 +965,8 @@ static ALMessageClientService *alMsgClientService;
         }];
     }
 }
+
+#pragma mark - Update message metadata
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata
@@ -979,6 +1003,8 @@ static ALMessageClientService *alMsgClientService;
         }
     }];
 }
+
+#pragma mark - Fetch reply message
 
 - (void)fetchReplyMessages:(NSMutableArray<NSString *> *)keys withCompletion:(void(^)(NSMutableArray<ALMessage *>* messages))completion {
     if (!keys || keys.count < 1) {
@@ -1037,6 +1063,8 @@ static ALMessageClientService *alMsgClientService;
 
 }
 
+#pragma mark - Delete message for all
+
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     if (!keyString) {
@@ -1051,6 +1079,8 @@ static ALMessageClientService *alMsgClientService;
         completion(apiResponse, error);
     }];
 }
+
+#pragma mark - Total unread message count
 
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion {
     ALUserService *alUserService = [[ALUserService alloc] init];
@@ -1070,6 +1100,8 @@ static ALMessageClientService *alMsgClientService;
         completion(totalUnreadCount.integerValue, nil);
     }
 }
+
+#pragma mark - Total unread conversation count
 
 - (void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError *error))completion {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];

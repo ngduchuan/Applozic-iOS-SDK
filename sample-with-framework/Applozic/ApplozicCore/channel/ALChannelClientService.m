@@ -51,6 +51,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 @implementation ALChannelClientService
 
+#pragma mark - Init
 
 - (instancetype)init {
     self = [super init];
@@ -60,9 +61,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     return self;
 }
 
+#pragma mark - Setup services
+
 -(void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
+
+#pragma mark - Channel information
 
 - (void)getChannelInfo:(NSNumber *)channelKey
     orClientChannelKey:(NSString *)clientChannelKey
@@ -120,6 +125,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         completion(error, response);
     }];
 }
+
+#pragma mark - Channel Create
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
@@ -180,6 +187,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Add a new memeber to Channel
+
 - (void)addMemberToChannel:(NSString *)userId
         orClientChannelKey:(NSString *)clientChannelKey
              andChannelKey:(NSNumber *)channelKey
@@ -206,6 +215,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Remove memeber from Channel
+
 - (void)removeMemberFromChannel:(NSString *)userId
              orClientChannelKey:(NSString *)clientChannelKey
                   andChannelKey:(NSNumber *)channelKey
@@ -231,6 +242,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Delete Channel by admin of Channel
+
 - (void)deleteChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
        withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
@@ -253,6 +266,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         completion(error, response);
     }];
 }
+
+#pragma mark - Leave Channel
 
 - (void)leaveChannel:(NSNumber *)channelKey
   orClientChannelKey:(NSString *)clientChannelKey
@@ -277,6 +292,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         completion(error, response);
     }];
 }
+
+#pragma mark - Add multiple users in Channels
 
 - (void)addMultipleUsersToChannel:(NSMutableArray *)channelKeys
                      channelUsers:(NSMutableArray *)channelUsers
@@ -310,6 +327,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         completion(error, response);
     }];
 }
+
+#pragma mark - Update Channel
 
 - (void)updateChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
@@ -374,6 +393,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 }
 
+#pragma mark - Update Channel metadata
+
 - (void)updateChannelMetaData:(NSNumber *)channelKey
            orClientChannelKey:(NSString *)clientChannelKey
                      metadata:(NSMutableDictionary *)metaData
@@ -413,6 +434,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 
 }
+
+#pragma mark - Channel Sync
 
 - (void)syncCallForChannel:(NSNumber *)updatedAt
       withFetchUserDetails:(BOOL)fetchUserDetails
@@ -474,6 +497,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Parent and sub groups method
+
 - (void)addChildKeyList:(NSMutableArray *)childKeyList
            andParentKey:(NSNumber *)parentKey
          withCompletion:(void (^)(id json, NSError *error))completion {
@@ -526,9 +551,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
-//=================================================
-#pragma mark ADD/REMOVING VIA CLIENT KEYS
-//=================================================
+#pragma mark - Add/Remove via Client keys
 
 - (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
            andClientParentKey:(NSString *)clientParentKey
@@ -584,6 +607,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Mark conversation as read
+
 -(void)markConversationAsRead:(NSNumber *)channelKey
                withCompletion:(void (^)(NSString *, NSError *))completion {
     NSString *conversationReadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
@@ -606,6 +631,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Mute/Unmute Channel
 
 -(void)muteChannel:(ALMuteRequest *)alMuteRequest
     withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -673,6 +699,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - List of Channel with category
+
 -(void)getChannelListForCategory:(NSString *)category
                   withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
     
@@ -716,6 +744,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 
 }
+
+#pragma mark - List of Channels in Application
 
 -(void)getAllChannelsForApplications:(NSNumber *)endTime
                       withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
@@ -791,6 +821,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Add member to contacts group
+
 - (void)addMemberToContactGroup:(NSString *)contactsGroupId
                     withMembers:(NSMutableArray *)membersArray
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -826,6 +858,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         
     }];
 }
+
+#pragma mark - Get members From contacts group with type
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
                            withGroupType:(short)groupType
@@ -869,6 +903,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Remove member From contacts group
+
 - (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
                           withUserId:(NSString *)userId
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
@@ -878,6 +914,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 
 }
+
+#pragma mark - Remove member From contacts group with type
 
 - (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                              withGroupType:(short)groupType
@@ -913,6 +951,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     }];
 }
 
+#pragma mark - Channel information with response
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
@@ -956,6 +995,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
     }];
 }
+
+#pragma mark - Get members userIds from contacts group
 
 -(void)getMultipleContactGroup:(NSArray *)contactGroupIds
                 withCompletion:(void(^)(NSError *error, NSArray *channel)) completion {

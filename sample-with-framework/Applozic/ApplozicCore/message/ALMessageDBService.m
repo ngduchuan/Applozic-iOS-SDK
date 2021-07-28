@@ -25,6 +25,7 @@
 
 @implementation ALMessageDBService
 
+#pragma mark - Init
 
 - (instancetype)init
 {
@@ -34,6 +35,8 @@
     }
     return self;
 }
+
+#pragma mark - Setup service
 
 -(void)setupServices {
     self.messageService = [[ALMessageService alloc] init];
@@ -79,6 +82,7 @@
     return messageArray;
 }
 
+#pragma mark - Add message in Database
 
 - (DB_Message *)addMessage:(ALMessage *)message {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -159,7 +163,8 @@
     }
 }
 
-//update Message APIS
+#pragma mark - Update message Delivery report in Database
+
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString
                          withStatus:(int)status {
 
@@ -194,7 +199,7 @@
     }
 }
 
-//Delete Message APIS
+#pragma mark - Delete message by messagekey
 
 - (void)deleteMessageByKey:(NSString *)keyString {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -210,6 +215,8 @@
         ALSLog(ALLoggerSeverityInfo, @"Failed to delete the Message not found with this key: %@", keyString);
     }
 }
+
+#pragma mark - Delete all messages for user or group
 
 - (void)deleteAllMessagesByContact:(NSString *)contactId
                       orChannelKey:(NSNumber *)key {
@@ -250,7 +257,8 @@
     }
 }
 
-//Generic APIS
+#pragma mark - Message table is empty
+
 - (BOOL)isMessageTableEmpty {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     NSEntityDescription *dbMessageEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
@@ -264,6 +272,8 @@
     }
     return true;
 }
+
+#pragma mark - Delete all objects in Database tables
 
 - (void)deleteAllObjectsInCoreData {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -295,6 +305,8 @@
     }
 }
 
+#pragma mark - Get Database message by message key
+
 - (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString *)value {
 
     //Runs at MessageList viewing/opening...ONLY FIRST TIME AND if delete an msg
@@ -316,9 +328,7 @@
     return nil;
 }
 
-//------------------------------------------------------------------------------------------------------------------
 #pragma mark - ALMessagesViewController DB Operations.
-//------------------------------------------------------------------------------------------------------------------
 
 - (void)getMessages:(NSMutableArray *)subGroupList {
     if ([self isMessageTableEmpty] ||
@@ -371,9 +381,8 @@
     }];
 
 }
-//------------------------------------------------------------------------------------------------------------------
-#pragma mark -  Helper methods
-//------------------------------------------------------------------------------------------------------------------
+
+#pragma mark - Helper methods
 
 - (void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray *theArray)) completion {
 
@@ -387,7 +396,6 @@
         completion(YES, messages);
     }];
 }
-
 
 - (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
     [self.messageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
@@ -726,6 +734,8 @@
     return msgArray;
 }
 
+#pragma mark - Get all attachment messages
+
 - (NSMutableArray *)getAllMessagesWithAttachmentForContact:(NSString *)contactId
                                              andChannelKey:(NSNumber *)channelKey
                                  onlyDownloadedAttachments:(BOOL)onlyDownloaded {
@@ -765,6 +775,8 @@
 }
 
 
+#pragma mark - Pending messages
+
 - (NSMutableArray *)getPendingMessages {
 
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -803,9 +815,7 @@
 
 }
 
-//============================================================================================================
-#pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
-//============================================================================================================
+#pragma mark - Get latest message for User/Channel
 
 - (ALMessage *)getLatestMessageForUser:(NSString *)userId {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
@@ -922,6 +932,7 @@
     }
 }
 
+#pragma mark - Get message by message key
 
 - (ALMessage*)getMessageByKey:(NSString*)messageKey {
     DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
@@ -944,6 +955,8 @@
     dbMessage.status = [NSNumber numberWithInt:SENT];
     [alDBHandler saveContext];
 }
+
+#pragma mark - Message list
 
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
@@ -988,6 +1001,7 @@
     }
 }
 
+#pragma mark - Message list for one to one or Channel/Group
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
@@ -1233,6 +1247,8 @@
     }
     return dbMessageEntity;
 }
+
+#pragma mark - Update message metadata
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata {

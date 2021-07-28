@@ -20,6 +20,8 @@
 
 NSString *const ApplozicClientDomain = @"ApplozicClient";
 
+#pragma mark - Init with AppId
+
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey {
     self = [super init];
     if (self) {
@@ -28,6 +30,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
     return self;
 }
+
+#pragma mark - Init with AppId and delegate
 
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     self = [super init];
@@ -56,9 +60,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     alAttachmentService = [ALAttachmentService sharedInstance];
 }
 
-//==============================================================================================================================================
-#pragma mark - Login method
-//==============================================================================================================================================
+#pragma mark - Login
 
 - (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
 
@@ -99,9 +101,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 }
 
 
-//==============================================================================================================================================
-#pragma mark - Logout method
-//==============================================================================================================================================
+#pragma mark - Logout
 
 - (void)logoutUserWithCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
@@ -115,9 +115,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 }
 
 
-//==============================================================================================================================================
-#pragma mark - Updte APNS device token  method
-//==============================================================================================================================================
+#pragma mark - Update APN's device token to applozic
 
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
@@ -146,10 +144,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 }
 
-
-//==============================================================================================================================================
-#pragma mark - Messages list and indivaul chat   methods
-//==============================================================================================================================================
+#pragma mark - Messages list
 
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
     [_messageDbService getLatestMessages:isNextPage withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
@@ -157,6 +152,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }];
 }
 
+
+#pragma mark - Message thread
 
 - (void)getMessages:(MessageListRequest *)messageListRequest
 withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
@@ -167,9 +164,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 
 
-//==============================================================================================================================================
-#pragma mark - Converstion read mark methods
-//==============================================================================================================================================
+#pragma mark - Converstion read mark group and one to one
 
 - (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
     if (groupId != nil && groupId.integerValue != 0) {
@@ -201,9 +196,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
-//==============================================================================================================================================
-#pragma mark - Send  text message method
-//==============================================================================================================================================
+#pragma mark - Send text message
 
 - (void)sendTextMessage:(ALMessage*)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion {
 
@@ -230,9 +223,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 }
 
-//==============================================================================================================================================
-#pragma mark - Send  Attachment message method
-//==============================================================================================================================================
+#pragma mark - Send Attachment message
 
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage {
     
@@ -242,9 +233,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     [alAttachmentService sendMessageWithAttachment:attachmentMessage withDelegate:self.delegate withAttachmentDelegate:self.attachmentProgressDelegate];
 }
 
-//==============================================================================================================================================
-#pragma mark - Download  Attachment message method
-//==============================================================================================================================================
+#pragma mark - Download Attachment message
 
 - (void)downloadMessageAttachment:(ALMessage *)alMessage {
     if (!alMessage) {
@@ -253,9 +242,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     [alAttachmentService downloadMessageAttachment:alMessage withDelegate:self.attachmentProgressDelegate];
 }
 
-//==============================================================================================================================================
 #pragma mark - Channel/Group methods
-//==============================================================================================================================================
 
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
                       withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
@@ -328,9 +315,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 }
 
-//==============================================================================================================================================
-#pragma mark - User block or unblock method
-//==============================================================================================================================================
+#pragma mark - User block
 
 - (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion{
 
@@ -339,6 +324,8 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }];
 }
 
+#pragma mark - User unblock
+
 - (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion{
 
     [_userService unblockUser:userId withCompletionHandler:^(NSError *error, BOOL userUnblock) {
@@ -346,10 +333,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }];
 }
 
-
-//==============================================================================================================================================
-#pragma mark - Mute/unmute Group method
-//==============================================================================================================================================
+#pragma mark - Mute/Unmute Channel
 
 - (void)muteChannelOrUnMuteWithChannelKey:(NSNumber *)channelKey
                                   andTime:(NSNumber *)notificationTime
@@ -366,9 +350,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 }
 
-//==============================================================================================================================================
-#pragma mark - SubscribeToConversation/UnsubscribeToConversation for updates
-//==============================================================================================================================================
+#pragma mark - APN's notification process
 
 - (void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo {
 
@@ -377,11 +359,15 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
+#pragma mark - Subscribe To Conversation for real time updates
+
 - (void)subscribeToConversation {
     if (alMQTTConversationService) {
         [alMQTTConversationService subscribeToConversation];
     }
 }
+
+#pragma mark - Unsubscribe To Conversation from real time updates
 
 - (void)unsubscribeToConversation {
     if (alMQTTConversationService) {
@@ -389,11 +375,15 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
+#pragma mark - Subscribe To typing status for one to one chat
+
 - (void)subscribeToTypingStatusForOneToOne {
     if (alMQTTConversationService) {
         [alMQTTConversationService subscribeToChannelConversation:nil];
     }
 }
+
+#pragma mark - Subscribe To typing status for Channel/Group chat
 
 - (void)subscribeToTypingStatusForChannel:(NSNumber *)channelKey {
     if (alMQTTConversationService) {
@@ -401,11 +391,15 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
+#pragma mark - Unsubscribe To typing status events for one to one
+
 - (void)unSubscribeToTypingStatusForOneToOne {
     if (alMQTTConversationService) {
         [alMQTTConversationService unSubscribeToChannelConversation:nil];
     }
 }
+
+#pragma mark - Unsubscribe To typing status events for Channel/Group
 
 - (void)unSubscribeToTypingStatusForChannel:(NSNumber *)chanelKey {
     if (alMQTTConversationService) {
@@ -426,6 +420,8 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
+#pragma mark - Send typing status event for one to one or Channel/Group chat
+
 - (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL)isTyping {
     if (channelKey != nil) {
         [self sendTypingStatusForChannelKey:channelKey withTyping:isTyping];
@@ -433,6 +429,8 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
         [self sendTypingStatusForUserId:userId withTyping:isTyping];
     }
 }
+
+#pragma mark - Message list for one to one or Channel/Group
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
@@ -442,7 +440,6 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     [messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
         completion(messageList, error);
     }];
-
 }
 
 @end
