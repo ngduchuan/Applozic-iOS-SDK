@@ -1025,16 +1025,15 @@ static int const ALMQTT_MAX_RETRY = 3;
         __weak ALMessagesViewController *weakSelf = self;
 
         double intervalSeconds = 0.0;
-        NSInteger minutes = 0;
 
         if (self.mqttRetryCount == 1) {
-            minutes = [ALUtilityClass randomNumberBetween:1 maxNumber:10];
+            intervalSeconds = [ALUtilityClass randomNumberBetween:1 maxNumber:10] * 60.0;
         } else if (self.mqttRetryCount == 2) {
-            minutes = [ALUtilityClass randomNumberBetween:10 maxNumber:20];
+            intervalSeconds = [ALUtilityClass randomNumberBetween:10 maxNumber:20] * 60.0;
         }
-        intervalSeconds = minutes * 60.0;
 
-        NSLog(@"MQTT retry in MessagesViewController will start after %ld minutes", (long)minutes);
+        NSLog(@"MQTT retry in MessagesViewController will start after %.f seconds", intervalSeconds);
+        
         self.mqttRetryCount++;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
