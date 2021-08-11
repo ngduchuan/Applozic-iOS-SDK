@@ -415,6 +415,10 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return AL_DEFAULT_APP_GROUP;
 }
 
++ (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum {
+    return minimum + arc4random_uniform((uint32_t)(maximum - minimum + 1));
+}
+
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
 + (NSBundle*)getBundle {
 #if SWIFT_PACKAGE

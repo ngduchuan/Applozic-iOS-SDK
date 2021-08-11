@@ -55,4 +55,6 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 + (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 + (NSString *)saveImageToDocDirectory:(UIImage *)image;
 + (NSString *)getAppGroupsName;
++ (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum;
+
 @end

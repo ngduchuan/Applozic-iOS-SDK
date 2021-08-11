@@ -23,6 +23,7 @@ static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
+static int const ALMQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface
@@ -61,6 +62,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 @property (strong, nonatomic) ALMessageService *messageService;
 @property (strong, nonatomic) ALChannelService *channelService;
 @property (strong, nonatomic) ALUserService *userService;
+@property (nonatomic) NSInteger mqttRetryCount;
 
 @end
 
@@ -1011,8 +1013,37 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)mqttConnectionClosed {
-    if (self.alMqttConversationService) {
-        [self.alMqttConversationService retryConnection];
+
+    if (self.mqttRetryCount > ALMQTT_MAX_RETRY) {
+        return;
+    }
+
+    BOOL isBackgroundState = ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
+
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]
+        && !isBackgroundState) {
+        __weak ALMessagesViewController *weakSelf = self;
+
+        double intervalSeconds = 0.0;
+        NSInteger minutes = 0;
+
+        if (self.mqttRetryCount == 1) {
+            minutes = [ALUtilityClass randomNumberBetween:1 maxNumber:10];
+        } else if (self.mqttRetryCount == 2) {
+            minutes = [ALUtilityClass randomNumberBetween:10 maxNumber:20];
+        }
+        intervalSeconds = minutes * 60.0;
+
+        NSLog(@"MQTT retry in MessagesViewController will start after %ld minutes", (long)minutes);
+        self.mqttRetryCount++;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+            [weakSelf subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+                if (!connected) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALMessagesViewController");
+                }
+            }];
+        });
     }
 }
 
