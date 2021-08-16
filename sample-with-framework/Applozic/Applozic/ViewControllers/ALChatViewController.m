@@ -3937,10 +3937,11 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
         } else if (self.mqttRetryCount == 2) {
             intervalSeconds = [ALUtilityClass randomNumberBetween:10 maxNumber:20] * 60.0;
         }
-        
-        NSLog(@"MQTT retry in ChatViewController will start after %.f seconds", intervalSeconds);
-        
+
         self.mqttRetryCount++;
+
+        ALSLog(ALLoggerSeverityError, @"MQTT retry in ChatViewController will start after %.f seconds and the retry count is : %ld",intervalSeconds, (long)self.mqttRetryCount);
+
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [weakSelf subscribeToConversationWithCompletionHandler:^(BOOL connected) {
                 if (!connected) {

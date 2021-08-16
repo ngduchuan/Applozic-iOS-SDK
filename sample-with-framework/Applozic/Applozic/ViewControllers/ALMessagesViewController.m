@@ -800,7 +800,7 @@ static int const ALMQTT_MAX_RETRY = 3;
         }
         
         [self.messageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
-                               withCompletion:^(NSString *string, NSError *error) {
+                                  withCompletion:^(NSString *string, NSError *error) {
             
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"DELETE_FAILED_CONVERSATION_ERROR_DESCRIPTION :: %@", error.description);
@@ -1032,9 +1032,10 @@ static int const ALMQTT_MAX_RETRY = 3;
             intervalSeconds = [ALUtilityClass randomNumberBetween:10 maxNumber:20] * 60.0;
         }
 
-        NSLog(@"MQTT retry in MessagesViewController will start after %.f seconds", intervalSeconds);
-        
         self.mqttRetryCount++;
+        
+        ALSLog(ALLoggerSeverityError, @"MQTT retry in MessagesViewController will start after %.f seconds and the retry count is : %ld",intervalSeconds, (long)self.mqttRetryCount);
+
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
             [weakSelf subscribeToConversationWithCompletionHandler:^(BOOL connected) {
@@ -1052,7 +1053,6 @@ static int const ALMQTT_MAX_RETRY = 3;
         if (self.alMqttConversationService) {
             [self.alMqttConversationService subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString] withCompletionHandler:^(BOOL subscribed, NSError *error) {
                 if (error) {
-                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed with error %@", error);
                     completion(false);
                     return;
                 }
