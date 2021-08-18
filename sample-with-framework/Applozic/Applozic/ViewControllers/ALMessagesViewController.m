@@ -23,7 +23,7 @@ static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
-static int const ALMQTT_MAX_RETRY = 3;
+static NSInteger const ALMQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface
@@ -1014,7 +1014,7 @@ static int const ALMQTT_MAX_RETRY = 3;
 
 - (void)mqttConnectionClosed {
 
-    if (self.mqttRetryCount > ALMQTT_MAX_RETRY) {
+    if (self.mqttRetryCount >= ALMQTT_MAX_RETRY) {
         return;
     }
 

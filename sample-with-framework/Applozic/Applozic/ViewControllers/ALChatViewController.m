@@ -56,7 +56,7 @@ NSString *const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotific
 NSString *const ALAudioVideoCallForUserIdKey = @"USER_ID";
 NSString *const ALCallForAudioKey = @"CALL_FOR_AUDIO";
 NSString *const ALDidSelectStartCallOptionKey = @"ALDidSelectStartCallOption";
-static int const ALMQTT_MAX_RETRY = 3;
+static NSInteger const ALMQTT_MAX_RETRY = 3;
 
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
 ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
@@ -3921,7 +3921,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
 - (void)mqttConnectionClosed {
     
-    if (self.mqttRetryCount > ALMQTT_MAX_RETRY) {
+    if (self.mqttRetryCount >= ALMQTT_MAX_RETRY) {
         return;
     }
     
