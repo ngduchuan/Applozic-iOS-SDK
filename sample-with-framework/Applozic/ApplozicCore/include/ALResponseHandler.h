@@ -8,8 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "ALAuthService.h"
 
-@class ALAuthService;
-
 @interface ALResponseHandler : NSObject
 
 @property (nonatomic, strong) ALAuthService *authService;

@@ -8,10 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALUserDefaultsHandler.h"
-#import "ALRegisterUserClientService.h"
 #import "ALAuthClientService.h"
-
-@class ALAuthClientService;
 
 @interface ALAuthService : NSObject
 
