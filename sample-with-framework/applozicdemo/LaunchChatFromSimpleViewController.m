@@ -149,8 +149,8 @@
 //===============================================================================
 
 - (IBAction)mChatLaunchButton:(id)sender {
-    
-    ALMessageService * service = [[ALMessageService alloc] init];
+
+    ALMessageService *service = [[ALMessageService alloc] init];
     [service getTotalUnreadMessageCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
 
         if (error){
@@ -159,19 +159,7 @@
         }
 
         NSLog(@"Current count is now @@ :%lu",(unsigned long)unreadCount);
-
-
-        [service getTotalUnreadConversationCountWithCompletionHandler:^(NSUInteger unreadCount, NSError *error) {
-
-            if (error){
-                NSLog(@"ERRROR in fetching getTotalUnreadConversationCountWithCompletionHandler");
-                return;
-            }
-
-            NSLog(@"Current count is now getTotalUnreadConversationCountWithCompletionHandler  @@ :%lu",(unsigned long)unreadCount);
-        }];
     }];
-
 }
 
 -(void)checkUserContact:(NSString *)userId displayName:(NSString *)displayName withCompletion:(void(^)(ALContact * contact))completion
@@ -179,10 +167,10 @@
     ALContactService *contactService = [ALContactService new];
     ALContactDBService *contacDB = [ALContactDBService new];
     ALContact * contact = [contactService loadOrAddContactByKeyWithDisplayName:userId value: displayName];
-    
+    ALUserService *userService = [[ALUserService alloc] init];
     if(![contacDB getContactByKey:@"userId" value:userId])
     {
-        [ALUserService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [userService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
             
             [contacDB updateUserDetail:alUserDetail];
             ALContact * alContact = [contacDB loadContactByKey:@"userId" value:userId];
