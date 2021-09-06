@@ -377,7 +377,7 @@
 		18E0EFEA25DCF41C00F6EDE3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5439DB1C19B8D600C686BC /* SystemConfiguration.framework */; };
 		18E0F00125DCF85900F6EDE3 /* NSString+Encode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF125DCF85800F6EDE3 /* NSString+Encode.m */; };
 		18E0F00225DCF85900F6EDE3 /* ALUtilityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF225DCF85800F6EDE3 /* ALUtilityClass.m */; };
-		18E0F00425DCF85900F6EDE3 /* NSData+AES.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18E0F00425DCF85900F6EDE3 /* NSData+AES.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */; };
 		18E0F00525DCF85900F6EDE3 /* NSData+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF525DCF85800F6EDE3 /* NSData+AES.m */; };
 		18E0F00725DCF85900F6EDE3 /* ALSearchResultCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF725DCF85800F6EDE3 /* ALSearchResultCache.m */; };
 		18E0F00825DCF85900F6EDE3 /* ALLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF825DCF85800F6EDE3 /* ALLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1280,6 +1280,7 @@
 		1896EE9C25DBE6DD0038EBFF /* prefrence */ = {
 			isa = PBXGroup;
 			children = (
+				1896EEA325DBE84C0038EBFF /* ALInternalSettings.h */,
 				1896EE9E25DBE84B0038EBFF /* ALApplozicSettings.m */,
 				1896EEA025DBE84C0038EBFF /* ALInternalSettings.m */,
 				1896EEA125DBE84C0038EBFF /* ALUserDefaultsHandler.m */,
@@ -1411,6 +1412,7 @@
 		18E0EFED25DCF64D00F6EDE3 /* utilities */ = {
 			isa = PBXGroup;
 			children = (
+				18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */,
 				18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */,
 				18E0EFF925DCF85900F6EDE3 /* ALLogger.m */,
 				18E0EFF225DCF85800F6EDE3 /* ALUtilityClass.m */,
@@ -1436,7 +1438,6 @@
 			children = (
 				1855AC72261F2260009EE721 /* ALConversationListRequest.h */,
 				18E0F01725DCF89F00F6EDE3 /* MQTTInMemoryPersistence.h */,
-				18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */,
 				1896EEF025DBEA650038EBFF /* TSBlurView.h */,
 				1896EEF225DBEA650038EBFF /* TSMessage.h */,
 				1896EEFA25DBEA660038EBFF /* TSMessageView.h */,
@@ -1462,7 +1463,6 @@
 				1896EEC025DBE8E30038EBFF /* DB_CONTACT.h */,
 				1896EEC525DBE8E30038EBFF /* DB_FileMetaInfo.h */,
 				1896EEA225DBE84C0038EBFF /* ALApplozicSettings.h */,
-				1896EEA325DBE84C0038EBFF /* ALInternalSettings.h */,
 				1896EEA425DBE84C0038EBFF /* ALUserDefaultsHandler.h */,
 				1858B64625FA12E20095FF81 /* ALSecureStore.h */,
 				1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */,

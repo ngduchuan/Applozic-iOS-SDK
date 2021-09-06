@@ -9,6 +9,9 @@
 #import "ALInternalSettings.h"
 #import "ALUtilityClass.h"
 
+static NSString *const AL_REGISTRATION_STATUS_MESSAGE = @"com.applozic.userdefault.REGISTRATION_STATUS_MESSAGE";
+static NSString *const AL_REGISTERED = @"AL_REGISTERED";
+
 @implementation ALInternalSettings
 
 + (void)setRegistrationStatusMessage:(NSString *)message {

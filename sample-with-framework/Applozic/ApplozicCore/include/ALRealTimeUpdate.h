@@ -11,6 +11,7 @@
 #import "ALUserDetail.h"
 #import "ALChannel.h"
 
+/// `ApplozicUpdatesDelegate` protocol is used for real time delegate events for message, channel, user, typing.
 @protocol ApplozicUpdatesDelegate <NSObject>
 
 /// This callback will be called once the new message is received.
@@ -88,6 +89,7 @@
 
 @end
 
+/// `ALRealTimeUpdate` class is used for real time events for message, chanel, user, typing.
 @interface ALRealTimeUpdate : NSObject
 
 @end

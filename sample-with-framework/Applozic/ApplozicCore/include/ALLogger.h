@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
+/// `ALLoggerVerbosity` levels for showing  none, basic, plain or full logs.
 typedef enum {
     ALLoggerVerbosityNone = 0,
     ALLoggerVerbosityPlain,
@@ -14,13 +15,17 @@ typedef enum {
     ALLoggerVerbosityFull
 } ALLoggerVerbosity;
 
+/// `ALLoggerSeverity` log levels for showing in Xcode log console.
 typedef enum {
-    ALLoggerSeverityUnset = 0,		// Unset means it is not factored in on the decision to log, defaulting to the production vs debug and user overrides.
-    ALLoggerSeverityDebug,			// Lowest log level
+    /// Unset means it is not factored in on the decision to log, defaulting to the production vs debug and user overrides.
+    ALLoggerSeverityUnset = 0,
+    /// Lowest log level.
+    ALLoggerSeverityDebug,
     ALLoggerSeverityInfo,
     ALLoggerSeverityWarn,
     ALLoggerSeverityError,
-    ALLoggerSeverityFatal			// Highest log level
+    /// Highest log level.
+    ALLoggerSeverityFatal
 } ALLoggerSeverity;
 
 
@@ -62,44 +67,65 @@ typedef enum {
 #define NSLog( s, ... )		ALLog( s, ##__VA_ARGS__ )
 #endif
 
-// This is just convenience
+/// This is just convenience
 #define NSStringFromBool(b) (b ? @"YES" : @"NO")
 
-static NSString * const ALLogger_LoggingEnabled = @"ALLogger_LoggingEnabled";	// This is the default NSUserDefaults key
+/// This is the default NSUserDefaults key
+static NSString *const ALLogger_LoggingEnabled = @"ALLogger_LoggingEnabled";
 
+/// `ALLogger` is used for logging logs of Applozic
 @interface ALLogger : NSObject
-
-+ (NSString *)formatForVerbosity:(ALLoggerVerbosity)verbosity;	// Returns the format string for the verbosity. See [+ initialize] for defaults
-+ (void)setFormat:(NSString *)format							// Overrides the default formats for verbosities.
+/// Returns the format string for the verbosity. See [+ initialize] for defaults
++ (NSString *)formatForVerbosity:(ALLoggerVerbosity)verbosity;
+/// Overrides the default formats for verbosities.
++ (void)setFormat:(NSString *)format
      forVerbosity:(ALLoggerVerbosity)verbosity;
-+ (void)resetDefaultLogFormats;									// Resets the formats back to ALLogger defaults
-
+/// Resets the formats back to ALLogger defaults.
++ (void)resetDefaultLogFormats;
+/// Set the Minimum for showing logs.
 + (void)setMinimumSeverity:(ALLoggerSeverity)severity;
-+ (ALLoggerSeverity)minimumSeverity;							// Defaults to ALLoggerSeverityUnset (not used in determining whether or not to log)
-+ (BOOL)usingSeverityFiltering;									// Yes if minimumSeverity has been set.
-+ (BOOL)meetsMinimumSeverity:(ALLoggerSeverity)severity;		// Yes if severity is greater than or equal to minimumSeverity
-
-+ (BOOL)isProduction;											// Returns YES when DEBUG is not present in the Preprocessor Macros
-+ (BOOL)shouldLogInProduction;									// Default is NO.
-+ (BOOL)shouldLogInDebug;										// Default is YES.
-+ (BOOL)userDefaultsOverride;									// Default is NO. Cached BOOL of the userDefaultsKey
+/// Defaults to ALLoggerSeverityUnset (not used in determining whether or not to log).
++ (ALLoggerSeverity)minimumSeverity;
+/// Yes if minimumSeverity has been set.
++ (BOOL)usingSeverityFiltering;
+/// Yes if severity is greater than or equal to minimumSeverity
++ (BOOL)meetsMinimumSeverity:(ALLoggerSeverity)severity;
+/// Returns YES when DEBUG is not present in the Preprocessor Macros
++ (BOOL)isProduction;
+/// Default is NO.
++ (BOOL)shouldLogInProduction;
+/// Default is YES.
++ (BOOL)shouldLogInDebug;
+/// Default is NO. Cached BOOL of the userDefaultsKey.
++ (BOOL)userDefaultsOverride;
+/// :nodoc:
 + (void)setShouldLogInProduction:(BOOL)shouldLogInProduction;
+/// :nodoc:
 + (void)setShouldLogInDebug:(BOOL)shouldLogInDebug;
+/// :nodoc:
 + (void)setUserDefaultsOverride:(BOOL)userDefaultsOverride;
-+ (BOOL)loggingEnabled;											// returns true if (not production and shouldLogInDebug) OR (production build and shouldLogInProduction) or (userDefaultsOverride == YES)
-
-+ (NSString *)userDefaultsKey;									// Default key is ALLogger_LoggingEnabled
+/// returns true if (not production and shouldLogInDebug) OR (production build and shouldLogInProduction) or (userDefaultsOverride == YES)
++ (BOOL)loggingEnabled;
+/// Default key is ALLogger_LoggingEnabled
++ (NSString *)userDefaultsKey;
+/// :nodoc:
 + (void)setUserDefaultsKey:(NSString *)userDefaultsKey;
 
-+ (void)log:(NSString *)format, ...;							// Logs a format, and variables for the format.
+/// Logs a format, and variables for the format.
++ (void)log:(NSString *)format, ...;
 
-+ (void)logWithVerbosity:(ALLoggerVerbosity)verbosity			// Logs a preset format based on the vspecified verbosity, and variables for the format.
+/// Logs a preset format based on the vspecified verbosity, and variables for the format.
++ (void)logWithVerbosity:(ALLoggerVerbosity)verbosity
                 severity:(ALLoggerSeverity)severity
               formatArgs:(NSArray *)args;
 
-+ (NSMutableArray *) logArray;									// gets singleton instance of logArray - from disk, or new
-+ (void) saveLogArray;											// use inside applicationWillTerminate: for continuous logging
-+ (NSString *) logArrayFilepath;
-+ (NSString *) logArrayAsString;								// convenience method / migration from -applicationLog
+/// gets singleton instance of logArray - from disk, or new
++ (NSMutableArray *)logArray;
+/// use inside applicationWillTerminate: for continuous logging
++ (void)saveLogArray;
+/// :nodoc:
++ (NSString *)logArrayFilepath;
+/// convenience method / migration from -applicationLog
++ (NSString *)logArrayAsString;
 
 @end

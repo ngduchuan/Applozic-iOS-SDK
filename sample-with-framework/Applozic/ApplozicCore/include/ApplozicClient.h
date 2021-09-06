@@ -14,6 +14,7 @@
 #import "ALRegistrationResponse.h"
 #import "ALUser.h"
 
+/// ApplozicClient some of the error types
 typedef NS_ENUM(NSInteger, ApplozicClientError) {
     MessageNotPresent = 1
 };
@@ -52,14 +53,30 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 @end
 
+/// `ApplozicClient` has all the basic methods for building the custom UI.
+///
+/// Some of the methods that this class has:
+///
+/// Initialization of APP-ID, Authentication, User, Block, Message, Conversation, Channel/Group, Real-time Events.
 @interface ApplozicClient : NSObject  <NSURLConnectionDataDelegate>
 
+/// `ApplozicAttachmentDelegate` set delegate for real time updates for attachment upload or download status.
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+
+/// Instance method of `ALMessageService` object.
 @property (nonatomic, retain) ALMessageService *messageService;
+
+/// Instance method of `ALMessageDBService` object.
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
+/// Instance method of `ALUserService` object.
+
 @property (nonatomic, retain) ALUserService *userService;
+
+/// Instance method of `ALChannelService` object.
 @property (nonatomic, retain) ALChannelService *channelService;
 
+/// `ApplozicUpdatesDelegate` is for real time update events.
+/// @warning The ApplozicUpdatesDelegate is set from initWithApplicationKey:withDelegate method only.
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
 /// This is for initialization of the application Key or appID.

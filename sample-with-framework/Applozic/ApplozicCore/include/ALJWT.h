@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+/// `ALJWTProtocol` is used in `ALJWT` for decoding the JWT token.
 @protocol ALJWTProtocol <NSObject>
 /// token header part contents
 @property (nonatomic) NSDictionary<NSString *, id> * _Nonnull header;
@@ -47,14 +48,18 @@
 
 @end
 
+/// `ALJWT` is used for decoding the JWT token use the `decodeWithJwt` method to decode.
 @interface ALJWT : NSObject <ALJWTProtocol>
 
-/// Creates a new instance of <code>ALJWT</code> and decodes the given jwt token.
-/// :param: jwtValue of the token to decode
-/// :returns: a new instance of <code>ALJWT</code> that holds the decode token
+/// Creates a new instance of `ALJWT` and decodes the given jwt token
+/// @param jwtValue Value of the token to decode.
+/// @param error Pass NSError to get any error in decoding JWT token.
+/// @return A new instance of `ALJWT` that holds the decode token.
+
 + (ALJWT * _Nullable)decodeWithJwt:(NSString * _Nonnull)jwtValue
                              error:(NSError * _Nullable * _Nullable)error;
 
+/// Init is unavailable use `decodeWithJwt` method to decode.
 - (nonnull instancetype)init NS_UNAVAILABLE;
 
 @end

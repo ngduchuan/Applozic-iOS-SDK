@@ -11,6 +11,8 @@
 #import "ALApplozicSettings.h"
 #import "ALLogger.h"
 
+static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
+
 @implementation ALDBHandler
 
 + (ALDBHandler *)sharedInstance {

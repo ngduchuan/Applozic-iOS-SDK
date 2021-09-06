@@ -106,7 +106,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 #import "MQTTProperties.h"
-#import "NSData+AES.h"
 #import "ALSearchResultCache.h"
 #import "MQTTStrict.h"
 #import "ALNotificationView.h"
