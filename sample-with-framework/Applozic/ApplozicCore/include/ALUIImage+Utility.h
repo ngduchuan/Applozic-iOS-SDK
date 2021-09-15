@@ -11,7 +11,7 @@
 /// `UIImage` utility class for  image.
 @interface UIImage (Utility)
 
-/// Use this method for geeting size.
+/// Use this method for geeting size from UIImage.
 - (double)getImageSizeInMb;
 /// Use this method for geeting compressed image.
 /// @param sizeInMb Pass the size of image.

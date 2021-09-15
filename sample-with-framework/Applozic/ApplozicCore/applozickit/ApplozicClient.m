@@ -137,9 +137,15 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
             completion(nil, error);
             return;
         }
-        NSLog(@"Registration response from server : %@", response);
-        completion(response, error);
 
+        if (![response isRegisteredSuccessfully]) {
+            NSError *responseError = [NSError errorWithDomain:ApplozicClientDomain
+                                                         code:0
+                                                     userInfo:@{NSLocalizedDescriptionKey:response.message}];
+            completion(nil, responseError);
+            return;
+        }
+        completion(response, error);
     }];
 
 }

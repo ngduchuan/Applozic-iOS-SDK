@@ -17,29 +17,50 @@
 #import "ALChannelInfo.h"
 #import "ALChannelClientService.h"
 
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default create group.
 static NSString *const AL_CREATE_GROUP_MESSAGE = @"CREATE_GROUP_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default remove member in group.
 static NSString *const AL_REMOVE_MEMBER_MESSAGE = @"REMOVE_MEMBER_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default add member in group.
 static NSString *const AL_ADD_MEMBER_MESSAGE = @"ADD_MEMBER_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default joining member in group.
 static NSString *const AL_JOIN_MEMBER_MESSAGE = @"JOIN_MEMBER_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default group name.
 static NSString *const AL_GROUP_NAME_CHANGE_MESSAGE = @"GROUP_NAME_CHANGE_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default icon change.
 static NSString *const AL_GROUP_ICON_CHANGE_MESSAGE = @"GROUP_ICON_CHANGE_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default member left.
 static NSString *const AL_GROUP_LEFT_MESSAGE = @"GROUP_LEFT_MESSAGE";
+/// This constant is set in channel meta data key for hidding or changing the channel action message for default delete group.
 static NSString *const AL_DELETED_GROUP_MESSAGE = @"DELETED_GROUP_MESSAGE";
 
+/// `ALChannelService` class is used for all the channel methods
+///
+/// Some of the methods this class has :
+/// Create channel, Update channel, Add member, Remove member, Channel information. List of channels.
 @interface ALChannelService : NSObject
 
+/// This constant is set key for channel member save status.
 extern NSString *const AL_CHANNEL_MEMBER_SAVE_STATUS;
+/// This constant is set key for channel member save update status data.
 extern NSString *const AL_Updated_Group_Members;
+/// This constant is set key for channel member save completed status.
 extern NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED;
+/// This constant is set key for Message list called.
 extern NSString *const AL_MESSAGE_LIST;
+/// This constant is set key for Message Sync called.
 extern NSString *const AL_MESSAGE_SYNC;
 
+/// Instance method of `ALChannelService`.
 + (ALChannelService *)sharedInstance;
 
+/// Instance method of `ALChannelClientService`.
 @property (nonatomic, strong) ALChannelClientService *channelClientService;
 
+/// Instance method of `ALChannelDBService`.
 @property (nonatomic, strong) ALChannelDBService *channelDBService;
 
+/// :nodoc:
 - (void)callForChannelServiceForDBInsertion:(id)theJson;
 
 /// This method is used to fetch information of a channel like a channel name, imageUrl of a channel, type of channel, and other information.
@@ -492,6 +513,10 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param delegate For real time updates callback will be triggered for channel update
 - (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
+/// This internal method used for updating unread count to zero and send notification with name `Update_unread_count` channelKey will be in object of notification and send the call back delegate using`ApplozicUpdatesDelegate`
+/// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object
+/// @param delegate Set the `ApplozicUpdatesDelegate` for conversation read callback update.
+/// @note This is internal method.
 - (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// This method is used for creating a channel.
@@ -499,10 +524,19 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param completion Once the group/channel is created successful then ALChannelCreateResponse else it will have NSError.
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
+/// This internal method is used for saving channel object in local database.
+/// @param channel Pass the `ALChannel` object.
+/// @param isFromMessageList Pass YES if the call is made for Message List else pass the NO for the Message thread conversation.
 - (void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL)isFromMessageList;
 
+/// This method is internal method used for saving channel members and channels in local data.
+/// @param channelFeedsList Array of `ALChannel` objects.
+/// @param isFromMessageList Pass YES if the call is made for Message List else pass the NO for the Message thread conversation.
 - (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*)channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
 
+/// This method will update mute and unmute time local data base.
+/// @param notificationAfterTime Pass the time in milliseconds.
+/// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object.
 - (void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
                andChnnelKey:(NSNumber*)channelKey;
 

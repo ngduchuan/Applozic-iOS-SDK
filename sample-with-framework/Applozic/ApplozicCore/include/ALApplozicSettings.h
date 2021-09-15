@@ -12,13 +12,9 @@
 /// `ALApplozicSettings` is settings class for `Applozic` Pre-build UI
 @interface ALApplozicSettings : NSObject
 
-
-/// `userDefaults` instance method for user defaults of `ALApplozicSettings`.
+/// instance method for user defaults of `ALApplozicSettings`.
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
 
-
-/// <#Description#>
-/// @param fontFace <#fontFace description#>
 + (void)setFontFace:(NSString *)fontFace;
 + (NSString *)getFontFace;
 

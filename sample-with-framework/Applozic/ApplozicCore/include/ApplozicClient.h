@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// This delegate callback will be called on the progress of uploading bytes.
 /// @param bytesSent Bytes uploaded to the server so far.
-/// @param alMessage It will have ALMessage which can be used for identifying which attachment is currently uploading using messageKey.
+/// @param alMessage It will have `ALMessage` which can be used for identifying which attachment is currently uploading using message Key.
 - (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage;
 
 /// This delegate callback will be called once the attachment upload is failed.
@@ -42,25 +42,21 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// This delegate callback will be called once the uploading is completed.
 /// @param alMessage It will have a message which will have updated details like message key and file meta.
-/// @param oldMessageKey The old message key is used to identify the message in view for replacing the uploaded attachment ALMessage.
+/// @param oldMessageKey The old message key is used to identify the message in view for replacing the uploaded attachment `ALMessage`.
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey;
 
 /// This delegate callback will be called once the downloading is completed.
-/// @param alMessage It will have ALMessage.
+/// @param alMessage It will have `ALMessage`.
 - (void)onDownloadCompleted:(ALMessage *)alMessage;
 
 @optional
 
 @end
 
-/// `ApplozicClient` has all the basic methods for building the custom UI.
-///
-/// Some of the methods that this class has:
-///
-/// Initialization of APP-ID, Authentication, User, Block, Message, Conversation, Channel/Group, Real-time Events.
+/// `ApplozicClient` class used for building the custom UI.
 @interface ApplozicClient : NSObject  <NSURLConnectionDataDelegate>
 
-/// `ApplozicAttachmentDelegate` set delegate for real time updates for attachment upload or download status.
+/// Use `ApplozicAttachmentDelegate` for real time updates of attachment upload or download status.
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 
 /// Instance method of `ALMessageService` object.
@@ -68,110 +64,423 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// Instance method of `ALMessageDBService` object.
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
-/// Instance method of `ALUserService` object.
 
+/// Instance method of `ALUserService` object.
 @property (nonatomic, retain) ALUserService *userService;
 
 /// Instance method of `ALChannelService` object.
 @property (nonatomic, retain) ALChannelService *channelService;
 
-/// `ApplozicUpdatesDelegate` is for real time update events.
-/// @warning The ApplozicUpdatesDelegate is set from initWithApplicationKey:withDelegate method only.
+/// `ApplozicUpdatesDelegate` is for real-time update events for Messages, Channel, User, Typing.
+/// @warning The `ApplozicUpdatesDelegate` is set from `initWithApplicationKey:withDelegate` method only.
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
-/// This is for initialization of the application Key or appID.
-/// @param applicationKey Pass application Key or appID that got from applozic.com.
+/// Get an Applozic client for given Application Key or App-ID.
+///
+///
+/// You need to login to [console](https://console.applozic.com/login) to get your own Application Key or APP-ID of Applozic.
+/// @param applicationKey The unique identifier of application key or APP-ID that is got from applozic.com console.
+///
+/// Example : Get Applozic client using below code:
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; //Pass App ID here
+/// @endcode
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey;
 
-/// This is for initialization of the application key and sets the real-time delegate events for applozic.
-/// @param applicationKey Pass application key or appID that got from applozic.com.
-/// @param delegate Pass the delegate for real-time event callbacks.
+/// Get an Applozic client for given Application Key or App-ID  and set the real-time updates events delegate for applozic.
+///
+///
+/// You need to login to [console](https://console.applozic.com/login) to get your own Application Key or APP-ID of Applozic.
+/// @param applicationKey The unique identifier of application key or APP-ID that is got from applozic.com console.
+/// @param delegate A delegate for real-time update event callbacks.
+///
+/// Example : Get Applozic client using below code:
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self];; // Pass App ID and set the delegate.
+/// @endcode
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
-/// Login user to apploizc using this method once login success then can perform other tasks.
-/// @param alUser ALUser object which will be having user details about like userId, displayName, and other
-/// @param completion Will have ALRegistrationResponse which will be having details about the user.
+/// Login a user to Applozic server.
+///
+///
+/// @param alUser An `ALUser` object details for identifying user on server.
+/// @param completion An `ALRegistrationResponse` describing an success login or An error describing the authentication failure.
+///
+///
+/// Example : To Login an user to applozic server use the below code:
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; //Pass App ID here
+/// ALUser *user = [[ALUser alloc] init];
+/// user.userId = @"USER-ID"; // NOTE : +,*,? are not allowed chars in userId.
+/// user.password = @"USER-PASSWORD"; // User password
+/// user.displayName = @"USER-DISPLAY-NAME"; // User's Display Name
+/// user.imageLink = @""; // Pass Profile image URL link
+/// user.authenticationTypeId = APPLOZIC; // Authentication type id default is APPLOZIC
+/// [ALUserDefaultsHandler setUserAuthenticationTypeId:user.authenticationTypeId];
+///
+/// [applozicClient loginUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+///
+///    if (!error) {
+///       NSLog(@"Login success");
+///    }
+/// }];
+/// @endcode
 - (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 
-/// This method is used for updating APNs device token to applozic server for sending an APNs push notification to iPhone device.
-/// @param apnDeviceToken Pass the apple device token which is required for sending for APNS push notification to iPhone device.
-/// @param completion It as ALRegistrationResponse which will have isRegisteredSuccessfully if successful update else NSError in case error.
+/// Updates an APNs device token to Applozic server.
+///
+///
+/// @param apnDeviceToken An device token which is required for sending for APNs push notification to iPhone device.
+/// @param completion An `ALRegistrationResponse` describing an successful update of token otherwise an error describing the update APNs token failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; //Pass App ID here
+/// [applozicClient updateApnDeviceTokenWithCompletion:apnDeviceToken
+///                                    withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+///
+///    if (error) {
+///        NSLog(@"Failed to update APNs token to applozic server due to: %@",error.localizedDescription);
+///        return;
+///    }
+/// }];
+/// @endcode
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 
-/// This method is for sending an Attachment message in one-to-one or group conversation.
-/// @param attachmentMessage Pass the ALMessage object for sending an attachment message.
+/// Sending an attachment message in one-to-one or channel conversation.
+///
+///
+/// @param attachmentMessage An `ALMessage` object for sending an attachment can be build using `ALMessageBuilder`.
+///
+/// Example : Sending an attachment message in one-to-one conversation:
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; //Pass App ID here
+/// applozicClient.attachmentProgressDelegate = self;
+///
+/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
+///     alMessageBuilder.to = @"USERI-ID"; // Pass Receiver userId to whom you want to send a message.
+///     alMessageBuilder.imageFilePath = @"NAME-OF-FILE"; // File name
+///     alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT;
+/// }];
+///
+/// [applozicClient sendMessageWithAttachment:alMessage];
+///
+/// @endcode
+///
+/// Example: Sending an attachment message in channel conversation:
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; //Pass App ID here
+/// applozicClient.attachmentProgressDelegate = self;
+///
+/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
+///    alMessageBuilder.groupId = CHANNEL-KEY; // Pass channelKey to channel/group you want to send a attchment message
+///    alMessageBuilder.imageFilePath = @"NAME-OF-FILE"; // File name
+///    alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT;
+/// }];
+///
+/// [applozicClient sendMessageWithAttachment:alMessage];
+/// @endcode
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage;
 
-/// This method is used for sending a text message in one-to-one or group conversation.
-/// @param alMessage Pass the ALMessage object for sending a text message
-/// @param completion In case of successful a message sent it will have ALMessage object with messagekey is updated and it as createdAtTime of the message which is created in our server else in case of any error it will have NSError.
+/// Sending a text message in one-to-one or channel conversation.
+///
+///
+/// @param alMessage Message object for sending an attachment message can be build using `ALMessageBuilder`.
+/// @param completion On Message sent successfully it will have `ALMessage` object with updated messagekey or an error describing the send message failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+/// applozicClient.attachmentProgressDelegate = self;
+///
+/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
+///     alMessageBuilder.to = @"USER-ID"; // Pass userId to whom you want to send a message.
+///     alMessageBuilder.message = @"MESSAGE-TEXT"; // Pass message text here.
+/// }];
+///
+/// [applozicClient sendTextMessage:alMessage withCompletion:^(ALMessage *message, NSError *error) {
+///  if (!error) {
+///    NSLog(@"Update the UI message is sent to server");
+///  }
+/// }];
+///
+/// @endcode
 - (void)sendTextMessage:(ALMessage *)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
 
-/// This method is for getting the latest messages list of user and group, grouped by the latest messages with createdAtTime of the messages.
-/// @param isNextPage Pass YES or true in case if want to fetch the next set of messages else Make NO or false to load the first set of messages.
-/// @param completion NSMutableArray will have a list of ALMessage objects else it will have NSError in case of any error comes.
+/// Fetching the list most recent message of all conversations.
+///
+///
+/// @param isNextPage NO to load the all the recent messages otherwise in case of YES to fetch the next set of older messages.
+/// @param completion An array of `ALMessage` objects otherwise an error describing the recent message list failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// BOOL loadNextPage = NO; // Pass YES in case of loading next set of old conversations.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+/// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+///   if (error) {
+///        NSLog(@"Error in fetching all recent conversations %@", error.localizedDescription);
+///        return;
+///    }
+///
+///    for (ALMessage *message in messageList) {
+///        NSLog(@"Message object :%@", [message dictionary]);
+///    }
+/// }];
+/// @endcode
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
-/// This method is used for fetching one-to-one or group chat messages.
-/// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
-/// @param completion If messages are fetched successfully it will have a list of ALMessage objects else it will have NSError in case of any error comes.
+/// Fetching one-to-one or channel conversation messages.
+///
+///
+/// @param messageListRequest `MessageListRequest` in case of one-to-one pass the userId or channelKey in case of a channel.
+/// @param completion If messages are fetched successfully it will have a list of `ALMessage` objects otherwise an error describing the conversation messages failure.
 - (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
-/// Theis method is used for downloading an Attachment in conversation.
-/// @param alMessage Build and pass the ALMessage object.
-- (void)downloadMessageAttachment:(ALMessage*)alMessage;
+/// Download an attachment message in conversation.
+///
+///
+/// @param alMessage An `ALMessage` object for which downloading an attachement in one-to-one or channel conversation.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+/// applozicClient.attachmentProgressDelegate = self;
+///
+/// [applozicClient downloadMessageAttachment:alMessage]; // Pass message object to download.
+/// @endcode
+- (void)downloadMessageAttachment:(ALMessage *)alMessage;
 
-/// This method is for creating a group like public group, open group, private group or group of two.
-/// Below are the types of the groups.
+/// Creating a new channel conversation.
+///
+///
+/// Below are the types of the channel's:
 /// PRIVATE = 1,
 /// PUBLIC = 2,
 /// BROADCAST = 5,
 /// OPEN = 6,
 /// GROUP_OF_TWO = 7
-/// @param channelInfo Pass information about group deatils.
-/// @param completion it will be having complete  deatils about channel and status, if its error or success else it will have NSError.
+/// @param channelInfo Pass information about channel details.
+/// @param completion It will be having complete deatils about channel and status, if its error or success else it will have NSError.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// // Channel members
+/// NSMutableArray *chanelMemberArray = [[NSMutableArray alloc] init];
+///
+/// [chanelMemberArray addObject:@"MemberUserId1"];
+/// [chanelMemberArray addObject:@"MemberUserId2"];
+///
+/// // Channel metadata
+/// NSMutableDictionary *channelMetadata = [[NSMutableDictionary alloc] init];
+///
+/// // Channel info
+/// ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+/// channelInfo.groupName = @"<CHANNEL-NAME>";
+/// channelInfo.imageUrl = @""; // Channel Image URL.
+/// channelInfo.groupMemberList = chanelMemberArray;
+/// channelInfo.metadata = channelMetadata;
+/// channelInfo.type = PUBLIC;
+///
+/// [applozicClient createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+///
+///    if (error) {
+///        NSLog(@"Error in creating a channel : %@", error.localizedDescription);
+///        return;
+///    }
+///
+///    if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///        NSLog(@"Failed to create channel");
+///        return;
+///    }
+///
+///    ALChannel *channel = response.alChannel;
+///    NSLog(@"Channel has been created successfully object :%@",[channel dictionary]);
+///
+/// }];
+///
+/// @endcode
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
-/// This method is used for removing a member from the group.
-/// @param userId Pass userId that wanted to remove from group/channel.
-/// @param channelKey Pass the channelKey for the group that wants to remove a member.
-/// @param clientChannelKey Pass clientChannelKey in case it present else it will be nil.
-/// @param completion The ALAPIResponse will be having a complete response-like status and when the user is removed else it will have NSError.
+/// Removing a member from the channel conversation.
+///
+///
+/// @param userId UserId of user that you wanted to remove from channel conversation.
+/// @param channelKey An channel Key from the `ALChannel` object that wants to remove a member.
+/// @param clientChannelKey Own Channel client key which you have linked with your server otherwise nil.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the remove member failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient removeMemberFromChannelWithUserId:@"RecieverUserId"
+///                                  andChannelKey:channelKey
+///                             orClientChannelKey:clientChannelKey
+///                                withCompletion:^(NSError *error, ALAPIResponse *response) {
+///
+///  if (error) {
+///     NSLog(@"Error in removing a member : %@", error.localizedDescription);
+///     return;
+///   }
+///
+///  if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///     NSLog(@"Failed to remove the member from channel");
+///     return;
+///  }
+///
+/// NSLog(@"Successfully Member has been removed from channel");
+///
+/// }];
+/// @endcode
 - (void)removeMemberFromChannelWithUserId:(NSString *)userId
                             andChannelKey:(NSNumber *)channelKey
                        orClientChannelKey:(NSString *)clientChannelKey
                            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
-/// This method for leave member from the group/channel.
-/// @param userId Pass login userId here to leave from the group.
-/// @param channelKey Pass the channelkey of the group from which the user wants to leave.
-/// @param clientChannelKey Pass here the client clientChannelKey when channelKey is nil.
-/// @param completion The ALAPIResponse will have a complete response-like status and when the user is left else it NSError.
+/// Leave member from the channel conversation.
+///
+///
+/// @param userId Currently logged-in userId in applozic for leaving from channel.
+/// @param channelKey An Channel key which can be accessed from `ALChannel` object key.
+/// @param clientChannelKey Own Channel client key which you have linked with your server otherwise nil.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the leave member failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient leaveMemberFromChannelWithUserId:[ALUserDefaultsHandler getUserId]
+///                                 andChannelKey:channelKey
+///                            orClientChannelKey:clientChannelKey
+///                               withCompletion:^(NSError *error, ALAPIResponse *response) {
+///
+///  if (error) {
+///      NSLog(@"Error in leave a member : %@", error.localizedDescription);
+///      return;
+///  }
+///
+///  if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///     NSLog(@"Failed to leave a member : %@", response.status);
+///     return;
+///  }
+///  NSLog(@"User left successfully from channel.");
+/// }];
+/// @endcode
 - (void)leaveMemberFromChannelWithUserId:(NSString *)userId
                            andChannelKey:(NSNumber *)channelKey
                       orClientChannelKey:(NSString *)clientChannelKey
                           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
-/// This method for add member from the group/channel.
-/// @param userId Pass userId that wants to add in group/channel.
-/// @param channelKey Pass the channelkey of the group from which the user wants to add.
-/// @param clientChannelKey Pass the clientChannelKey in case if have a client channel key.
-/// @param completion ALAPIResponse will be having a complete response-like status and when the user is added else it NSError.
+/// Add member to the channel conversation.
+///
+///
+/// @param userId Receiver userId that you want add in the channel.
+/// @param channelKey An Channel key which can be accessed from `ALChannel` object key.
+/// @param clientChannelKey Own Channel client key which you have linked with your server otherwise nil.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the add member to channel failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient addMemberToChannelWithUserId:@"RecieverUserId"
+///                             andChannelKey:channelKey
+///                        orClientChannelKey:clientChannelKey
+///                            withCompletion:^(NSError *error, ALAPIResponse *response) {
+///
+/// if (error) {
+///     NSLog(@"Error in add member in channel :%@", error.localizedDescription);
+///     return;
+///  }
+///
+/// if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///     NSLog(@"Failed to add member in channel :%@", response.status);
+///     return;
+///  }
+///
+///   NSLog(@"User added successfully.");
+///
+/// }];
+/// @endcode
 - (void)addMemberToChannelWithUserId:(NSString *)userId
                        andChannelKey:(NSNumber *)channelKey
                   orClientChannelKey:(NSString *)clientChannelKey
                       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
-/// This method is used for updating channel/group.
-/// @param channelKey Pass channelKey if channel key present for updating.
-/// @param newName Pass new channel name here for updating.
-/// @param imageURL Pass image URL to update group/channel image.
-/// @param clientChannelKey Pass the clientChannelKey in case if have a client channel key
-/// @param flag If updating metadata of group then pass YES or true else pass NO or false.
-/// @param metaData It is extra information that needs to pass in-group/channel and use it later when it's required
-/// @param channelUsers If you want to update group users roles like admin, member
-/// @param completion ALAPIResponse will be having a complete response-like status and when the channel is updated else it NSError.
+/// Update's channel information.
+///
+///
+/// @param channelKey An Channel key which can be accessed from `ALChannel` object key.
+/// @param newName Name of the channel.
+/// @param imageURL Channel Profile image URL.
+/// @param clientChannelKey Own Channel client key which you have linked with your server otherwise nil.
+/// @param flag YES for updating channel metadata Otherwise NO.
+/// @param metaData Extra information that can be passed in channel and can access it later when it's required.
+/// @param channelUsers To update channel users roles like admin, member the object can be created using class `ALChannelUser`.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update channel failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// // Channel member roles
+/// ALChannelUser *channelUser = [[ALChannelUser alloc] init];
+/// channelUser.userId = @"MemberUserId1";
+/// channelUser.role = [NSNumber numberWithInt:ADMIN];
+///
+/// NSMutableArray *channelMemberRoleArray = [[NSMutableArray alloc] init];
+/// [channelMemberRoleArray addObject:channelUser];
+///
+/// [applozicClient updateChannelWithChannelKey:CHANNEL-KEY
+///                                 andNewName:@"<CHANNEL-NAME>"
+///                                andImageURL:@"<IMAGE-URL>"
+///                         orClientChannelKey:@"<CHANNEL-CLIENT-KEY>"
+///                         isUpdatingMetaData:NO
+///                                   metadata:metadata
+///                             orChannelUsers:channelMemberRoleArray
+///                             withCompletion:^(NSError *error, ALAPIResponse *response) {
+///    if (error) {
+///        NSLog(@"Error in channel update : %@", error.localizedDescription);
+///        return;
+///    }
+///
+///    if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///        NSLog(@"Failed to update channel : %@", response.status);
+///        return;
+///    }
+///
+///   NSLog(@"Updated channel successfully.");
+///
+/// }];
+/// @endcode
 - (void)updateChannelWithChannelKey:(NSNumber *)channelKey
                          andNewName:(NSString *)newName
                         andImageURL:(NSString *)imageURL
@@ -181,82 +490,308 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
-/// This method is used for getting channel/group information.
-/// @param channelKey Pass channelKey for the group/channel you want a deatils.
-/// @param clientChannelKey If you have client channelKey pass else pass it as nil.
-/// @param completion ALChannel object will have complete details of channel/group and AlChannelFeedResponse if any API error comes in group/channel then check channelResponse else check for NSError
+/// Fetching an channel information.
+///
+///
+/// @param channelKey An channel Key of the channel.
+/// @param clientChannelKey Own Channel client key which you can link with your server otherwise nil.
+/// @param completion An error describing the channel information failure otherwise an `ALChannel` object will have information of channel.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient getChannelInformationWithChannelKey:channelKey
+///                              orClientChannelKey:channelClientKey
+///                                     withCompletion:^(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse) {
+///
+///    if (error) {
+///        NSLog(@"Error in fetching a channel :%@", error.localizedDescription);
+///        return;
+///    }
+///
+///    if (alChannel) {
+///        NSLog(@"Channel object is :%@", [alChannel dictionary]);
+///    }
+///
+/// }];
+///@endcode
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
                              withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion;
 
-/// This method is used for logout user from applozic this will clear all data of login user.
-/// @param completion ALAPIResponse will be having a complete response like status else it will have NSError.
+/// Logout the user from Applozic.
+///
+///
+/// @param completion An `ALAPIResponse` will be having a complete response like status otherwise an error describing the logout failure.
+/// @note Logout user will clear local stored data of login user.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient logoutUserWithCompletion:^(NSError *error, ALAPIResponse *response) {
+///
+/// }];
+/// @endcode
 - (void)logoutUserWithCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
-/// This method is used for mute and unmute a group/channel based on time and channelKey
-/// @param channelKey Pass channelkey which you want to mute or unmute a group/channel
-/// @param notificationTime Pass time you want to mute or unmute group/chanel
-/// @param completion ALAPIResponse will have status else NSError
+/// Mute or unmute a channel notifications for given channel key and time stamp.
+///
+///
+/// @param channelKey An channel Key of the channel.
+/// @param notificationTime Time stamp in milliseconds to mute or unmute channel.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the mute channel failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient muteChannelOrUnMuteWithChannelKey:channelKey
+///                                          andTime:notificationTime
+///                                   withCompletion:^(ALAPIResponse *response, NSError *error) {
+///
+///    if (error) {
+///        NSLog(@"Failed to mute or unmute the channel got some error : %@",error.localizedDescription);
+///        return;
+///    }
+///
+///    if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+///        NSLog(@"Channel muted or unmute successful");
+///    }
+/// }];
+/// @endcode
 - (void)muteChannelOrUnMuteWithChannelKey:(NSNumber *)channelKey
                                   andTime:(NSNumber *)notificationTime
                            withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-/// This method is used for unblocking the user who is already blocked.
-/// @param userId Pass userId whom you want to unblock.
-/// @param completion If userBlock is YES or true then it's unblocked else it will have an error.
+/// Unblocks the user from receiving messages and other updates related to the receiver.
+///
+///
+/// @param userId UserId of the receiver user whom you want to unblock.
+/// @param completion YES user is unblocked otherwise an error describing the user unblock failure.
+///
+/// @code
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient unBlockUserWithUserId:receiverUserId withCompletion:^(NSError *error, BOOL userUnblock) {
+///
+/// if (error) {
+///     NSLog(@"Failed to unblock the user got some error : %@",error.localizedDescription);
+///     return;
+///  }
+///
+/// }];
+/// @endcode
 - (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion;
 
-/// This method is used to block the user.
-/// @param userId Pass userId whom you want to block.
-/// @param completion If userBlock is YES or true then it's unblocked else it will have an error.
+/// Blocks the user from receiving messages and other updates related to the receiver.
+///
+///
+/// @param userId UserId of the receiver user whom you want to block.
+/// @param completion YES user is blocked otherwise an error describing the user block failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient blockUserWithUserId:receiverUserId withCompletion:^(NSError *error, BOOL userBlock) {
+///
+///    if (error) {
+///        NSLog(@"Failed to block the user got some error : %@",error.localizedDescription);
+///        return;
+///    }
+/// }];
+/// @endcode
 - (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion;
 
-/// This method is used for mark conversation as read in channel/group conversation where unread count present will be marked as read
-/// @param groupId Pass groupId to mark a conversation as read.
-/// @param completion If the response is not nil it will have a success or error response string else it will have NSError
+/// Mark the all the messages of conversation as read in channel for given channelKey.
+///
+///
+/// @param groupId Channel key to mark a all messages of conversation as read.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the conversation read failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"];
+///
+/// [applozicClient markConversationReadForGroup:CHANNEL-KEY withCompletion:^(NSString *response, NSError *error) {
+///
+///    if (error) {
+///        NSLog(@"Error in conversation read:%@",error);
+///        return;
+///    }
+///
+///    NSLog(@"Marked a conversation successfully");
+///
+/// }];
+/// @endcode
 - (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString *response, NSError *error))completion;
 
-///  This method is used for mark conversation as read for one-to-one conversation where unread count present that will be marked as read.
-/// @param userId  Pass userId to mark a conversation as read.
-/// @param completion If the response is not nil it will have a success or error response string else it will have NSError.
+/// Mark conversation as read in one-to-one conversation for given receiver userId.
+///
+///
+/// @param userId  Receiver userId of user to mark a conversation as read.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the mark conversation failure.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass App ID here.
+///
+/// [applozicClient markConversationReadForOnetoOne:@"receiverUserId" withCompletion:^(NSString *response, NSError *error) {
+///
+///    if (error) {
+///        NSLog(@"Error in marking conversation read :%@",error.localizedDescription);
+///        return;
+///    }
+///
+///     NSLog(@"Marked a conversation successfully");
+///
+/// }];
+/// @endcode
 - (void)markConversationReadForOnetoOne:(NSString *)userId withCompletion:(void(^)(NSString *response, NSError *error))completion;
 
-/// This method is for handing the APNS or VOIP push notification messages
-/// @param application Pass the UIApplication object.
-/// @param userInfo Pass the userInfo its notification data NSDictionary.
+/// APNs push notification messages proccessing.
+///
+///
+/// @param application UIApplication of the APNs notification delegate.
+/// @param userInfo An userInfo notification dictionary.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and delegate.
+///
+/// [applozicClient notificationArrivedToApplication:application withDictionary:userInfo];
+///
+/// @endcode
 - (void)notificationArrivedToApplication:(UIApplication *)application withDictionary:(NSDictionary *)userInfo;
 
-/// This method is used for subscribing to real-time events for conversation.
+/// Subscribe for all real-time update events for conversations.
+///
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and delegate.
+///
+/// [applozicClient subscribeToConversation];
+/// @endcode
 - (void)subscribeToConversation;
 
-/// This method is used for unsubscribing to real-time events for conversation.
+/// Unsubscribe for all real-time update events for conversations.
+///
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and delegate.
+///
+/// [applozicClient unsubscribeToConversation];
+/// @endcode
 - (void)unsubscribeToConversation;
 
-/// This method is used for unsubscribing to typing status for group/channel.
-/// @param chanelKey Pass channelKey of group/channel that you want to unsubscribe.
+/// Unsubscribe for typing status events of channel for the given channel key.
+///
+///
+/// @param chanelKey An channel Key from the `ALChannel` object that you want to unsubscribe.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and delegate.
+///
+/// [applozicClient subscribeToTypingStatusForChannel:@<CHANNEL-KEY>]; // Pass the Channel key of the ALChannel
+///
+/// @endcode
 - (void)unSubscribeToTypingStatusForChannel:(NSNumber *)chanelKey;
 
-/// This method is used for unsubscribing the typing status events from one to one.
+/// This method is used for unsubscribing the typing status events from one-to-one conversation.
+///
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and delegate.
+///
+/// [applozicClient unSubscribeToTypingStatusForOneToOne];
+///
+/// @endcode
 - (void)unSubscribeToTypingStatusForOneToOne;
 
-/// This method is used for sending a typing status in one-to-one or group/channel conversation.
-/// @param userId If it one to one conversation then pass login userId else pass nil.
-/// @param channelKey If its group conversation pass the channelKey for send typing status else pass nil in case of one-to-one conversation.
-/// @param isTyping If the logged user is typing pass YES or true in isTyping else on stop of user typing pass NO or false to stop the typing.
-- (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL)isTyping;
+/// Sending an typing status in one-to-one or channel conversation.
+///
+///
+/// @param userId For one-to-one conversation pass the receiver userId otherwise nil.
+/// @param channelKey For channel conversation pass the channelKey from `ALChannel` object otherwise nil.
+/// @param isTyping YES to start the typing and NO to stop the typing in conversation.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here
+///
+/// [applozicClient sendTypingStatusForUserId:recieverUserId orForGroupId:channelKey withTyping:typingStarted];
+///
+/// @endcode
+- (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber *)channelKey withTyping:(BOOL)isTyping;
 
-/// This method is used subscribing one-to-one real-time typing status events.
+/// Subscribes real-time typing events for one-to-one conversation.
+///
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here
+///
+/// [applozicClient subscribeToTypingStatusForOneToOne];
+/// @endcode
 - (void)subscribeToTypingStatusForOneToOne;
 
-/// This method is used subscribing to group/channel typing status events.
-/// @param channelKey Pass the channelKey/groupId for subscribing real-time typing events.
+/// Subscribes typing events for channel conversation.
+///
+///
+/// @param channelKey An Unique channel key for subscribing real-time typing events.
+///
+/// @code
+/// @import ApplozicCore;
+///
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here
+///
+/// [applozicClient subscribeToTypingStatusForChannel:channelKey]; // Pass the channel key of the channel conversation.
+/// @endcode
 - (void)subscribeToTypingStatusForChannel:(NSNumber *)channelKey;
 
-/// This method is used for getting the latest messages for contact or group.
-/// @param isNextPage if you want to load the next set of messages pass YES or true to load else pass NO or false.
-/// @param isGroup To get groups messages only then pass YES or true it will give group latest messages else
-/// to get only user latest messages then pass NO or false.
-/// @param completion Array of messages of type ALMessage and error if failed to get the messages.
+/// Fetching the list most recent message of one-one or channel conversations.
+///
+///
+/// @param isNextPage NO to load the all the recent messages otherwise in case of YES to fetch the next set of older messages.
+/// @param isGroup YES will give all channel recent conversations, For NO to get the all one-to-one recent conversations.
+/// @param completion Array of messages of type `ALMessage` otherwise an error describing the recent conversations failure.
+///
+/// @code
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>"]; // Pass your APP-ID here
+///
+/// BOOL loadNextPage = NO; // Pass YES in case of loading next set of old conversations.
+/// BOOL loadGroups = NO; // Pass YES in case of loading group conversations.
+///
+/// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+///     if (error) {
+///        NSLog(@"Failed to load the recent conversations :%@",error.localizedDescription);
+///        return;
+///     }
+///
+///    for (ALMessage *message in messageList) {
+///        NSLog(@"Message object %@",[message dictionary]);
+///    }
+/// }];
+/// @endcode
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error))completion;

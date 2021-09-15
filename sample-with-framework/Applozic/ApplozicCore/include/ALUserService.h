@@ -26,12 +26,7 @@
 ///
 /// Some of the methods that this class:
 ///
-/// User details fetch.
-/// Mark conversation for one to one chat.
-/// Update user details to applozic server.
-/// Report user message.
-/// List of Registered contacts or users in Applozic Server.
-/// Update user display who is not logged-in in Applozic server.
+/// User details fetch, Mark conversation for one to one chat, Update user details to applozic server, Report user message, List of Registered contacts or users in Applozic Server, Update user display who is not logged-in in Applozic server.
 ///
 @interface ALUserService : NSObject
 
@@ -122,7 +117,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 
 /// This method is used for reseting the unread count.
 /// @param completion Response json and Error in case of any error during reset.
-/// @warning This method will be removed in future updates..
+/// @warning This method will be removed in future updates.
 - (void)resettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion;
 
 /// The method is used for updating the display name, image URL, or status of a logged-in user in user.
@@ -169,7 +164,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
         withCompletion:(void(^)(ALAPIResponse *alAPIResponse, NSError *theError))completion;
 
 /// This method is used for reseting the unread count.
-/// @warning This method will be removed in future updates..
+/// @warning This method will be removed in future updates.
 - (void)processResettingUnreadCount;
 
 /// This method is used for searching the user based on the name of the user.
@@ -196,7 +191,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 
 /// This method used for reporting the message to the admin of the account
 /// @param messageKey Pass message key of message object
-/// @param completion ALAPIResponse repoonse callback if success or error and NSError if any error occurs
+/// @param completion ALAPIResponse response callback if success or error and NSError if any error occurs
 - (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 /// This method is used for disable the chat.

@@ -808,7 +808,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self freezeView:deletedFlag];
     [self.label setHidden:deletedFlag];
     if (deletedFlag) {
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getUserDeletedText]];
+        [ALNotificationView showNotification:[ALApplozicSettings getUserDeletedText]];
     }
     return deletedFlag;
 }
@@ -880,7 +880,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [notification showGroupLeftMessage];
         disableUserInteractionInChannel = YES;
     } else if ([ALChannelService isChannelDeleted:self.channelKey]) {
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        [ALNotificationView showNotification:[ALApplozicSettings getGroupDeletedTitle]];
         disableUserInteractionInChannel = YES;
     } else if ([ALChannelService isConversationClosed:self.channelKey]) {
         disableUserInteractionInChannel = YES;
@@ -1103,7 +1103,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)channelDeleted {
     if ([ALChannelService isChannelDeleted:self.channelKey]) {
         [self freezeView:YES];
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        [ALNotificationView showNotification:[ALApplozicSettings getGroupDeletedTitle]];
     }
 }
 

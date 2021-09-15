@@ -10,10 +10,13 @@
 #import "ALJson.h"
 #import "ALChannel.h"
 
+/// `ALChannelFeed` class is used for parsing the Channel JSON object.
 @interface ALChannelFeed : ALJson
 
+/// This will have array of `ALChannel` objects
 @property (nonatomic) NSMutableArray <ALChannel *> *channelFeedsList;
 
+/// This will have in case of there are any conversation objects.
 @property (nonatomic) NSMutableArray <ALChannel *> *conversationProxyList;
 
 @end

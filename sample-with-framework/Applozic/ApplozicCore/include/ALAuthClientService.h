@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
 
+/// `ALAuthClientService` class is has methods for JWT token.
 @interface ALAuthClientService : NSObject
+
+/// This method is used for refreshing JWT auth token from server.
+/// @param completion <#completion description#>
+/// @note This method will generate new JWT token when this is called.
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 @end

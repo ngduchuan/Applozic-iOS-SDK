@@ -18,18 +18,18 @@
 ///    alMessageBuilder.message = @"<MESSAGE-TEXT>"; // Pass message text here.
 /// }];
 /// @endcode
-/// For Sending a message in channel or group chat:
+/// For sending a message in channel or group chat:
 /// @code
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
-///     alMessageBuilder.groupId = @"<CHANNEL-KEY>"; //Pass channelKey here to whom you want to send a message.
+///     alMessageBuilder.groupId = @<CHANNEL-KEY>; //Pass channelKey here to whom you want to send a message.
 ///     alMessageBuilder.message = @"<MESSAGE-TEXT>"; // Pass message text here.
 /// }];
 /// @endcode
-/// For Sending an attachment message:
+/// For sending an attachment message:
 /// @code
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
-///   alMessageBuilder.to = @"userId"; // Set the userId of the receiver to send message in one to one chat. and will be nil case of channel or group chat
-///   alMessageBuilder.groupId = channelKey; // Pass channelKey to channel/group you want to send a attchment message else will be nil.
+///   alMessageBuilder.to = @"<USER-ID>"; // Set the userId of the receiver to send message in one to one chat and will be nil case of channel or group chat.
+///   alMessageBuilder.groupId = @<CHANNEL-KEY>; // Pass channelKey to channel/group you want to send a attchment message else will be nil.
 ///   alMessageBuilder.imageFilePath = @"Pass the name of the file"; // File name
 ///   alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT;
 /// }];

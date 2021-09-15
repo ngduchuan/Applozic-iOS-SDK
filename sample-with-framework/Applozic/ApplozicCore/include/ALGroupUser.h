@@ -8,7 +8,6 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
-
 /// `ALGroupUser` this class is used for creating channel members with role during channel creation.
 @interface ALGroupUser : ALJson
 
