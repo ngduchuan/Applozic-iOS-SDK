@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
-/// `ALMessageInfo` class is used for parsing the Message information JSON data and mapping it
+/// `ALMessageInfo` class is used for parsing the Message information JSON data and mapping it.
 @interface ALMessageInfo : ALJson
 
 /// UserId of the User.

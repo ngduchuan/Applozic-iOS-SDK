@@ -91,10 +91,13 @@ typedef enum {
 
 /// User notification type is used for identifying the logged-in user notification is disabled, enabled, disable sound, enable the sound in APNs notification.
 typedef enum {
-
+    /// Enables the APN's notification sound.
     AL_NOTIFICATION_ENABLE_SOUND = 0,
+    /// Disable the APN's notification sound.
     AL_NOTIFICATION_DISABLE_SOUND = 1,
+    /// Enable the notifications.
     AL_NOTIFICATION_ENABLE = 0,
+    /// Dsiable the notifications.
     AL_NOTIFICATION_DISABLE = 2
 } AL_NOTIFICATION_TYPE_MODE;
 

@@ -33,7 +33,7 @@
 - (void)saveWithContext:(NSManagedObjectContext *)context
              completion:(void (^)(NSError *error))completion;
 
-/// This method is used for fetching the data from core data base this will require `NSFetchRequest` object for proccessing.
+/// Fetching the data from core database this will require `NSFetchRequest` object for Processing.
 /// @param fetchrequest Create a fetch request for fetching array of data.
 /// @param fetchError Pass the `NSError` to check the status of fetch request.
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
@@ -42,30 +42,31 @@
 /// @param name Pass the name of the entity.
 - (NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name;
 
-/// Result count for fetch request.
-/// @param fetchrequest Pass the fetch request to get the count of objects.
+/// Gets Result count for fetch request.
+/// @param fetchrequest Fetch request to get the count of objects.
 - (NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
 
 /// To get the `NSManagedObject` by `NSManagedObjectID` from core data.
 /// @param objectID Pass the `ManagedObjectID`.
 - (NSManagedObject *)existingObjectWithID:(NSManagedObjectID *)objectID;
 
-/// This will insert new object in main context for entity name given.
+/// Insert new object in main context for entity name given.
 /// @param entityName Pass the name of the entity that data as to be inserted.
 - (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName;
 
-/// This will insert new object in private context for entity name given.
+/// Insert new object in private context for entity name given.
 /// @param entityName Pass the name of entity.
 /// @param context Pass the context to insert the object.
 - (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *)context;
 
-/// Deletes the managed object from core data.
+/// Deletes the managed object from core database.
 /// @param managedObject Pass themanaged object that you want to delete from core data.
 - (void)deleteObject:(NSManagedObject *)managedObject;
 
 /// Used for performing batch update in core data.
 /// @param updateRequest Pass the batch update request.
 /// @param fetchError Pass the error in case of any error the object will not be nil else it will be nil in case of success update.
+/// @return Returns the NSBatchUpdateResult in case of updated otherwise nil.
 - (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError;
 
 @end

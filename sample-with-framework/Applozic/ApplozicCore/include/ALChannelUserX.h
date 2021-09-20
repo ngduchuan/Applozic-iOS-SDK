@@ -47,7 +47,7 @@ typedef enum {
 /// Role of the channel member.
 @property (nonatomic, strong) NSNumber *role;
 
-/// Init for the JSON NSDictionary for creating a object of `ALChannelUserX`.
+/// Init for the JSON NSDictionary for creating an object of `ALChannelUserX`.
 /// @param messageDictonary Pass JSON dctionary for creating object.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 

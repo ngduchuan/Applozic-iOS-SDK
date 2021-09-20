@@ -12,45 +12,72 @@
 #import "ALAPIResponse.h"
 #import "ALResponseHandler.h"
 
-static NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 static short AL_VERSION_CODE = 112;
-static NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 
+/// `ALRegisterUserClientService` used for authentication of the user, APN's or VOIP device token update, update notification modes, Sync account status of Application, Logout user.
 @interface ALRegisterUserClientService : NSObject
 
+/// `ALResponseHandler` instance method is used for actual request call to API's. Default instance is created from `init` method of `ALRegisterUserClientService`.
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
+/// Register or Login user to Applozic server.
+/// @param user An `ALUser` object details for identifying the user on the server.
+/// @param completion An ALAPIResponse will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the login failure
 - (void)initWithCompletion:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
 
+/// Updates an APN's device token to the applozic server.
+///
+/// @param apnDeviceToken APN's device token is used for sending an APNs push notifications to iPhone device.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the logout failure.
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
 
+/// Updates notification modes the user can enable, disable sound, disable the notifications.
+///
+/// @param notificationMode An notification mode to update to applozic server.
+///
+/// The list of notification modes are:
+/// AL_NOTIFICATION_ENABLE_SOUND = 0,
+/// AL_NOTIFICATION_DISABLE_SOUND = 1,
+/// AL_NOTIFICATION_ENABLE = 0,
+/// AL_NOTIFICATION_DISABLE = 2
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update notification failure.
 + (void)updateNotificationMode:(short)notificationMode
                 withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
+/// :nodoc:
 - (void)connect;
 
+/// :nodoc:
 - (void)disconnect;
 
+/// Logouts the user from Applozic server.
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the logout failure.
+/// @note Logout user will clear locally stored data of applozic logged-in user.
 - (void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
+/// Used for updating current Applozic App version code to apploizc server.
 + (BOOL)isAppUpdated;
 
-- (void)syncAccountStatus;
+/// Syncs the account status.
+/// @deprecated Method wil be removed in future.
+- (void)syncAccountStatus DEPRECATED_ATTRIBUTE;
 
+/// Syncs the account pricing status of Application.
+/// @param completion An `ALRegistrationResponse` describing a successful account status synced or An error describing the sync account failure.
 - (void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
 - (void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
-/// This method is used for updating APNs and VOIP token to applozic server if both tokens are exists
-/// If either one of token doesn't exist it will store in user defaults for future use
+/// Update's APNs and VOIP token to applozic server.
+///
 /// @param apnsOrVoipDeviceToken Pass APNs or VOIP token.
 /// @param isAPNsToken Pass YES in case of APNs token, NO in case of VOIP token.
-/// @param completion will trigger in case if any success or error.
-
+/// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update APNs or VOIP device token failure.
 - (void)updateAPNsOrVOIPDeviceToken:(NSString *)apnsOrVoipDeviceToken
                    withApnTokenFlag:(BOOL)isAPNsToken
                      withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
-/// This method is used for accessing currently stored APN's Or APN's and VOIP device token
+/// Accessing currently stored (APN's) or (VOIP) device token.
 - (NSString *)getRegistrationId;
+
 @end
