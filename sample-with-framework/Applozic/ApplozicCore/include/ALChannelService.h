@@ -84,7 +84,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// This is the internal method to get the group member's name to show in a navigation bar.
 - (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
 
-/// This method is used to fetch information of channel like channel name,imageUrl of chanel, type of channel and other information.
+/// This method is used to fetch information of channel like channel name,imageUrl of Channel, type of channel and other information.
 /// @param channelKey Pass the channelkey or groupId that is required to get the channel information.
 /// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
 /// @param completion Pass the ALChannel will have information of the channel else error in case of NSError.

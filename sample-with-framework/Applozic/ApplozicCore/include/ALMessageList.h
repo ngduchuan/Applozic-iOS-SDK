@@ -9,32 +9,31 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
-/// `ALMessageList` class is used for parsing the Message list or Message thread JSON response.
+/// `ALMessageList` class is used for parsing the Message list or individual conversation JSON response.
 @interface ALMessageList : ALJson
 
-/// The array of `ALMessage` objects.
+/// Array of `ALMessage` objects from an one-to-one or channel messges.
 @property (nonatomic) NSMutableArray *messageList;
 
 /// :nodoc:
 @property (nonatomic) NSMutableArray *connectedUserList;
 
-/// The array of `ALUserDetail` objects.
+/// Array of `ALUserDetail` objects users who are currently had chat in one-to-one or channel conversation.
 @property (nonatomic) NSMutableArray *userDetailsList;
 
-/// The array of `ALConversationProxy` objects.
+/// Array of `ALConversationProxy` objects.
 @property(nonatomic) NSMutableArray *conversationPxyList;
 
-/// In case of Message thread the userId will be present else it will be nil
+/// In case of one-to-one individual conversation the userId will be present otherwise, it will be nil.
 @property(nonatomic) NSString *userId;
 
-/// In case of Message thread the groupId will be present else it will be nil
+/// In case of Channel individual conversation the groupId or channelKey will be present otherwise, it will be nil.
 @property(nonatomic) NSNumber *groupId;
 
-
-/// This method is used for parsing the Message list or Message thread JSON.
-/// @param syncMessageResponse Pass the JSON response of list or thread message
+/// Used for parsing the Message list or individual conversation JSON.
+/// @param syncMessageResponse Pass the JSON response of list or individual conversation.
 /// @param userId Set the userId for thread message.
-/// @param groupId Set the groupId in case of channel or group conversation
+/// @param groupId Set the channel key in case of channel conversation.
 - (id)initWithJSONString:(NSString *)syncMessageResponse andWithUserId:(NSString *)userId andWithGroup:(NSNumber *)groupId;
 
 

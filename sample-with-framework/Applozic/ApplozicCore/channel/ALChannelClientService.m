@@ -247,12 +247,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 - (void)deleteChannel:(NSNumber *)channelKey
    orClientChannelKey:(NSString *)clientChannelKey
        withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
-    NSString *deleteChanelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, DELETE_CHANNEL_URL];
+    NSString *deleteChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, DELETE_CHANNEL_URL];
     NSString *deleteChannelParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
     if (clientChannelKey) {
         deleteChannelParamString = [NSString stringWithFormat:@"clientGroupId=%@",[clientChannelKey urlEncodeUsingNSUTF8StringEncoding]];
     }
-    NSMutableURLRequest *deleteChannelRequest = [ALRequestHandler createGETRequestWithUrlString:deleteChanelURLString paramString:deleteChannelParamString];
+    NSMutableURLRequest *deleteChannelRequest = [ALRequestHandler createGETRequestWithUrlString:deleteChannelURLString paramString:deleteChannelParamString];
 
     [self.responseHandler authenticateAndProcessRequest:deleteChannelRequest andTag:@"DELETE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 
@@ -338,11 +338,11 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
           orChildKeys:(NSMutableArray *)childKeysList
        orChannelUsers:(NSMutableArray *)channelUsers
         andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
-    NSString *updateChanelURLString;
+    NSString *updateChannelURLString;
     if (imageURL && [imageURL isEqualToString:@""]) {
-        updateChanelURLString = [NSString stringWithFormat:@"%@%@?resetGroupImageUrl=true", KBASE_URL, UPDATE_CHANNEL_URL];
+        updateChannelURLString = [NSString stringWithFormat:@"%@%@?resetGroupImageUrl=true", KBASE_URL, UPDATE_CHANNEL_URL];
     } else {
-        updateChanelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
+        updateChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
     }
 
     NSMutableDictionary *updateChannelDictionary = [NSMutableDictionary new];
@@ -377,7 +377,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING_CHANNEL_UPDATE :: %@", updateChannelParamString);
     
-    NSMutableURLRequest *updateChannelRequest = [ALRequestHandler createPOSTRequestWithUrlString:updateChanelURLString paramString:updateChannelParamString];
+    NSMutableURLRequest *updateChannelRequest = [ALRequestHandler createPOSTRequestWithUrlString:updateChannelURLString paramString:updateChannelParamString];
 
     [self.responseHandler authenticateAndProcessRequest:updateChannelRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
 

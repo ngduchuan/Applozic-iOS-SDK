@@ -13,11 +13,11 @@
 /// Used to tell the backend what kind of authentication the user wishes to use to be authenticated. See the types for details.
 typedef enum
 {
-    /// This tells the Applozic backend that you will handle authentication yourself and provide it with the access token/password. In this case, pass your access token in the user’s `password` field Refer to [this](https://docs.applozic.com/docs/access-token-url) link to get more information.
+    /// Tells the Applozic  that you will handle authentication yourself and provide it with the password. In this case, pass your access token in the user’s `password` field Refer to [this](https://docs.applozic.com/docs/access-token-url) to get more information.
     CLIENT = 0,
     /// This tells the Applozic backend to handle the authentication itself. Use this if you do not know what you should be using.
     APPLOZIC = 1,
-    /// This deprecated will be removed in next updates.
+    /// Deprecated will be removed in next updates.
     FACEBOOK DEPRECATED_ATTRIBUTE = 2,
 } AuthenticationType;
 
@@ -121,9 +121,9 @@ typedef enum
 /// :nodoc:
 @property NSNumber *contactType;
 
-/// These are added features that Applozic provides.
+/// Sets the addedfeatures that Applozic provides.
 ///
-/// Features are functionalities that are advanced enough to require added setup for them to work.
+/// Features are functionalities that are advanced enough to require added set up for them to work.
 /// In the case of "100" audio calls and "101" video calls you will need to use `ApplozicAudioVideo` Call SDK that works with the Chat SDK.
 @property NSMutableArray *features;
 

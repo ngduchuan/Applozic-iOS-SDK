@@ -24,7 +24,7 @@
         andTag:(NSString *)tag
  WithCompletionHandler:(void(^)(id theJson , NSError *theError))reponseCompletion;
 
-/// Authenticate to applozic sever by JWT token validation and proccess the request for API call.
+/// Authenticate to Applozic sever by JWT token validation and proccess the request for API call.
 /// @param theRequest Create a URLRequest using `ALRequestHandler`.
 /// @param tag Pass the tag for request to identify the request.
 /// @param completion An complete JSON response otherwise an error describing the Authenticate failure.
@@ -33,7 +33,7 @@
         WithCompletionHandler:(void (^)(id, NSError *))completion;
 
 
-/// Authenticate to applozic sever for JWT token and will have the mutable URL request updated with JWT Token for calling the Applozic sever.
+/// Authenticate to Applozic sever for JWT token and will have the mutable URL request updated with JWT Token for calling the Applozic sever.
 /// @param request Create a URLRequest using `ALRequestHandler`.
 /// @param completion Will have `NSMutableURLRequest` if success in generating JWT token otherwise an error describing the Authenticate failure.
 - (void)authenticateRequest:(NSMutableURLRequest *)request

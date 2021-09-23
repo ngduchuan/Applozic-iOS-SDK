@@ -22,10 +22,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Init with AppId
 
-- (instancetype)initWithApplicationKey:(NSString *)applicationKey {
+- (instancetype)initWithApplicationKey:(NSString *)appID {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:applicationKey];
+        [ALUserDefaultsHandler setApplicationKey:appID];
         [self setUpServices];
     }
     return self;
@@ -33,10 +33,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Init with AppId and delegate
 
-- (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (instancetype)initWithApplicationKey:(NSString *)appID withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:applicationKey];
+        [ALUserDefaultsHandler setApplicationKey:appID];
         alPushNotificationService = [[ALPushNotificationService alloc] init];
         self.delegate = delegate;
         alPushNotificationService.realTimeUpdate = delegate;
@@ -212,6 +212,15 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Empty message passed"}];
 
         completion(nil, messageError);
+        return;
+    }
+
+    if (!alMessage.message) {
+        NSError *messageTextError = [NSError errorWithDomain:ApplozicClientDomain
+                                                    code:MessageNotPresent
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object"}];
+
+        completion(nil, messageTextError);
         return;
     }
 
@@ -407,16 +416,16 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - Unsubscribe To typing status events for Channel/Group
 
-- (void)unSubscribeToTypingStatusForChannel:(NSNumber *)chanelKey {
+- (void)unSubscribeToTypingStatusForChannel:(NSNumber *)channelKey {
     if (alMQTTConversationService) {
-        [alMQTTConversationService unSubscribeToChannelConversation:chanelKey];
+        [alMQTTConversationService unSubscribeToChannelConversation:channelKey];
     }
 }
 
-- (void)sendTypingStatusForChannelKey:(NSNumber *)chanelKey
+- (void)sendTypingStatusForChannelKey:(NSNumber *)channelKey
                            withTyping:(BOOL)isTyping {
     if (alMQTTConversationService) {
-        [alMQTTConversationService sendTypingStatus:nil userID:nil andChannelKey:chanelKey typing:isTyping];
+        [alMQTTConversationService sendTypingStatus:nil userID:nil andChannelKey:channelKey typing:isTyping];
     }
 }
 

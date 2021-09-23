@@ -22,11 +22,11 @@
 #import "ALContactService.h"
 #import "ALContactDBService.h"
 
-/// `ALUserService` has a user APIs.
+/// `ALUserService` has a Applozic user APIs.
 ///
-/// Some of the methods that this class:
+/// Some of the methods that this class has:
 ///
-/// User details fetch, Mark conversation for one to one chat, Update user details to applozic server, Report user message, List of Registered contacts or users in Applozic Server, Update user display who is not logged-in in Applozic server.
+/// User details fetch, Mark conversation for one to one chat, Update user details to Applozic server, Report user message, List of Registered contacts or users in Applozic Server, Update user display who is not logged-in in Applozic server.
 ///
 @interface ALUserService : NSObject
 
@@ -179,7 +179,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 /// @warning This method is used internal for posting notification.
 - (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
-/// This method will fetch the muted users from an applozic server.
+/// This method will fetch the muted users from an Applozic server.
 /// @param delegate  If ApplozicUpdatesDelegate is passed, the event for onUserMuteStatus will be called.
 /// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
 - (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
@@ -200,7 +200,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 /// @param completion Response is YES then disabled successfully otherwise error.
 - (void)disableChat:(BOOL)disable withCompletion:(void(^)(BOOL response, NSError *error)) completion;
 
-/// Updating the display name of a user who is not registered or does not login to an applozic server.
+/// Updating the display name of a user who is not registered or does not login to an Applozic server for given receiver userId and user name.
 /// @param userId Pass the receiver userId.
 /// @param displayName Pass the user display name of the receiver.
 /// @param completion ALAPIResponse in case of a successful update or else it will return NSError in case of failure.
@@ -208,7 +208,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
               withDisplayName:(NSString *)displayName
                withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
-/// Fetch the registered contacts and contacts from local database.
+/// Gets the registered contacts from Applozic server and contacts from local database.
 /// @param nextPage If nextPage is NO or false, it will get contacts from starting and return the array of contact.
 /// If nextPage The flag is YES or true, it will return the next older contacts.
 /// @param completion Array of ALContact in case of successfully fetched, else it will return NSError.

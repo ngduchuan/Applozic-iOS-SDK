@@ -89,7 +89,7 @@
 
 @end
 
-/// `ALRealTimeUpdate` class is used for real time events for message, chanel, user, typing.
+/// `ALRealTimeUpdate` class is used for real time events for message, Channel, user, typing.
 @interface ALRealTimeUpdate : NSObject
 
 @end

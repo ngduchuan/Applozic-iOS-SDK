@@ -16,7 +16,7 @@
 + (NSMutableURLRequest *)createGETRequestWithUrlString:(NSString *)urlString
                       paramString:(NSString *)paramString;
 
-/// Create an GET URL request with ofUserId to call the for calling to Applozic server on behalf of some user.
+/// Create an GET URL request with ofUserId to call the Applozic server on behalf of some user.
 /// @param urlString API request URL string.
 /// @param paramString Pass the parameter for URL request.
 /// @param userId Pass the userId that you want to call the API URL request.
@@ -24,7 +24,7 @@
                       paramString:(NSString *)paramString
                        ofUserId:(NSString *)userId;
 
-/// Create an POST URL request with ofUserId to call the for calling to Applozic server on behalf of some user.
+/// Create an POST URL request with ofUserId to call the Applozic server on behalf of some user.
 /// @param urlString API request URL string.
 /// @param paramString Pass the parameter for URL request.
 /// @param userId Pass the userId that you want to call the API URL request.
