@@ -1146,7 +1146,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     if (!isFromMessageList) {
-        channel.unreadCount = 0;
+        channel.unreadCount = [NSNumber numberWithInt:0];
     }
     [self.channelDBService createChannelEntity:channel];
 
