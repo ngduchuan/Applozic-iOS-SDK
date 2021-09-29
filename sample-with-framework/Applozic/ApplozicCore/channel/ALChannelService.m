@@ -1145,6 +1145,9 @@ dispatch_queue_t channelUserbackgroundQueue;
         return;
     }
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    if (!isFromMessageList) {
+        channel.unreadCount = 0;
+    }
     [self.channelDBService createChannelEntity:channel];
 
     [theDBHandler saveContext];
