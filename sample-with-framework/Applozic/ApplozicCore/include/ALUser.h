@@ -13,9 +13,9 @@
 /// Used to tell the backend what kind of authentication the user wishes to use to be authenticated. See the types for details.
 typedef enum
 {
-    /// Tells the Applozic  that you will handle authentication yourself and provide it with the password. In this case, pass your access token in the user’s `password` field Refer to [this](https://docs.applozic.com/docs/access-token-url) to get more information.
+    /// Tells Applozic that you will handle authentication yourself using `password` and [this](https://docs.applozic.com/docs/access-token-url) tells you how to implement your own authentication.
     CLIENT = 0,
-    /// This tells the Applozic backend to handle the authentication itself. Use this if you do not know what you should be using.
+    /// Tells Applozic to handle the authentication itself. Use this if you do not know what you should be using.
     APPLOZIC = 1,
     /// Deprecated will be removed in next updates.
     FACEBOOK DEPRECATED_ATTRIBUTE = 2,
@@ -28,7 +28,14 @@ typedef enum
     AL_DISTRIBUTION DEPRECATED_ATTRIBUTE = 1,
 } deviceApnsType DEPRECATED_ATTRIBUTE;
 
-/// `ALUser` used for creating User object for login to Applozic server.
+/// `ALUser` is an authenticated entity that can use chat functionality.
+///
+/// A user is identified by its `userId` which is unique for an `applicationId`.
+///
+/// When creating an user you need to set the fields `userId`, `authenticationTypeId`
+/// user is can register or login using `-[ALRegisterUserClientService initWithCompletion:withCompletion:]` or  `-[ApplozicClient loginUser:withCompletion:]` method.
+/// 
+/// - SeeAlso : `ALContact`
 @interface ALUser : ALJson
 
 /// An unique userId to login to applozic server.
@@ -65,7 +72,7 @@ typedef enum
 /// :nodoc:
 @property NSString *timezone;
 
-/// Description
+/// For internal use only.
 @property short appVersionCode;
 
 /// Roles give your user certain privileges.

@@ -12,16 +12,16 @@
 /// `ALNotificationView` class is used for showing local notification and it is used in Applozic UI.
 @interface ALNotificationView : UILabel
 
-/// This is set in `initWithAlMessage` the receiver userId for which notification to show otherwise it will be nil.
+/// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method and the receiver userId for which notification to show otherwise it will be nil.
 @property (retain ,nonatomic) NSString *contactId;
 
-/// This is set in `initWithAlMessage `the groupId for which the notification to show otherwise it will be nil
+/// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method and the groupId for which the notification to show otherwise it will be nil
 @property (retain, nonatomic) NSNumber *groupId;
 
-/// This is set in `initWithAlMessage` the conversation in case of topic-based chat otherwise it will be nil.
+/// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method and the conversationId is of topic-based chat otherwise it will be nil.
 @property (retain, nonatomic) NSNumber *conversationId;
 
-/// This is set in `initWithAlMessage` will have `ALMessage` object.
+/// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method it will have `ALMessage` object.
 @property (retain, nonatomic) ALMessage *alMessageObject;
 
 /// Get the `ALNotificationView` object with `ALMessage` and alert message for showing a notification.

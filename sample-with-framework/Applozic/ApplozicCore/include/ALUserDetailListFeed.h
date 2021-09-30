@@ -17,8 +17,8 @@
 /// :nodoc:
 @property (nonatomic) BOOL contactSync;
 
-/// Setter methof of array of userIds.
-/// @param array Array of string userID.
+/// Setter method of array of userIds.
+/// @param array Array of string userIds.
 - (void)setArray:(NSMutableArray *)array;
 
 @end
