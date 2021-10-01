@@ -948,7 +948,7 @@ static const int SHOW_GROUP = 102;
     
     [self turnUserInteractivityForNavigationAndTableView:NO];
     //check whether at least two memebers selected
-    if (self.groupMembers.count < 2 && !isForBroadCast) {
+    if (self.groupMembers.count < 1 && !isForBroadCast) {
         
         [self turnUserInteractivityForNavigationAndTableView:YES];
         UIAlertController *alertController = [UIAlertController
