@@ -14,6 +14,7 @@
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
 #import "ALNotificationHelper.h"
+#import "ALBaseViewController.h"
 
 @interface ALUserProfileVC ()
 
@@ -105,10 +106,7 @@
     self.mImagePicker.delegate = self;
     self.mImagePicker.allowsEditing = YES;
     
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        self.navigationController.navigationBar.translucent = NO;
-        [self commonNavBarTheme:self.navigationController];
-    }
+    [self commonNavBarTheme:self.navigationController];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -164,15 +162,30 @@
 }
 
 - (void)commonNavBarTheme:(UINavigationController *)navigationController {
-    [navigationController.navigationBar setTitleTextAttributes: @{
-        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                            size:18]
-    }];
     
-    [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-    [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    self.navigationController.navigationBar.translucent = NO;
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+    if (navigationBarColor && navigationBarTintColor) {
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+
+        [navigationController.navigationBar setTintColor:navigationBarTintColor];
+        [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -553,7 +566,7 @@
                     [self.userStatusLabel setText: statusText];
                     [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
                 }
-
+                
                 [self.activityIndicator stopAnimating];
 
             }];

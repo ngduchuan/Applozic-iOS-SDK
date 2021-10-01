@@ -9,6 +9,7 @@
 #import "ALAudioAttachmentViewController.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 @interface ALAudioAttachmentViewController () {
     AVAudioRecorder *recorder;
@@ -53,11 +54,33 @@
     
 }
 
-- (void)navigationBarColor {
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
+- (void)setupNavigationBar {
+
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+
+    if (navigationBarColor && navigationBarTintColor) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
+
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:navigationBarTintColor,
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
     }
 }
 
@@ -151,7 +174,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self navigationBarColor];
+    [self setupNavigationBar];
     
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(actionWhenAppInBackground)

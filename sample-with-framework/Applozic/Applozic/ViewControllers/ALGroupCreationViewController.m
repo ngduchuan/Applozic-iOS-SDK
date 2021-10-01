@@ -35,7 +35,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     nextContacts = [[UIBarButtonItem alloc] init];
     [nextContacts setStyle:UIBarButtonItemStylePlain];
     [nextContacts setTarget:self];
-
+    
     self.navigationItem.rightBarButtonItem = nextContacts;
     
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
@@ -44,8 +44,8 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     
     NSDictionary *attrs = @{ NSForegroundColorAttributeName : UIColor.grayColor};
     self.groupNameInput.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"groupNameTextField", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Type your group name", @"") attributes:attrs];
-
-
+    
+    
     [self.descriptionTextView setText: NSLocalizedStringWithDefaultValue(@"descriptionTextForGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please provide group name", @"")];
     
     if (self.isViewForUpdatingGroup) {
@@ -145,7 +145,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
         [ALUIUtilityClass showAlertMessage:
          NSLocalizedStringWithDefaultValue(@"youHaveNotUpdatedAnything", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You haven't update anything", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"wait", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Wait!!!", @"")];
         return;
-
+        
     }
     [self.loadingIndicator startAnimating];
     
@@ -170,7 +170,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
                          metadata:nil orChildKeys:nil orChannelUsers:nil  withCompletion:^(NSError *error) {
         
         if (!error) {
-
+            
             ALSLog(ALLoggerSeverityInfo, @"ALGroupCreationViewController updated the group info");
             [self.navigationController popViewControllerAnimated:YES];
             [self.grpInfoDelegate updateGroupInformation];
@@ -294,9 +294,9 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     }];
     
     UIAlertAction *upload = [UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"upload", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
+        
         [self.activityIndicator startAnimating];
-
+        
         if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
             ALNotificationView *notification = [ALNotificationView new];
             [notification noDataConnectionNotificationView];
@@ -307,12 +307,12 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
         NSString *uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
         
         self.groupImageUploadURL = uploadUrl;
-
+        
         ALHTTPManager *manager = [[ALHTTPManager alloc]init];
         [manager uploadProfileImage:image withFilePath:self.mainFilePath uploadURL:uploadUrl withCompletion:^(NSData *_Nullable data, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (error == nil) {
-
+                    
                     NSString *imageLinkFromServer = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                     ALSLog(ALLoggerSeverityInfo, @"GROUP_IMAGE_LINK :: %@",imageLinkFromServer);
                     self.groupImageURL = imageLinkFromServer;

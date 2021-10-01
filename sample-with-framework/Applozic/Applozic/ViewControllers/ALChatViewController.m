@@ -171,6 +171,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [super viewDidLoad];
     self.mqttRetryCount = 0;
     [self setupServices];
+    self.extendedLayoutIncludesOpaqueBars = true;
     // Setup quick recording if it's enabled in the settings
     if ([ALApplozicSettings isQuickAudioRecordingEnabled]) {
         if ([ALApplozicSettings isNewAudioDesignEnabled]) {
@@ -195,7 +196,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.attachmentOutlet setTintColor:[ALApplozicSettings getAttachmentIconColour]];
     [self.sendButton setTintColor:[ALApplozicSettings getSendIconColour]];
     self.alphabetiColorCodesDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -220,7 +220,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.isVisible = YES;
-
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
 
@@ -820,14 +819,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     UIAlertController *alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"OOPS !!!", @"")
                                 message:
-                                NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
+                                    NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
                                 preferredStyle:UIAlertControllerStyleAlert];
 
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
 
     UIAlertAction *ok = [UIAlertAction
                          actionWithTitle:
-                         NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
+                             NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
                          style:UIAlertActionStyleDefault
                          handler:^(UIAlertAction *action)
                          {
@@ -1158,7 +1157,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                             ThirdPartyDetailVCNotificationChannelKey : self.channelKey
-            }];
+                                                                                                                          }];
         } else {
 
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
@@ -4118,7 +4117,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
      object:nil
      userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                 ThirdPartyDetailVCNotificationALContact : userId}
-     ];
+    ];
     BOOL tapFlag = ([ALApplozicSettings isChatOnTapUserProfile] && [self isGroup]);
 
     if (!tapFlag) {
@@ -4372,7 +4371,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
             if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                                 ThirdPartyDetailVCNotificationALContact : contact
-                }];
+                                                                                                                              }];
             } else {
                 [self.mActivityIndicator startAnimating];
 
