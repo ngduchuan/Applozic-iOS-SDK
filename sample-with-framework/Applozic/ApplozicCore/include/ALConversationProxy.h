@@ -29,7 +29,7 @@
 /// Set the userId for the conversation for topic.
 @property (nonatomic, strong) NSString *userId;
 
-/// <#Description#>
+/// Description
 @property (nonatomic, strong) NSArray *supportIds;
 
 /// <#Description#>

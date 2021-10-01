@@ -12,6 +12,7 @@
 #import "ALAPIResponse.h"
 #import "ALResponseHandler.h"
 
+/// For internal use only.
 static short AL_VERSION_CODE = 112;
 
 /// `ALRegisterUserClientService` used for registration and authentication of the user, APN's or VOIP device token update to Applozic server, update notification modes, Sync account status of Application, Logout user.
@@ -39,10 +40,10 @@ static short AL_VERSION_CODE = 112;
 /// @param notificationMode An notification mode to update to applozic server.
 ///
 /// The list of notification modes are:
-/// AL_NOTIFICATION_ENABLE_SOUND = 0,
-/// AL_NOTIFICATION_DISABLE_SOUND = 1,
-/// AL_NOTIFICATION_ENABLE = 0,
-/// AL_NOTIFICATION_DISABLE = 2
+/// - AL_NOTIFICATION_ENABLE_SOUND = 0, // Enables the notification sound.
+/// - AL_NOTIFICATION_DISABLE_SOUND = 1, // Disable the sound of APNs notifiaction.
+/// - AL_NOTIFICATION_ENABLE = 0, // Enables the notification.
+/// - AL_NOTIFICATION_DISABLE = 2 // Disables the notifications.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update notification failure.
 + (void)updateNotificationMode:(short)notificationMode
                 withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;

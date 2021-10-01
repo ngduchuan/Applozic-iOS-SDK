@@ -37,6 +37,8 @@ static NSString *const AL_GOOGLE_CLOUD_STORAGE_IMAGE_UPLOAD_ENDPOINT = @"/rest/w
 static NSString *const AL_IMAGE_THUMBNAIL_ENDPOIT = @"/files/";
 static NSString *const AL_IMAGE_DOWNLOAD_ENDPOINT = @"/files/get/";
 static NSString *const AL_EMPTY_JSON_STRING = @"\"EMPTY_LIST\"";
+
+/// Source type used in `ALMessage`.
 static int const AL_SOURCE_IOS = 3;
 
 /// Message status types for identifying the messgae is delivered, read and delivered, sent.

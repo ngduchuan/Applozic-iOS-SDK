@@ -22,8 +22,9 @@
 #import "ALUserService.h"
 #import "ALChannelService.h"
 
+/// Notification name for new message.
 static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
-static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted";
+/// Notification name for the message metadata update.
 static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNotification";
 
 @interface ALMessageService : NSObject

@@ -13,7 +13,7 @@
 /// Used to tell the backend what kind of authentication the user wishes to use to be authenticated. See the types for details.
 typedef enum
 {
-    /// Tells Applozic that you will handle authentication yourself using `password` and [this](https://docs.applozic.com/docs/access-token-url) tells you how to implement your own authentication.
+    /// Tells Applozic that you will handle authentication yourself using `password` and [this](https://docs.applozic.com/docs/access-token-url) tells you how to implement your authentication.
     CLIENT = 0,
     /// Tells Applozic to handle the authentication itself. Use this if you do not know what you should be using.
     APPLOZIC = 1,
@@ -33,8 +33,8 @@ typedef enum
 /// A user is identified by its `userId` which is unique for an `applicationId`.
 ///
 /// When creating an user you need to set the fields `userId`, `authenticationTypeId`
-/// user is can register or login using `-[ALRegisterUserClientService initWithCompletion:withCompletion:]` or  `-[ApplozicClient loginUser:withCompletion:]` method.
-/// 
+/// user is can register or login using `-[ALRegisterUserClientService initWithCompletion:withCompletion:]` or `-[ApplozicClient loginUser:withCompletion:]` method.
+///
 /// - SeeAlso : `ALContact`
 @interface ALUser : ALJson
 
@@ -78,7 +78,7 @@ typedef enum
 /// Roles give your user certain privileges.
 @property NSString *roleName;
 
-/// Sets the device type for identifying on applozic server.
+/// Sets the device type for identifying on the applozic server.
 ///
 /// The types of devices and their values are:
 /// WEB = 0,
@@ -91,7 +91,7 @@ typedef enum
 
 /// App module name is used when two different apps are communicating with different app modules and the same APP-ID.
 ///
-/// Use this settings `[ALUserDefaultsHandler setAppModuleName:@"NAME-OF-MODULE-HERE"]; to pass the module name`.
+/// Use this settings `[ALUserDefaultsHandler setAppModuleName:@"NAME-OF-MODULE-HERE"];` to pass the module name`.
 /// @note This is set internally not required to set using appModuleName.
 @property NSString *appModuleName;
 
@@ -101,7 +101,7 @@ typedef enum
 
 /// Internally sets the notification mode.
 ///
-/// Use the method [ALUserDefaultsHandler setNotificationMode:BELOW-TyPE]; to set the notification mode :
+/// Use the method `[ALUserDefaultsHandler setNotificationMode:BELOW-TyPE];` to set the notification mode :
 /// AL_NOTIFICATION_ENABLE = 0,
 /// AL_NOTIFICATION_DISABLE_SOUND = 1,
 /// AL_NOTIFICATION_DISABLE = 2
@@ -128,7 +128,7 @@ typedef enum
 /// :nodoc:
 @property NSNumber *contactType;
 
-/// Sets the addedfeatures that Applozic provides.
+/// Sets the added features that Applozic provides.
 ///
 /// Features are functionalities that are advanced enough to require added set up for them to work.
 /// In the case of "100" audio calls and "101" video calls you will need to use `ApplozicAudioVideo` Call SDK that works with the Chat SDK.
@@ -137,7 +137,22 @@ typedef enum
 /// APN's message notification sound name.
 @property NSString *notificationSoundFileName;
 
-/// Extra information can be stored in user.
+/// Extra information can be stored in the user.
+///
+/// Example: Use the below code to set the metadata
+///
+/// @code
+///
+/// // User metadata dictionary
+/// NSMutableDictionary *userMetaData = [[NSMutableDictionary alloc] init];
+/// [userMetaData setValue:@"Software engineer" forKey:@"designation"];
+/// [userMetaData setValue:@"Bengaluru" forKey:@"city"];
+/// [userMetaData setValue:@"India" forKey:@"country"];
+///
+/// // Set the metadata in `ALUser` object
+/// [user setMetadata:userMetaData];
+///
+/// @endcode
 @property NSMutableDictionary *metadata;
 
 /// Get an `ALUser` object with given userId, password, email and display name of user.

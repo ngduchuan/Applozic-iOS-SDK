@@ -9,14 +9,15 @@
 #import <Foundation/Foundation.h>
 
 /// `ALApplicationInfo` class is used for checking the status of account like chat is Suspended, Show the powerd by message.
+/// @warning `ALApplicationInfo` class used only for internal.
 @interface ALApplicationInfo : NSObject
 
-/// This method used for checking if the chat is Suspended or not.
+/// Used for checking if the chat is suspended or not.
 ///
-/// This method will return `YES` in case of chat is Suspended or closed or using Beta APP-ID in release mode and In debug mode it will return `NO`.
+/// Returns `YES` in case of chat is suspended or closed or using Beta APP-ID in release mode and In debug mode it will return `NO`.
 - (BOOL)isChatSuspended;
 
-/// This method will return `YES` in  case of starter Plan and in Debug mode it will return `NO`.
+/// Returns `YES` in  case of starter Plan and in Debug mode it will return `NO`.
 - (BOOL)showPoweredByMessage;
 
 @end

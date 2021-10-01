@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
 
+/// Logged in user disable the chat key.
 static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 
 @interface ALUserDefaultsHandler : NSObject

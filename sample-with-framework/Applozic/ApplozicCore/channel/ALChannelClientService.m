@@ -30,6 +30,7 @@ static NSString *const Add_USERS_TO_MANY_GROUPS = @"/rest/ws/group/add/users";
 static NSString *const CHANNEL_INFO_ON_IDS = @"/rest/ws/group/details";
 static NSString *const CHANNEL_FILTER_API = @"/rest/ws/group/filter";
 static NSString *const CONTACT_FAVOURITE_LIST = @"/rest/ws/group/favourite/list/get";
+NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 /************************************************
  SUB GROUP URL : ADD A SINGLE CHILD

@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 
 /// `ALDBHandler` has all the methods for core data operations like inserting, fetching, deleting and updating in core data ManagedObject.
+/// @warning `ALDBHandler` class used only for internal purposes.
 @interface ALDBHandler : NSObject
 
 /// `managedObjectModel` is used in `NSPersistentContainer` init method to configure.

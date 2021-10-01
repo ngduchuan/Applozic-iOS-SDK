@@ -51,9 +51,11 @@ static int const ALMESSAGE_CONTENT_HIDDEN = 11;
 
 /// :nodoc:
 static NSString *const AL_CATEGORY_PUSHNNOTIFICATION = @"PUSHNOTIFICATION";
+
 /// :nodoc:
 static NSString *const AL_CATEGORY_HIDDEN = @"HIDDEN";
 
+/// Reply message key where the message key of the parent message set in the value.
 static NSString *const AL_MESSAGE_REPLY_KEY = @"AL_REPLY";
 
 /// Sent message type. The message is sent by logged-in user.
@@ -64,6 +66,9 @@ static NSString *const AL_IN_BOX = @"4";
 
 /// :nodoc:
 static NSString *const AL_RESET_UNREAD_COUNT = @"AL_RESET_UNREAD_COUNT";
+
+/// For internal use only.
+static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 /// `ALReplyType` is used for knowing the message is replied to or hidden reply type after the message is deleted.
 typedef enum {
@@ -116,7 +121,7 @@ typedef enum {
 ///
 /// Message type are:
 ///
-/// `AL_OUT_BOX` : To know the message is sent by logged-in user.
+/// `AL_OUT_BOX`: To know the message is sent by a logged-in user.
 ///
 /// `AL_IN_BOX` : To know the message is received type.
 @property (nonatomic, copy) NSString *type;
@@ -193,9 +198,10 @@ typedef enum {
 /// Gets the status types to know the current message status.
 ///
 /// Type of status are:
-/// SENT = 3,
-/// DELIVERED = 4,
-/// DELIVERED_AND_READ = 5,
+///
+/// * SENT = 3,
+/// * DELIVERED = 4,
+/// * DELIVERED_AND_READ = 5,
 @property (nonatomic, copy) NSNumber *status;
 
 /// Returns or sets key-value dictionary of message metadata otherwise nil.

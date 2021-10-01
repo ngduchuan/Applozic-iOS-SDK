@@ -14,30 +14,29 @@
 /// Sending an message in one-to-one chat:
 /// @code
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
-///  alMessageBuilder.to = @"<USER-ID>"; //Pass userId to whom you want to send a message.
-///  alMessageBuilder.message = @"<MESSAGE-TEXT>"; // Pass message text here.
+///     alMessageBuilder.to = @"1234588"; //Pass userId to whom you want to send a message.
+///     alMessageBuilder.message = @"Hi How are you?"; // Pass message text here.
 /// }];
 /// @endcode
 /// Sending a message in channel or group chat:
 /// @code
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
-///   alMessageBuilder.groupId = @<CHANNEL-KEY>; //Pass channelKey here to whom you want to send a message.
-///   alMessageBuilder.message = @"<MESSAGE-TEXT>"; // Pass message text here.
+///     alMessageBuilder.groupId = @47474; //Pass channelKey here to whom you want to send a message.
+///     alMessageBuilder.message = @"Hi Hpw are you?"; // Pass message text here.
 /// }];
 /// @endcode
 /// Sending an attachment message:
 /// @code
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
-///  alMessageBuilder.to = @"<USER-ID>"; // Set the userId of the receiver to send message in one to one chat and will be nil case of channel or group chat.
-///  alMessageBuilder.groupId = @<CHANNEL-KEY>; // Pass channelKey to channel/group you want to send a attchment message else will be nil.
-///  alMessageBuilder.imageFilePath = @"Pass the name of the file"; // File name
-///  alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT;
+///      alMessageBuilder.to = @"1234588"; // Set the userId of the receiver to send message in one to one chat and will be nil case of channel or group chat.
+///      alMessageBuilder.imageFilePath = @"image123.jpg"; // File name
+///      alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT;
 /// }];
 /// @endcode
 @interface ALMessageBuilder : NSObject
 
 /// Set the userId of the receiver to send a message in one-to-one chat.
-/// @warning This has to be nil in case of channel or group message make sure to not set in channel or group messaging.
+/// @warning This has to be nil in case of channel or group message.
 @property (nonatomic, copy) NSString *to;
 
 /// Set the message text.
@@ -47,13 +46,26 @@
 @property(nonatomic) short contentType;
 
 /// Set the channel key or groupId to send a message to the channel otherwise it will be nil.
-/// @warning This has to be nil in case of one-to-one message make sure to not set in one-to-one messaging.
+/// @warning This has to be nil in case of one-to-one message.
 @property (nonatomic, copy) NSNumber *groupId;
 
 /// :nodoc:
 @property(nonatomic,copy) NSNumber *conversationId;
 
 /// Set the extra information as metadata which will be in key-value Dictionary in each message that can be sent.
+///
+/// Example: To
+///@code
+///
+/// NSMutableDictionary *userMetaData = [[NSMutableDictionary alloc] init];
+/// [messageMetaData setValue:@"Software engineer" forKey:@"designation"];
+/// [messageMetaData setValue:@"Bengaluru" forKey:@"city"];
+/// [messageMetaData setValue:@"India" forKey:@"country"];
+///
+/// // Set the metadata in `ALMessageBuilder` object
+/// [user setMetadata:messageMetaData];
+///
+/// @endcode
 @property (nonatomic,retain) NSMutableDictionary *metadata;
 
 /// Set the name of the attachment file that you want to upload in chat.

@@ -66,7 +66,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /**
  Provides public methods for:
- Initialization of the SDK, User Authentication, User Block or Unblock, Messages, Channel or Group, Real-time Events.
+
+ - Initialization of the SDK.
+ - User Authentication.
+ - User Block or Unblock.
+ - Messages.
+ - Channel or Group.
+ - Real-time Events.
 
  @note To access any method get the `ApplozicClient` object using `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
  */
@@ -114,7 +120,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self];; // Pass your APP-ID here and set the delegate.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and set the delegate.
 /// @endcode
 - (instancetype)initWithApplicationKey:(NSString *)appID withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
@@ -195,7 +201,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// 1. Updated bytes so far you can see : `-[ApplozicAttachmentDelegate onUpdateBytesUploaded:withMessage:]`.
 /// 2. If upload fails callback will be called : `-[ApplozicAttachmentDelegate onUploadFailed:]`.
-/// 3. Successful sending an attachment callback will be called : `-[ApplozicAttachmentDelegate onUploadCompleted:]`.
+/// 3. Successful sending an attachment callback will be called : `-[ApplozicAttachmentDelegate onUploadCompleted:withOldMessageKey:]`.
 ///
 /// @param attachmentMessage Create an `ALMessage` object using `ALMessageBuilder` set receiver userId for one-to-one or channel key from `ALChannel` and file name in `imageFilePath`.
 /// @note Make sure the file is saved and exists in the Application document directory using the file name will pick the file from there and upload it to servers.
@@ -223,7 +229,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate` in your class for real time attachment upload status events.
 ///
 /// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
@@ -328,6 +334,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 ///             TODO: Add this meessages to your array and show in your UI.
 ///             NSLog(@"Message object :%@", [message dictionary]);
+///
 ///            if ([message.groupId intValue]) {
 ///              // Channel conversation you can get ALChannel by using message.groupId and message.to that receiver who sent message in conversation.
 ///            } else {
@@ -342,6 +349,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///     if (!error) {
 ///        // Get the messages
 ///        for (ALMessage *message in messageList) {
+///
 ///            TODO: Add this meessages to your array and show in your UI.
 ///            NSLog(@"Message object :%@", [message dictionary]);
 ///
@@ -380,10 +388,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// Creates a new channel conversation for the given `ALChannelInfo` object.
 ///
 /// The types of the channel's are:
-/// PRIVATE = 1,
-/// PUBLIC = 2,
-/// BROADCAST = 5,
-/// GROUP_OF_TWO = 7
+/// PRIVATE = 1, // Only admin can add member in the channel.
+/// PUBLIC = 2, // Any one can join in the channel.
+/// BROADCAST = 5, // One way broadcast messages in channel.
+/// GROUP_OF_TWO = 7 // Group of two same as one-to-one chat.
 /// @param channelInfo Create an `ALChannelInfo` object with channel details. The groupName, groupMemberList and type from `ALChannelInfo` object are mandatory fields.
 /// @param completion It will be having complete details about channel and status, if its error or success in create channel otherwise, an error describing the channel create failure.
 ///
@@ -569,17 +577,17 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// orChannelUsers:channelMemberRoleArray
 /// withCompletion:^(NSError *error, ALAPIResponse *response) {
 ///
-///  if (error) {
-///      NSLog(@"Error in channel update : %@", error.localizedDescription);
-///      return;
-///  }
+///     if (error) {
+///          NSLog(@"Error in channel update : %@", error.localizedDescription);
+///          return;
+///     }
 ///
-///  if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
-///      NSLog(@"Failed to update channel : %@", response.status);
-///      return;
-///  }
+///     if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+///          NSLog(@"Failed to update channel : %@", response.status);
+///          return;
+///     }
 ///
-///  NSLog(@"Updated channel successfully.");
+///     NSLog(@"Updated channel successfully.");
 ///
 /// }];
 /// @endcode
@@ -607,14 +615,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// orClientChannelKey:nil
 ///  withCompletion:^(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse) {
 ///
-///  if (error) {
-///      NSLog(@"Error in fetching a channel :%@", error.localizedDescription);
-///      return;
-///  }
+///     if (error) {
+///         NSLog(@"Error in fetching a channel :%@", error.localizedDescription);
+///         return;
+///     }
 ///
-///  if (alChannel) {
-///      NSLog(@"Channel object is :%@", [alChannel dictionary]);
-///  }
+///     if (alChannel) {
+///         NSLog(@"Channel object is :%@", [alChannel dictionary]);
+///     }
 ///
 /// }];
 ///
@@ -637,6 +645,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient logoutUserWithCompletion:^(NSError *error, ALAPIResponse *response) {
 ///
+///     NSLog(@"Applozic logout completed");
 /// }];
 ///
 /// @endcode
@@ -657,14 +666,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///  andTime:notificationTime
 ///  withCompletion:^(ALAPIResponse *response, NSError *error) {
 ///
-///  if (error) {
-///      NSLog(@"Failed to mute or unmute the channel got some error : %@",error.localizedDescription);
-///      return;
-///  }
+///     if (error) {
+///         NSLog(@"Failed to mute or unmute the channel got some error : %@",error.localizedDescription);
+///         return;
+///     }
 ///
-///  if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-///      NSLog(@"Channel muted or unmute successful");
-///  }
+///     if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+///         NSLog(@"Channel muted or unmute successful");
+///     }
 ///
 /// }];
 ///
@@ -707,8 +716,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// [applozicClient blockUserWithUserId:@"38484848" withCompletion:^(NSError *error, BOOL userBlock) {
 ///
 ///     if (error) {
-///          NSLog(@"Failed to block the user got some error : %@",error.localizedDescription);
-///          return;
+///         NSLog(@"Failed to block the user got some error : %@",error.localizedDescription);
+///         return;
 ///     }
 ///
 /// }];
@@ -728,12 +737,12 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient markConversationReadForGroup:@474837 withCompletion:^(NSString *response, NSError *error) {
 ///
-///  if (error) {
-///      NSLog(@"Error in conversation read:%@",error);
-///      return;
-///  }
+///     if (error) {
+///         NSLog(@"Error in conversation read:%@",error);
+///         return;
+///     }
 ///
-///  NSLog(@"Marked a conversation successfully");
+///     NSLog(@"Marked a conversation successfully");
 ///
 /// }];
 ///
@@ -752,12 +761,12 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient markConversationReadForOnetoOne:@"38484848" withCompletion:^(NSString *response, NSError *error) {
 ///
-///  if (error) {
-///      NSLog(@"Error in marking conversation read :%@",error.localizedDescription);
-///      return;
-///  }
+///     if (error) {
+///         NSLog(@"Error in marking conversation read :%@",error.localizedDescription);
+///         return;
+///      }
 ///
-///  NSLog(@"Marked a conversation successfully");
+///     NSLog(@"Marked a conversation successfully");
 ///
 /// }];
 ///
@@ -814,7 +823,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// Unsubscribe to typing status events for the channel.
 ///
 /// @note Before calling this method make sure the `ApplozicUpdatesDelegate` was set, using `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
-/// @param channelKey uses `ALChannel` to get the channel key.
+/// @param channelKey Use `ALChannel` to get the channel key.
 ///
 /// @code
 /// @import ApplozicCore;
@@ -909,14 +918,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
 ///
-///  if (error) {
-///      NSLog(@"Failed to load the recent conversations :%@",error.localizedDescription);
-///      return;
-///  }
+///     if (error) {
+///         NSLog(@"Failed to load the recent conversations :%@",error.localizedDescription);
+///         return;
+///     }
 ///
-///  for (ALMessage *message in messageList) {
-///       NSLog(@"Message object %@",[message dictionary]);
-///  }
+///     for (ALMessage *message in messageList) {
+///          NSLog(@"Message object %@",[message dictionary]);
+///     }
 ///
 /// }];
 /// @endcode

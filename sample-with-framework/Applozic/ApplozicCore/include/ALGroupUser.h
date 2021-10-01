@@ -16,7 +16,9 @@
 
 /// Set the member role these are roles for the member in the channel.
 ///
-/// Roles are: USER = 0,
+/// The roles are:
+///
+/// USER = 0,
 /// ADMIN = 1,
 /// MODERATOR = 2,
 /// MEMBER = 3

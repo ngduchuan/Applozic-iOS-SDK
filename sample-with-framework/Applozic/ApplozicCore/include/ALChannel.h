@@ -24,50 +24,50 @@ static NSString *const AL_CONVERSATION_ASSIGNEE = @"CONVERSATION_ASSIGNEE";
 /// Channel types
 typedef enum
 {
-    /// :nodoc:
-    VIRTUAL = 0,
-    /// Only admin can add member in the channel.
-    PRIVATE = 1,
-    /// Any one can join in the channel.
-    PUBLIC = 2,
-    /// :nodoc:
-    SELLER = 3,
-    /// :nodoc:
-    SELF = 4,
-    /// One way broadcast messages in channel.
-    BROADCAST = 5,
-    /// Used for user can chat without joining an channel.
-    OPEN = 6,
-    /// Group of two same as one-to-one chat.
-    GROUP_OF_TWO = 7,
-    /// Categorizing contacts can be created based on common interests or activities the members of the channel are used for showing in contacts section.
-    CONTACT_GROUP = 9,
-    /// :nodoc:
-    SUPPORT_GROUP = 10,
-    /// :nodoc:
-    BROADCAST_ONE_BY_ONE = 106
+  /// :nodoc:
+  VIRTUAL = 0,
+  /// Only admin can add member in the channel.
+  PRIVATE = 1,
+  /// Any one can join in the channel.
+  PUBLIC = 2,
+  /// :nodoc:
+  SELLER = 3,
+  /// :nodoc:
+  SELF = 4,
+  /// One way broadcast messages in channel.
+  BROADCAST = 5,
+  /// Used for user can chat without joining an channel.
+  OPEN = 6,
+  /// Group of two same as one-to-one chat.
+  GROUP_OF_TWO = 7,
+  /// Categorizing contacts can be created based on common interests or activities the members of the channel are used for showing in contacts section.
+  CONTACT_GROUP = 9,
+  /// :nodoc:
+  SUPPORT_GROUP = 10,
+  /// :nodoc:
+  BROADCAST_ONE_BY_ONE = 106
 } CHANNEL_TYPE;
 
 /// :nodoc:
 typedef enum {
-    /// :nodoc:
-    ALL_CONVERSATION = 0,
-    /// :nodoc:
-    ASSIGNED_CONVERSATION = 1,
-    /// :nodoc:
-    CLOSED_CONVERSATION = 3
+  /// :nodoc:
+  ALL_CONVERSATION = 0,
+  /// :nodoc:
+  ASSIGNED_CONVERSATION = 1,
+  /// :nodoc:
+  CLOSED_CONVERSATION = 3
 } CONVERSATION_CATEGORY;
 
 /**
  * A channel is a medium for multiple users to send and receive messages to and from each other. It facilitates a channel conversation.
  *
- * Channels are identified by their channel `key` which is auto generated or `clientChannelKey` which is your client channel key.
+ * Channels are identified by their channel `key` which is auto-generated or `clientChannelKey` which is your client channel key.
  *
- * Before a user can send messages to a channel, the channel needs to be created and the user needs to either join it or be added to it. Whether a user can join a channel or not depends on the channel `CHANNEL_TYPE`.
+ * Before a user can send messages to a channel, the channel needs to be created and the user needs to either join it or be added to it. Whether a user can join a channel or not depends on the channel `type`.
  *
- *   To create a channel and add users to it, refer to `-[ApplozicClient createChannelWithChannelInfo:withCompletion:]`.
+ *  To create a channel and add users to it, refer to `-[ApplozicClient createChannelWithChannelInfo:withCompletion:]`.
  *
- *   To add a user to an existing channel (it allowed), refer to `-[ApplozicClient addMemberToChannelWithUserId:andChannelKey:orClientChannelKey:withCompletion:]`.
+ *  To add a user to an existing channel (it allowed), refer to `-[ApplozicClient addMemberToChannelWithUserId:andChannelKey:orClientChannelKey:withCompletion:]`.
  *
  * To send a message to a channel refer to `-[ApplozicClient sendTextMessage:withCompletion:]`.
  */
@@ -90,7 +90,7 @@ typedef enum {
 /// Admin of the channel.
 @property (nonatomic, strong) NSString *adminKey;
 
-/// Used for identifying the type of channel the types are  `CHANNEL_TYPE`.
+/// Used for identifying the type of channel the types are `CHANNEL_TYPE`.
 @property (nonatomic) short type;
 
 /// Total number of users in channel.
@@ -107,9 +107,6 @@ typedef enum {
 
 /// :nodoc:
 @property (nonatomic, strong) NSMutableArray *removeMembers;
-
-/// :nodoc:
-@property (nonatomic, strong) ALConversationProxy *conversationProxy DEPRECATED_ATTRIBUTE;
 
 /// :nodoc:
 @property (nonatomic, strong) NSNumber *parentKey;
@@ -139,6 +136,9 @@ typedef enum {
 
 /// :nodoc:
 @property (nonatomic, copy) NSManagedObjectID *channelDBObjectId DEPRECATED_ATTRIBUTE;
+
+/// :nodoc:
+@property (nonatomic, strong) ALConversationProxy *conversationProxy DEPRECATED_ATTRIBUTE;
 
 /// For internal use only.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
@@ -176,7 +176,7 @@ typedef enum {
 /// For internal use only.
 - (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
 
-/// Returns YES in case of channel is part of given category otherwise NO.
+/// Returns YES in case of the channel is part of a given category otherwise NO.
 - (BOOL)isPartOfCategory:(NSString *)category;
 
 /// For internal use only.

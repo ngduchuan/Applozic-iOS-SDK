@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// `ALAttachmentService` class has methods for sending an attachment, downloading attachment, downloading thumbnail.
+/// `ALAttachmentService` class has methods for sending and downloading an attachment, downloading a thumbnail.
 @interface ALAttachmentService : NSObject
 
 /// This delegate is used for listening attachment upload or download events.
@@ -28,13 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Instance method of `ALAttachmentService`.
 + (ALAttachmentService *)sharedInstance;
 
-/// This method is used for sending  an attachment message in chat.
+/// This method is used for sending an attachment message in chat.
 /// @param attachmentMessage Pass the `ALMessage` object.
 /// @param delegate Set the `ApplozicUpdatesDelegate` for real time update of the message status like sent.
 /// @param attachmentProgressDelegate Set the `ApplozicAttachmentDelegate` for the upload and download events.
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
-                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
-           withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+           withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+      withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
 /// This method is used for downloading an attachment message.
 /// @param alMessage Pass the `ALMessage` object.

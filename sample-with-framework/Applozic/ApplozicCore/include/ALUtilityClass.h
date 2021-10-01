@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "ALMessage.h"
 
-extern NSString * const AL_DEFAULT_APP_GROUP;
-extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
-
 /// `ALUtilityClass` has utility methods releated to date, file, notification showing, image compression and other.
 @interface ALUtilityClass : NSObject
 

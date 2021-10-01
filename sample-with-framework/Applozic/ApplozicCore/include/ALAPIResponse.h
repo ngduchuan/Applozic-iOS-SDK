@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
-/// Success response constant text .
+/// Success response constant text.
 extern NSString *const AL_RESPONSE_SUCCESS;
-/// Error response constant text .
+/// Error response constant text.
 extern NSString *const AL_RESPONSE_ERROR;
 
 /// `ALAPIResponse` class is used for parsing the API response of Applozic.
