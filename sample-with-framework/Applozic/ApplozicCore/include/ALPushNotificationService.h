@@ -53,8 +53,8 @@ typedef enum
 #import "ALMQTTConversationService.h"
 #import "ALRealTimeUpdate.h"
 
+/// Applozic notifications key name.
 static NSString *const APPLOZIC_PREFIX = @"APPLOZIC_";
-static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 @interface ALPushNotificationService : NSObject
 

@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-//! Project version number for ApplozicCore.
+/// Project version number for ApplozicCore.
 FOUNDATION_EXPORT double ApplozicCoreVersionNumber;
 
-//! Project version string for ApplozicCore.
+/// Project version string for ApplozicCore.
 FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import "PublicHeader.h"
@@ -106,7 +106,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 #import "MQTTProperties.h"
-#import "NSData+AES.h"
 #import "ALSearchResultCache.h"
 #import "MQTTStrict.h"
 #import "ALNotificationView.h"

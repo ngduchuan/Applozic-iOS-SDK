@@ -11,83 +11,85 @@
 #import "ALUserDetail.h"
 #import "ALChannel.h"
 
+/// `ApplozicUpdatesDelegate` protocol is used for real-time callback events for the message, channel, user, and typing.
+///
+/// The `ApplozicUpdatesDelegate` is set only from `-[ApplozicClient initWithApplicationKey:withDelegate:]` method for update events.
 @protocol ApplozicUpdatesDelegate <NSObject>
 
-/// This callback will be called once the new message is received.
-/// @param alMessage Will have ALMessage object which is recieved message.
-/// @ref ALMessage for message properties.
+/// The callback will be called on the new message is received for logged in user.
+/// @param alMessage An `ALMessage` object which is received message.
 - (void)onMessageReceived:(ALMessage *)alMessage;
 
-/// This will be called once the message is sent by same user login in different devices or platforms
-/// @param alMessage Will have ALMessage object which is sent message.
-/// @ref ALMessage for message properties.
+/// The callback will be called on the message is sent by the logged in user.
+/// @param alMessage An `ALMessage` object which is sent message.
 - (void)onMessageSent:(ALMessage *)alMessage;
 
-/// This method will be called once the user details updated like name, profile imageUrl, status etc.
-/// @param userDetail Will have ALUserDetail object which will have user properties.
+/// The callback will be called on the user details updated like name, profile image URL, status, etc.
+/// @param userDetail An `ALUserDetail ` object which will have receiver user properties.
 - (void)onUserDetailsUpdate:(ALUserDetail *)userDetail;
 
-/// This method will be called once message is delivered to receiver.
-/// @param message Will have ALMessage object which is delivered message it has status.
+/// The callback will be called on message is delivered to the receiver.
+/// @param message An `ALMessage` object which has `status` that is `DELIVERED.
 - (void)onMessageDelivered:(ALMessage *)message;
 
-/// This will be called once message is deleted by same user login in different devices or platforms.
-/// @param messageKey Will have messageKey of message which is deleted.
+/// The callback will be called on the message is deleted by the same user logged in on different devices or platforms.
+/// @param messageKey An message key of the deleted Message.
 - (void)onMessageDeleted:(NSString *)messageKey;
 
-/// This will be called once the message is read and delivered by receiver user.
-/// @param message Will have ALMessage object which is delivered and read.
-/// @param userId Will have userId which is delivered and read a message.
+/// The callback will be called on the message is read and delivered to the receiver user.
+/// @param message An `ALMessage` object which has `status` that are `DELIVERED` or `DELIVERED_AND_READ`.
+/// @param userId An receiver userId which is delivered and read of a message.
 - (void)onMessageDeliveredAndRead:(ALMessage *)message withUserId:(NSString *)userId;
 
-/// This method will be called once the conversation is deleted.
-/// @param userId If the conversation is deleted for user then userId will be.
-/// @param groupId If conversation is deleted for channel then groupId will be there its channelKey.
-- (void)onConversationDelete:(NSString *)userId withGroupId:(NSNumber*)groupId;
+/// The callback will be called on the conversation is deleted for one-to-one or channel.
+/// @param userId If the conversation is deleted for the receiver user the userId non nil otherwise nil.
+/// @param groupId If the conversation is deleted for the channel the channel key will be non nil otherwise nil.
+- (void)onConversationDelete:(NSString *)userId withGroupId:(NSNumber *)groupId;
 
-/// This will be called once the conversation read by same user login in different devices or platforms.
-/// @param userId If conversation read for user then userId will be there else groupId will be their.
-/// @param groupId If conversation raad for channel/group then channelKey will be there and userId will be nil.
+/// The callback will be called on the conversation read by the same user logged in on different devices or platforms.
+/// @param userId If the conversation is read for the user then userId will be non nil otherwise nil.
+/// @param groupId If conversation raad for channel or group then channel key will be non nil otherwise nil.
 - (void)conversationReadByCurrentUser:(NSString *)userId withGroupId:(NSNumber *)groupId;
 
-/// This method will be called for typing events.
-/// @param userId Will have user's userId who is typing.
-/// @param status If status flag is YES or true then user started typing, if status is NO or false then user stop the typing.
+/// The callback will be called on typing status update.
+/// @param userId It will have receiver userId typing started or stoped..
+/// @param status YES for the user started typing, if the status is NO then the user stops typing.
 - (void)onUpdateTypingStatus:(NSString *)userId status:(BOOL)status;
 
-/// This method will be called once the user comes online or goes offline.
-/// @param alUserDetail Will have ALUserDetail object of user.
+/// The callback will be called on the user online or offline update.
+/// @param alUserDetail An `ALUserDetail` object of user.
 - (void)onUpdateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
 
-/// This method will be called once the user is blocked or unblocked.
-/// @param userId Will have the user's userId blocked or unblocked.
-/// @param flag If true or YES then user is blocked else false or NO then unblocked.
+/// The callback will be called on the user is blocked or unblocked.
+/// @param userId Receiver userId blocked or unblocked.
+/// @param flag if YES then user is blocked otherwise unblocked for NO.
 - (void)onUserBlockedOrUnBlocked:(NSString *)userId andBlockFlag:(BOOL)flag;
 
-/// This method will be called once their is any change in Channel.
-/// @param channel It will have ALChannel object.
+/// The callback will be called on if any updates on Channel.
+/// @param channel It will have an updated `ALChannel` object.
 - (void)onChannelUpdated:(ALChannel *)channel;
 
-/// This will be called once the receiver read the message conversation.
-/// @param userId Will have receiver userId who has read the conversation.
+/// The callback will be called on the receiver read the all messages in the conversation.
+/// @param userId An receiver userId who has read the conversation.
 - (void)onAllMessagesRead:(NSString *)userId;
 
-/// This method will be called if the MQTT is disconnected you can resubscribe to conversation.
+/// The callback will be called on MQTT disconnected you can resubscribe to the conversation.
 - (void)onMqttConnectionClosed;
 
-/// This method will be called once the MQTT is connected
+/// The callback will be called on the MQTT is connected.
 - (void)onMqttConnected;
 
-/// This method will be called once the user muted.
-/// @param userDetail Will have ALUserDetail object.
+/// The callback will be called the user muted.
+/// @param userDetail Will have `ALUserDetail` object.
 - (void)onUserMuteStatus:(ALUserDetail *)userDetail;
 
-/// This method will be called after a group has been muted/unmuted.
-/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from ALChannel object.
+/// The callback will be called after a group has muted for logged in user.
+/// @param channelKey You will get the channel key by using this channel key you can get the channel and check isNotificationMuted from `ALChannel` object.
 - (void)onChannelMute:(NSNumber *)channelKey;
 
 @end
 
+/// `ALRealTimeUpdate` class is used for real time events for message, Channel, user and typing.
 @interface ALRealTimeUpdate : NSObject
 
 @end

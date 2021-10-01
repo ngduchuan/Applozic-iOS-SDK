@@ -197,12 +197,6 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return uuid;
 }
 
-+ (BOOL)checkDeviceKeyString:(NSString *)string {
-    NSArray *array = [string componentsSeparatedByString:@":"];
-    NSString *deviceString = (NSString *)[array firstObject];
-    return [deviceString isEqualToString:[ALUtilityClass getDevieUUID]];
-}
-
 + (NSString *)stringFromTimeInterval:(NSTimeInterval)interval {
     NSInteger ti = (NSInteger)interval;
     NSInteger seconds = ti % 60;

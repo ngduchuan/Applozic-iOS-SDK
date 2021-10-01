@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
+/// For internal use only.
 static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 
 @interface ALContact : ALJson

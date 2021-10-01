@@ -9,7 +9,7 @@
 #import "ALPasswordQueryable.h"
 #import "ALApplozicSettings.h"
 
-NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
+static NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
 
 @implementation ALPasswordQueryable
 

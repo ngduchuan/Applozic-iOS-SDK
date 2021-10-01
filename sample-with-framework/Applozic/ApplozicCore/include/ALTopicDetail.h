@@ -15,21 +15,46 @@
  },
  
  */
+
+/// `ALTopicDetail` class is used for context based chat this will have topic details.
 @interface ALTopicDetail : ALJson
 
+/// Sets the title of context based topic chat.
 @property (nonatomic, strong) NSString *title;
+
+/// Sets the subtitle of the context based topic chat.
 @property (nonatomic, strong) NSString *subtitle;
+
+/// Sets the pId.
 @property (nonatomic, strong) NSString *pId;
+
+/// Sets the image URL link.
 @property (nonatomic, strong) NSString *link;
+
+/// Sets the key1 title.
 @property (nonatomic, strong) NSString *key1;
+
+/// Sets the value1 .
 @property (nonatomic, strong) NSString *value1;
+
+/// Sets the key2 title.
 @property (nonatomic, strong) NSString *key2;
+
+/// Sets the value2.
 @property (nonatomic, strong) NSString *value2;
+
+/// Sets the Topic id of the product.
 @property (nonatomic, strong) NSString *topicId;
+
+/// :nodoc:
 @property (nonatomic,strong)  NSMutableArray *fallBackTemplateList;
 
+/// This method is used parsing topic JSON Dictionary.
+/// @param detailJson Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)detailJson;
 
+/// This method used for parsing the JSON.
+/// @param detailJson Pass the JSON Dictionary.
 - (void)parseMessage:(id)detailJson;
 
 

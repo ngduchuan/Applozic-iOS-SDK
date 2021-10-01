@@ -848,27 +848,5 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
     }];
 }
-- (BOOL)shouldRetry {
-    BOOL isInBackground = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
-    return !isInBackground && [ALDataNetworkConnection checkDataNetworkAvailable];
-}
-
-- (void)retryConnection {
-    if (![self shouldRetry]) {
-        return;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self subscribeToConversation];
-    });
-}
-
-- (void)retryConnectionWithTopic:(NSString *)topic {
-    if (![self shouldRetry]) {
-        return;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self subscribeToConversationWithTopic: topic];
-    });
-}
 
 @end

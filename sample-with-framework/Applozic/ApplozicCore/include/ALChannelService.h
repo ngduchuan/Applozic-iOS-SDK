@@ -17,29 +17,50 @@
 #import "ALChannelInfo.h"
 #import "ALChannelClientService.h"
 
+/// Constant key is used channel metadata for hidding or changing the channel action message for default create group.
 static NSString *const AL_CREATE_GROUP_MESSAGE = @"CREATE_GROUP_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default remove member in group.
 static NSString *const AL_REMOVE_MEMBER_MESSAGE = @"REMOVE_MEMBER_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default add member in group.
 static NSString *const AL_ADD_MEMBER_MESSAGE = @"ADD_MEMBER_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default joining member in group.
 static NSString *const AL_JOIN_MEMBER_MESSAGE = @"JOIN_MEMBER_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default group name.
 static NSString *const AL_GROUP_NAME_CHANGE_MESSAGE = @"GROUP_NAME_CHANGE_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default icon change.
 static NSString *const AL_GROUP_ICON_CHANGE_MESSAGE = @"GROUP_ICON_CHANGE_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default member left.
 static NSString *const AL_GROUP_LEFT_MESSAGE = @"GROUP_LEFT_MESSAGE";
+/// Constant key is used channel metadata for for hidding or changing the channel action message for default delete group.
 static NSString *const AL_DELETED_GROUP_MESSAGE = @"DELETED_GROUP_MESSAGE";
 
+/// `ALChannelService` class has all API methods for Channel.
+///
+/// Some of the methods this class has :
+/// Create channel, Update channel, Add member, Remove member, Channel information. List of channels.
 @interface ALChannelService : NSObject
 
+/// This constant is set key for channel member save status.
 extern NSString *const AL_CHANNEL_MEMBER_SAVE_STATUS;
+/// This constant is set key for channel member save update status data.
 extern NSString *const AL_Updated_Group_Members;
+/// This constant is set key for channel member save completed status.
 extern NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED;
+/// This constant is set key for Message list called.
 extern NSString *const AL_MESSAGE_LIST;
+/// This constant is set key for Message Sync called.
 extern NSString *const AL_MESSAGE_SYNC;
 
+/// Instance method of `ALChannelService`.
 + (ALChannelService *)sharedInstance;
 
+/// Instance method of `ALChannelClientService`.
 @property (nonatomic, strong) ALChannelClientService *channelClientService;
 
+/// Instance method of `ALChannelDBService`.
 @property (nonatomic, strong) ALChannelDBService *channelDBService;
 
+/// :nodoc:
 - (void)callForChannelServiceForDBInsertion:(id)theJson;
 
 /// This method is used to fetch information of a channel like a channel name, imageUrl of a channel, type of channel, and other information.
@@ -63,7 +84,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// This is the internal method to get the group member's name to show in a navigation bar.
 - (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
 
-/// This method is used to fetch information of channel like channel name,imageUrl of chanel, type of channel and other information.
+/// This method is used to fetch information of channel like channel name,imageUrl of Channel, type of channel and other information.
 /// @param channelKey Pass the channelkey or groupId that is required to get the channel information.
 /// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
 /// @param completion Pass the ALChannel will have information of the channel else error in case of NSError.
@@ -72,95 +93,6 @@ extern NSString *const AL_MESSAGE_SYNC;
                          withCompletion:(void (^)(NSError *error,
                                                   ALChannel *alChannel3,
                                                   AlChannelFeedResponse *channelResponse)) completion;
-
-/// This method is used to create a channel where it needs the below details to pass while creating.
-/// @param channelName Pass the channel name that wanted to be set for the channel.
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param memberArray Pass the members userId that wanted to add in a channel.
-/// @param imageLink It's the URL of the channel image that wanted to see in the channel profile image.
-/// @param completion if an error is nil then the group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
-- (void)createChannel:(NSString *)channelName
-   orClientChannelKey:(NSString *)clientChannelKey
-       andMembersList:(NSMutableArray *)memberArray
-         andImageLink:(NSString *)imageLink
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
-
-/// This method is used to create a channel where it needs below details to pass while creating.
-/// @param channelName Pass the channel name that wanted to be set for the channel.
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param memberArray Pass the members userId that wanted to add in a channel.
-/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
-/// @param type Pass type of group wanted to create
-/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
-/// @param metaData It's extra information can be added in channel.
-/// @param completion if error is nil then group is created successfully it has ALChannel infomration of channel else some error while creating if error is not nil.
-- (void)createChannel:(NSString *)channelName
-   orClientChannelKey:(NSString *)clientChannelKey
-       andMembersList:(NSMutableArray *)memberArray
-         andImageLink:(NSString *)imageLink
-          channelType:(short)type
-          andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
-
-/// This method is used to create a channel where it needs the below details to pass while creating.
-/// @param channelName Pass the channel name that you want to set for the channel.
-/// @param parentChannelKey if you have a parent key if the channel you want to link to parent channel then pass parent channel key
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param memberArray Pass the members userId that wanted to add in a channel.
-/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
-/// @param type Pass type of group wanted to create
-/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
-/// @param metaData It's extra information can be added in channel.
-/// @param completion If an error is nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
-- (void)createChannel:(NSString *)channelName
-  andParentChannelKey:(NSNumber *)parentChannelKey
-   orClientChannelKey:(NSString *)clientChannelKey
-       andMembersList:(NSMutableArray *)memberArray
-         andImageLink:(NSString *)imageLink
-          channelType:(short)type
-          andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
-
-/// This method is used to create a channel where it needs the below details to pass while creating
-/// @param channelName Pass the channel name that wanted to be set for the channel.
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param memberArray Pass the members userId that wanted to add in a channel.
-/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
-/// @param type Pass type of group wanted to create
-/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
-/// @param metaData It's extra information can be added in channel.
-/// @param adminUserId If you want to make any member as admin while creating then you can pass the userId of that member.
-/// @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
-- (void)createChannel:(NSString *)channelName
-   orClientChannelKey:(NSString *)clientChannelKey
-       andMembersList:(NSMutableArray *)memberArray
-         andImageLink:(NSString *)imageLink
-          channelType:(short)type
-          andMetaData:(NSMutableDictionary *)metaData
-            adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
-
-/// This method is used for creating a channel with parent channelKey
-/// @param channelName Pass the channel name that wanted to be set for the channel.
-/// @param parentChannelKey If you have a parent key if the channel you want to link to parent channel then pass the parent channel key
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param memberArray Pass the members userId that wanted to add in a channel.
-/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
-/// @param type Pass type of group wanted to create
-/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
-/// @param metaData It's extra information can be added in channel.
-/// @param adminUserId if you want to make any member as admin while creating then you can pass the userId of that member.
-/// @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
-- (void)createChannel:(NSString *)channelName
-  andParentChannelKey:(NSNumber *)parentChannelKey
-   orClientChannelKey:(NSString *)clientChannelKey
-       andMembersList:(NSMutableArray *)memberArray
-         andImageLink:(NSString *)imageLink
-          channelType:(short)type
-          andMetaData:(NSMutableDictionary *)metaData
-            adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
-
 /// This method is used to add a member to a channel.
 /// @param userId Pass the userId that wanted to add in a channel.
 /// @param channelKey Pass channelkey or groupId that is required for adding a member in a channel.
@@ -492,6 +424,10 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param delegate For real time updates callback will be triggered for channel update
 - (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
+/// This internal method used for updating unread count to zero and send notification with name `Update_unread_count` channelKey will be in object of notification and send the call back delegate using`ApplozicUpdatesDelegate`
+/// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object
+/// @param delegate Set the `ApplozicUpdatesDelegate` for conversation read callback update.
+/// @note This is internal method.
 - (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// This method is used for creating a channel.
@@ -499,14 +435,112 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param completion Once the group/channel is created successful then ALChannelCreateResponse else it will have NSError.
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
+/// This internal method is used for saving channel object in local database.
+/// @param channel Pass the `ALChannel` object.
+/// @param isFromMessageList Pass YES if the call is made for Message List else pass the NO for the Message thread conversation.
 - (void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL)isFromMessageList;
 
+/// This method is internal method used for saving channel members and channels in local data.
+/// @param channelFeedsList Array of `ALChannel` objects.
+/// @param isFromMessageList Pass YES if the call is made for Message List else pass the NO for the Message thread conversation.
 - (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*)channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
 
+/// This method will update mute and unmute time local data base.
+/// @param notificationAfterTime Pass the time in milliseconds.
+/// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object.
 - (void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
                andChnnelKey:(NSNumber*)channelKey;
 
 /// This method will return all the channels for the logged-in user.
 /// @param completion will have a channel array of ALChannel or will have an error in case of while fetching channels.
 - (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError * error))completion;
+
+/// This method is used to create a channel where it needs the below details to pass while creating.
+/// @param channelName Pass the channel name that wanted to be set for the channel.
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param memberArray Pass the members userId that wanted to add in a channel.
+/// @param imageLink It's the URL of the channel image that wanted to see in the channel profile image.
+/// @param completion if an error is nil then the group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
+/// This method is used to create a channel where it needs below details to pass while creating.
+/// @param channelName Pass the channel name that wanted to be set for the channel.
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param memberArray Pass the members userId that wanted to add in a channel.
+/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
+/// @param type Pass type of group wanted to create
+/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
+/// @param metaData It's extra information can be added in channel.
+/// @param completion if error is nil then group is created successfully it has ALChannel infomration of channel else some error while creating if error is not nil.
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
+/// This method is used to create a channel where it needs the below details to pass while creating.
+/// @param channelName Pass the channel name that you want to set for the channel.
+/// @param parentChannelKey if you have a parent key if the channel you want to link to parent channel then pass parent channel key
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param memberArray Pass the members userId that wanted to add in a channel.
+/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
+/// @param type Pass type of group wanted to create
+/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
+/// @param metaData It's extra information can be added in channel.
+/// @param completion If an error is nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
+- (void)createChannel:(NSString *)channelName
+  andParentChannelKey:(NSNumber *)parentChannelKey
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
+/// This method is used to create a channel where it needs the below details to pass while creating
+/// @param channelName Pass the channel name that wanted to be set for the channel.
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param memberArray Pass the members userId that wanted to add in a channel.
+/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
+/// @param type Pass type of group wanted to create
+/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
+/// @param metaData It's extra information can be added in channel.
+/// @param adminUserId If you want to make any member as admin while creating then you can pass the userId of that member.
+/// @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+            adminUser:(NSString *)adminUserId
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
+/// This method is used for creating a channel with parent channelKey
+/// @param channelName Pass the channel name that wanted to be set for the channel.
+/// @param parentChannelKey If you have a parent key if the channel you want to link to parent channel then pass the parent channel key
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param memberArray Pass the members userId that wanted to add in a channel.
+/// @param imageLink It's URL of channel image that wanted to see in the channel profile image.
+/// @param type Pass type of group wanted to create
+/// Types of the group. PRIVATE = 1,PUBLIC = 2, OPEN = 6
+/// @param metaData It's extra information can be added in channel.
+/// @param adminUserId if you want to make any member as admin while creating then you can pass the userId of that member.
+/// @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
+- (void)createChannel:(NSString *)channelName
+  andParentChannelKey:(NSNumber *)parentChannelKey
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+            adminUser:(NSString *)adminUserId
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
 @end

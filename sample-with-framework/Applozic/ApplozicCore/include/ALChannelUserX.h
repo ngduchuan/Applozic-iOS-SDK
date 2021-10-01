@@ -10,28 +10,49 @@
 #import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
 
-
-
-typedef enum
-{   USER = 0,
+/// List of role types for channel members.
+typedef enum {
+    /// User role
+    USER = 0,
+    /// Admin of the channel.
     ADMIN = 1,
+    /// Moderator of the channel.
     MODERATOR = 2,
+    /// Memeber of the channel.
     MEMBER = 3
 } ROLE_TYPE;
 
 
-
+/// `ALChannelUserX` class is used for channel member details.
 @interface ALChannelUserX : ALJson
 
+/// Channel member userId
 @property (nonatomic, strong) NSString *userKey;
+
+/// Channel key or groupId
 @property (nonatomic, strong) NSNumber *key;
+
+/// :nodoc:
 @property (nonatomic) short status;
+
+/// :nodoc:
 @property (nonatomic, strong) NSNumber *unreadCount;
+
+/// Parent channel key for iderntifying the parent channel.
 @property (nonatomic, strong) NSNumber *parentKey;
+
+/// Managed Object ID of core data.
 @property (nonatomic, copy) NSManagedObjectID *channelUserXDBObjectId;
+
+/// Role of the channel member.
 @property (nonatomic, strong) NSNumber *role;
 
+/// Init for the JSON NSDictionary for creating an object of `ALChannelUserX`.
+/// @param messageDictonary Pass JSON dctionary for creating object.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
+
+/// To identify the channel member is Admin.
+/// @return YES in case of Admin otherwise NO in case of not an admin user.
 - (BOOL)isAdminUser;
 
 @end
