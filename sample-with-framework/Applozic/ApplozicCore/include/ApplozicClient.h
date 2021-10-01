@@ -43,24 +43,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 - (void)onDownloadFailed:(ALMessage *)alMessage;
 
 /// Called when the attachment successfully uploads.
-/// `alMessage.fileMeta` will now have the remote attachment URLs.
-/// @param alMessage It will have a message which will have updated details like message key and file meta.
-/// @param oldMessageKey The old message key is used to identify the message in view for replacing the uploaded attachment `ALMessage` object.
-- (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey;
+///
+/// @param updatedMessage When a message is uploaded, Applozic generates a new Message object with updated key and file meta.
+/// @param oldMessageKey The old message key. You can use this to find the old message object in your application model, and replace it with the new one.
+- (void)onUploadCompleted:(ALMessage *)updatedMessage withOldMessageKey:(NSString *)oldMessageKey;
 
-/// Called when the attachment successfully downloads.
-///
-/// Access the downloaded file as shown:
-/// @code
-/// NSString *fileName = alMessage.imageFilePath; // Name of file.
-///
-/// NSURL *directory = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:fileName]; // Document URL of the file.
-///
-/// NSString *filePath = directory.path; // Path to file.
-/// @endcode
+/// Called when the attachment successfully downloads. Access it via ALMessage.imageFilePath.
 - (void)onDownloadCompleted:(ALMessage *)alMessage;
-
-@optional
 
 @end
 
@@ -69,9 +58,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
  - Initialization of the SDK.
  - User Authentication.
- - User Block or Unblock.
- - Messages.
- - Channel or Group.
+ - Listing, sending and receiving messages.
+ - Both 1:1 and group messages.
  - Real-time Events.
 
  @note To access any method get the `ApplozicClient` object using `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
@@ -81,20 +69,20 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// For real time updates of attachment upload or download status.
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 
-/// Used to make API calls related to conversations. Call `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]` before you access object.
+/// Used to make API calls related to conversations.
 @property (nonatomic, retain) ALMessageService *messageService;
 
-/// Used to store data related to `ALMessage`. Call `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]` before you access object.
+/// Used to store data related to `ALMessage`.
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
 
-/// Used to make API calls related to `ALUser`. Call `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]` before you access object.
+/// Used to make API calls related to `ALUser`.
 @property (nonatomic, retain) ALUserService *userService;
 
-/// Used to makie API calls related to `ALChannel`. Call `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]` before you access object.
+/// Used to makie API calls related to `ALChannel`.
 @property (nonatomic, retain) ALChannelService *channelService;
 
 /// Gives callbacks for real-time update events for Messages, channels, Users, and Typing.
-/// @warning Initialize this using the `-[ApplozicClient initWithApplicationKey:withDelegate:]` method only.
+/// @warning Do not assign this property. It won't work properly if you do. Instead, use the `-[ApplozicClient initWithApplicationKey:withDelegate:]` initializer, which assigns this property.
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
 /// Returns an `ApplozicClient` object for given App-ID.
