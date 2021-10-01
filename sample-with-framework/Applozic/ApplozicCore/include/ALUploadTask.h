@@ -12,19 +12,19 @@
 /// `ALUploadTask` is used for uploading the attachment file.
 @interface ALUploadTask : NSObject
 
-/// Set the file name of the attachment.
+/// Sets the file name of the attachment.
 @property (nonatomic, copy) NSString *filePath;
 
 /// Name of the file.
 @property (nonatomic, copy) NSString *fileName;
 
-/// Set the key from `ALMessage` object.
+/// Sets the key from `ALMessage` object.
 @property (nonatomic, copy) NSString *identifier;
 
-/// Set the the `ALMessage` object.
+/// Sets the the `ALMessage` object.
 @property (nonatomic, strong) ALMessage *message;
 
-/// Set the video Thumbnail name.
+/// Sets the video Thumbnail name.
 @property (nonatomic, strong) NSString *videoThumbnailName;
 
 @end

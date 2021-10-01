@@ -13,7 +13,7 @@
 
 /// `ApplozicUpdatesDelegate` protocol is used for real-time callback events for the message, channel, user, and typing.
 ///
-/// The `ApplozicUpdatesDelegate`  is set only from  `-[ApplozicClient initWithApplicationKey:withDelegate:]` method for update events.
+/// The `ApplozicUpdatesDelegate` is set only from `-[ApplozicClient initWithApplicationKey:withDelegate:]` method for update events.
 @protocol ApplozicUpdatesDelegate <NSObject>
 
 /// The callback will be called on the new message is received for logged in user.

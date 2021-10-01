@@ -58,8 +58,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
  - Initialization of the SDK.
  - User Authentication.
- - Listing, sending and receiving messages.
- - Both 1:1 and group messages.
+ - Listing, sending and receiving messages both 1:1 and group messages.
  - Real-time Events.
 
  @note To access any method get the `ApplozicClient` object using `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
@@ -261,7 +260,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @endcode
 - (void)sendTextMessage:(ALMessage *)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
 
-/// Return a list of the most recent messages for each conversation.
+/// Gets list of the most recent messages for each conversation.
 ///
 /// @param isNextPage Pass NO to get all recent messages otherwise, Pass YES to get the next set of 60 older messages and the message fetch limit can be changed by using settings `[ALUserDefaultsHandler setFetchConversationPageSize:60]`.
 /// @param completion An array of `ALMessage` objects otherwise, an error describing the recent message list failure.
@@ -294,7 +293,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @endcode
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
-/// Returns the list of messages for the given one-to-one or channel conversation.
+/// Gets the list of messages for the given one-to-one or channel conversation.
 ///
 /// @param messageListRequest Create an `MessageListRequest` with receiver userId for one-to-one or channelKey for channel conversation and to load older messages set first message createdAtTime in endTimeStamp of `MessageListRequest`.
 /// @param completion If messages are fetched successfully it will have an array of `ALMessage` objects for one-to-one or channel conversation otherwise, an error describing the conversation messages failure.
@@ -305,9 +304,9 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// // Create a message list request with RECEIVER-USER-ID for one-to-one or CHANNEL-KEY for Channel conversation.
 /// MessageListRequest *messagelistRequest = [[MessageListRequest alloc] init];
 ///
-/// messagelistRequest.userId = @"RECEIVER-USER-ID"; // Pass receiver userId to load the messages for one-to-one conversation and messagelistRequest.channelKey needs to be nil.
+/// messagelistRequest.userId = @"RECEIVER-USER-ID"; // Pass receiver userId to load the messages for one-to-one conversation and messagelistRequest.channelKey set to be nil.
 ///        OR
-/// messagelistRequest.channelKey = CHANNEL-KEY; // Pass channelkey to load the messages for channel conversation and messagelistRequest.userId needs to be nil.
+/// messagelistRequest.channelKey = CHANNEL-KEY; // Pass channelkey to load the messages for channel conversation and messagelistRequest.userId set to be nil.
 ///
 /// messagelistRequest.endTimeStamp = createdAtTime; // Use this to load older messages, Pass first message.createdAtTime to load the older messages.
 ///

@@ -39,19 +39,19 @@
 ///@endcode
 @interface ALChannelInfo : ALJson
 
-/// Set the channel or group name.
+/// Sets the channel or group name.
 @property (nonatomic, strong) NSString *groupName;
 
-/// Set your client group id.
+/// Sets your client group id.
 @property (nonatomic, strong) NSString *clientGroupId;
 
-/// Set the members userId that you want to add to the channel or group.
+/// Sets the members userId that you want to add to the channel or group.
 @property (nonatomic, strong) NSMutableArray *groupMemberList;
 
-/// Set the Image URL for channel or group.
+/// Sets the Image URL for channel or group.
 @property (nonatomic, strong) NSString *imageUrl;
 
-/// Set the admin userId of the channel or group.
+/// Sets the admin userId of the channel or group.
 @property (nonatomic, strong) NSString *admin;
 
 /// :nodoc:
@@ -70,10 +70,10 @@
 /// CONTACT_GROUP = 9 // Is used in categorized contact channel can be used in showing contacts.
 @property(nonatomic) short type;
 
-/// Set the channel meta data.
+/// Sets the channel meta data.
 @property (nonatomic, strong) NSMutableDictionary *metadata;
 
-/// Set the array of the channel users of type `ALGroupUser`.
+/// Sets the array of the channel users of type `ALGroupUser`.
 @property (nonatomic, strong) NSMutableArray *groupRoleUsers;
 
 @end

@@ -126,11 +126,11 @@
 - (BOOL)isUserDeleted:(NSString *)userId;
 
 /// This method is used for adding user details of `ALUserDetail` object without the unreadcount.
-/// @param userDetails userDetails description.
+/// @param userDetails Array of `ALUserDetail` objects
 - (void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
 
 /// This method is used for updating mute time in local data base.
-/// @param notificationAfterTime notificationAfterTime description
+/// @param notificationAfterTime Time in milliseconds.
 /// @param userId Pass the userId for updating time stamp.
 /// @return Returns a `ALUserDetail` object.
 - (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;

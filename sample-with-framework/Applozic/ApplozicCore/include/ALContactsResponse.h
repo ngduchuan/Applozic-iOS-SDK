@@ -11,12 +11,14 @@
 /// `ALContactsResponse` class is used for parsing the user details response JSON.
 @interface ALContactsResponse : ALJson
 
-/// <#Description#>
+/// Last fetched time of contact JSON.
 @property (nonatomic, strong) NSNumber *lastFetchTime;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic, strong) NSNumber *totalUnreadCount;
 
+
+/// Array of `ALUserDetail` objects.
 @property (nonatomic, strong) NSMutableArray *userDetailList;
 
 @end

@@ -17,34 +17,34 @@
 /// Sets the conversation id.
 @property (nonatomic, strong) NSNumber *Id;
 
-/// Set the topicId.
+/// Sets the topicId.
 @property (nonatomic, strong) NSString *topicId;
 
 /// Topic detail json string.
 @property (nonatomic, strong) NSString *topicDetailJson;
 
-/// Set the groupId of conversation.
+/// Sets the groupId of conversation.
 @property (nonatomic, strong) NSNumber *groupId;
 
-/// Set the userId for the conversation for topic.
+/// Sets the userId for the conversation for topic.
 @property (nonatomic, strong) NSString *userId;
 
-/// Description
+/// :nodoc:
 @property (nonatomic, strong) NSArray *supportIds;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic, strong) NSMutableArray *fallBackTemplatesListArray;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForSENDER;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForRECEIVER;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic) BOOL created;
 
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic) BOOL closed;
 
 /// The method is used for parsing JSON.
@@ -55,19 +55,17 @@
 /// @param messageDictonary Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
-/// Description
+/// Returns the topic detail.
 - (ALTopicDetail *)getTopicDetail;
 
-/// <#Description#>
-/// @param alConversationProxy <#alConversationProxy description#>
+/// Gets the dictionary from `ALConversationProxy`.
+/// @param alConversationProxy Pass the `ALConversationProxy` object.
 + (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy;
 
-/// <#Description#>
-/// @param senderFormatString <#senderFormatString description#>
+/// :nodoc:
 - (void)setSenderSMSFormat:(NSString *)senderFormatString;
 
-/// <#Description#>
-/// @param recieverFormatString <#recieverFormatString description#>
+/// :nodoc:
 - (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 
 @end

@@ -35,7 +35,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 ///
 /// @param messageKey Will have messageKey for delivered status
 /// @param contactId UserId of the user message delivered to.
-/// @param status status description
+/// @param status Status are `DELIVERED` or `DELIVERED_AND_READ`.
 - (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
 
 /// The callback will be called on the receiver to read the all messages in the conversation.
@@ -86,7 +86,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// `ALSyncCallService` instance method.
 @property (nonatomic, strong) ALSyncCallService *alSyncCallService;
 
-/// Set the `ALMQTTConversationDelegate` for listening to the real-time updates from MQTT.
+/// Sets the `ALMQTTConversationDelegate` for listening to the real-time updates from MQTT.
 @property (nonatomic, weak) id<ALMQTTConversationDelegate>mqttConversationDelegate;
 
 /// Gives callbacks for real-time update events for Messages, channels, Users, and Typing
@@ -114,7 +114,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 - (BOOL)unsubscribeToConversation:(NSString *)userKey;
 
 /// Used for sending a typing status in one-to-one or channel conversation.
-/// @param applicationKey applicationKey description
+/// @param applicationKey App-Id or application key of Applozic.
 /// @param userId Pass the receiver userId of the user.
 /// @param channelKey Pass the channelKey of `ALChannel`.
 /// @param typing If the logged user is typing pass YES or true in typing else on stop of user typing pass NO or false to stop the typing.
@@ -136,14 +136,14 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// @param channelKey Pass the channelKey of f `ALChannel`.
 - (void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
 
-/// Description
+/// Syncs the message and post an notification request, used for internal purposes only .
 /// @param alMessage Pass the `ALMessage` object.
-/// @param nsMutableDictionary Pass
+/// @param nsMutableDictionary Notification dictionary.
 - (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary;
 
 /// Used for subscribe to conversation with topic.
 /// @param topic Pass the name of topic to subscribe.
-/// @param completion completion description
+/// @param completion completion YES in case of subscribed otherwise NO with an error.
 - (void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError *error))completion;
 
 /// For publishing a read status of the message using MQTT.

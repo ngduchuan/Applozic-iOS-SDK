@@ -28,7 +28,7 @@
 - (NSMutableArray *)getUpdatedMessageArray;
 
 /// This method is used for add array of ALMessage` objects to another Array.
-/// @param paramMessageArray paramMessageArray description
+/// @param paramMessageArray An Array of `ALMessage` objects.
 - (void)addObjectToMessageArray:(NSMutableArray *)paramMessageArray;
 
 /// This method is used for adding `ALMessage` object in Array
@@ -36,7 +36,7 @@
 - (void)addALMessageToMessageArray:(ALMessage *)alMessage;
 
 /// This method is used removing a array of `ALMessage` objects from Array.
-/// @param paramMessageArray paramMessageArray description.
+/// @param paramMessageArray An Array of `ALMessage` objects.
 - (void)removeObjectFromMessageArray:(NSMutableArray *)paramMessageArray;
 
 /// This method is used for removing `ALMessage` object from Array of Messages.

@@ -72,7 +72,8 @@ static short AL_VERSION_CODE = 112;
 
 /// Used for updating logged-in user details to Applozic server.
 ///
-/// @param alUser alUser description
+/// @warning instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
+/// @param alUser An `ALUser` object.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update user failure.
 - (void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 

@@ -35,27 +35,27 @@
 /// @endcode
 @interface ALMessageBuilder : NSObject
 
-/// Set the userId of the receiver to send a message in one-to-one chat.
+/// Sets the userId of the receiver to send a message in one-to-one chat.
 /// @warning This has to be nil in case of channel or group message.
 @property (nonatomic, copy) NSString *to;
 
-/// Set the message text.
+/// Sets the message text.
 @property (nonatomic, copy) NSString *message;
 
-/// Set the content type of message list of content types can be found in `ALMessage` class static constants.
+/// Sets the content type of message list of content types can be found in `ALMessage` class static constants.
 @property(nonatomic) short contentType;
 
-/// Set the channel key or groupId to send a message to the channel otherwise it will be nil.
+/// Sets the channel key or groupId to send a message to the channel otherwise it will be nil.
 /// @warning This has to be nil in case of one-to-one message.
 @property (nonatomic, copy) NSNumber *groupId;
 
 /// :nodoc:
 @property(nonatomic,copy) NSNumber *conversationId;
 
-/// Set the extra information as metadata which will be in key-value Dictionary in each message that can be sent.
+/// Sets the extra information as metadata which will be in key-value Dictionary in each message that can be sent.
 ///
-/// Example: To
-///@code
+/// To set the message metadata use below code:
+/// @code
 ///
 /// NSMutableDictionary *userMetaData = [[NSMutableDictionary alloc] init];
 /// [messageMetaData setValue:@"Software engineer" forKey:@"designation"];
@@ -68,7 +68,7 @@
 /// @endcode
 @property (nonatomic,retain) NSMutableDictionary *metadata;
 
-/// Set the name of the attachment file that you want to upload in chat.
+/// Sets the name of the attachment file that you want to upload in chat.
 /// @note Make sure that the file exists in the document directory if the file does not exist make sure to save it and set it.
 @property (nonatomic, copy) NSString *imageFilePath;
 

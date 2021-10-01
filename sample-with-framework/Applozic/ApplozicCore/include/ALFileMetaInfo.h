@@ -13,49 +13,47 @@
 /// `ALFileMetaInfo` class is used for attachment object.
 @interface ALFileMetaInfo : ALJson
 
-/// <#Description#>
+/// File attachment key.
 @property (nonatomic,copy) NSString *key;
 
-/// <#Description#>
+/// User key of the user who set the attachment file.
 @property (nonatomic,copy) NSString *userKey;
 
-/// <#Description#>
+/// Blob key of the file attachment.
 @property (nonatomic,copy) NSString *blobKey;
 
-/// <#Description#>
+/// Thumbnail blob key in case of image, video.
 @property (nonatomic,copy) NSString *thumbnailBlobKey;
 
-/// <#Description#>
+/// Local thumbnail file name.
 @property (nonatomic,copy) NSString *thumbnailFilePath;
 
-/// <#Description#>
+/// Name of the file attachment.
 @property (nonatomic,copy) NSString *name;
 
-/// <#Description#>
+/// Attachment url.
 @property (nonatomic,copy) NSString *url;
 
-/// <#Description#>
+/// Size of the file.
 @property (nonatomic,copy) NSString *size;
 
-/// <#Description#>
+/// Content type of attachment file.
 @property (nonatomic,copy) NSString *contentType;
 
-/// <#Description#>
+/// Thumbnail url
 @property (nonatomic,copy) NSString *thumbnailUrl;
 
-/// <#Description#>
+/// Time of the attachment created at.
 @property (nonatomic,copy) NSNumber *createdAtTime;
 
-
-/// <#Description#>
+/// :nodoc:
 @property (nonatomic, assign) CGFloat progressValue;
 
-
-/// <#Description#>
+/// Returns a size of the file.
 - (NSString *)getTheSize;
 
-/// <#Description#>
-/// @param dict <#dict description#>
+/// Populate the JSON of the file metadata.
+/// @param dict Dictionary of file meta json.
 - (ALFileMetaInfo *)populate:(NSDictionary *)dict;
 
 @end

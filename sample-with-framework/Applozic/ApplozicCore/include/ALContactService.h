@@ -82,8 +82,8 @@
 /// @param userId Pass the userId of the user to check whether the user is deleted or not.
 - (BOOL)isUserDeleted:(NSString *)userId;
 
-/// This method is used for updating mute time in local data base.
-/// @param notificationAfterTime notificationAfterTime description
-/// @param userId Pass the userId for updating time stamp.
+/// This method is used for updating mute time in local database.
+/// @param notificationAfterTime Time in milliseconds.
+/// @param userId Pass the userId for updating time stamp in database.
 - (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
 @end
