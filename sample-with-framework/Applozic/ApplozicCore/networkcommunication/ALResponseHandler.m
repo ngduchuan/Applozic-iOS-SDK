@@ -27,11 +27,11 @@
 
 static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
-- (void)processRequest:(NSMutableURLRequest *)theRequest
+- (void)processRequest:(NSMutableURLRequest *)request
                 andTag:(NSString *)tag
- WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion {
+ WithCompletionHandler:(void (^)(id jsonString, NSError *error))reponseCompletion {
 
-    NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
+    NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
 
         NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)response;
 
@@ -75,7 +75,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             return;
         }
 
-        id theJson = nil;
+        id jsonString = nil;
 
         // DECRYPTING DATA WITH KEY
         if ([ALUserDefaultsHandler getEncryptionKey] &&
@@ -85,9 +85,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             ![tag isEqualToString:@"FILE DOWNLOAD URL"]) {
 
             NSData *base64DecodedData = [[NSData alloc] initWithBase64EncodedData:data options:0];
-            NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+            NSData *decryptedData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
 
-            if (theData == nil) {
+            if (decryptedData == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
                 });
@@ -95,9 +95,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 return;
             }
 
-            if (theData.bytes) {
+            if (decryptedData.bytes) {
 
-                NSString *dataToString = [NSString stringWithUTF8String:[theData bytes]];
+                NSString *dataToString = [NSString stringWithUTF8String:[decryptedData bytes]];
 
                 data = [dataToString dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -112,13 +112,13 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if ([tag isEqualToString:@"CREATE FILE URL"] ||
             [tag isEqualToString:@"IMAGE POSTING"]) {
-            theJson = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
             /*TODO: Right now server is returning server's Error with tag <html>.
              it should be proper jason response with errocodes.
              We need to remove this check once fix will be done in server.*/
 
-            NSError *error = [self checkForServerError:theJson];
+            NSError *error = [self checkForServerError:jsonString];
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil, error);
@@ -126,11 +126,11 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 return;
             }
         } else {
-            NSError *theJsonError = nil;
+            NSError *jsonError = nil;
 
-            theJson = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&theJsonError];
+            jsonString = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
 
-            if (theJsonError) {
+            if (jsonError) {
                 NSMutableString *responseString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 //CHECK HTML TAG FOR ERROR
                 NSError *error = [self checkForServerError:responseString];
@@ -148,18 +148,18 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            reponseCompletion(theJson,nil);
+            reponseCompletion(jsonString, nil);
         });
     }];
     [sessionDataTask resume];
 }
 
 
-- (void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
+- (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
                                andTag:(NSString *)tag
                 WithCompletionHandler:(void (^)(id, NSError *))completion {
 
-    [self authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+    [self authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
         if (error) {
             completion(nil, error);
             return;
@@ -167,8 +167,8 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         [self processRequest:urlRequest
                       andTag:tag
-       WithCompletionHandler:^(id theJson, NSError *theError) {
-            completion(theJson, theError);
+       WithCompletionHandler:^(id jsonString, NSError *error) {
+            completion(jsonString, error);
         }];
     }];
 }

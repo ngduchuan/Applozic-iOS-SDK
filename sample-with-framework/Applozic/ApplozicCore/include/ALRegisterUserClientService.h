@@ -5,12 +5,12 @@
 //  Created by devashish on 18/09/2015.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
+#import "ALAPIResponse.h"
+#import "ALConstant.h"
 #import <Foundation/Foundation.h>
 #import "ALRegistrationResponse.h"
-#import "ALUser.h"
-#import "ALConstant.h"
-#import "ALAPIResponse.h"
 #import "ALResponseHandler.h"
+#import "ALUser.h"
 
 /// For internal use only.
 static short AL_VERSION_CODE = 112;
@@ -73,9 +73,9 @@ static short AL_VERSION_CODE = 112;
 /// Used for updating logged-in user details to Applozic server.
 ///
 /// @warning instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
-/// @param alUser An `ALUser` object.
+/// @param updatedUser An `ALUser` object.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update user failure.
-- (void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
+- (void)updateUser:(ALUser *)updatedUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
 /// Update's APNs and VOIP token to applozic server.
 ///

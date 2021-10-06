@@ -64,12 +64,12 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Fetch users from messages
 
-- (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
+- (void)processContactFromMessages:(NSArray *)messages withCompletion:(void(^)(void))completionMark {
     
     NSMutableOrderedSet *contactIdsArray = [[NSMutableOrderedSet alloc] init ];
     
-    for (ALMessage *alMessage in messagesArr) {
-        NSString *contactId = alMessage.contactIds;
+    for (ALMessage *message in messages) {
+        NSString *contactId = message.contactIds;
         if (contactId.length > 0 && ![self.contactService isContactExist:contactId]) {
             [contactIdsArray addObject:contactId];
         }
@@ -92,9 +92,9 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Fetch last seen status of users
 
-- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark {
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *))completionMark {
     
-    [self.userClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed *messageFeed) {
+    [self.userClientService userLastSeenDetail:lastSeenAtTime withCompletion:^(ALLastSeenSyncFeed *messageFeed) {
         NSMutableArray *lastSeenUpdateArray = messageFeed.lastSeenArray;
         for (ALUserDetail *userDetail in lastSeenUpdateArray){
             userDetail.unreadCount = 0;
@@ -104,14 +104,14 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *))completionMark {
     
-    if (!contactId) {
+    if (!userId) {
         completionMark(nil);
         return;
     }
     
-    [self.userClientService userDetailServerCall:contactId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userClientService userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
         completionMark(userDetail);
     }];
 }
@@ -154,9 +154,9 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)updateUserDisplayName:(ALContact *)alContact {
-    if (alContact.userId && alContact.displayName) {
-        [self.userClientService updateUserDisplayName:alContact withCompletion:^(id theJson, NSError *theError) {
+- (void)updateUserDisplayName:(ALContact *)contact {
+    if (contact.userId && contact.displayName) {
+        [self.userClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
             
             if (theError) {
                 ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
@@ -189,13 +189,13 @@ static int CONTACT_PAGE_SIZE = 100;
     contact.userId = userId;
     contact.displayName = displayName;
     
-    [self.userClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
+    [self.userClientService updateUserDisplayName:contact withCompletion:^(id jsonResponse, NSError *error) {
         
-        if (theError) {
+        if (error) {
             ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
-            completion(nil, theError);
+            completion(nil, error);
         } else {
-            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_STATUS :: %@", apiResponse.status);
             completion(apiResponse, nil);
         }
@@ -204,9 +204,9 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Mark Conversation as read
 
-- (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
+- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *, NSError *))completion {
     
-    if (!contactId) {
+    if (!userId) {
         NSError *error = [NSError
                           errorWithDomain:@"Applozic"
                           code:1
@@ -215,15 +215,15 @@ static int CONTACT_PAGE_SIZE = 100;
         return;
     }
     
-    [self setUnreadCountZeroForContactId:contactId];
+    [self setUnreadCountZeroForContactId:userId];
     
-    NSUInteger count = [self.contactDBService markConversationAsDeliveredAndRead:contactId];
+    NSUInteger count = [self.contactDBService markConversationAsDeliveredAndRead:userId];
     ALSLog(ALLoggerSeverityInfo, @"Found %ld messages for marking as read.", (unsigned long)count);
     
     if (count == 0) {
         return;
     }
-    [self.userClientService markConversationAsReadforContact:contactId withCompletion:^(NSString *response, NSError *error){
+    [self.userClientService markConversationAsReadforContact:userId withCompletion:^(NSString *response, NSError *error){
         completion(response,error);
     }];
     
@@ -237,11 +237,11 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Mark message as read
 
-- (void)markMessageAsRead:(ALMessage *)alMessage
+- (void)markMessageAsRead:(ALMessage *)message
        withPairedkeyValue:(NSString *)pairedkeyValue
            withCompletion:(void (^)(NSString *, NSError *))completion {
     
-    if (!alMessage) {
+    if (!message) {
         NSError *apiError = [NSError
                              errorWithDomain:@"Applozic"
                              code:1
@@ -260,7 +260,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }
     
     
-    [self markConversationReadInDataBaseWithMessage:alMessage];
+    [self markConversationReadInDataBaseWithMessage:message];
     //Server Call
     [self.userClientService markMessageAsReadforPairedMessageKey:pairedkeyValue withCompletion:^(NSString *response, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Response Marking Message :%@",response);
@@ -283,15 +283,15 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
+- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)message {
     
-    if (alMessage.groupId != NULL) {
-        [self.channelService setUnreadCountZeroForGroupID:alMessage.groupId];
+    if (message.groupId != NULL) {
+        [self.channelService setUnreadCountZeroForGroupID:message.groupId];
         ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-        [channelDBService markConversationAsRead:alMessage.groupId];
+        [channelDBService markConversationAsRead:message.groupId];
     } else {
-        [self setUnreadCountZeroForContactId:alMessage.contactIds];
-        [self.contactDBService markConversationAsDeliveredAndRead:alMessage.contactIds];
+        [self setUnreadCountZeroForContactId:message.contactIds];
+        [self.contactDBService markConversationAsDeliveredAndRead:message.contactIds];
         //  TODO: Mark message read&delivered in DB not whole conversation
     }
 }
@@ -341,9 +341,9 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userblock {
-    [self.contactDBService blockAllUserInList:userblock.blockedUserList];
-    [self.contactDBService blockByUserInList:userblock.blockByUserList];
+- (void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userBlockResponse {
+    [self.contactDBService blockAllUserInList:userBlockResponse.blockedUserList];
+    [self.contactDBService blockByUserInList:userBlockResponse.blockByUserList];
 }
 
 #pragma mark - Unblock user
@@ -692,8 +692,8 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 
 - (void)disableChat:(BOOL)disable withCompletion:(void (^)(BOOL, NSError *))completion {
-    ALContact *alContact = [self.contactDBService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
-    if (!alContact) {
+    ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+    if (!contact) {
         ALSLog(ALLoggerSeverityError, @"Contact details of logged-in user not present");
         NSError *error = [NSError
                           errorWithDomain:@"Applozic"
@@ -703,8 +703,8 @@ static int CONTACT_PAGE_SIZE = 100;
         return;
     }
     NSMutableDictionary *metadata;
-    if (alContact != nil && alContact.metadata != nil) {
-        metadata = alContact.metadata;
+    if (contact != nil && contact.metadata != nil) {
+        metadata = contact.metadata;
     } else {
         metadata = [[NSMutableDictionary alloc] init];
     }
@@ -713,7 +713,7 @@ static int CONTACT_PAGE_SIZE = 100;
     [user setMetadata: metadata];
     [self.userClientService updateUserDisplayName:nil andUserImageLink:nil userStatus:nil metadata:metadata withCompletion:^(id theJson, NSError *error) {
         if (!error) {
-            [self.contactDBService updateContactInDatabase: alContact];
+            [self.contactDBService updateContactInDatabase: contact];
             [ALUserDefaultsHandler disableChat: disable];
             completion(YES, nil);
         } else {

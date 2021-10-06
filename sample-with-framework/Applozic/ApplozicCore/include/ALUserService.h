@@ -50,34 +50,34 @@
 @property (nonatomic, strong) ALContactService *contactService;
 
 /// Fetching user details based on the `ALMessage` array.
-/// @param messagesArr An Array of `ALMessage`.
+/// @param messages An Array of `ALMessage` object.
 /// @param completionMark The handler will be called once the competion is done.
-- (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
+- (void)processContactFromMessages:(NSArray *)messages withCompletion:(void(^)(void))completionMark;
 
 /// Fetching users whose last seen is updated recently.
-/// @param lastSeenAt Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
-/// @param completionMark In case of a successful fetch, it will have a list of ALUserDetail array. Otherwise, in case of failure, the error will not be nil.
-- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
+/// @param lastSeenAtTime Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
+/// @param completionMark In case of a successful fetch, it will have a list of `ALUserDetail` array. Otherwise, in case of failure, the error will not be nil.
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *))completionMark;
 
 /// Fetching the user detail from server.
-/// @param contactId Pass the userId for fetching.
+/// @param userId Pass the userId for fetching.
 /// @param completionMark Will have `ALUserDetail` in case of successfull fetch otherwise nil.
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
 /// Updating dispaly name of the user who is not registered.
-/// @param alContact Pass the `ALContact` object.
-- (void)updateUserDisplayName:(ALContact *)alContact;
+/// @param contact Pass the `ALContact` object.
+- (void)updateUserDisplayName:(ALContact *)contact;
 
 /// Mark a conversation as read in a one-to-one chat.
-/// @param contactId Pass the userId for marking conversation read.
+/// @param userId Pass the userId for marking conversation read.
 /// @param completion In case of a successful conversation marked as read, the error will be nil. Otherwise, in case of failure, the error will not be nil.
-- (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *, NSError *))completion;
 
 /// Mark a single message as read using with given `ALMessage` object and paired message key from the `ALMessage` object.
-/// @param alMessage An `ALMessage` object for marking the message as read.
+/// @param message An `ALMessage` object for marking the message as read.
 /// @param pairedkeyValue An paired message key from the `ALMessage`object.
 /// @param completion In case of a successful message marked as read, the error will be nil. Otherwise, an error describing mark conversation read failure.
-- (void)markMessageAsRead:(ALMessage *)alMessage
+- (void)markMessageAsRead:(ALMessage *)message
     withPairedkeyValue:(NSString *)pairedkeyValue
       withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -93,12 +93,11 @@
 /// Used for unblocking the user.
 /// @param userId Pass the userId that for unblocking the user.
 /// @param completion In case of any error in unblocking it will have an error in completion. Otherwise, if unblock is successful, it will have YES or true in userUnblock.
-- (void)unblockUser:(NSString *)userId
-withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
+- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 
 /// Update the block status in local database.
-/// @param userblock `ALUserBlockResponse` object parsing JSON.
-- (void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userblock;
+/// @param userBlockResponse An `ALUserBlockResponse` object parsing JSON.
+- (void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userBlockResponse;
 
 /// Returns array of userIds which are blocked by logged-in user.
 - (NSMutableArray *)getListOfBlockedUserByCurrentUser;
@@ -135,7 +134,7 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
           userStatus:(NSString *)status
         withCompletion:(void (^)(id theJson, NSError *error))completion;
 
-/// This method is used for fetching updated user details from the server.
+/// Used for fetching updated user details from the server.
 /// @param userId Pass the userId for which the latest user detail is needed.
 /// @param completionMark ALUserDetail in case of a successful fetch or else it will return nil in case of failure.
 - (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
@@ -172,34 +171,34 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
 /// @warning This method will be removed in future updates.
 - (void)processResettingUnreadCount;
 
-/// This method is used for searching the user based on the name of the user.
+/// Search the users for given name of user.
 /// @param userName Pass the name of the user to search
 /// @param completion `ALAPIResponse` in the status of this it will have success fetched the data successfully or error in case of any error.
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-/// This method will post the conversation read status with notification name `Update_unread_count` and userInfo will have the userId of the user whose conversation has been read from another platform.
+/// Posts the conversation read status with notification name `Update_unread_count` and userInfo will have the userId of the user whose conversation has been read from another platform.
 /// @param userId of user that notification to post for read.
 /// @param delegate `ApplozicUpdatesDelegate` for sending callback for read conversation.
 /// @warning This method is used internal for posting notification.
 - (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
-/// This method will fetch the muted users from an Applozic server.
+/// Gets the muted users from an Applozic server.
 /// @param delegate If ApplozicUpdatesDelegate is passed, the event for onUserMuteStatus will be called.
 /// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
 - (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
            withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completion;
 
-/// This method is used for to mute a user in one to one chat.
+/// Used for mute a user in one-to-one chat.
 /// @param alMuteRequest Pass the ALMuteRequest object for the userId and notificationAfterTime.
 /// @param completion ALAPIResponse in case of a successful update or else it will return NSError in case of failure.
 - (void)muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-/// This method used for reporting the message to the admin of the account
+/// Used for reporting the message to the admin of the account
 /// @param messageKey Pass message key of message object
 /// @param completion ALAPIResponse response callback if success or error and NSError if any error occurs
 - (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
-/// Used for disable the chat.
+/// Used for disable the chat for logged in user in all conversations.
 /// @param disable Pass YES for disabling the chat otherwise NO for enable.
 /// @param completion Response is YES then disabled successfully otherwise error.
 - (void)disableChat:(BOOL)disable withCompletion:(void(^)(BOOL response, NSError *error)) completion;
@@ -212,15 +211,16 @@ withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
        withDisplayName:(NSString *)displayName
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
-/// Gets the registered contacts from Applozic server and contacts from local database.
+/// Gets the registered contacts from Applozic server and from local database.
 /// @param nextPage If nextPage is NO or false, it will get contacts from starting and return the array of contact.
 /// If nextPage The flag is YES or true, it will return the next older contacts.
 /// @param completion Array of ALContact in case of successfully fetched, else it will return NSError.
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion;
 
-/// Mark the conversation as read in local core data base.
-/// @param alMessage Pass the `ALMessage` object.
-- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
+/// Mark the conversation as read in local core database for given message.
+/// Method is used for Internal use only.
+/// @param message Pass the `ALMessage` object.
+- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)message;
 
 @end

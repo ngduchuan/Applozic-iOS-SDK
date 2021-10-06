@@ -98,21 +98,23 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 #pragma mark - Update user display, profile image or user status
 
-- (void)updateUserDisplayName:(ALContact *)alContact
-               withCompletion:(void(^)(id theJson, NSError *theError))completion {
+- (void)updateUserDisplayName:(ALContact *)contact
+               withCompletion:(void(^)(id jsonString, NSError *theError))completion {
     NSString *updateDisplayNameURLString = [NSString stringWithFormat:@"%@/rest/ws/user/name", KBASE_URL];
-    NSString *updateDisplayNameParamString = [NSString stringWithFormat:@"userId=%@&displayName=%@", [alContact.userId urlEncodeUsingNSUTF8StringEncoding],
-                                              [alContact.displayName urlEncodeUsingNSUTF8StringEncoding]];
+    NSString *updateDisplayNameParamString = [NSString stringWithFormat:@"userId=%@&displayName=%@",
+                                              [contact.userId urlEncodeUsingNSUTF8StringEncoding],
+                                              [contact.displayName urlEncodeUsingNSUTF8StringEncoding]];
     
-    NSMutableURLRequest *updateDisplayNameRequest = [ALRequestHandler createGETRequestWithUrlString:updateDisplayNameURLString paramString:updateDisplayNameParamString];
-    [self.responseHandler authenticateAndProcessRequest:updateDisplayNameRequest andTag:@"USER_DISPLAY_NAME_UPDATE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSMutableURLRequest *updateDisplayNameRequest = [ALRequestHandler createGETRequestWithUrlString:updateDisplayNameURLString
+                                                                                        paramString:updateDisplayNameParamString];
+    [self.responseHandler authenticateAndProcessRequest:updateDisplayNameRequest andTag:@"USER_DISPLAY_NAME_UPDATE" WithCompletionHandler:^(id jsonString, NSError *error) {
         
-        if (theError) {
-            completion(nil, theError);
+        if (error) {
+            completion(nil, error);
             return;
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"Response of USER_DISPLAY_NAME_UPDATE : %@", (NSString *)theJson);
-            completion((NSString *)theJson, nil);
+            ALSLog(ALLoggerSeverityInfo, @"Response of USER_DISPLAY_NAME_UPDATE : %@", (NSString *)jsonString);
+            completion((NSString *)jsonString, nil);
         }
     }];
     
