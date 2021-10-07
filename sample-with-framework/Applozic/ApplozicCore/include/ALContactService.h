@@ -22,11 +22,11 @@
 /// @param contacts Pass the array of `ALContact` objects for deleting.
 - (BOOL)purgeListOfContacts:(NSArray *)contacts;
 
-/// This method will delete the contact from local data base.
+/// This method will delete the contact from local database.
 /// @param contact Pass the contact for deleting.
 - (BOOL)purgeContact:(ALContact *)contact;
 
-/// This will delete all the contacts from core data base.
+/// This will delete all the contacts from core database.
 - (BOOL)purgeAllContact;
 
 /// This method is used for updating an array of contacts in the local database.
@@ -53,7 +53,7 @@
 /// @return Returns a `ALContact` object.
 - (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value;
 
-/// This method is used loading the contact from local data base if contact exist otherwise it will create new contact with userId and display name.
+/// This method is used loading the contact from local database if contact exist otherwise it will create new contact with userId and display name.
 /// @param contactId Pass the userId of the reciever.
 /// @param displayName Pass the display name of the user.
 /// @return Returns a `ALContact` object.

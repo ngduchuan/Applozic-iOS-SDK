@@ -202,7 +202,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Mark Conversation as read
 
-- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *, NSError *))completion {
+- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
     
     if (!userId) {
         NSError *error = [NSError
@@ -493,12 +493,12 @@ static int CONTACT_PAGE_SIZE = 100;
     ALUserDetailListFeed *userDetailListFeed = [ALUserDetailListFeed new];
     [userDetailListFeed setArray:userArray];
     
-    [self.userClientService subProcessUserDetailServerCallPOST:userDetailListFeed withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+    [self.userClientService subProcessUserDetailServerCallPOST:userDetailListFeed withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
         
         if (userDetailArray && userDetailArray.count) {
             [self.contactDBService addUserDetailsWithoutUnreadCount:userDetailArray];
         }
-        completion(userDetailArray, theError);
+        completion(userDetailArray, error);
     }];
 }
 
@@ -540,9 +540,9 @@ static int CONTACT_PAGE_SIZE = 100;
         return;
     }
     
-    [self.userClientService updatePassword:oldPassword withNewPassword:newPassword withCompletion:^(ALAPIResponse *alAPIResponse, NSError *theError) {
+    [self.userClientService updatePassword:oldPassword withNewPassword:newPassword withCompletion:^(ALAPIResponse *alAPIResponse, NSError *error) {
         
-        if (!theError) {
+        if (!error) {
             if ([alAPIResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
                 NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
                                                         userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN UPDATING PASSWORD"
@@ -552,7 +552,7 @@ static int CONTACT_PAGE_SIZE = 100;
             }
             [ALUserDefaultsHandler setPassword:newPassword];
         }
-        completion(alAPIResponse, theError);
+        completion(alAPIResponse, error);
     }];
 }
 

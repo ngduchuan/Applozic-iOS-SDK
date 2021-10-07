@@ -7,7 +7,6 @@
 //
 
 #import "ALUserClientService.h"
-#import <Foundation/Foundation.h>
 #import "ALConstant.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALRequestHandler.h"
@@ -16,6 +15,7 @@
 #import "ALAPIResponse.h"
 #import "ALUserDetailListFeed.h"
 #import "ALLogger.h"
+#import <Foundation/Foundation.h>
 
 NSString * const ApplozicDomain = @"Applozic";
 
@@ -56,15 +56,15 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     NSMutableURLRequest *userStatusRequest = [ALRequestHandler createGETRequestWithUrlString:userStatusURLString paramString:userStatusParamString];
     [self.responseHandler authenticateAndProcessRequest:userStatusRequest
                                                  andTag:@"USER_LAST_SEEN_NEW"
-                                  WithCompletionHandler:^(id theJson, NSError *error) {
+                                  WithCompletionHandler:^(id jsonResponse, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in last seen fetching: %@", error);
             completionMark(nil);
             return;
         } else {
-            NSNumber *generatedAt = [theJson valueForKey:@"generatedAt"];
+            NSNumber *generatedAt = [jsonResponse valueForKey:@"generatedAt"];
             [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
-            ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)theJson];
+            ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)jsonResponse];
             completionMark(responseFeed);
         }
     }];
@@ -90,8 +90,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         if (((NSArray *)jsonResponse).count > 0) {
             ALSLog(ALLoggerSeverityInfo, @"User detail response JSON : %@", (NSString *)jsonResponse);
-            ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[jsonResponse objectAtIndex:0]];
-            completionMark(userDetailObject);
+            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:[jsonResponse objectAtIndex:0]];
+            completionMark(userDetail);
         } else {
             completionMark(nil);
         }
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 #pragma mark - Mark Conversation as read
 
 - (void)markConversationAsReadforContact:(NSString *)userId
-                          withCompletion:(void (^)(NSString *, NSError *))completion {
+                          withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
     
     NSString *conversationReadURL = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString *conversationReadParamString = [NSString stringWithFormat:@"userId=%@",[userId urlEncodeUsingNSUTF8StringEncoding]];
@@ -227,7 +227,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Response of mark message as read: %@",jsonResponse);
+        ALSLog(ALLoggerSeverityInfo, @"Response of mark message as read: %@", jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -526,7 +526,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                                  andTag:@"UPDATE_USER_PASSWORD"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         ALAPIResponse *apiResponse = nil;
-        if (!error){
+        if (!error) {
             apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         }
         completion(apiResponse, error);

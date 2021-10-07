@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
 #import "ALPasswordQueryable.h"
+#import "ALUserDefaultsHandler.h"
 #import "ALUtilityClass.h"
 
 static NSString *const AL_APPLICATION_KEY = @"com.applozic.userdefault.APPLICATION_KEY";

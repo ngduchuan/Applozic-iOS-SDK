@@ -37,12 +37,12 @@
     self.status = [dict objectForKey:@"status"];
 }
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
-    if (string == nil) {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
+    if (jsonString == nil) {
         return nil;
     }
     
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metaDataDictionary;
     
@@ -96,7 +96,7 @@
     if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
 
         NSString *flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
-
+        
         if (!_metadata) {
             _metadata = [[NSMutableDictionary alloc]init];
         }

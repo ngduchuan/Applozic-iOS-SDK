@@ -52,7 +52,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 - (void)populateDataFromDictonary:(NSDictionary *)dict;
 
 - (NSString *)getDisplayName;
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString;
 
 - (BOOL)isNotificationMuted;
 - (BOOL)isChatDisabled;

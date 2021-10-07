@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
 
 @interface ALUserDetail ()
 

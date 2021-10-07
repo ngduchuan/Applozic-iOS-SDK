@@ -71,7 +71,7 @@
 /// Mark a conversation as read in a one-to-one chat.
 /// @param userId Pass the userId for marking conversation read.
 /// @param completion In case of a successful conversation marked as read, the error will be nil. Otherwise, in case of failure, the error will not be nil.
-- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsRead:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 /// Mark a single message as read using with given `ALMessage` object and paired message key from the `ALMessage` object.
 /// @param message An `ALMessage` object for marking the message as read.
@@ -153,12 +153,13 @@
 /// This method is used for fetching user details by passing an array of users.
 /// @param userArray Add the userIds and pass it an array for user details.
 /// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
-- (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion;
+- (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray
+                   withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion;
 
 /// This method is used for fetching contact or user details. If a contact exists in the database, it will return from a database, or else it will fetch details from the server and return it.
 /// @param userId Pass the userId for fetching user details.
-/// @param completion ALContact on fetch completion.
-- (void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion;
+/// @param completion `ALContact` on fetch completion.
+- (void)getUserDetail:(NSString *)userId withCompletion:(void(^)(ALContact *contact))completion;
 
 /// This method is used for update a logged-in user password to new one.
 /// @param oldPassword Pass the existing password of the user.
@@ -166,7 +167,7 @@
 /// @param completion ALAPIResponse` in status of this it will have success fetched the data successfully or error in case of any error.
 - (void)updatePassword:(NSString *)oldPassword
        withNewPassword:(NSString *)newPassword
-        withCompletion:(void(^)(ALAPIResponse *alAPIResponse, NSError *error))completion;
+        withCompletion:(void(^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 /// This method is used for resetting the unread count.
 /// @warning This method will be removed in future updates.
@@ -195,7 +196,7 @@
 - (void)muteUser:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /// Used for reporting the message to the admin of the account
-/// @param messageKey Pass message key of message object
+/// @param messageKey Pass message key of `ALMessage` object
 /// @param completion ALAPIResponse response callback if success or error and NSError if any error occurs
 - (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 

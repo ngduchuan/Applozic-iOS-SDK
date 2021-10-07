@@ -129,7 +129,7 @@
 /// @param userDetails Array of `ALUserDetail` objects
 - (void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
 
-/// This method is used for updating mute time in local data base.
+/// This method is used for updating mute time in local database.
 /// @param notificationAfterTime Time in milliseconds.
 /// @param userId Pass the userId for updating time stamp.
 /// @return Returns a `ALUserDetail` object.

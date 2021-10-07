@@ -20,5 +20,4 @@
     self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
 }
 
-
 @end

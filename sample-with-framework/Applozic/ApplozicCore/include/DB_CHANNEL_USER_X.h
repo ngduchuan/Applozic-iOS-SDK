@@ -8,7 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
-/// `DB_CHANNEL_USER_X` is DB class is used for storing the group members in core data base which will have details of member in channel.
+/// `DB_CHANNEL_USER_X` is DB class is used for storing the group members in core database which will have details of member in channel.
 @interface DB_CHANNEL_USER_X : NSManagedObject
 
 /// Channel key or group id used for identifying the group or channel the user belong to;

@@ -101,7 +101,6 @@ typedef enum
 /// @note This is set internally not required to set.
 @property short deviceApnsType;
 
-
 /// Enables the message encryption user.
 @property BOOL enableEncryption;
 

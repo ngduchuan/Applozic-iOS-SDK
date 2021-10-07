@@ -8,7 +8,7 @@
 
 #import <CoreData/CoreData.h>
 
-/// `DB_CHANNEL` is DB class is used for storing the group or channel details in core data base.
+/// `DB_CHANNEL` is DB class is used for storing the group or channel details in core database.
 @interface DB_CHANNEL : NSManagedObject
 
 /// This will be used for identifying the admin of group or channel which is set during the creation of group.

@@ -6,26 +6,26 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALLastSeenSyncFeed.h"
+#import "ALAPIResponse.h"
 #import "ALContact.h"
 #import "ALContactsResponse.h"
-#import "ALUserDetailListFeed.h"
-#import "ALAPIResponse.h"
+#import "ALLastSeenSyncFeed.h"
 #import "ALMuteRequest.h"
 #import "ALResponseHandler.h"
+#import "ALUserDetailListFeed.h"
+#import <Foundation/Foundation.h>
 
 @interface ALUserClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)userLastSeenDetail:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(ALLastSeenSyncFeed *lastSeenSyncFee))completionMark;
+- (void)userLastSeenDetail:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(ALLastSeenSyncFeed *lastSeenSyncFeed))completionMark;
 
 - (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
 - (void)updateUserDisplayName:(ALContact *)contact withCompletion:(void(^)(id jsonResponse, NSError *error))completion;
 
-- (void)markConversationAsReadforContact:(NSString *)userId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsReadforContact:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)userBlockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
@@ -33,7 +33,8 @@
 
 - (void)userUnblockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
-- (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey
+                              withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)multiUserSendMessage:(NSDictionary *)messageDictionary
                   toContacts:(NSMutableArray *)contactIdsArray
@@ -63,7 +64,7 @@
     withCompletion:(void(^)(id jsonResponse, NSError *error))completion;
 
 - (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)userDetailListFeed
-                            withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError *error))completionMark;
+                            withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
 
 - (void)updatePassword:(NSString *)oldPassword
       withNewPassword :(NSString *)newPassword

@@ -19,8 +19,8 @@
 - (void)populateLastSeenDetail:(NSMutableArray *)lastSeenDetailArray {
     NSMutableArray *listArray = [NSMutableArray new];
     for (NSDictionary *userDetailDictionary in lastSeenDetailArray) {
-        ALUserDetail *userLastSeenDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
-        [listArray addObject:userLastSeenDetail];
+        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
+        [listArray addObject:userDetail];
     }
     self.lastSeenArray = listArray;
 }

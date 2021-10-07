@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-/// `DB_CONTACT` is DB class is used for storing the contact or user details in core data base.
+/// `DB_CONTACT` is DB class is used for storing the contact or user details in core database.
 @interface DB_CONTACT : NSManagedObject
 
 /// UserId of user which is used for identifying the user.

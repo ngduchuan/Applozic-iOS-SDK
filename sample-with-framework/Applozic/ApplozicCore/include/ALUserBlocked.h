@@ -11,7 +11,7 @@
 /// `ALUserBlocked` class is used for block and unblock details of the user.
 @interface ALUserBlocked : NSObject
 
-/// Generated Id of the stored in data base.
+/// Generated Id of the stored in database.
 @property (nonatomic, strong) NSString *id;
 
 /// Blocked to userId of the user.
