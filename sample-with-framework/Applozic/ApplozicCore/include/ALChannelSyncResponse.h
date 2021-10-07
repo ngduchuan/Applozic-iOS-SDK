@@ -6,9 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
 #import "ALChannel.h"
+#import <Foundation/Foundation.h>
 
 /// `ALChannelSyncResponse` class is used for parasing the channel sync API response.
 @interface ALChannelSyncResponse : ALAPIResponse

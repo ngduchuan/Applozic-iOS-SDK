@@ -7,21 +7,18 @@
 //  class for server calls
 
 #import <Foundation/Foundation.h>
-#import "ALConstant.h"
-#import "ALRequestHandler.h"
-#import "ALResponseHandler.h"
+#import "ALAPIResponse.h"
 #import "ALChannel.h"
-#import "ALChannelUserX.h"
+#import "ALChannelCreateResponse.h"
 #import "ALChannelDBService.h"
 #import "ALChannelFeed.h"
-#import "ALChannelCreateResponse.h"
-#import "ALChannelSyncResponse.h"
-#import "ALMuteRequest.h"
-#import "ALAPIResponse.h"
 #import "AlChannelFeedResponse.h"
+#import "ALChannelSyncResponse.h"
+#import "ALChannelUserX.h"
+#import "ALConstant.h"
 #import "ALMuteRequest.h"
+#import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-
 
 @interface ALChannelClientService : NSObject
 
@@ -82,7 +79,7 @@
                    orClientChannelKey:(NSString *)clientChannelKey
                        withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
 
-- (void)syncCallForChannel:(NSNumber *)updatedAt
+- (void)syncCallForChannel:(NSNumber *)updatedAtTime
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
@@ -90,21 +87,21 @@
 
 - (void)addChildKeyList:(NSMutableArray *)childKeyList
            andParentKey:(NSNumber *)parentKey
-         withCompletion:(void (^)(id json, NSError *error))completion;
+         withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)removeChildKeyList:(NSMutableArray *)childKeyList
               andParentKey:(NSNumber *)parentKey
-            withCompletion:(void (^)(id json, NSError *error))completion;
+            withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
            andClientParentKey:(NSString *)clientParentKey
-               withCompletion:(void (^)(id json, NSError *error))completion;
+               withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
               andClientParentKey:(NSString *)clientParentKey
-                  withCompletion:(void (^)(id json, NSError *error))completion;
+                  withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
-- (void)muteChannel:(ALMuteRequest *)ALMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)getChannelInfoByIdsOrClientIds:(NSMutableArray *)channelIds
                     orClinetChannelIds:(NSMutableArray *)clientChannelIds
@@ -113,12 +110,13 @@
 - (void)getChannelListForCategory:(NSString *)category
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
-- (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
+- (void)getAllChannelsForApplications:(NSNumber*)endTime
+                       withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
-                           withMembers:(NSMutableArray *)membersArray
-                         withGroupType:(short)groupType
-                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+                          withMembers:(NSMutableArray *)membersArray
+                        withGroupType:(short)groupType
+                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 
 - (void)addMemberToContactGroup:(NSString *)contactsGroupId
@@ -126,8 +124,8 @@
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
-                            withGroupType:(short)groupType
-                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+                           withGroupType:(short)groupType
+                          withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 - (void)getMembersFromContactGroup:(NSString *)contactGroupId withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
@@ -137,7 +135,7 @@
 
 - (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                              withGroupType:(short)groupType
-                                withUserId:(NSString*)userId
+                                withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 -(void)getMultipleContactGroup:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *channel)) completion;

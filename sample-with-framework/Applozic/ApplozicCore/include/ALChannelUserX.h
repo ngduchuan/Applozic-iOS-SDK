@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
+#import <CoreData/NSManagedObject.h>
+#import <Foundation/Foundation.h>
 
 /// List of role types for channel members.
 typedef enum {
@@ -21,7 +21,6 @@ typedef enum {
     /// Memeber of the channel.
     MEMBER = 3
 } ROLE_TYPE;
-
 
 /// `ALChannelUserX` class is used for channel member details.
 @interface ALChannelUserX : ALJson
@@ -40,9 +39,6 @@ typedef enum {
 
 /// Parent channel key for iderntifying the parent channel.
 @property (nonatomic, strong) NSNumber *parentKey;
-
-/// Managed Object ID of core data.
-@property (nonatomic, copy) NSManagedObjectID *channelUserXDBObjectId;
 
 /// Role of the channel member.
 @property (nonatomic, strong) NSNumber *role;

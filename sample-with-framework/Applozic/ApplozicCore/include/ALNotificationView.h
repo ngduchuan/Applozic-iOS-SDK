@@ -6,8 +6,8 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "ApplozicCore.h"
+#import <UIKit/UIKit.h>
 
 /// `ALNotificationView` class is used for showing local notification and it is used in Applozic UI.
 @interface ALNotificationView : UILabel

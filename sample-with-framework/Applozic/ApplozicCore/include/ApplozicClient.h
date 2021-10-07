@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// If the userId is not present in the servers, a new one will be created and registered. Otherwise, the existing user will be authenticated and logged in.
 ///
-/// @param alUser An `ALUser` object details for identifying the user on the server, userId, and authenticationTypeId are mandatory fields.
+/// @param user An `ALUser` object details for identifying the user on the server, userId, and authenticationTypeId are mandatory fields.
 /// @param completion An `ALRegistrationResponse` describing a successful login or an error describing the authentication failure.
 ///
 /// Example: To log in a user to Applozic server use the below code:
@@ -142,7 +142,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
+- (void)loginUser:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error))completion;
 
 /// Enables push notification for real-time updates on messages and other events to the device.
 ///
@@ -170,7 +170,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }
 ///
 /// [applozicClient updateApnDeviceTokenWithCompletion:apnDeviceToken
-///  withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+///  withCompletion:^(ALRegistrationResponse *response, NSError *error) {
 ///
 ///   if (error) {
 ///       NSLog(@"Failed to update APNs token to Applozic server due to: %@",error.localizedDescription);
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 /// @endcode
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
-                            withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
+                            withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error))completion;
 
 /// Sends an attachment message in one-to-one or channel conversation.
 ///
@@ -190,7 +190,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// 2. If upload fails callback will be called : `-[ApplozicAttachmentDelegate onUploadFailed:]`.
 /// 3. Successful sending an attachment callback will be called : `-[ApplozicAttachmentDelegate onUploadCompleted:withOldMessageKey:]`.
 ///
-/// @param attachmentMessage Create an `ALMessage` object using `ALMessageBuilder` set receiver userId for one-to-one or channel key from `ALChannel` and file name in `imageFilePath`.
+/// @param message Create an `ALMessage` object using `ALMessageBuilder` set receiver userId for one-to-one or channel key from `ALChannel` and file name in `imageFilePath`.
 /// @note Make sure the file is saved and exists in the Application document directory using the file name will pick the file from there and upload it to servers.
 ///
 /// Example: Sending an attachment message in a one-to-one conversation:
@@ -201,13 +201,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate`in your class for real time attachment upload status events.
 ///
-/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
 ///     alMessageBuilder.to = @"589353957989"; // Pass Receiver userId to whom you want to send a message.
 ///     alMessageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
 ///     alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
 /// }];
 ///
-/// [applozicClient sendMessageWithAttachment:alMessage];
+/// [applozicClient sendMessageWithAttachment:message];
 ///
 /// @endcode
 ///
@@ -219,20 +219,20 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate` in your class for real time attachment upload status events.
 ///
-/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
 ///     alMessageBuilder.groupId = @12327283; // Pass channelKey from ALChannel object you want to send a attchment message.
 ///     alMessageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
 ///     alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
 /// }];
 ///
-/// [applozicClient sendMessageWithAttachment:alMessage];
+/// [applozicClient sendMessageWithAttachment:message];
 ///
 /// @endcode
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage;
+- (void)sendMessageWithAttachment:(ALMessage *)message;
 
 /// Sends a text message in one-to-one or channel conversation.
 ///
-/// @param alMessage Create an `ALMessage` object using `ALMessageBuilder` with message text which is non-nil for one-to-one or channel conversation.
+/// @param message Create an `ALMessage` object using `ALMessageBuilder` with message text which is non-nil for one-to-one or channel conversation.
 /// @param completion On message sent successfully it will have `ALMessage` object with an updated message key or an error describing the send message failure.
 /// @warning Method `sendTextMessage` is used only for sending text messages not for attachments. To send attachment checkout `-[ApplozicClient sendMessageWithAttachment:]`.
 ///
@@ -241,7 +241,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// ALMessage *alMessage = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
 ///     alMessageBuilder.to = @"1232722828288283"; // Pass userId to whom you want to send a message otherwise it will be nil.
 ///         OR
 ///     alMessageBuilder.groupId = @12327283; // Pass channelKey here to whom you want to send a message otherwise it will be nil.
@@ -249,7 +249,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///     alMessageBuilder.message = @"Hi How are you?"; // Pass message text here.
 /// }];
 ///
-/// [applozicClient sendTextMessage:alMessage withCompletion:^(ALMessage *message, NSError *error) {
+/// [applozicClient sendTextMessage:message withCompletion:^(ALMessage *message, NSError *error) {
 ///
 ///   if (!error) {
 ///       NSLog(@"Update the UI message is sent to server");
@@ -258,7 +258,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)sendTextMessage:(ALMessage *)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
+- (void)sendTextMessage:(ALMessage *)message withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
 
 /// Gets list of the most recent messages for each conversation.
 ///
@@ -360,7 +360,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// 2. If download fails callback will be called : `-[ApplozicAttachmentDelegate onDownloadFailed:]`.
 /// 3. Successful downloaded an attachment callback will be called : `-[ApplozicAttachmentDelegate onDownloadCompleted:]`.
 ///
-/// @param alMessage An `ALMessage` object for which downloading an attachment in one-to-one or channel conversation.
+/// @param message An `ALMessage` object for which downloading an attachment in one-to-one or channel conversation.
 ///
 /// @code
 /// @import ApplozicCore;
@@ -368,9 +368,9 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate`in your class for real-time download status events.
 ///
-/// [applozicClient downloadMessageAttachment:alMessage]; // Pass `ALMessage` object to download and make sure message filemeta object is not nil.
+/// [applozicClient downloadMessageAttachment:message]; // Pass `ALMessage` object to download and make sure message filemeta object is not nil.
 /// @endcode
-- (void)downloadMessageAttachment:(ALMessage *)alMessage;
+- (void)downloadMessageAttachment:(ALMessage *)message;
 
 /// Creates a new channel conversation for the given `ALChannelInfo` object.
 ///

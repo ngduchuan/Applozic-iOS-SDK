@@ -53,9 +53,4 @@
 /// @param detailJson Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)detailJson;
 
-/// This method used for parsing the JSON.
-/// @param detailJson Pass the JSON Dictionary.
-- (void)parseMessage:(id)detailJson;
-
-
 @end

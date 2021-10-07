@@ -26,8 +26,4 @@
 /// @param messageDictonary Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
-/// This method is used for parsing the JSON Dictionary of Message information.
-/// @param messageJson Pass JSON data.
-- (void)parseMessage:(id)messageJson;
-
 @end

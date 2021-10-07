@@ -6,9 +6,9 @@
 //  Copyright © 2017 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
 #import "ALChannel.h"
+#import <Foundation/Foundation.h>
 
 /// `AlChannelFeedResponse` class is used for channel information response parsing.
 @interface AlChannelFeedResponse : ALAPIResponse

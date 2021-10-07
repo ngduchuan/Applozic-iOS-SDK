@@ -59,8 +59,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALChannelFeed.h"
 #import "AlChannelFeedResponse.h"
 #import "ALChannelInfo.h"
-#import "AlChannelInfoModel.h"
-#import "AlChannelResponse.h"
 #import "ALGroupUser.h"
 #import "ALChannelUser.h"
 #import "ALChannelOfTwoMetaData.h"

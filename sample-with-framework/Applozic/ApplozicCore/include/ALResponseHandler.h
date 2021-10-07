@@ -5,8 +5,8 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAuthService.h"
+#import <Foundation/Foundation.h>
 
 /// `ALResponseHandler`used for handling the URL request for calling the server for all the APIs.
 ///
@@ -23,7 +23,7 @@
 /// @note Internal API request method don't need to call from outside.
 - (void)processRequest:(NSMutableURLRequest *)request
         andTag:(NSString *)tag
- WithCompletionHandler:(void(^)(id jsonString , NSError *error))reponseCompletion;
+ WithCompletionHandler:(void(^)(id jsonResponse , NSError *error))reponseCompletion;
 
 /// Authenticate to Applozic sever by JWT token validation and proccess the request for API call.
 /// @param request Create a URLRequest using `ALRequestHandler`.
@@ -33,7 +33,6 @@
 - (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
                 andTag:(NSString *)tag
         WithCompletionHandler:(void (^)(id, NSError *))completion;
-
 
 /// Authenticate to Applozic sever for JWT token and will have the mutable URL request updated with JWT Token for calling the Applozic sever.
 /// @param request Create a URLRequest using `ALRequestHandler`.

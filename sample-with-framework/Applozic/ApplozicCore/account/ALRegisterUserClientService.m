@@ -12,17 +12,17 @@
 #import "ALContactDBService.h"
 #import "ALInternalSettings.h"
 #import "ALLogger.h"
-#import "ALRegisterUserClientService.h"
-#import "ALRegistrationResponse.h"
 #import "ALMessageDBService.h"
 #import "ALMessageService.h"
 #import "ALMQTTConversationService.h"
+#import "ALRegisterUserClientService.h"
+#import "ALRegistrationResponse.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALUserService.h"
 #import "ALUtilityClass.h"
 
-NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
+NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 
 @implementation ALRegisterUserClientService
 
@@ -44,7 +44,7 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
     if ([ALUserDefaultsHandler isLoggedIn]) {
         ALSLog(ALLoggerSeverityInfo, @"User is already login to applozic with userId %@",ALUserDefaultsHandler.getUserId);
         ALRegistrationResponse *registrationResponse = [self getLoginRegistrationResponse];
-        completion(registrationResponse,nil);
+        completion(registrationResponse, nil);
         return;
     }
     
@@ -77,14 +77,19 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
     [user setDeviceApnsType:!isDevelopmentBuild()];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
-    if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
-        [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+
+    NSString *appModuleName = [ALUserDefaultsHandler getAppModuleName];
+
+    if (appModuleName) {
+        [user setAppModuleName:appModuleName];
+    } else if (user.appModuleName != NULL) {
+        [ALUserDefaultsHandler setAppModuleName:user.appModuleName];
     }
+
     if ([ALApplozicSettings isAudioVideoEnabled]) {
         [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
-    [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
-    
+
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
     NSString *loginParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
@@ -112,8 +117,8 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
             @try
             {
                 [ALUserDefaultsHandler setUserId:user.userId];
-                [ALUserDefaultsHandler setEmailVerified: user.emailVerified];
-                [ALUserDefaultsHandler setDisplayName: user.displayName];
+                [ALUserDefaultsHandler setEmailVerified:user.emailVerified];
+                [ALUserDefaultsHandler setDisplayName:user.displayName];
                 [ALUserDefaultsHandler setEmailId:user.email];
                 [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
                 [ALUserDefaultsHandler setUserKeyString:response.userKey];
@@ -155,27 +160,25 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
                 
-                ALAuthService * authService = [[ALAuthService alloc] init];
+                ALAuthService *authService = [[ALAuthService alloc] init];
                 [authService decodeAndSaveToken:response.authToken];
                 
-                ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
+                ALContactDBService  *contactDBService = [[ALContactDBService alloc] init];
                 ALContact *contact = [[ALContact alloc] init];
                 contact.userId = user.userId;
                 contact.displayName = response.displayName;
                 contact.contactImageUrl = response.imageLink;
-                contact.contactNumber  = response.contactNumber;
-                contact.roleType  =  [NSNumber numberWithShort:response.roleType];
-                contact.metadata  =  response.metadata;
+                contact.contactNumber = response.contactNumber;
+                contact.roleType = [NSNumber numberWithShort:response.roleType];
+                contact.metadata = response.metadata;
                 contact.userStatus = response.statusMessage;
-                [alContactDBService addContactInDatabase:contact];
+                [contactDBService addContactInDatabase:contact];
                 
             } @catch (NSException *exception) {
                 ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
             }
-            
-            [self connect];
-            
-            completion(response,nil);
+
+            completion(response, nil);
             
             ALUserService * alUserService = [ALUserService new];
             [alUserService getMutedUserListWithDelegate:nil withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
@@ -189,7 +192,7 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 }
 
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
-                            withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
+                            withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion {
     ALSLog(ALLoggerSeverityInfo, @"ApnDeviceToken ## %@", apnDeviceToken);
     
     if (apnDeviceToken.length == 0) {
@@ -299,8 +302,8 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:notificationMode];
     
-    ALRegisterUserClientService * alRegisterUserClientService = [[ALRegisterUserClientService alloc] init];
-    [alRegisterUserClientService updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+    ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
+    [registerUserClientService updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
         completion(response, error);
     }];
 }
@@ -358,9 +361,7 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
     if ([ALApplozicSettings isAudioVideoEnabled]) {
         [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
-    
-    [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
-    
+
     [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
     
     NSError *error;
@@ -428,7 +429,7 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 }
 
 - (void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
-    NSString *logoutURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
+    NSString *logoutURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_LOGOUT_URL];
     NSMutableURLRequest *logoutRequest = [ALRequestHandler createPOSTRequestWithUrlString:logoutURLString paramString:nil];
     
     [self.responseHandler authenticateAndProcessRequest:logoutRequest andTag:@"USER_LOGOUT"
@@ -483,7 +484,7 @@ NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 + (void)sendServerRequestForAppUpdate {
     
     NSString *appUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
-    NSString *paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
+    NSString *paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE, [ALUserDefaultsHandler getDeviceKeyString]];
     
     NSMutableURLRequest *appUpdateRequest = [ALRequestHandler createGETRequestWithUrlString:appUpdateURLString paramString:paramString];
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];

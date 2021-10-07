@@ -47,10 +47,6 @@
 /// :nodoc:
 @property (nonatomic) BOOL closed;
 
-/// The method is used for parsing JSON.
-/// @param messageJson Pass the JSON for parsing.
-- (void)parseMessage:(id)messageJson;
-
 /// This method is used for parsing the context based conversation.
 /// @param messageDictonary Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;

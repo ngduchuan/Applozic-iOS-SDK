@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALJson.h"
 #import "ALChannel.h"
+#import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// `ALChannelFeed` class is used for parsing the Channel JSON object.
 @interface ALChannelFeed : ALJson

@@ -13,9 +13,9 @@
 #import "ALRegisterUserClientService.h"
 
 @implementation ApplozicClient {
-    ALMQTTConversationService *alMQTTConversationService;
-    ALAttachmentService *alAttachmentService;
-    ALPushNotificationService *alPushNotificationService;
+    ALMQTTConversationService *MQTTConversationService;
+    ALAttachmentService *attachmentService;
+    ALPushNotificationService *pushNotificationService;
 }
 
 NSString *const ApplozicClientDomain = @"ApplozicClient";
@@ -37,11 +37,11 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     self = [super init];
     if (self) {
         [ALUserDefaultsHandler setApplicationKey:appID];
-        alPushNotificationService = [[ALPushNotificationService alloc] init];
+        pushNotificationService = [[ALPushNotificationService alloc] init];
         self.delegate = delegate;
-        alPushNotificationService.realTimeUpdate = delegate;
-        alMQTTConversationService = [ALMQTTConversationService sharedInstance];
-        alMQTTConversationService.realTimeUpdate = delegate;
+        pushNotificationService.realTimeUpdate = delegate;
+        MQTTConversationService = [ALMQTTConversationService sharedInstance];
+        MQTTConversationService.realTimeUpdate = delegate;
         [self setUpServices];
     }
     return self;
@@ -57,46 +57,54 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     _messageDbService = [ALMessageDBService new];
     _userService = [ALUserService sharedInstance];
     _channelService = [ALChannelService sharedInstance];
-    alAttachmentService = [ALAttachmentService sharedInstance];
+    attachmentService = [ALAttachmentService sharedInstance];
 }
 
 #pragma mark - Login
 
-- (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
+- (void)loginUser:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
 
     if (![ALUserDefaultsHandler getApplicationKey]) {
-        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil its not passed"}];
+        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil, its not passed"}];
         completion(nil, applicationKeyNilError);
         return;
-    } else if (!alUser) {
-        NSError *alUserNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"ALUser object is nil"}];
-        completion(nil, alUserNilError);
+    } else if (!user) {
+        NSError *userNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"ALUser object is nil"}];
+        completion(nil, userNilError);
         return;
-    } else if (!alUser.userId) {
+    } else if (!user.userId) {
         NSError *userIdNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"UserId is nil"}];
         completion(nil, userIdNilError);
         return;
     }
 
-    [alUser setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
-    [alUser setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
+
+    NSString *appModuleName = [ALUserDefaultsHandler getAppModuleName];
+
+    if (appModuleName) {
+        [user setAppModuleName:appModuleName];
+    } else if (user.appModuleName != NULL) {
+        [ALUserDefaultsHandler setAppModuleName:user.appModuleName];
+    }
 
     ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
-    [registerUserClientService initWithCompletion:alUser withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+    [registerUserClientService initWithCompletion:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
 
-        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", rResponse);
         if (error) {
-            NSLog(@"ERROR_USER_REGISTRATION :: %@",error.description);
+            NSLog(@"ERROR_USER_REGISTRATION :: %@", error.description);
             completion(nil, error);
             return;
         }
+        
+        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", response);
 
-        if (![rResponse isRegisteredSuccessfully]) {
-            NSError *passError = [NSError errorWithDomain:rResponse.message code:0 userInfo:nil];
-            completion(rResponse, passError);
+        if (![response isRegisteredSuccessfully]) {
+            NSError *passError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : response.message}];
+            completion(response, passError);
             return;
         }
-        completion(rResponse, error);
+        completion(response, error);
     }];
 }
 
@@ -105,10 +113,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)logoutUserWithCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALRegisterUserClientService *alUserClientService = [[ALRegisterUserClientService alloc] init];
+    ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
 
     if ([ALUserDefaultsHandler getDeviceKeyString]) {
-        [alUserClientService logoutWithCompletionHandler:^(ALAPIResponse *response, NSError *error) {
+        [registerUserClientService logoutWithCompletionHandler:^(ALAPIResponse *response, NSError *error) {
             completion(error, response);
         }];
     }
@@ -161,9 +169,9 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Message thread
 
-- (void)getMessages:(MessageListRequest *)messageListRequest
-withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
-    [_messageService getMessageListForUser:messageListRequest  withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
+    [_messageService getMessageListForUser:messageListRequest
+                            withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
         completion(messages, error);
     }];
 }
@@ -173,6 +181,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 #pragma mark - Converstion read mark group and one to one
 
 - (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString *response, NSError *error)) completion {
+
     if (groupId != nil && groupId.integerValue != 0) {
         [_channelService markConversationAsRead:groupId withCompletion:^(NSString *conversationResponse, NSError *error) {
 
@@ -184,6 +193,12 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                 completion(conversationResponse, nil);
             }
         }];
+    } else {
+        NSError *nilError = [NSError errorWithDomain:ApplozicClientDomain
+                                                code:0
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Channel key or groupId is nil"}];
+
+        completion(nil, nilError);
     }
 }
 
@@ -199,14 +214,20 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                 completion(conversationResponse, nil);
             }
         }];
+    }  else {
+        NSError *nilError = [NSError errorWithDomain:ApplozicClientDomain
+                                                code:0
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Failed to mark as read userId is nil"}];
+
+        completion(nil, nilError);
     }
 }
 
 #pragma mark - Send text message
 
-- (void)sendTextMessage:(ALMessage*)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion {
+- (void)sendTextMessage:(ALMessage *)message withCompletion:(void(^)(ALMessage *message, NSError *error))completion {
 
-    if (!alMessage) {
+    if (!message) {
         NSError *messageError = [NSError errorWithDomain:ApplozicClientDomain
                                                     code:MessageNotPresent
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Empty message passed"}];
@@ -215,7 +236,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
         return;
     }
 
-    if (!alMessage.message) {
+    if (!message.message) {
         NSError *messageTextError = [NSError errorWithDomain:ApplozicClientDomain
                                                     code:MessageNotPresent
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object"}];
@@ -224,46 +245,54 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
         return;
     }
 
-    [_messageService sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+    [_messageService sendMessages:message withCompletion:^(NSString *jsonResponse, NSError *error) {
+
         if (error) {
             NSLog(@"SEND_MSG_ERROR :: %@",error.description);
             completion(nil, error);
             return;
         }
+
         if (self.delegate) {
-            [self.delegate onMessageSent:alMessage];
+            [self.delegate onMessageSent:message];
         }
-        completion(alMessage, error);
+        completion(message, error);
     }];
 
 }
 
 #pragma mark - Send Attachment message
 
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage {
+- (void)sendMessageWithAttachment:(ALMessage *)message {
     
-    if (!attachmentMessage || !attachmentMessage.imageFilePath) {
+    if (!message || !message.imageFilePath) {
+        NSLog(@"Failed to send attachment the message or imageFilePath it passed as nil");
         return;
     }
-    [alAttachmentService sendMessageWithAttachment:attachmentMessage withDelegate:self.delegate withAttachmentDelegate:self.attachmentProgressDelegate];
+
+    [attachmentService sendMessageWithAttachment:message
+                                      withDelegate:self.delegate
+                            withAttachmentDelegate:self.attachmentProgressDelegate];
 }
 
 #pragma mark - Download Attachment message
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage {
-    if (!alMessage) {
+- (void)downloadMessageAttachment:(ALMessage *)message {
+    if (!message) {
+        NSLog(@"Failed to download the message it passed as nil");
         return;
     }
-    [alAttachmentService downloadMessageAttachment:alMessage withDelegate:self.attachmentProgressDelegate];
+    [attachmentService downloadMessageAttachment:message withDelegate:self.attachmentProgressDelegate];
 }
 
-#pragma mark - Channel/Group methods
+#pragma mark - Channel or Group methods
 
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
                       withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
 
     ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+    [channelService createChannelWithChannelInfo:channelInfo
+                                  withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
         completion(response, error);
     }];
 }
@@ -273,9 +302,11 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                        orClientChannelKey:(NSString *)clientChannelKey
                            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
-    [alChannelService removeMemberFromChannel:userId andChannelKey:channelKey
-                           orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    [channelService removeMemberFromChannel:userId
+                                andChannelKey:channelKey
+                           orClientChannelKey:clientChannelKey
+                               withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 }
@@ -285,8 +316,11 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                       orClientChannelKey:(NSString *)clientChannelKey
                           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
-    [alChannelService leaveChannelWithChannelKey:channelKey andUserId:userId orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    [channelService leaveChannelWithChannelKey:channelKey
+                                       andUserId:userId
+                              orClientChannelKey:clientChannelKey
+                                  withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -297,8 +331,11 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                   orClientChannelKey:(NSString *)clientChannelKey
                       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
-    [alChannelService addMemberToChannel:userId andChannelKey:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    [channelService addMemberToChannel:userId
+                         andChannelKey:channelKey
+                    orClientChannelKey:clientChannelKey
+                        withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -312,8 +349,16 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                            metadata:(NSMutableDictionary *)metaData
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
-    [alChannelService updateChannelWithChannelKey:channelKey andNewName:newName andImageURL:imageURL orClientChannelKey:clientChannelKey isUpdatingMetaData:flag metadata:metaData orChildKeys:nil orChannelUsers:channelUsers withCompletion:^(NSError *error, ALAPIResponse *response) {
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    [channelService updateChannelWithChannelKey:channelKey
+                                     andNewName:newName
+                                    andImageURL:imageURL
+                             orClientChannelKey:clientChannelKey
+                             isUpdatingMetaData:flag
+                                       metadata:metaData
+                                    orChildKeys:nil
+                                 orChannelUsers:channelUsers
+                                 withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -321,11 +366,13 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion {
+                             withCompletion:(void(^)(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse))completion {
 
     ALChannelService *channelService = [[ALChannelService alloc]init];
-    [channelService getChannelInformationByResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse) {
-        completion(error, alChannel, channelResponse);
+    [channelService getChannelInformationByResponse:channelKey
+                                 orClientChannelKey:clientChannelKey
+                                     withCompletion:^(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse) {
+        completion(error, channel, channelResponse);
     }];
 
 }
@@ -348,18 +395,18 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }];
 }
 
-#pragma mark - Mute/Unmute Channel
+#pragma mark - Mute or Unmute Channel
 
 - (void)muteChannelOrUnMuteWithChannelKey:(NSNumber *)channelKey
                                   andTime:(NSNumber *)notificationTime
                            withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-    ALMuteRequest *alMuteRequest = [ALMuteRequest new];
-    alMuteRequest.id = channelKey;
-    alMuteRequest.notificationAfterTime= notificationTime;
+    ALMuteRequest *muteRequest = [ALMuteRequest new];
+    muteRequest.id = channelKey;
+    muteRequest.notificationAfterTime = notificationTime;
 
-    ALChannelService *alChannelService = [[ALChannelService alloc]init];
-    [alChannelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
+    ALChannelService *channelService = [[ALChannelService alloc]init];
+    [channelService muteChannel:muteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
         completion(response, error);
     }];
 
@@ -367,75 +414,75 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - APN's notification process
 
-- (void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo {
+- (void)notificationArrivedToApplication:(UIApplication *)application withDictionary:(NSDictionary *)userInfo {
 
-    if (alPushNotificationService) {
-        [alPushNotificationService notificationArrivedToApplication:application withDictionary:userInfo];
+    if (pushNotificationService) {
+        [pushNotificationService notificationArrivedToApplication:application withDictionary:userInfo];
     }
 }
 
 #pragma mark - Subscribe To Conversation for real time updates
 
 - (void)subscribeToConversation {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService subscribeToConversation];
+    if (MQTTConversationService) {
+        [MQTTConversationService subscribeToConversation];
     }
 }
 
 #pragma mark - Unsubscribe To Conversation from real time updates
 
 - (void)unsubscribeToConversation {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService unsubscribeToConversation];
+    if (MQTTConversationService) {
+        [MQTTConversationService unsubscribeToConversation];
     }
 }
 
 #pragma mark - Subscribe To typing status for one to one chat
 
 - (void)subscribeToTypingStatusForOneToOne {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService subscribeToChannelConversation:nil];
+    if (MQTTConversationService) {
+        [MQTTConversationService subscribeToChannelConversation:nil];
     }
 }
 
-#pragma mark - Subscribe To typing status for Channel/Group chat
+#pragma mark - Subscribe To typing status for Channel or Group chat
 
 - (void)subscribeToTypingStatusForChannel:(NSNumber *)channelKey {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService subscribeToChannelConversation:channelKey];
+    if (MQTTConversationService) {
+        [MQTTConversationService subscribeToChannelConversation:channelKey];
     }
 }
 
 #pragma mark - Unsubscribe To typing status events for one to one
 
 - (void)unSubscribeToTypingStatusForOneToOne {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService unSubscribeToChannelConversation:nil];
+    if (MQTTConversationService) {
+        [MQTTConversationService unSubscribeToChannelConversation:nil];
     }
 }
 
-#pragma mark - Unsubscribe To typing status events for Channel/Group
+#pragma mark - Unsubscribe To typing status events for Channel or Group
 
 - (void)unSubscribeToTypingStatusForChannel:(NSNumber *)channelKey {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService unSubscribeToChannelConversation:channelKey];
+    if (MQTTConversationService) {
+        [MQTTConversationService unSubscribeToChannelConversation:channelKey];
     }
 }
 
 - (void)sendTypingStatusForChannelKey:(NSNumber *)channelKey
                            withTyping:(BOOL)isTyping {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService sendTypingStatus:nil userID:nil andChannelKey:channelKey typing:isTyping];
+    if (MQTTConversationService) {
+        [MQTTConversationService sendTypingStatus:nil userID:nil andChannelKey:channelKey typing:isTyping];
     }
 }
 
 - (void)sendTypingStatusForUserId:(NSString *)userId withTyping:(BOOL)isTyping {
-    if (alMQTTConversationService) {
-        [alMQTTConversationService sendTypingStatus:nil userID:userId andChannelKey:nil typing:isTyping];
+    if (MQTTConversationService) {
+        [MQTTConversationService sendTypingStatus:nil userID:userId andChannelKey:nil typing:isTyping];
     }
 }
 
-#pragma mark - Send typing status event for one to one or Channel/Group chat
+#pragma mark - Send typing status event for one to one or Channel or Group chat
 
 - (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL)isTyping {
     if (channelKey != nil) {
@@ -445,7 +492,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     }
 }
 
-#pragma mark - Message list for one to one or Channel/Group
+#pragma mark - Message list for one to one or Channel or Group
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup

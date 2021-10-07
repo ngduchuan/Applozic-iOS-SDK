@@ -79,12 +79,7 @@ typedef enum
 /// App module name is used when two different apps are communicating with different app modules and the same APP-ID.
 ///
 /// Use this settings `[ALUserDefaultsHandler setAppModuleName:@"NAME-OF-MODULE-HERE"];` to pass the module name`.
-/// @note This is set internally not required to set using appModuleName.
 @property NSString *appModuleName;
-
-/// To identify the user type.
-/// @note This is not used currently will be removed in future.
-@property short userTypeId;
 
 /// Internally sets the notification mode.
 ///
@@ -106,14 +101,12 @@ typedef enum
 /// @note This is set internally not required to set.
 @property short deviceApnsType;
 
-/// :nodoc:
-@property short pushNotificationFormat;
 
 /// Enables the message encryption user.
 @property BOOL enableEncryption;
 
 /// :nodoc:
-@property NSNumber *contactType;
+@property short pushNotificationFormat;
 
 /// Sets the added features that Applozic provides.
 ///
@@ -155,4 +148,12 @@ typedef enum
 /// :nodoc:
 @property short prefContactAPI DEPRECATED_ATTRIBUTE;
 
+/// :nodoc:
+@property NSNumber *contactType DEPRECATED_ATTRIBUTE;
+
+/// To identify the user type.
+/// @note This is not used currently will be removed in future.
+@property short userTypeId DEPRECATED_ATTRIBUTE;
+
 @end
+

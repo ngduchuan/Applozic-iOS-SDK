@@ -193,8 +193,6 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     [userDefaults boolForKey: AL_EMAIL_VERIFIED];
 }
 
-// isConversationDbSynced
-
 + (void)setBoolForKey_isConversationDbSynced:(BOOL)value {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     [userDefaults setBool:value forKey:AL_CONVERSATION_DB_SYNCED];

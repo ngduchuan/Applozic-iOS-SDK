@@ -15,7 +15,14 @@
 /// For internal use only.
 static short AL_VERSION_CODE = 112;
 
-/// `ALRegisterUserClientService` used for registration and authentication of the user, APN's or VOIP device token update to Applozic server, update notification modes, Sync account status of Application, Logout user.
+/// `ALRegisterUserClientService` used for registration and authentication of the user.
+///
+/// Basic methods it has :
+///
+/// * APN's or VOIP device token update to Applozic server,
+/// * Update notification modes.
+/// * Sync account status of Application.
+/// * Logout user.
 @interface ALRegisterUserClientService : NSObject
 
 /// `ALResponseHandler` instance method is used for actual request call to API's. Default instance is created from `init` method of `ALRegisterUserClientService`.
@@ -48,10 +55,10 @@ static short AL_VERSION_CODE = 112;
 + (void)updateNotificationMode:(short)notificationMode
                 withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 /// :nodoc:
-- (void)connect;
+- (void)connect DEPRECATED_ATTRIBUTE;
 
 /// :nodoc:
-- (void)disconnect;
+- (void)disconnect DEPRECATED_ATTRIBUTE;
 
 /// Logouts the user from Applozic server.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the logout failure.
@@ -72,7 +79,7 @@ static short AL_VERSION_CODE = 112;
 
 /// Used for updating logged-in user details to Applozic server.
 ///
-/// @warning instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
+/// @warning Instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
 /// @param updatedUser An `ALUser` object.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update user failure.
 - (void)updateUser:(ALUser *)updatedUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;

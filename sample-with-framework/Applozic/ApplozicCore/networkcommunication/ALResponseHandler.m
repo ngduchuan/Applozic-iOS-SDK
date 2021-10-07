@@ -29,7 +29,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
 - (void)processRequest:(NSMutableURLRequest *)request
                 andTag:(NSString *)tag
- WithCompletionHandler:(void (^)(id jsonString, NSError *error))reponseCompletion {
+ WithCompletionHandler:(void (^)(id jsonResponse, NSError *error))reponseCompletion {
 
     NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
 
@@ -75,7 +75,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             return;
         }
 
-        id jsonString = nil;
+        id jsonResponse = nil;
 
         // DECRYPTING DATA WITH KEY
         if ([ALUserDefaultsHandler getEncryptionKey] &&
@@ -112,13 +112,13 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if ([tag isEqualToString:@"CREATE FILE URL"] ||
             [tag isEqualToString:@"IMAGE POSTING"]) {
-            jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            jsonResponse = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
             /*TODO: Right now server is returning server's Error with tag <html>.
              it should be proper jason response with errocodes.
              We need to remove this check once fix will be done in server.*/
 
-            NSError *error = [self checkForServerError:jsonString];
+            NSError *error = [self checkForServerError:jsonResponse];
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil, error);
@@ -128,7 +128,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         } else {
             NSError *jsonError = nil;
 
-            jsonString = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
+            jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
 
             if (jsonError) {
                 NSMutableString *responseString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -148,7 +148,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            reponseCompletion(jsonString, nil);
+            reponseCompletion(jsonResponse, nil);
         });
     }];
     [sessionDataTask resume];
@@ -167,8 +167,8 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         [self processRequest:urlRequest
                       andTag:tag
-       WithCompletionHandler:^(id jsonString, NSError *error) {
-            completion(jsonString, error);
+       WithCompletionHandler:^(id jsonResponse, NSError *error) {
+            completion(jsonResponse, error);
         }];
     }];
 }
