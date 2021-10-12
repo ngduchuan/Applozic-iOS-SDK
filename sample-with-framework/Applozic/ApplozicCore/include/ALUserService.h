@@ -75,7 +75,7 @@
 
 /// Mark a single message as read using with given `ALMessage` object and paired message key from the `ALMessage` object.
 /// @param message An `ALMessage` object for marking the message as read.
-/// @param pairedkeyValue An paired message key from the `ALMessage`object.
+/// @param pairedkeyValue An paired message key from the `ALMessage` object.
 /// @param completion In case of a successful message marked as read, the error will be nil. Otherwise, an error describing mark conversation read failure.
 - (void)markMessageAsRead:(ALMessage *)message
        withPairedkeyValue:(NSString *)pairedkeyValue
@@ -84,7 +84,7 @@
 /// Used for blocking the user.
 /// @param userId Pass the userId for blocking the user.
 /// @param completion In case of any error in blocking, it will have an error in completion. Otherwise, if the block is successful it will have YES or true in userBlock.
-- (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion;
+- (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL hasUserBlocked))completion;
 
 /// Fetching the blocked and unblocked user status.
 /// @param lastSyncTime Pass the last sync time that synced before.
@@ -93,7 +93,7 @@
 /// Used for unblocking the user.
 /// @param userId Pass the userId that for unblocking the user.
 /// @param completion In case of any error in unblocking it will have an error in completion. Otherwise, if unblock is successful, it will have YES or true in userUnblock.
-- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion;
+- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL hasUserUnblocked))completion;
 
 /// Update the block status in local database.
 /// @param userBlockResponse An `ALUserBlockResponse` object parsing JSON.
@@ -114,8 +114,8 @@
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion;
 
 /// Fetching a list of top online users based on the `onlineContactLimit` from `ALApplozicSettings`.
-/// @param completion Array of an `ALUserDetail` object in case of successful fetch otherwise an error describing online user fetch failure.
-- (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion;
+/// @param completion Array of an `ALContact` object in case of successful fetch otherwise an error describing online user fetch failure.
+- (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *contactArray, NSError *error))completion;
 
 /// Total unread count which are fetched from core database.
 - (NSNumber *)getTotalUnreadCount;

@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALMessage.h"
 #import "ALApplozicSettings.h"
+#import "ALMessage.h"
+#import <Foundation/Foundation.h>
 
 /// `ALMessageArrayWrapper` class is is used for caching the message array data in NSMutableArray used for adding, removing, clearing messages from Array.
 @interface ALMessageArrayWrapper : NSObject

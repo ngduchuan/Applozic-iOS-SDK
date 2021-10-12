@@ -6,7 +6,6 @@
 // Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALChannelClientService.h"
 #import "ALChannelDBService.h"
 #import "ALChannelFeed.h"
@@ -15,6 +14,7 @@
 #import "ALChannelSyncResponse.h"
 #import "ALRealTimeUpdate.h"
 #import "ALUserDefaultsHandler.h"
+#import <Foundation/Foundation.h>
 
 /// Constant key is used channel metadata for hidding or changing the channel action message for default create group.
 static NSString *const AL_CREATE_GROUP_MESSAGE = @"CREATE_GROUP_MESSAGE";

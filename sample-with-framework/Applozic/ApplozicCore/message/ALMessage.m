@@ -5,14 +5,14 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALMessage.h"
-#import "ALUtilityClass.h"
 #import "ALChannel.h"
-#import "ALContact.h"
 #import "ALChannelService.h"
+#import "ALContact.h"
 #import "ALContactDBService.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALMessage.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUtilityClass.h"
 
 static NSString * const AL_DELETE_MESSAGE_FOR_KEY = @"AL_DELETE_GROUP_MESSAGE_FOR_ALL";
 static NSString * const AL_TRUE = @"true";

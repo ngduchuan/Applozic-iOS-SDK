@@ -6,8 +6,8 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "ALMessageInfo.h"
 #import "ALAPIResponse.h"
+#import "ALMessageInfo.h"
 
 /// `ALMessageInfoResponse` class is used for parsing the Message information JSON response.
 @interface ALMessageInfoResponse : ALAPIResponse

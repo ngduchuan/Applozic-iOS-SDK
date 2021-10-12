@@ -5,22 +5,21 @@
 // Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALConstant.h"
-#import "ALSyncMessageFeed.h"
-#import "ALMessageList.h"
-#import "ALMessage.h"
-#import "DB_FileMetaInfo.h"
-#import "ALUserDetail.h"
 #import "ALChannelService.h"
-#import "MessageListRequest.h"
+#import "ALConstant.h"
+#import "ALConversationProxy.h"
+#import "ALMessage.h"
+#import "ALMessageClientService.h"
 #import "ALMessageInfoResponse.h"
+#import "ALMessageList.h"
 #import "ALMQTTConversationService.h"
 #import "ALRealTimeUpdate.h"
-#import "ALConversationProxy.h"
-#import "ALMessageClientService.h"
+#import "ALSyncMessageFeed.h"
+#import "ALUserDetail.h"
 #import "ALUserService.h"
-#import "ALChannelService.h"
+#import "DB_FileMetaInfo.h"
+#import <Foundation/Foundation.h>
+#import "MessageListRequest.h"
 
 /// Notification name for new message.
 static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";

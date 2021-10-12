@@ -6,7 +6,6 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //  class for server calls
 
-#import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
 #import "ALChannel.h"
 #import "ALChannelCreateResponse.h"
@@ -19,6 +18,7 @@
 #import "ALMuteRequest.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
+#import <Foundation/Foundation.h>
 
 @interface ALChannelClientService : NSObject
 
@@ -83,7 +83,7 @@
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
-- (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)addChildKeyList:(NSMutableArray *)childKeyList
            andParentKey:(NSNumber *)parentKey

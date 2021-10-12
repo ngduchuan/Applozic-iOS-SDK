@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "ALFileMetaInfo.h"
-#import "ALConstant.h"
 #import "ALApplozicSettings.h"
+#import "ALConstant.h"
+#import "ALFileMetaInfo.h"
 
 @implementation ALFileMetaInfo
 

@@ -6,18 +6,18 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "ALMessageServiceWrapper.h"
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
-#import "ALConnectionQueueHandler.h"
-#import "ALMessageClientService.h"
-#include <tgmath.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 #import "ALApplozicSettings.h"
-#import "ALHTTPManager.h"
+#import "ALConnectionQueueHandler.h"
 #import "ALDownloadTask.h"
+#import "ALHTTPManager.h"
 #import "ALLogger.h"
+#import "ALMessageClientService.h"
+#import "ALMessageDBService.h"
+#import "ALMessageService.h"
+#import "ALMessageServiceWrapper.h"
 #import "ALUtilityClass.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+#include <tgmath.h>
 
 @interface ALMessageServiceWrapper  ()<ApplozicAttachmentDelegate>
 

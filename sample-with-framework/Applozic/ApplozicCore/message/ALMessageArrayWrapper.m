@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
+#import "ALLogger.h"
 #import "ALMessageArrayWrapper.h"
 #import "ALUserDefaultsHandler.h"
-#import "ALLogger.h"
 
 @interface ALMessageArrayWrapper ()
 

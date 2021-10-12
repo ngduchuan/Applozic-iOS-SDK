@@ -5,13 +5,13 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/NSManagedObject.h>
-#import "ALJson.h"
-#import "ALFileMetaInfo.h"
 #import "ALApplozicSettings.h"
-#import "ALMessageBuilder.h"
 #import "ALConstant.h"
+#import "ALFileMetaInfo.h"
+#import "ALJson.h"
+#import "ALMessageBuilder.h"
+#import <CoreData/NSManagedObject.h>
+#import <Foundation/Foundation.h>
 
 /// Default message content type for text messages.
 static int const ALMESSAGE_CONTENT_DEFAULT = 0;
@@ -166,9 +166,6 @@ typedef enum {
 
 /// Paired message key is used for marking the single message as read.
 @property(nonatomic,copy) NSString *pairedMessageKey;
-
-/// :nodoc:
-@property(nonatomic,assign) long messageId;
 
 /// :nodoc:
 @property(nonatomic,retain) NSString *applicationId;

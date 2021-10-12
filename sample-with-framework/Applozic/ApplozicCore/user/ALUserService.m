@@ -80,10 +80,6 @@ static int CONTACT_PAGE_SIZE = 100;
     
     NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArray array]];
     [self fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
-        if(error || !userDetailArray){
-            completionMark();
-            return;
-        }
         completionMark();
     }];
 }
@@ -102,7 +98,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *))completionMark {
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
     
     if (!userId) {
         completionMark(nil);
@@ -163,8 +159,6 @@ static int CONTACT_PAGE_SIZE = 100;
                 ALSLog(ALLoggerSeverityInfo, @"RESPONSE_STATUS :: %@", apiResponse.status);
             }
         }];
-    } else {
-        return;
     }
 }
 
@@ -274,7 +268,7 @@ static int CONTACT_PAGE_SIZE = 100;
             NSError *apiError = [NSError
                                  errorWithDomain:@"Applozic"
                                  code:1
-                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read api error occurred" forKey:NSLocalizedDescriptionKey]];
+                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read an api error occurred" forKey:NSLocalizedDescriptionKey]];
             completion(nil, apiError);
             return;
         }
@@ -296,7 +290,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Block user
 
-- (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion {
+- (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL hasUserBlocked))completion {
     if (!userId) {
         NSError *error = [NSError
                           errorWithDomain:@"Applozic"
@@ -317,7 +311,7 @@ static int CONTACT_PAGE_SIZE = 100;
                 NSError *apiError = [NSError
                                      errorWithDomain:@"Applozic"
                                      code:1
-                                     userInfo:[NSDictionary dictionaryWithObject:@"Failed to block user api error occurred" forKey:NSLocalizedDescriptionKey]];
+                                     userInfo:[NSDictionary dictionaryWithObject:@"Failed to block user an api error occurred" forKey:NSLocalizedDescriptionKey]];
                 completion(apiError, NO);
                 return;
             }
@@ -346,7 +340,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Unblock user
 
-- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion {
+- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL hasUserUnblocked))completion {
     
     if (!userId) {
         NSError *error = [NSError
@@ -369,7 +363,7 @@ static int CONTACT_PAGE_SIZE = 100;
                 NSError *apiError = [NSError
                                      errorWithDomain:@"Applozic"
                                      code:1
-                                     userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock user api error occurred" forKey:NSLocalizedDescriptionKey]];
+                                     userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock user an api error occurred" forKey:NSLocalizedDescriptionKey]];
                 completion(apiError, NO);
                 return;
             }
@@ -411,7 +405,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Fetch Online contacts
 
-- (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion {
+- (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *contactArray, NSError *error))completion {
     [self.userClientService fetchOnlineContactFromServer:[ALApplozicSettings getOnlineContactLimit] withCompletion:^(id jsonResponse, NSError *error) {
         
         if (error) {
@@ -474,7 +468,8 @@ static int CONTACT_PAGE_SIZE = 100;
                withCompletion:(void (^)(id jsonResponse, NSError *error))completion {
     
     if (!displayName && !imageLink && !status) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+                                                code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update login user details the parameters passed are nil"
                                                                                  forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
@@ -571,7 +566,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!userName) {
         NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"Error userName is nil " forKey:NSLocalizedDescriptionKey]];
+                                                userInfo:[NSDictionary dictionaryWithObject:@"Error search text is nil " forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
         return;
     }
@@ -667,7 +662,7 @@ static int CONTACT_PAGE_SIZE = 100;
         }
         
         NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user api error occurred" forKey:NSLocalizedDescriptionKey]];
+                                                userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user an api error occurred" forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
     }];
 }

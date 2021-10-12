@@ -101,7 +101,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
         if (![response isRegisteredSuccessfully]) {
             NSError *passError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : response.message}];
-            completion(response, passError);
+            completion(nil, passError);
             return;
         }
         completion(response, error);
@@ -238,8 +238,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
     if (!message.message) {
         NSError *messageTextError = [NSError errorWithDomain:ApplozicClientDomain
-                                                    code:MessageNotPresent
-                                                userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object"}];
+                                                        code:MessageNotPresent
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object"}];
 
         completion(nil, messageTextError);
         return;
@@ -271,8 +271,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     }
 
     [attachmentService sendMessageWithAttachment:message
-                                      withDelegate:self.delegate
-                            withAttachmentDelegate:self.attachmentProgressDelegate];
+                                    withDelegate:self.delegate
+                          withAttachmentDelegate:self.attachmentProgressDelegate];
 }
 
 #pragma mark - Download Attachment message
@@ -290,9 +290,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
                       withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService createChannelWithChannelInfo:channelInfo
-                                  withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+    [_channelService createChannelWithChannelInfo:channelInfo
+                                   withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
         completion(response, error);
     }];
 }
@@ -302,11 +301,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                        orClientChannelKey:(NSString *)clientChannelKey
                            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService removeMemberFromChannel:userId
-                                andChannelKey:channelKey
-                           orClientChannelKey:clientChannelKey
-                               withCompletion:^(NSError *error, ALAPIResponse *response) {
+    [_channelService removeMemberFromChannel:userId
+                               andChannelKey:channelKey
+                          orClientChannelKey:clientChannelKey
+                              withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 }
@@ -316,11 +314,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                       orClientChannelKey:(NSString *)clientChannelKey
                           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService leaveChannelWithChannelKey:channelKey
-                                       andUserId:userId
-                              orClientChannelKey:clientChannelKey
-                                  withCompletion:^(NSError *error, ALAPIResponse *response) {
+    [_channelService leaveChannelWithChannelKey:channelKey
+                                      andUserId:userId
+                             orClientChannelKey:clientChannelKey
+                                 withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -331,11 +328,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                   orClientChannelKey:(NSString *)clientChannelKey
                       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService addMemberToChannel:userId
-                         andChannelKey:channelKey
-                    orClientChannelKey:clientChannelKey
-                        withCompletion:^(NSError *error, ALAPIResponse *response) {
+    [_channelService addMemberToChannel:userId
+                          andChannelKey:channelKey
+                     orClientChannelKey:clientChannelKey
+                         withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -349,16 +345,15 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                            metadata:(NSMutableDictionary *)metaData
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService updateChannelWithChannelKey:channelKey
-                                     andNewName:newName
-                                    andImageURL:imageURL
-                             orClientChannelKey:clientChannelKey
-                             isUpdatingMetaData:flag
-                                       metadata:metaData
-                                    orChildKeys:nil
-                                 orChannelUsers:channelUsers
-                                 withCompletion:^(NSError *error, ALAPIResponse *response) {
+    [_channelService updateChannelWithChannelKey:channelKey
+                                      andNewName:newName
+                                     andImageURL:imageURL
+                              orClientChannelKey:clientChannelKey
+                              isUpdatingMetaData:flag
+                                        metadata:metaData
+                                     orChildKeys:nil
+                                  orChannelUsers:channelUsers
+                                  withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
 
@@ -368,10 +363,9 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                          orClientChannelKey:(NSString *)clientChannelKey
                              withCompletion:(void(^)(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc]init];
-    [channelService getChannelInformationByResponse:channelKey
-                                 orClientChannelKey:clientChannelKey
-                                     withCompletion:^(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse) {
+    [_channelService getChannelInformationByResponse:channelKey
+                                  orClientChannelKey:clientChannelKey
+                                      withCompletion:^(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse) {
         completion(error, channel, channelResponse);
     }];
 
@@ -405,8 +399,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     muteRequest.id = channelKey;
     muteRequest.notificationAfterTime = notificationTime;
 
-    ALChannelService *channelService = [[ALChannelService alloc]init];
-    [channelService muteChannel:muteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
+    [_channelService muteChannel:muteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
         completion(response, error);
     }];
 
@@ -498,8 +491,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
-    ALMessageService *messageService = [[ALMessageService alloc] init];
-    [messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+    [_messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
         completion(messageList, error);
     }];
 }

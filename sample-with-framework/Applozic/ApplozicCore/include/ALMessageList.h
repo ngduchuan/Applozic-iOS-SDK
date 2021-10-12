@@ -6,8 +6,8 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// `ALMessageList` class is used for parsing the Message list or individual conversation JSON response.
 @interface ALMessageList : ALJson

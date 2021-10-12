@@ -6,11 +6,11 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "MessageListRequest.h"
-#import "ALUserDefaultsHandler.h"
-#import "NSString+Encode.h"
 #import "ALChannel.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "MessageListRequest.h"
+#import "NSString+Encode.h"
 
 static NSString *const DEFAULT_PAGE_SIZE = @"50";
 static NSString *const DEFAULT_START_INDEX = @"0";

@@ -6,10 +6,10 @@
 //  Copyright © 2017 applozic Inc. All rights reserved.
 //
 
-#import "AlChannelFeedResponse.h"
 #import "ALChannelCreateResponse.h"
-#import "ALUserDetail.h"
+#import "AlChannelFeedResponse.h"
 #import "ALContactDBService.h"
+#import "ALUserDetail.h"
 
 @implementation AlChannelFeedResponse
 

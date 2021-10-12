@@ -610,7 +610,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - Mark conversation as read
 
 -(void)markConversationAsRead:(NSNumber *)channelKey
-               withCompletion:(void (^)(NSString *, NSError *))completion {
+               withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
     NSString *conversationReadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString *conversationReadParamString;
     if (channelKey != nil) {

@@ -100,13 +100,13 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
 }
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
 
-    if (string == nil) {
+    if (jsonString == nil) {
         return nil;
     }
 
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metaDataDictionary;
 

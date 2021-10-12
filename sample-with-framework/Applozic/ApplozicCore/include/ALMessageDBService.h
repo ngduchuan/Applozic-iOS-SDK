@@ -6,13 +6,13 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "ALConversationListRequest.h"
+#import "ALFileMetaInfo.h"
+#import "ALMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "DB_Message.h"
-#import "ALMessage.h"
-#import "ALFileMetaInfo.h"
+#import <Foundation/Foundation.h>
 #import "MessageListRequest.h"
-#import "ALConversationListRequest.h"
 
 @class ALMessageService;
 
@@ -35,12 +35,12 @@
 - (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
-- (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
-- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
-- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
+- (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion;
+- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID;
-- (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString*) value;
+- (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString *)value;
 
 - (NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest;
 
@@ -64,7 +64,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)alMessage;
+- (void)updateFileMetaInfo:(ALMessage *)message;
 
 //Delete Message APIS
 - (void)deleteMessageByKey:(NSString *)keyString;
@@ -74,7 +74,7 @@
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)message;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
 - (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;

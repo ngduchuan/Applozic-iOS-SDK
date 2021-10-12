@@ -6,8 +6,8 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// `ALMessageInfo` class is used for parsing the Message information JSON data and mapping it.
 @interface ALMessageInfo : ALJson

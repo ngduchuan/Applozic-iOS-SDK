@@ -6,10 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-
-#import <Foundation/Foundation.h>
-#import "ALMessage.h"
 #import "ApplozicClient.h"
+#import "ALMessage.h"
+#import <Foundation/Foundation.h>
 
 @protocol MessageServiceWrapperDelegate <NSObject>
 
