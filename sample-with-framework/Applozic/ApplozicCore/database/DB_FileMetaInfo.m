@@ -8,7 +8,6 @@
 
 #import "DB_FileMetaInfo.h"
 
-
 @implementation DB_FileMetaInfo
 
 @dynamic blobKeyString;

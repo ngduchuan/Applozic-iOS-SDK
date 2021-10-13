@@ -6,10 +6,10 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
 #import "ALRealTimeUpdate.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
 
 @interface ALSyncCallService : NSObject
 

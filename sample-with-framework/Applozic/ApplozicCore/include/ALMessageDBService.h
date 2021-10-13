@@ -18,9 +18,9 @@
 
 @protocol ALMessagesDelegate <NSObject>
 
-- (void)getMessagesArray:(NSMutableArray*)messagesArray;
+- (void)getMessagesArray:(NSMutableArray *)messagesArray;
 
-- (void)updateMessageList:(NSMutableArray*)messagesArray;
+- (void)updateMessageList:(NSMutableArray *)messagesArray;
 
 @end
 
@@ -95,11 +95,11 @@
                withCreatedAtTime:(NSNumber *)createdAtTime
                    withDbMessage:(DB_Message *)dbMessage;
 
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
+    withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 

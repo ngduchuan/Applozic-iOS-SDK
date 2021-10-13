@@ -6,9 +6,9 @@
 //  Copyright © 2020 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALUserDefaultsHandler.h"
 #import "ALAuthClientService.h"
+#import "ALUserDefaultsHandler.h"
+#import <Foundation/Foundation.h>
 
 /// `ALAuthService` class is used for JWT token decode, validate auth token and refresh JWT token.
 /// @warning `ALAuthService` class used only for internal purposes.

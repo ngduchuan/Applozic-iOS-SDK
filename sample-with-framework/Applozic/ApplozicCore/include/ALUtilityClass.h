@@ -5,9 +5,9 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
+#import "ALMessage.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
 
 /// `ALUtilityClass` has utility methods releated to date, file, notification showing, image compression and other.
 @interface ALUtilityClass : NSObject

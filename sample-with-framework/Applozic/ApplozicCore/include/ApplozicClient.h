@@ -6,13 +6,13 @@
 //  Copyright © 2018 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
-#import "ALUserService.h"
 #import "ALChannelService.h"
+#import "ALMessageDBService.h"
+#import "ALMessageService.h"
 #import "ALRegistrationResponse.h"
 #import "ALUser.h"
+#import "ALUserService.h"
+#import <Foundation/Foundation.h>
 
 /// error types
 typedef NS_ENUM(NSInteger, ApplozicClientError) {
@@ -24,23 +24,23 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// Called when the attachment download progresses with `bytesReceived` so far.
 ///
-/// `alMessage.fileMeta.size` - `bytesReceived` will give you the bytes remaining.
-/// @param alMessage for which the attachment is currently downloading.
-- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage;
+/// `message.fileMeta.size` - `bytesReceived` will give you the bytes remaining.
+/// @param message for which the attachment is currently downloading.
+- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)message;
 
 /// Called when the attachment upload progresses with `bytesSent` so far.
 ///
-/// To calculate the bytes remaining find the size of the file in the application directory with the name `alMessage.imageFilePath` and subtract the `bytesSent` from it.
-/// @param alMessage for which the attachment is currently uploading.
-- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage;
+/// To calculate the bytes remaining find the size of the file in the application directory with the name `message.imageFilePath` and subtract the `bytesSent` from it.
+/// @param message for which the attachment is currently uploading.
+- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)message;
 
-/// Called when attachment upload fails. `alMessage.fileMeta` will be nil.
-/// @param alMessage for which the attachment upload failed.
-- (void)onUploadFailed:(ALMessage *)alMessage;
+/// Called when attachment upload fails. `message.fileMeta` will be nil.
+/// @param message for which the attachment upload failed.
+- (void)onUploadFailed:(ALMessage *)message;
 
-/// Called when attachment download fails. `alMessage.imageFilePath` will be nil.
-/// @param alMessage for which the attachment download failed.
-- (void)onDownloadFailed:(ALMessage *)alMessage;
+/// Called when attachment download fails. `message.imageFilePath` will be nil.
+/// @param message for which the attachment download failed.
+- (void)onDownloadFailed:(ALMessage *)message;
 
 /// Called when the attachment successfully uploads.
 ///
@@ -49,7 +49,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 - (void)onUploadCompleted:(ALMessage *)updatedMessage withOldMessageKey:(NSString *)oldMessageKey;
 
 /// Called when the attachment successfully downloads. Access it via ALMessage.imageFilePath.
-- (void)onDownloadCompleted:(ALMessage *)alMessage;
+- (void)onDownloadCompleted:(ALMessage *)updatedMessage;
 
 @end
 
@@ -201,10 +201,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate`in your class for real time attachment upload status events.
 ///
-/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
-///     alMessageBuilder.to = @"589353957989"; // Pass Receiver userId to whom you want to send a message.
-///     alMessageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
-///     alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
+///     messageBuilder.to = @"589353957989"; // Pass Receiver userId to whom you want to send a message.
+///     messageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
+///     messageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
 /// }];
 ///
 /// [applozicClient sendMessageWithAttachment:message];
@@ -219,10 +219,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate` in your class for real time attachment upload status events.
 ///
-/// ALMessage *message = [ALMessage build:^(ALMessageBuilder * alMessageBuilder) {
-///     alMessageBuilder.groupId = @12327283; // Pass channelKey from ALChannel object you want to send a attchment message.
-///     alMessageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
-///     alMessageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder * messageBuilder) {
+///     messageBuilder.groupId = @12327283; // Pass channelKey from ALChannel object you want to send a attchment message.
+///     messageBuilder.imageFilePath = @"home-image.jpg"; // Attachment File name.
+///     messageBuilder.contentType = ALMESSAGE_CONTENT_ATTACHMENT; // Attachment content type.
 /// }];
 ///
 /// [applozicClient sendMessageWithAttachment:message];
@@ -241,12 +241,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *alMessageBuilder) {
-///     alMessageBuilder.to = @"1232722828288283"; // Pass userId to whom you want to send a message otherwise it will be nil.
-///         OR
-///     alMessageBuilder.groupId = @12327283; // Pass channelKey here to whom you want to send a message otherwise it will be nil.
+/// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
+///     messageBuilder.message = @"Hi How are you?"; // Pass message text here.
 ///
-///     alMessageBuilder.message = @"Hi How are you?"; // Pass message text here.
+///     messageBuilder.to = @"1232722828288283"; // Pass userId to whom you want to send a message otherwise it will be nil.
+///         OR
+///     messageBuilder.groupId = @12327283; // Pass channelKey here to whom you want to send a message otherwise it will be nil.
+///
 /// }];
 ///
 /// [applozicClient sendTextMessage:message withCompletion:^(ALMessage *message, NSError *error) {

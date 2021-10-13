@@ -648,19 +648,19 @@
 
     /// file meta info
     if (dbMessage.fileMetaInfo) {
-        ALFileMetaInfo *theFileMeta = [ALFileMetaInfo new];
-        theFileMeta.blobKey = dbMessage.fileMetaInfo.blobKeyString;
-        theFileMeta.thumbnailBlobKey = dbMessage.fileMetaInfo.thumbnailBlobKeyString;
-        theFileMeta.contentType = dbMessage.fileMetaInfo.contentType;
-        theFileMeta.createdAtTime = dbMessage.fileMetaInfo.createdAtTime;
-        theFileMeta.key = dbMessage.fileMetaInfo.key;
-        theFileMeta.name = dbMessage.fileMetaInfo.name;
-        theFileMeta.size = dbMessage.fileMetaInfo.size;
-        theFileMeta.userKey = dbMessage.fileMetaInfo.suUserKeyString;
-        theFileMeta.thumbnailUrl = dbMessage.fileMetaInfo.thumbnailUrl;
-        theFileMeta.thumbnailFilePath = dbMessage.fileMetaInfo.thumbnailFilePath;
-        theFileMeta.url = dbMessage.fileMetaInfo.url;
-        newMessage.fileMeta = theFileMeta;
+        ALFileMetaInfo *fileMeta = [ALFileMetaInfo new];
+        fileMeta.blobKey = dbMessage.fileMetaInfo.blobKeyString;
+        fileMeta.thumbnailBlobKey = dbMessage.fileMetaInfo.thumbnailBlobKeyString;
+        fileMeta.contentType = dbMessage.fileMetaInfo.contentType;
+        fileMeta.createdAtTime = dbMessage.fileMetaInfo.createdAtTime;
+        fileMeta.key = dbMessage.fileMetaInfo.key;
+        fileMeta.name = dbMessage.fileMetaInfo.name;
+        fileMeta.size = dbMessage.fileMetaInfo.size;
+        fileMeta.userKey = dbMessage.fileMetaInfo.suUserKeyString;
+        fileMeta.thumbnailUrl = dbMessage.fileMetaInfo.thumbnailUrl;
+        fileMeta.thumbnailFilePath = dbMessage.fileMetaInfo.thumbnailFilePath;
+        fileMeta.url = dbMessage.fileMetaInfo.url;
+        newMessage.fileMeta = fileMeta;
     }
     return newMessage;
 }
@@ -893,12 +893,12 @@
 - (void)fetchSubGroupConversations:(NSMutableArray *)subGroupList {
     NSMutableArray *subGroupMessageArray = [NSMutableArray new];
 
-    for (ALChannel *alChannel in subGroupList) {
-        ALMessage *message = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
+    for (ALChannel *channel in subGroupList) {
+        ALMessage *message = [self getLatestMessageForChannel:channel.key excludeChannelOperations:NO];
         if (message) {
             [subGroupMessageArray addObject:message];
-            if (alChannel.type == GROUP_OF_TWO) {
-                NSMutableArray *clientKeyArray = [[alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
+            if (channel.type == GROUP_OF_TWO) {
+                NSMutableArray *clientKeyArray = [[channel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
 
                 if (![clientKeyArray containsObject:[ALUserDefaultsHandler getUserId]]) {
                     [subGroupMessageArray removeObject:message];
@@ -959,34 +959,33 @@
 
 #pragma mark - Message list
 
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
     if (!isNextPage) {
 
         if ([self isMessageTableEmpty] ||
             ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
-            [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *theArray, NSError *error) {
-                completion(theArray,error);
+            [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *messages, NSError *error) {
+                completion(messages, error);
             }];
         } else {
             completion([self fetchLatestConversationsGroupByContactId:NO],nil);
         }
     } else {
-        [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *theArray, NSError *error) {
-            completion(theArray,error);
-
+        [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *messages, NSError *error) {
+            completion(messages, error);
         }];
     }
 }
 
-- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
     if (![ALUserDefaultsHandler getFlagForAllConversationFetched]) {
-        [self getLatestMessagesWithCompletion:^(NSMutableArray *messageArray, NSError *error) {
+        [self getLatestMessagesWithCompletion:^(NSMutableArray *messages, NSError *error) {
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:messageArray skipAddingMessageInDb:NO];
+                [self addMessageList:messages skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
@@ -1006,34 +1005,34 @@
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
+    withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
     if (!isNextPage) {
 
         if ([self isMessageTableEmpty] ||
             ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
-            [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *theArray, NSError *error) {
-                completion(theArray,error);
+            [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *messages, NSError *error) {
+                completion(messages,error);
             }];
         } else {
             completion([self fetchLatestMesssagesFromDb:isGroup],nil);
         }
     } else {
-        [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *theArray, NSError *error) {
-            completion(theArray, error);
+        [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *messages, NSError *error) {
+            completion(messages, error);
         }];
     }
 }
 
 - (void)fetchLatestMesssagesFromServer:(BOOL)isGroupMesssages
-                        withCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
+                        withCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
     if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
-        [self getLatestMessagesWithCompletion:^(NSMutableArray *messageArray, NSError *error) {
+        [self getLatestMessagesWithCompletion:^(NSMutableArray *messages, NSError *error) {
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:messageArray skipAddingMessageInDb:NO];
+                [self addMessageList:messages skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts

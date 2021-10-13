@@ -80,14 +80,18 @@ typedef enum {
     AL_REPLY_BUT_HIDDEN,
 }ALReplyType;
 
-/**
- * Model class for an Applozic Message.
- *
- * A message as the name suggests, data is sent and received between two users.
- * A message has a message string, a sender-id (to) or a group-id (groupId), a key to identify it
- * as well as other data like attachment information, status information, etc.
- * The message metadata dictionary field can be used to send custom key-value information with the message.
- */
+
+/// A message is the data that is sent and received between two or more users.
+///
+/// It facilitates chat in one-to-one and group conversations.
+/// A message has a message string, a sender-id `to` or a groupId`, a key to identify it
+/// as well as other data like attachment information, status information, etc.
+/// The message metadata dictionary field can be used to send custom key-value information with the message.
+/// A message can also have an attachment. Images, videos, audio, pdfs, contacts, location are supported
+///
+/// To build and send a message refer:
+/// @see ALMessageBuilder
+/// @see ApplozicClient
 @interface ALMessage : ALJson
 
 /// Message key is a unique identifying key for the `ALMessage` object.

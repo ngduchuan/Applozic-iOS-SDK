@@ -5,11 +5,11 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALResponseHandler.h"
-#import "NSData+AES.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALAuthService.h"
 #import "ALLogger.h"
+#import "ALResponseHandler.h"
+#import "ALUserDefaultsHandler.h"
+#import "NSData+AES.h"
 
 @implementation ALResponseHandler
 

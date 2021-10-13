@@ -115,7 +115,9 @@
     return nil;
 }
 
-- (void)downloadImageThumbnailUrl:(NSString *)url blobKey:(NSString *)blobKey completion:(void (^)(NSString *imageDownloadURL, NSError *error))completion {
+- (void)downloadImageThumbnailUrl:(NSString *)url
+                          blobKey:(NSString *)blobKey
+                       completion:(void (^)(NSString *imageDownloadURL, NSError *error))completion {
     NSMutableURLRequest *urlRequest = [self getURLRequestForThumbnail:blobKey];
     if (urlRequest) {
         [self.responseHandler authenticateAndProcessRequest:urlRequest
@@ -197,7 +199,9 @@
 
     NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageListParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageListRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
+    [self.responseHandler authenticateAndProcessRequest:messageListRequest
+                                                 andTag:@"GET MESSAGES GROUP BY CONTACT"
+                                  WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
         if (error) {
             completion(nil, error);
@@ -210,8 +214,8 @@
         if (jsonResponse) {
             [ALUserDefaultsHandler setInitialMessageListCallDone:YES];
             if (messageListResponse.userDetailsList) {
-                ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-                [alContactDBService addUserDetails:messageListResponse.userDetailsList];
+                ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+                [contactDBService addUserDetails:messageListResponse.userDetailsList];
             }
             ALChannelService *channelService = [[ALChannelService alloc] init];
             [channelService callForChannelServiceForDBInsertion:jsonResponse];
@@ -306,7 +310,9 @@
         channel = [[ALChannelService sharedInstance] getChannelByKey:messageListRequest.channelKey];
     }
 
-    [self getMessageListForUser:messageListRequest withOpenGroup:(channel != nil && channel.type == OPEN) withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+    [self getMessageListForUser:messageListRequest
+                  withOpenGroup:(channel != nil && channel.type == OPEN)
+                 withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
         completion(messages, error, userDetailArray);
 
@@ -400,8 +406,8 @@
         NSString *status = (NSString *)jsonResponse;
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)jsonResponse);
         if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-            [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
             completion(status, nil);
             return;
         } else {
@@ -433,7 +439,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
 }
 
 - (void)getCurrentMessageInformation:(NSString *)messageKey
-               withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *error))completion {
+               withCompletionHandler:(void(^)(ALMessageInfoResponse *messageInfoResponse, NSError *error))completion {
     NSString *messageInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/message/info", KBASE_URL];
     NSString *messageKeyParamString = [NSString stringWithFormat:@"key=%@", messageKey];
 
@@ -446,8 +452,8 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             completion(nil, error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)jsonResponse);
-            ALMessageInfoResponse *messageInfoObject = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)jsonResponse];
-            completion(messageInfoObject, error);
+            ALMessageInfoResponse *messageInfoResponse = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)jsonResponse];
+            completion(messageInfoResponse, error);
         }
     }];
 }
@@ -496,7 +502,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata
-                    withCompletion:(void (^)(id, NSError *))completion {
+                    withCompletion:(void (^)(id, NSError *error))completion {
     ALSLog(ALLoggerSeverityInfo, @"Updating message metadata for message : %@", messageKey);
     NSString *metadataURLString = [NSString stringWithFormat:@"%@/rest/ws/message/update/metadata",KBASE_URL];
     NSMutableDictionary *messageMetadata = [NSMutableDictionary new];
@@ -532,14 +538,16 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
                                               paramString: messageSearchParamString];
 
     [self.responseHandler
-     authenticateAndProcessRequest: messageURLRequest
+     authenticateAndProcessRequest:messageURLRequest
      andTag: @"Search messages"
      WithCompletionHandler: ^(id jsonResponse, NSError *error) {
+
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
             completion(nil, error);
             return;
         }
+
         if (![[jsonResponse valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
             NSError *error = [NSError
@@ -551,6 +559,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             completion(nil, error);
             return;
         }
+
         NSString *response = [jsonResponse valueForKey: @"response"];
         if (response == nil) {
             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
@@ -560,9 +569,9 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
         ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)jsonResponse);
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        NSDictionary *messageDictionary = [response valueForKey: @"message"];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+        NSDictionary *messagesDictionary = [response valueForKey: @"message"];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary: messageDictionary];
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
@@ -622,9 +631,9 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
         ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)jsonResponse);
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        NSDictionary *messageDictionary = [response valueForKey: @"message"];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+        NSDictionary *messagesDictionary = [response valueForKey: @"message"];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary: messageDictionary];
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
@@ -651,28 +660,28 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
         ALSLog(ALLoggerSeverityInfo, @"Messages fetched succesfully :: %@", (NSString *)jsonResponse);
 
-        NSDictionary *messageDictionary = [jsonResponse valueForKey:@"message"];
+        NSDictionary *messagesDictionary = [jsonResponse valueForKey:@"message"];
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary:dict];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary:messageDictionary];
             [messages addObject: message];
         }
 
-        NSDictionary *userDetailDictionary = [jsonResponse valueForKey:@"userDetails"];
+        NSDictionary *userDetailsDictionary = [jsonResponse valueForKey:@"userDetails"];
         NSMutableArray<ALUserDetail *> *userDetails = [NSMutableArray new];
-        for (NSDictionary *dict in userDetailDictionary) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: dict];
+        for (NSDictionary *userDetailDictionary in userDetailsDictionary) {
+            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: userDetailDictionary];
             [userDetails addObject: userDetail];
         }
         [[ALSearchResultCache shared] saveUserDetails: userDetails];
 
-        ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:jsonResponse];
+        ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString:jsonResponse];
 
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
-        [alConversationService addConversations:alChannelFeed.conversationProxyList];
+        ALConversationService *conversationService = [[ALConversationService alloc] init];
+        [conversationService addConversations:channelFeed.conversationProxyList];
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
+        [channelService saveChannelUsersAndChannelDetails:channelFeed.channelFeedsList calledFromMessageList:YES];
         completion(messages, nil);
     }];
 }

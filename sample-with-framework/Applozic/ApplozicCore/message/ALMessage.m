@@ -443,9 +443,9 @@ static NSString * const AL_TRUE = @"true";
 }
 
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder {
-    ALMessageBuilder *alMessageBuilder = [ALMessageBuilder new];
-    builder(alMessageBuilder);
-    return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
+    ALMessageBuilder *messageBuilder = [ALMessageBuilder new];
+    builder(messageBuilder);
+    return [[ALMessage alloc] initWithBuilder:messageBuilder];
 }
 
 - (BOOL)isNotificationDisabled {

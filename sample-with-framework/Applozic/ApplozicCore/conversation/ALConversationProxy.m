@@ -7,9 +7,9 @@
 //
 
 #import "ALConversationProxy.h"
-#import "DB_ConversationProxy.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "DB_ConversationProxy.h"
 
 @implementation ALConversationProxy
 

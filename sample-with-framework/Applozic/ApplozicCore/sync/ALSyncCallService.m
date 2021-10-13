@@ -6,12 +6,12 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALSyncCallService.h"
-#import "ALMessageDBService.h"
-#import "ALContactDBService.h"
 #import "ALChannelService.h"
-#import "ALMessageService.h"
+#import "ALContactDBService.h"
 #import "ALLogger.h"
+#import "ALMessageDBService.h"
+#import "ALMessageService.h"
+#import "ALSyncCallService.h"
 
 @implementation ALSyncCallService
 

@@ -6,13 +6,12 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "MQTTClient.h"
 #import "ALMessage.h"
-#import "ALUserDetail.h"
+#import "ALRealTimeUpdate.h"
 #import "ALSyncCallService.h"
 #import "ALUserDetail.h"
-#import "ALRealTimeUpdate.h"
+#import "MQTTClient.h"
+#import <Foundation/Foundation.h>
 
 /// Notification name for channel mute or unmuted.
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
@@ -137,9 +136,9 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 - (void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
 
 /// Syncs the message and post an notification request, used for internal purposes only .
-/// @param alMessage Pass the `ALMessage` object.
-/// @param nsMutableDictionary Notification dictionary.
-- (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary;
+/// @param message Pass the `ALMessage` object.
+/// @param notificationDictionary Notification dictionary.
+- (void)syncReceivedMessage:(ALMessage *)message withNSMutableDictionary:(NSMutableDictionary *)notificationDictionary;
 
 /// Used for subscribe to conversation with topic.
 /// @param topic Pass the name of topic to subscribe.

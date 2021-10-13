@@ -6,8 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
+
 /// Success response constant text.
 extern NSString *const AL_RESPONSE_SUCCESS;
 /// Error response constant text.

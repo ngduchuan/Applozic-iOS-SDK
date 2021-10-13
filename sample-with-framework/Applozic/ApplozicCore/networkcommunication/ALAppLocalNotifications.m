@@ -7,17 +7,16 @@
 //
 
 #import "ALAppLocalNotifications.h"
-#import "ALUtilityClass.h"
-#import "ALPushAssist.h"
+#import "ALApplozicSettings.h"
+#import "ALConversationService.h"
+#import "ALLogger.h"
 #import "ALMessageDBService.h"
 #import "ALMessageService.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALMessageService.h"
-#import "ALUserService.h"
 #import "ALMQTTConversationService.h"
-#import "ALConversationService.h"
-#import "ALApplozicSettings.h"
-#import "ALLogger.h"
+#import "ALPushAssist.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserService.h"
+#import "ALUtilityClass.h"
 
 @implementation ALAppLocalNotifications
 

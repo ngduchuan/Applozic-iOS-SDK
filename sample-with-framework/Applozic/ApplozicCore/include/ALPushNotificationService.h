@@ -46,12 +46,12 @@ typedef enum
     AL_USER_DEACTIVATED
 } AL_PUSH_NOTIFICATION_TYPE;
 
-#import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
-#import "ALSyncCallService.h"
 #import "ALMQTTConversationService.h"
 #import "ALRealTimeUpdate.h"
+#import "ALSyncCallService.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
 
 /// Applozic notifications key name.
 static NSString *const APPLOZIC_PREFIX = @"APPLOZIC_";

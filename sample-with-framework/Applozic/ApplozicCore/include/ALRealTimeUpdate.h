@@ -6,10 +6,10 @@
 //  Copyright © 2018 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "ALChannel.h"
 #import "ALMessage.h"
 #import "ALUserDetail.h"
-#import "ALChannel.h"
+#import <Foundation/Foundation.h>
 
 /// `ApplozicUpdatesDelegate` protocol is used for real-time callback events for the message, channel, user, and typing.
 ///

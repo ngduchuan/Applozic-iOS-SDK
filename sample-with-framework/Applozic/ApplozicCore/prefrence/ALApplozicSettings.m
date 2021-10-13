@@ -7,8 +7,8 @@
 //
 
 #import "ALApplozicSettings.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALConstant.h"
+#import "ALUserDefaultsHandler.h"
 #import "ALUtilityClass.h"
 
 static NSString *const AL_USER_PROFILE_PROPERTY = @"com.applozic.userdefault.USER_PROFILE_PROPERTY";

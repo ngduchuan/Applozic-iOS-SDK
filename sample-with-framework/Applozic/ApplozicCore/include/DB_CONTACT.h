@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 /// `DB_CONTACT` is DB class is used for storing the contact or user details in core database.
 @interface DB_CONTACT : NSManagedObject

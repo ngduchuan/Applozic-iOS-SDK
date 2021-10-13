@@ -60,9 +60,9 @@
     return [self.alContactDBService getOverallUnreadCountForContactsFromDB];
 }
 
-- (BOOL)isContactExist:(NSString *)value {
+- (BOOL)isContactExist:(NSString *)userId {
 
-    DB_CONTACT *contact = [self.alContactDBService getContactByKey:@"userId" value:value];
+    DB_CONTACT *contact = [self.alContactDBService getContactByKey:@"userId" value:userId];
     return contact != nil && contact.userId != nil;
 }
 #pragma mark Update OR insert contact
@@ -102,7 +102,7 @@
 }
 
 #pragma mark Fetching or save
-- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName {
+- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString *)displayName {
     
     DB_CONTACT *dbContact = [self.alContactDBService getContactByKey:@"userId" value:contactId];
     

@@ -6,11 +6,11 @@
 //  Copyright © 2018 applozic Inc. All rights reserved.
 //
 
-#import "ApplozicClient.h"
 #import "ALAttachmentService.h"
-#import "ALPushNotificationService.h"
 #import "ALMQTTConversationService.h"
+#import "ALPushNotificationService.h"
 #import "ALRegisterUserClientService.h"
+#import "ApplozicClient.h"
 
 @implementation ApplozicClient {
     ALMQTTConversationService *MQTTConversationService;
@@ -160,9 +160,9 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Messages list
 
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) completion {
-    [_messageDbService getLatestMessages:isNextPage withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
-        completion(messageListArray, error);
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray *messages, NSError *error)) completion {
+    [_messageDbService getLatestMessages:isNextPage withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
+        completion(messages, error);
     }];
 }
 

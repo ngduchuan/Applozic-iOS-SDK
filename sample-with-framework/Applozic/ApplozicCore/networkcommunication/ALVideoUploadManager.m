@@ -6,15 +6,15 @@
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
-#import "ALVideoUploadManager.h"
 #import "ALConnectionQueueHandler.h"
+#import "ALHTTPManager.h"
+#import "ALLogger.h"
 #import "ALMessage.h"
-#import "ALUtilityClass.h"
+#import "ALMessageClientService.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "ALLogger.h"
-#import "ALMessageClientService.h"
-#import "ALHTTPManager.h"
+#import "ALUtilityClass.h"
+#import "ALVideoUploadManager.h"
 
 @implementation ALVideoUploadManager
 

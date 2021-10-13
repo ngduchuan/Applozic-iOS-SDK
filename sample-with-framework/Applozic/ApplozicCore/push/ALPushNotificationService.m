@@ -5,18 +5,17 @@
 //  Created by devashish on 28/09/2015.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
-
-#import "ALPushNotificationService.h"
-#import "ALMessageDBService.h"
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALPushAssist.h"
-#import "ALUserService.h"
-#import "ALRegisterUserClientService.h"
 #import "ALAppLocalNotifications.h"
-#import "ApplozicClient.h"
-#import "ALLogger.h"
 #import "ALContactDBService.h"
+#import "ALLogger.h"
+#import "ALMessageDBService.h"
+#import "ALPushAssist.h"
+#import "ALPushNotificationService.h"
+#import "ALRegisterUserClientService.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
+#import "ALUserService.h"
+#import "ApplozicClient.h"
 
 @implementation ALPushNotificationService
 

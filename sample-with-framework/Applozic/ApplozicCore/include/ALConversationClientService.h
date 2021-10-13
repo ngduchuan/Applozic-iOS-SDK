@@ -6,11 +6,11 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALConstant.h"
 #import "ALConversationCreateResponse.h"
 #import "ALConversationProxy.h"
 #import "ALResponseHandler.h"
+#import <Foundation/Foundation.h>
 
 /// `ALConversationClientService` is used for conversation client methods like create, fetch conversation.
 @interface ALConversationClientService : NSObject

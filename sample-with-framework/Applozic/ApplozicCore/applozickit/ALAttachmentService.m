@@ -7,12 +7,12 @@
 //
 
 #import "ALAttachmentService.h"
-#import <MobileCoreServices/MobileCoreServices.h>
 #import "ALMessageClientService.h"
-#import "ApplozicClient.h"
 #import "ALMessageService.h"
 #import "ALUtilityClass.h"
 #import "ALVideoUploadManager.h"
+#import "ApplozicClient.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation ALAttachmentService
 

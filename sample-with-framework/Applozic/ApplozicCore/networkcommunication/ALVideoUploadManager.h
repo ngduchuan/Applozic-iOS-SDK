@@ -6,10 +6,10 @@
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALUploadTask.h"
 #import "ALMessage.h"
+#import "ALUploadTask.h"
 #import "ApplozicClient.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

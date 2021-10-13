@@ -15,7 +15,6 @@
     self = [super init];
     [self populateDataFromDictonary:dictionary];
     return self;
-    
 }
 
 - (void)populateDataFromDictonary:(NSDictionary *)dict {

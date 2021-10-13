@@ -6,16 +6,16 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALUserClientService.h"
+#import "ALAPIResponse.h"
 #import "ALConstant.h"
-#import "ALUserDefaultsHandler.h"
+#import "ALLogger.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "NSString+Encode.h"
-#import "ALAPIResponse.h"
+#import "ALUserClientService.h"
+#import "ALUserDefaultsHandler.h"
 #import "ALUserDetailListFeed.h"
-#import "ALLogger.h"
 #import <Foundation/Foundation.h>
+#import "NSString+Encode.h"
 
 NSString * const ApplozicDomain = @"Applozic";
 

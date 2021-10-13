@@ -31,9 +31,9 @@
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                withCompletion:(void (^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray))completion;
 
-- (void)sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString *message, NSError *error)) completion;
+- (void)sendPhotoForUserInfo:(NSDictionary *)messageDictionary withCompletion:(void(^)(NSString *message, NSError *error)) completion;
 
-- (void)getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)(ALSyncMessageFeed *syncResponse, NSError *error))completion;
+- (void)getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)(ALSyncMessageFeed *syncMessageFeed, NSError *error))completion;
 
 - (void)deleteMessage:(NSString *)keyString
          andContactId:(NSString *)contactId
@@ -71,14 +71,14 @@
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                      isSearch:(BOOL)flag
-               withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+               withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion;
 
 - (void)searchMessage:(NSString *)key withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion;
 
 - (void)searchMessageWith:(ALSearchRequest *)request withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion;
 
 - (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys
-             withCompletion:(void(^)(ALAPIResponse* response, NSError *error))completion;
+             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;

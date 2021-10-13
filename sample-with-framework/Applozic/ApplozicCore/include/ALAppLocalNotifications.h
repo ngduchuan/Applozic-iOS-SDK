@@ -6,9 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALReachability.h"
 #import "ALMessageService.h"
+#import "ALReachability.h"
+#import <Foundation/Foundation.h>
 
 @interface ALAppLocalNotifications : NSObject
 

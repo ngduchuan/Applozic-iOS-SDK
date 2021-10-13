@@ -5,19 +5,18 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALUtilityClass.h"
+#import "ALAppLocalNotifications.h"
 #import "ALConstant.h"
-#import "ALAppLocalNotifications.h"
-#import "TSMessage.h"
-#import "TSMessageView.h"
-#import "ALPushAssist.h"
-#import "ALAppLocalNotifications.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALContactDBService.h"
 #import "ALContact.h"
+#import "ALContactDBService.h"
 #import "ALLogger.h"
+#import "ALPushAssist.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUtilityClass.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "TSMessage.h"
+#import "TSMessageView.h"
 
 NSString * const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
 NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";

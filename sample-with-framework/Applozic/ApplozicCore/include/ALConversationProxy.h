@@ -6,10 +6,10 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
 #import "ALTopicDetail.h"
 #import "DB_ConversationProxy.h"
+#import <Foundation/Foundation.h>
 
 /// `ALConversationProxy` class is used parsing JSON response of context based chat.
 @interface ALConversationProxy : ALJson

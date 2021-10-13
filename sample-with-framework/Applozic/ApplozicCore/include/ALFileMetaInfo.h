@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
+#import "ALJson.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALJson.h"
 
 /// `ALFileMetaInfo` class is used for attachment object.
 @interface ALFileMetaInfo : ALJson

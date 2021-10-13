@@ -5,11 +5,10 @@
 //  Created by Gaurav Nigam on 09/08/15.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
-
-#import "ALDBHandler.h"
-#import "ALUtilityClass.h"
 #import "ALApplozicSettings.h"
+#import "ALDBHandler.h"
 #import "ALLogger.h"
+#import "ALUtilityClass.h"
 
 static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 

@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// For internal use only.
 static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
@@ -48,7 +48,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 @property (nonatomic, strong) NSNumber *notificationAfterTime;
 @property (nonatomic, strong) NSNumber *status;
 
-- (instancetype)initWithDict:(NSDictionary * )dictionary;
+- (instancetype)initWithDict:(NSDictionary *)dictionary;
 - (void)populateDataFromDictonary:(NSDictionary *)dict;
 
 - (NSString *)getDisplayName;

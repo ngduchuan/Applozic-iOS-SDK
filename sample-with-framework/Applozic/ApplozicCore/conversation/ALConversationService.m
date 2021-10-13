@@ -6,12 +6,12 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "ALConversationService.h"
-#import "ALConversationProxy.h"
-#import "ALConversationDBService.h"
-#import "DB_ConversationProxy.h"
 #import "ALConversationClientService.h"
+#import "ALConversationDBService.h"
+#import "ALConversationProxy.h"
+#import "ALConversationService.h"
 #import "ALLogger.h"
+#import "DB_ConversationProxy.h"
 
 @implementation ALConversationService
 

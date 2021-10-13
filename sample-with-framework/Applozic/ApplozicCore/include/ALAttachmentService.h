@@ -6,13 +6,13 @@
 //  Copyright © 2018 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALMessageDBService.h"
+#import "ALHTTPManager.h"
 #import "ALMessage.h"
+#import "ALMessageDBService.h"
 #import "ALMessageService.h"
 #import "ALRealTimeUpdate.h"
 #import "ApplozicClient.h"
-#import "ALHTTPManager.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
