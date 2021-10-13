@@ -3518,17 +3518,18 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (!receiverId) {
         return;
     }
-    [self.userService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail) {
-        if (alUserDetail) {
-            [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
-            alUserDetail.unreadCount = 0;
-            [[[ALContactDBService alloc] init] updateUserDetail:alUserDetail];
-            [self updateConversationProfileDetails];
-            [self updateLastSeenAtStatus:alUserDetail];
-            [self setCallButtonInNavigationBar];
-        } else {
-            ALSLog(ALLoggerSeverityInfo, @"CHECK LAST_SEEN_SERVER CALL");
+
+    [self.userService getUserDetailFromServer:receiverId
+                               withCompletion:^(ALContact *contact, NSError *error) {
+        if (error) {
+            return;
         }
+
+        [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:contact.userId];
+        [self updateConversationProfileDetails];
+        ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
+        [self updateLastSeenAtStatus:userDetail];
+        [self setCallButtonInNavigationBar];
     }];
 }
 

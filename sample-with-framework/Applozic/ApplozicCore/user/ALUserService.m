@@ -113,14 +113,33 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma mark - Update user detail
 
 - (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
-    [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
-        
-        if (userDetail) {
-            userDetail.unreadCount = 0;
-            [self.contactDBService updateUserDetail:userDetail];
+
+    [self getUserDetailFromServer:userId
+                   withCompletion:^(ALContact *contact, NSError *error) {
+
+        if (error) {
+            completionMark(nil);
+            return;
         }
+
+        ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
         completionMark(userDetail);
     }];
+}
+
+- (ALUserDetail *)getUserDetailFromContact:(ALContact *)contact {
+    ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+    userDetail.userId = contact.userId;
+    userDetail.contactNumber = contact.contactNumber;
+    userDetail.imageLink = contact.contactImageUrl;
+    userDetail.displayName = [contact getDisplayName];
+    userDetail.connected = contact.connected;
+    userDetail.deletedAtTime = contact.deletedAtTime;
+    userDetail.roleType = contact.roleType;
+    userDetail.notificationAfterTime = contact.notificationAfterTime;
+    userDetail.lastSeenAtTime = contact.lastSeenAt;
+    userDetail.deletedAtTime = contact.deletedAtTime;
+    return userDetail;
 }
 
 #pragma mark - Update phone number, email of user with admin user
@@ -508,10 +527,13 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (![self.contactService isContactExist:userId]) {
         ALSLog(ALLoggerSeverityError, @"Contact not found fetching for user: %@", userId);
-        
-        [self userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
-            [self.contactDBService updateUserDetail:alUserDetail];
-            ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:userId];
+        [self getUserDetailFromServer:userId withCompletion:^(ALContact *contact, NSError *error) {
+
+            if (error) {
+                ALContact *newContact = [self.contactDBService loadContactByKey:@"userId" value:userId];
+                completion(newContact);
+                return;
+            }
             completion(contact);
         }];
     } else {
@@ -754,6 +776,44 @@ static int CONTACT_PAGE_SIZE = 100;
             NSMutableArray *contcatArray = [self.contactDBService getAllContactsFromDB];
             completion(contcatArray, error);
         }
+    }];
+}
+
+-(void)getUserDetailFromServer:(NSString *)userId
+                withCompletion:(void(^)(ALContact *contact, NSError *error))completion {
+
+    if (!userId) {
+        NSError *error = [NSError errorWithDomain:@"Applozic"
+                                             code:1
+                                         userInfo:@{NSLocalizedDescriptionKey : @"Passed UserId is nil"}];
+        completion(nil, error);
+        return;
+    }
+
+    ALUserDetailListFeed *userDetailListFeed = [[ALUserDetailListFeed alloc] init];
+    NSMutableArray *userIdArray = [[NSMutableArray alloc] initWithObjects:userId, nil];
+    [userDetailListFeed setArray:userIdArray];
+
+    [self.userClientService subProcessUserDetailServerCallPOST:userDetailListFeed
+                                                withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+
+
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+
+        if (userDetailArray.count == 0) {
+            NSError *error = [NSError errorWithDomain:@"Applozic"
+                                                 code:1
+                                             userInfo:@{NSLocalizedDescriptionKey : @"User not found in Applozic"}];
+            completion(nil, error);
+            return;
+        }
+
+        [self.contactDBService addUserDetailsWithoutUnreadCount:userDetailArray];
+        ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:userId];
+        completion(contact, nil);
     }];
 }
 

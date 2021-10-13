@@ -473,12 +473,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 #pragma mark - Fetch Users Detail
 
-- (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob
+- (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)userDetailListFeed
                             withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark {
     NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/v2/detail",KBASE_URL];
     
     NSError *error;
-    NSData *postdata = [NSJSONSerialization dataWithJSONObject:ob.dictionary options:0 error:&error];
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:userDetailListFeed.dictionary options:0 error:&error];
     NSString *userDetailParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
     
     ALSLog(ALLoggerSeverityInfo, @"PARAM_POST_CALL : %@",userDetailParamString);

@@ -62,7 +62,7 @@
 /// Fetching the user detail from server.
 /// @param userId Pass the userId for fetching.
 /// @param completionMark Will have `ALUserDetail` in case of successfull fetch otherwise nil.
-- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark DEPRECATED_MSG_ATTRIBUTE("Use getUserDetailFromServer:withCompletion instead");
 
 /// Updating dispaly name of the user who is not registered.
 /// @param contact Pass the `ALContact` object.
@@ -225,4 +225,10 @@
 /// @param message Pass the `ALMessage` object.
 - (void)markConversationReadInDataBaseWithMessage:(ALMessage *)message;
 
+/// Gets the user `ALContact` object for given userId from Applozic server.
+///
+/// @param userId An receiver userId to fetch the details.
+/// @param completion An `ALContact` object on successful fetch otherwise, an error describing fetch user details.
+-(void)getUserDetailFromServer:(NSString *)userId
+                withCompletion:(void(^)(ALContact *contact, NSError *error))completion;
 @end
