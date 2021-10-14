@@ -1104,7 +1104,7 @@ static ALMessageClientService *alMsgClientService;
     if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService getLatestMessages:NO
-                      withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
+                      withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
             if (error) {
                 completion(0, error);
                 return;
@@ -1122,7 +1122,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError *error))completion {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-    [messageDBService getLatestMessages:NO withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
+    [messageDBService getLatestMessages:NO withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
 
         if (error) {
             completion(0, error);
@@ -1133,7 +1133,7 @@ static ALMessageClientService *alMsgClientService;
         ALChannelService *channelService = [[ALChannelService alloc] init];
         ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         
-        for (ALMessage *message in messageListArray) {
+        for (ALMessage *message in messages) {
             if (message.groupId &&
                 message.groupId.integerValue != 0) {
                 ALChannel *channel = [channelService getChannelByKey:message.groupId];

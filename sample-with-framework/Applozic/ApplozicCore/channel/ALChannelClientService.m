@@ -1021,15 +1021,15 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 
-            NSMutableArray *theChannelFeedArray = [NSMutableArray new];
+            NSMutableArray *channelFeedArray = [NSMutableArray new];
 
             NSArray *channelResponse = apiResponse.response;
             NSMutableArray *userNotPresentIds = [NSMutableArray new];
             ALContactService *contactService = [ALContactService new];
 
-            for (NSDictionary *theDictionary in channelResponse) {
-                ALChannel *channel = [[ALChannel alloc] initWithDictonary:theDictionary];
-                [theChannelFeedArray addObject:channel];
+            for (NSDictionary *channelDictionary in channelResponse) {
+                ALChannel *channel = [[ALChannel alloc] initWithDictonary:channelDictionary];
+                [channelFeedArray addObject:channel];
 
                 for (NSString *userId in channel.membersId) {
                     if (![contactService isContactExist:userId]) {
@@ -1041,10 +1041,10 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             if (userNotPresentIds.count>0) {
                 ALUserService *userService = [ALUserService new];
                 [userService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
-                    completion(error, theChannelFeedArray);
+                    completion(error, channelFeedArray);
                 }];
             } else {
-                completion(error, theChannelFeedArray);
+                completion(error, channelFeedArray);
             }
         }
     }];

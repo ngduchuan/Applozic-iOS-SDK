@@ -31,7 +31,7 @@
 @property(nonatomic, retain) ALMessageService *messageService;
 
 //Add Message APIS
-- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messages skipAddingMessageInDb:(BOOL)skip;
 - (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;

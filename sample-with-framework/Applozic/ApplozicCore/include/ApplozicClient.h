@@ -53,16 +53,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 @end
 
-/**
- Provides public methods for:
-
- - Initialization of the SDK.
- - User Authentication.
- - Listing, sending and receiving messages both 1:1 and group messages.
- - Real-time Events.
-
- @note To access any method get the `ApplozicClient` object using `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
- */
+/// Provides public methods for:
+///
+/// - Initialization of the SDK.
+/// - User Authentication.
+/// - Listing, sending and receiving messages both 1:1 and group messages.
+/// - Real-time Events.
+///
+///  @note To access any method get the `ApplozicClient` object using `-[ApplozicClient initWithApplicationKey:]` or `-[ApplozicClient initWithApplicationKey:withDelegate:]`.
 @interface ApplozicClient : NSObject <NSURLConnectionDataDelegate>
 
 /// For real time updates of attachment upload or download status.
@@ -83,6 +81,9 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// Gives callbacks for real-time update events for Messages, channels, Users, and Typing.
 /// @warning Do not assign this property. It won't work properly if you do. Instead, use the `-[ApplozicClient initWithApplicationKey:withDelegate:]` initializer, which assigns this property.
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+
+/// init is not avaliable for accessing.
+- (instancetype)init NS_UNAVAILABLE;
 
 /// Returns an `ApplozicClient` object for given App-ID.
 ///
@@ -273,14 +274,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+/// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
 ///
 ///   if (error) {
 ///       NSLog(@"Error in fetching all recent conversations %@", error.localizedDescription);
 ///       return;
 ///   }
 ///
-///   for (ALMessage *message in messageList) {
+///   for (ALMessage *message in messages) {
 ///
 ///     NSLog(@"Message object :%@", [message dictionary]);
 ///
@@ -292,7 +293,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///   }
 /// }];
 /// @endcode
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error))completion;
 
 /// Gets the list of messages for the given one-to-one or channel conversation.
 ///
@@ -315,10 +316,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// if ([ALUserDefaultsHandler isServerCallDoneForMSGList:chatId]) {
 ///
-///   [ALMessageService getMessageListForContactId:messagelistRequest.userId isGroup:[messagelistRequest.channelKey intValue] channelKey:messagelistRequest.channelKey conversationId:nil startIndex:0 withCompletion:^(NSMutableArray *messageList) {
+///   [ALMessageService getMessageListForContactId:messagelistRequest.userId isGroup:[messagelistRequest.channelKey intValue] channelKey:messagelistRequest.channelKey conversationId:nil startIndex:0 withCompletion:^(NSMutableArray *messages) {
 ///
-///     if (messageList.count) {
-///        for (ALMessage *message in messageList) {
+///     if (messages.count) {
+///        for (ALMessage *message in messages) {
 ///
 ///             TODO: Add this meessages to your array and show in your UI.
 ///             NSLog(@"Message object :%@", [message dictionary]);
@@ -332,11 +333,11 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///     }
 ///   }];
 /// } else {
-///   [self.applozicClient getMessages: messagelistRequest withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+///   [self.applozicClient getMessages: messagelistRequest withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
 ///
 ///     if (!error) {
 ///        // Get the messages
-///        for (ALMessage *message in messageList) {
+///        for (ALMessage *message in messages) {
 ///
 ///            TODO: Add this meessages to your array and show in your UI.
 ///            NSLog(@"Message object :%@", [message dictionary]);
@@ -351,7 +352,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///   }];
 /// }
 /// @endcode
-- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
+- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error))completion;
 
 /// Downloads the attachment file for the message.
 ///
@@ -372,6 +373,11 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// [applozicClient downloadMessageAttachment:message]; // Pass `ALMessage` object to download and make sure message filemeta object is not nil.
 /// @endcode
 - (void)downloadMessageAttachment:(ALMessage *)message;
+
+/// Downloads the Thumbnail Image of an attachment.
+///
+/// @param message An `ALMessage` object for which downloading an thumbnail image in one-to-one or channel conversation
+- (void)downloadThumbnailImage:(ALMessage *)message;
 
 /// Creates a new channel conversation for the given `ALChannelInfo` object.
 ///
@@ -420,7 +426,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
+                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
 /// Removes a member from the channel conversation.
 ///
@@ -904,14 +911,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// BOOL loadNextPage = NO; // Pass YES in case of loading next set of 60 old conversations.
 /// BOOL loadGroups = NO; // Pass YES in case of loading group conversations.
 ///
-/// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+/// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
 ///
 ///     if (error) {
 ///         NSLog(@"Failed to load the recent conversations :%@",error.localizedDescription);
 ///         return;
 ///     }
 ///
-///     for (ALMessage *message in messageList) {
+///     for (ALMessage *message in messages) {
 ///          NSLog(@"Message object %@",[message dictionary]);
 ///     }
 ///
@@ -919,6 +926,6 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @endcode
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error))completion;
+    withCompletionHandler: (void(^)(NSMutableArray *messages, NSError *error))completion;
 
 @end

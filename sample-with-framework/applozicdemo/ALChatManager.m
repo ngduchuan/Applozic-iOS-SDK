@@ -16,12 +16,10 @@
     return [self initWithApplicationKey:APPLICATION_ID];
 }
 
--(instancetype)initWithApplicationKey:(NSString *)applicationKey;
-{
+-(instancetype)initWithApplicationKey:(NSString *)appID {
     self = [super init];
-    if (self)
-    {
-        [ALUserDefaultsHandler setApplicationKey:applicationKey];
+    if (self) {
+        [ALUserDefaultsHandler setApplicationKey:appID];
         self.permissableVCList = [[NSArray alloc] init];
         [ALLogger setMinimumSeverity:ALLoggerSeverityInfo];
         // Assumption: This init will be called from AppDelegate and it won't be deallocated till the app closes otherwise log's will not be saved.
@@ -32,46 +30,8 @@
     return self;
 }
 
-//==============================================================================================================================================
-// Call This at time of your app's user authentication OR User registration.
-// This will register your User at applozic server.
-//==============================================================================================================================================
-
--(void)connectUser:(ALUser *)alUser
-{
-    self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
-    
-    
-    [self ALDefaultChatViewSettings];
-    [alUser setApplicationId:[self getApplicationKey]];
-    [alUser setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
-    ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
-    [registerUserClientService initWithCompletion:alUser withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
-        
-        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", rResponse);
-        if(error)
-        {
-            NSLog(@"ERROR_USER_REGISTRATION :: %@",error);
-            return;
-        }
-        
-        if(![rResponse isRegisteredSuccessfully])
-        {
-            NSLog(@"ERROR_USER_REGISTRATION :: %@",rResponse.message);
-            return;
-        }
-        
-        if(rResponse && [rResponse.message containsString: @"REGISTERED"])
-        {
-
-        }
-
-    }];
-}
-
--(NSString *)getApplicationKey
-{
-    NSString * appKey = [ALUserDefaultsHandler getApplicationKey];
+-(NSString *)getApplicationKey {
+    NSString *appKey = [ALUserDefaultsHandler getApplicationKey];
     NSLog(@"APPLICATION_KEY :: %@",appKey);
     return appKey ? appKey : APPLICATION_ID;
 }
@@ -81,34 +41,30 @@
 // Example: If Chat is your first screen after launch,launch chat list on sucess of login.
 //==============================================================================================================================================
 
--(void)connectUserWithCompletion:(ALUser *)alUser withHandler:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion
-{
+-(void)connectUserWithCompletion:(ALUser *)user
+                     withHandler:(void(^)(ALRegistrationResponse *response, NSError *error))completion {
     self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
     
-    
     [self ALDefaultChatViewSettings];
-    [alUser setApplicationId:[self getApplicationKey]];
-    [alUser setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    [user setApplicationId:[self getApplicationKey]];
+    [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     
     ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
-    [registerUserClientService initWithCompletion:alUser withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+    [registerUserClientService initWithCompletion:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
         
-        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", rResponse);
-        if(error)
-        {
+        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", response);
+        if (error) {
             NSLog(@"ERROR_USER_REGISTRATION :: %@",error.description);
             completion(nil, error);
             return;
         }
         
-        if(![rResponse isRegisteredSuccessfully])
-        {
-            NSError *passError = [NSError errorWithDomain:rResponse.message code:0 userInfo:nil];
+        if(![response isRegisteredSuccessfully]) {
+            NSError *passError = [NSError errorWithDomain:response.message code:0 userInfo:nil];
             completion(nil, passError);
             return;
         }
-        
-        completion(rResponse, error);
+        completion(response, error);
     }];
 }
 
@@ -117,44 +73,40 @@
                         andWithUser:(NSString *)userId
               andFromViewController:(UIViewController *)viewController{
     
-    ALChannelService * channelService = [[ALChannelService alloc] init];
-   
-    [channelService getChannelInformation:nil orClientChannelKey:clientGroupId withCompletion:^(ALChannel *alChannel) {
-            
-            if(alChannel.key){
-                
-                if( (alChannel.metadata && ![alChannel.metadata isEqualToDictionary:metadata]) ){
-                    [channelService updateChannelMetaData:alChannel.key orClientChannelKey:nil metadata:metadata withCompletion:^(NSError *error) {
-                        [self launchChatForUserWithDisplayName:nil withGroupId:alChannel.key
-                                            andwithDisplayName:nil andFromViewController:viewController];
-                    }];
-                }
-                else
-                {
-                    [self launchChatForUserWithDisplayName:nil withGroupId:alChannel.key
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+
+    [channelService getChannelInformation:nil orClientChannelKey:clientGroupId withCompletion:^(ALChannel *channel) {
+
+        if (channel.key) {
+
+            if ((channel.metadata && ![channel.metadata isEqualToDictionary:metadata])) {
+                [channelService updateChannelMetaData:channel.key orClientChannelKey:nil metadata:metadata withCompletion:^(NSError *error) {
+                    [self launchChatForUserWithDisplayName:nil withGroupId:channel.key
+                                        andwithDisplayName:nil andFromViewController:viewController];
+                }];
+            } else {
+                [self launchChatForUserWithDisplayName:nil withGroupId:channel.key
+                                    andwithDisplayName:nil andFromViewController:viewController];
+            }
+        } else {
+            ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+            channelInfo.clientGroupId = clientGroupId;
+            channelInfo.groupName = clientGroupId;
+            channelInfo.groupMemberList = [[NSMutableArray alloc] initWithObjects:userId, nil];
+            channelInfo.metadata = metadata;
+            channelInfo.type = GROUP_OF_TWO;
+
+            [channelService createChannelWithChannelInfo:channelInfo
+                                          withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+
+                if (!error
+                    && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                    [self launchChatForUserWithDisplayName:nil withGroupId:response.alChannel.key
                                         andwithDisplayName:nil andFromViewController:viewController];
                 }
-            }
-            else
-            {
-                ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
-                channelInfo.clientGroupId = clientGroupId;
-                channelInfo.groupName = clientGroupId;
-                channelInfo.groupMemberList = [[NSMutableArray alloc] initWithObjects:userId, nil];
-                channelInfo.metadata = metadata;
-                channelInfo.type = GROUP_OF_TWO;
-
-                [channelService createChannelWithChannelInfo:channelInfo
-                                              withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
-
-                    if (!error
-                        && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                        [self launchChatForUserWithDisplayName:nil withGroupId:response.alChannel.key
-                                            andwithDisplayName:nil andFromViewController:viewController];
-                    }
-                }];
-            }
-        }];
+            }];
+        }
+    }];
     
 }
 
@@ -162,15 +114,14 @@
                          withItemId:(NSString *)itemId
                        withMetaData:(NSMutableDictionary *)metadata
                         andWithUser:(NSString *)userId
-              andFromViewController:(UIViewController *)viewController{
-    NSString* clientGroupId = [self buildUniqueClientId:itemId withUserId:userIdOfReceiver];
+              andFromViewController:(UIViewController *)viewController {
+    NSString *clientGroupId = [self buildUniqueClientId:itemId withUserId:userIdOfReceiver];
     [self launchGroupOfTwoWithClientId:clientGroupId withMetaData:metadata andWithUser:userId andFromViewController:viewController];
 }
 
--(NSString*) buildUniqueClientId:(NSString*)ItemId withUserId:(NSString*)userId
-{
-    NSString * loggedInUserId =  [ALUserDefaultsHandler getUserId];
-    NSArray * sortedArray = [ @[loggedInUserId,userId] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+-(NSString*) buildUniqueClientId:(NSString *)ItemId withUserId:(NSString *)userId {
+    NSString *loggedInUserId =  [ALUserDefaultsHandler getUserId];
+    NSArray *sortedArray = [ @[loggedInUserId,userId] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     return [NSString stringWithFormat:@"%@_%@_%@", ItemId,sortedArray[0],sortedArray[1]];
     
 }
@@ -180,8 +131,7 @@
 // This will automatically handle unregistered users provided getLoggedinUserInformation is implemented properly.
 //==============================================================================================================================================
 
--(void)launchChat: (UIViewController *)fromViewController
-{
+-(void)launchChat: (UIViewController *)fromViewController {
     [self connectUserAndLaunchChat:nil andFromController:fromViewController forUser:nil withGroupId:nil];
 }
 
@@ -190,8 +140,7 @@
 // This will automatically handle unregistered users provided getLoggedinUserInformation is implemented properly.
 //==============================================================================================================================================
 
--(void)launchChatForUserWithDefaultText:(NSString *)userId andFromViewController:(UIViewController *)fromViewController
-{
+-(void)launchChatForUserWithDefaultText:(NSString *)userId andFromViewController:(UIViewController *)fromViewController {
     [self connectUserAndLaunchChat:nil andFromController:fromViewController forUser:userId withGroupId:nil];
 }
 
@@ -200,61 +149,52 @@
 // If user information is not passed, it will try to get user information from getLoggedinUserInformation.
 //==============================================================================================================================================
 
--(void)connectUserAndLaunchChat:(ALUser *)alUser andFromController:(UIViewController *)viewController forUser:(NSString *)userId
-                     withGroupId:(NSNumber *)groupID
-{
+-(void)connectUserAndLaunchChat:(ALUser *)user
+              andFromController:(UIViewController *)viewController
+                        forUser:(NSString *)userId
+                    withGroupId:(NSNumber *)groupID {
     self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
     
     //User is already registered ..directly launch the chat...
-    NSString * deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     NSLog(@"DEVICE_KEY : %@",deviceKey);
-    if(deviceKey != nil)
-    {
-        if(userId)
-        {
+    if (deviceKey != nil) {
+        if (userId) {
             [self.chatLauncher launchIndividualChat:userId withGroupId:groupID
                             andViewControllerObject:viewController andWithText:nil];
-        }
-        else
-        {
-            NSString * title = viewController.title? viewController.title: @"< Back";
+        } else {
+            NSString *title = viewController.title? viewController.title: @"< Back";
             [self.chatLauncher launchChatList:title andViewControllerObject:viewController];
         }
         return;
     }
     
     //Registration Required....
-    alUser = alUser ? alUser : [ALChatManager getLoggedinUserInformation];
+    user = user ? user : [ALChatManager getLoggedinUserInformation];
     
-    if(!alUser)
-    {
+    if (!user) {
         NSLog(@"Not able to find user detail for registration...please register with applozic server first");
         return;
     }
     
-    [self connectUserWithCompletion:alUser withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
+    [self connectUserWithCompletion:user withHandler:^(ALRegistrationResponse *response, NSError *error) {
         
-        if (!error)
-        {
-            if(userId)
-            {
+        if (!error) {
+            if (userId) {
                 [self.chatLauncher launchIndividualChat:userId
                                             withGroupId:groupID
                                 andViewControllerObject:viewController
                                             andWithText:nil];
-            }
-            else
-            {
-                NSString * title = viewController.title? viewController.title: @"< Back";
+            } else {
+                NSString *title = viewController.title? viewController.title: @"< Back";
                 [self.chatLauncher launchChatList:title andViewControllerObject:viewController];
             }
         }
     }];
 }
 
--(BOOL)isUserHaveMessages:(NSString *)userId
-{
-    ALMessageService * msgService = [ALMessageService new];
+-(BOOL)isUserHaveMessages:(NSString *)userId {
+    ALMessageService *msgService = [ALMessageService new];
     NSUInteger count = [msgService getMessagsCountForUser:userId];
     NSLog(@"COUNT MESSAGES :: %lu",(unsigned long)count);
     return (count == 0);
@@ -265,22 +205,21 @@
 // This will automatically handle unregistered users provided getLoggedinUserInformation is implemented properly.
 //==============================================================================================================================================
 
--(void)launchChatForUserWithDisplayName:(NSString *)userId withGroupId:(NSNumber *)groupID andwithDisplayName:(NSString *)displayName
-                  andFromViewController:(UIViewController *)fromViewController
-{
+-(void)launchChatForUserWithDisplayName:(NSString *)userId
+                            withGroupId:(NSNumber *)groupID
+                     andwithDisplayName:(NSString *)displayName
+                  andFromViewController:(UIViewController *)fromViewController {
     self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
     
     BOOL flagForText = [self isUserHaveMessages:userId];
-    NSString * preText = nil;
-    if(flagForText)
-    {
+    NSString *preText = nil;
+    if (flagForText) {
         preText = @""; // SET TEXT HERE
     }
     
-    NSString * deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     NSLog(@"DEVICE_KEY : %@",deviceKey);
-    if(deviceKey != nil)
-    {
+    if (deviceKey != nil) {
         [self.chatLauncher launchIndividualChat:userId withGroupId:groupID
                                 withDisplayName:displayName
                         andViewControllerObject:fromViewController
@@ -288,9 +227,9 @@
         return;
     }
     
-    ALUser *alUser = [ALChatManager getLoggedinUserInformation];
-    [self connectUserWithCompletion:alUser withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
-    
+    ALUser *user = [ALChatManager getLoggedinUserInformation];
+    [self connectUserWithCompletion:user withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
+
     }];
 }
 
@@ -301,18 +240,15 @@
 //==============================================================================================================================================
 
 -(void)createAndLaunchChatWithSellerWithConversationProxy:(ALConversationProxy*)alConversationProxy
-                                       fromViewController:(UIViewController*)fromViewController
-{
-    ALConversationService * alconversationService = [[ALConversationService alloc] init];
+                                       fromViewController:(UIViewController*)fromViewController {
+    ALConversationService *alconversationService = [[ALConversationService alloc] init];
     [alconversationService  createConversation:alConversationProxy withCompletion:^(NSError *error,ALConversationProxy * proxyObject) {
         
-        if(!error)
-        {
+        if (!error) {
             self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
             NSString * deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
             NSLog(@"DEVICE_KEY : %@",deviceKey);
-            if(deviceKey != nil)
-            {
+            if (deviceKey != nil) {
                 ALConversationProxy * finalProxy = [self makeFinalProxyWithGeneratedProxy:alConversationProxy andFinalProxy:proxyObject];
                 [self.chatLauncher launchIndividualContextChat:finalProxy andViewControllerObject:fromViewController userDisplayName:@"Adarsh" andWithText:nil];
             }
@@ -324,9 +260,9 @@
 // The below method combines the conversationID got from server's response with the details already set.
 //==============================================================================================================================================
 
--(ALConversationProxy *)makeFinalProxyWithGeneratedProxy:(ALConversationProxy *)generatedProxy andFinalProxy:(ALConversationProxy *)responseProxy
-{
-    ALConversationProxy * finalProxy = [[ALConversationProxy alloc] init];
+-(ALConversationProxy *)makeFinalProxyWithGeneratedProxy:(ALConversationProxy *)generatedProxy
+                                           andFinalProxy:(ALConversationProxy *)responseProxy {
+    ALConversationProxy *finalProxy = [[ALConversationProxy alloc] init];
     finalProxy.userId = generatedProxy.userId;
     finalProxy.topicDetailJson = generatedProxy.topicDetailJson;
     finalProxy.Id = responseProxy.Id;
@@ -338,12 +274,11 @@
 // LAUNCH OPEN GROUP
 //==============================================================================================================================================
 
--(void)launchOpenGroupWithKey:(NSNumber *)channelKey fromViewController:(UIViewController *)viewController
-{
+-(void)launchOpenGroupWithKey:(NSNumber *)channelKey fromViewController:(UIViewController *)viewController {
     ALChannelService *service = [ALChannelService new];
-    [service getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
+    [service getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *channel) {
         
-        [self launchChatForUserWithDisplayName:nil withGroupId:alChannel3.key andwithDisplayName:nil andFromViewController:viewController];
+        [self launchChatForUserWithDisplayName:nil withGroupId:channel.key andwithDisplayName:nil andFromViewController:viewController];
     }];
 }
 
@@ -352,9 +287,8 @@
 // launching contact screen with message
 //============================================
 
--(void)launchContactScreenWithMessage:(ALMessage *)alMessage andFromViewController:(UIViewController *)viewController
-{
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+-(void)launchContactScreenWithMessage:(ALMessage *)alMessage andFromViewController:(UIViewController *)viewController {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.directContactVCLaunch = YES;
     contactVC.alMessage = alMessage;
@@ -368,8 +302,7 @@
 // This might be used to get existing user information in case of app update.
 //==============================================================================================================================================
 
-+(ALUser *)getLoggedinUserInformation
-{
++(ALUser *)getLoggedinUserInformation {
     ALUser *user = [[ALUser alloc] init];
     
     [user setApplicationId:[[[self alloc] init] getApplicationKey]];
@@ -387,17 +320,16 @@
 // This method helps you customise various settings
 //==============================================================================================================================================
 
--(void)ALDefaultChatViewSettings
-{
+-(void)ALDefaultChatViewSettings {
     [ALApplozicSettings setListOfViewControllers:
-    @[
-     [ALMessagesViewController description],
-     [ALChatViewController description],
-     [ALGroupDetailViewController description],
-     [ALNewContactsViewController description],
-     [ALUserProfileVC description]
-     ]];
-    
+     @[
+        [ALMessagesViewController description],
+        [ALChatViewController description],
+        [ALGroupDetailViewController description],
+        [ALNewContactsViewController description],
+        [ALUserProfileVC description]
+    ]];
+
     /*********************************************  NAVIGATION SETTINGS  ********************************************/
     
     [ALApplozicSettings setStatusBarBGColor:[UIColor colorWithRed:66.0/255 green:173.0/255 blue:247.0/255 alpha:1]];
@@ -435,15 +367,15 @@
     [ALApplozicSettings setCustomMessageFont:@"Helvetica"];
 
     
-//    [ALApplozicSettings setChatCellFontTextStyle:UIFontTextStyleSubheadline];
-//    [ALApplozicSettings setChatChannelCellFontTextStyle:UIFontTextStyleSubheadline];
+    //    [ALApplozicSettings setChatCellFontTextStyle:UIFontTextStyleSubheadline];
+    //    [ALApplozicSettings setChatChannelCellFontTextStyle:UIFontTextStyleSubheadline];
 
     //****************** DATE COLOUR : AT THE BOTTOM OF MESSAGE BUBBLE ******************/
     [ALApplozicSettings setDateColor:[UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5]];
     
     //****************** MESSAGE SEPERATE DATE COLOUR : DATE MESSAGE ******************/
     [ALApplozicSettings setMsgDateColor:[UIColor blackColor]];
-     
+
     /***************  SEND MESSAGE ABUSE CHECK  ******************/
 
     [ALApplozicSettings setAbuseWarningText:@"AVOID USE OF ABUSE WORDS"];
@@ -483,7 +415,7 @@
     NSString * appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
     [ALApplozicSettings setNotificationTitle:appName];
     
-        [ALApplozicSettings enableNotification]; //0
+    [ALApplozicSettings enableNotification]; //0
     //    [ALApplozicSettings disableNotification]; //2
     //    [ALApplozicSettings disableNotificationSound]; //1                /*  IF NOTIFICATION SOUND NOT NEEDED  */
     //    [ALApplozicSettings enableNotificationSound];//0                   /*  IF NOTIFICATION SOUND NEEDED    */
@@ -562,24 +494,24 @@
     /****************************************************************************************************************/
     
     [ALUserDefaultsHandler setGoogleMapAPIKey:@"AIzaSyBnWMTGs1uTFuf8fqQtsmLk-vsWM7OrIXk"]; //REPLACE WITH YOUR GOOGLE MAPKEY
-   
-//    NSMutableArray * array = [NSMutableArray new];
-//    [array addObject:[NSNumber numberWithInt:1]];
-//    [array addObject:[NSNumber numberWithInt:2]];
-//
-//    [ALApplozicSettings setContactTypeToFilter: array];         // SET ARRAY TO PREFERENCE
+
+    //    NSMutableArray * array = [NSMutableArray new];
+    //    [array addObject:[NSNumber numberWithInt:1]];
+    //    [array addObject:[NSNumber numberWithInt:2]];
+    //
+    //    [ALApplozicSettings setContactTypeToFilter: array];         // SET ARRAY TO PREFERENCE
     
     /************************************** 3rd PARTY VIEWS + MSg CONTAINER SETTINGS  *************************************/
     
-//    NSArray * viewArray = @[@"VC1", @"VC2"];    // VC : ViewController's Class Name
-//    [self.permissableVCList arrayByAddingObject:@""];
+    //    NSArray * viewArray = @[@"VC1", @"VC2"];    // VC : ViewController's Class Name
+    //    [self.permissableVCList arrayByAddingObject:@""];
     
-//    [ALApplozicSettings setMsgContainerVC:@""];  // ADD CLASS NAME
+    //    [ALApplozicSettings setMsgContainerVC:@""];  // ADD CLASS NAME
     /**********************************************************************************************************************/
-   
+
     [ALApplozicSettings setUserDeletedText:@"User has been deleted"];            /*  SET DELETED USER NOTIFICATION TITLE   */
     
-   
+
     /******************************************** CUSTOM TAB BAR ITEM : ICON && TEXT ************************************************/
     [ALApplozicSettings setChatListTabIcon:@""];
     [ALApplozicSettings setProfileTabIcon:@""];
@@ -587,9 +519,9 @@
     [ALApplozicSettings setChatListTabTitle:@""];
     [ALApplozicSettings setProfileTabTitle:@""];
     // Hide attachment options in chat screen
-//    NSArray * attachmentOptionToHide = @[@":audio", @":video", @":location",@":shareContact"];
-//
-//    [ALApplozicSettings setHideAttachmentsOption:attachmentOptionToHide];
+    //    NSArray * attachmentOptionToHide = @[@":audio", @":video", @":location",@":shareContact"];
+    //
+    //    [ALApplozicSettings setHideAttachmentsOption:attachmentOptionToHide];
     
     /********************************************* Attachment Plus Icon background color
      *****************************************************************/
@@ -604,15 +536,14 @@
     [ALApplozicSettings disableGroupListingTab:NO];
 }
 
--(void)getApplicationBaseURL
-{
+-(void)getApplicationBaseURL {
     NSDictionary * URLDictionary = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APPLOZIC_PRODUCTION"];
     
     NSString * alKBASE_URL = [URLDictionary valueForKey:@"AL_KBASE_URL"];
     NSString * alMQTT_URL = [URLDictionary valueForKey:@"AL_MQTT_URL"];
     NSString * alFILE_URL = [URLDictionary valueForKey:@"AL_FILE_URL"];
     NSString * alMQTT_PORT = [URLDictionary valueForKey:@"AL_MQTT_PORT"];
-    
+
     [ALUserDefaultsHandler setBASEURL:alKBASE_URL];
     [ALUserDefaultsHandler setMQTTURL:alMQTT_URL];
     [ALUserDefaultsHandler setFILEURL:alFILE_URL];
@@ -623,51 +554,43 @@
 // Launch chat list with specified User's chat screen open
 //==============================================================================================================================================
 
--(void)launchListWithUserORGroup:(NSString *)userId ORWithGroupID:(NSNumber *)groupId andFromViewController:(UIViewController*)fromViewController
-{
+-(void)launchListWithUserORGroup:(NSString *)userId
+                   ORWithGroupID:(NSNumber *)groupId
+           andFromViewController:(UIViewController*)fromViewController {
     self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
 
     //User is already registered ..directly launch the chat...
-    NSString * deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     NSLog(@"DEVICE_KEY : %@",deviceKey);
-    if(deviceKey != nil)
-    {        
+    if (deviceKey != nil) {
         //Launch
-        if(userId || groupId)
-        {
+        if (userId || groupId) {
             [self.chatLauncher launchChatListWithUserOrGroup:userId withChannel:groupId
                                      andViewControllerObject:fromViewController];
-        }
-        else
-        {
-            NSString * title = fromViewController.title? fromViewController.title: @"< Back";
+        } else {
+            NSString *title = fromViewController.title? fromViewController.title: @"< Back";
             [self.chatLauncher launchChatList:title andViewControllerObject:fromViewController];
         }
         return;
     }
     
     //Registration Reuired....
-    ALUser *alUser = [ALChatManager getLoggedinUserInformation];
+    ALUser *user = [ALChatManager getLoggedinUserInformation];
     
-    if(!alUser)
-    {
+    if (!user) {
         NSLog(@"Not able to find user detail for registration...please register with applozic server first");
         return;
     }
     
-    [self connectUserWithCompletion:alUser withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
+    [self connectUserWithCompletion:user withHandler:^(ALRegistrationResponse *response, NSError *error) {
         
-        if (!error)
-        {
-            if(userId || groupId)
-            {
+        if (!error) {
+            if (userId || groupId) {
                 [self.chatLauncher launchChatListWithUserOrGroup:userId
                                                      withChannel:groupId
                                          andViewControllerObject:fromViewController];
-            }
-            else
-            {
-                NSString * title = fromViewController.title? fromViewController.title: @"< Back";
+            } else {
+                NSString *title = fromViewController.title? fromViewController.title: @"< Back";
                 [self.chatLauncher launchChatList:title andViewControllerObject:fromViewController];
             }
         }
@@ -678,26 +601,23 @@
 #pragma mark : LAUNCH SUB GROUP MESSAGE LIST
 //==============================================================================================================================================
 
--(void)launchChatListWithParentKey:(NSNumber *)parentGroupKey andFromViewController:(UIViewController *)viewController
-{
+-(void)launchChatListWithParentKey:(NSNumber *)parentGroupKey andFromViewController:(UIViewController *)viewController {
     self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[self getApplicationKey]];
-    NSString * deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     NSLog(@"DEVICE_KEY : %@",deviceKey);
-    if(deviceKey != nil)
-    {
+    if (deviceKey != nil) {
         [self.chatLauncher launchChatListWithParentKey:parentGroupKey andViewControllerObject:viewController];
         return;
     }
-   
+
     [self ALDefaultChatViewSettings];
-    ALUser *alUser = [ALChatManager getLoggedinUserInformation];
-    [self connectUserWithCompletion:alUser withHandler:^(ALRegistrationResponse *rResponse, NSError *error) {
-       
-       if (!error)
-       {
-           [self.chatLauncher launchChatListWithParentKey:parentGroupKey
-                                  andViewControllerObject:viewController];
-       }
+    ALUser *user = [ALChatManager getLoggedinUserInformation];
+    [self connectUserWithCompletion:user withHandler:^(ALRegistrationResponse *response, NSError *error) {
+
+        if (!error) {
+            [self.chatLauncher launchChatListWithParentKey:parentGroupKey
+                                   andViewControllerObject:viewController];
+        }
     }];
 }
 
@@ -705,8 +625,7 @@
 // DELEGATE FOR THIRD PARTY ACTION ON TAP GESTURE
 //==============================================================================================================================================
 
-+(void)handleCustomAction:(UIViewController *)chatView andWithMessage:(ALMessage *)alMessage
-{
++(void)handleCustomAction:(UIViewController *)chatView andWithMessage:(ALMessage *)alMessage {
     NSLog(@"DELEGATE FOR THIRD PARTY ACTION ON TAP GESTURE");
     NSLog(@"ALMESSAGE_META_DATA :: %@", alMessage.metadata);
     //    UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
@@ -715,8 +634,7 @@
     //    [chatVC presentViewController:customView animated:YES completion:nil];
 }
 
--(void) saveLogs
-{
+-(void) saveLogs {
     [ALLogger saveLogArray];
 }
 

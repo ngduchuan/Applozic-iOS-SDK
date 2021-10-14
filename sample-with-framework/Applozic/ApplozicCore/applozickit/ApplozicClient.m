@@ -169,7 +169,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Message thread
 
-- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
+- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion {
     [_messageService getMessageListForUser:messageListRequest
                             withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
         completion(messages, error);
@@ -279,10 +279,18 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)downloadMessageAttachment:(ALMessage *)message {
     if (!message) {
-        NSLog(@"Failed to download the message it passed as nil");
+        NSLog(@"Failed to download attachment the message passed as nil");
         return;
     }
     [attachmentService downloadMessageAttachment:message withDelegate:self.attachmentProgressDelegate];
+}
+
+- (void)downloadThumbnailImage:(ALMessage *)message {
+    if (!message) {
+        NSLog(@"Failed to download Thumbnail Image the message passed as nil");
+        return;
+    }
+    [attachmentService downloadImageThumbnail:message withDelegate:self.attachmentProgressDelegate];
 }
 
 #pragma mark - Channel or Group methods
@@ -489,10 +497,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
+    withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
-    [_messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
-        completion(messageList, error);
+    [_messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
+        completion(messages, error);
     }];
 }
 

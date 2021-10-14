@@ -63,7 +63,7 @@
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
-                 withCompletion:(void (^)( ALSyncMessageFeed *syncMessageFeed, NSError *error))completion;
+                 withCompletion:(void (^)(ALSyncMessageFeed *syncMessageFeed, NSError *error))completion;
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata

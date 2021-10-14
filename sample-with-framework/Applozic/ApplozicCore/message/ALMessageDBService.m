@@ -42,12 +42,12 @@
     self.messageService = [[ALMessageService alloc] init];
 }
 
-- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messages
              skipAddingMessageInDb:(BOOL)skip {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
-    for (ALMessage *message in messageList) {
+    for (ALMessage *message in messages) {
 
         if (skip && !message.fileMeta) {
             [messageArray addObject:message];

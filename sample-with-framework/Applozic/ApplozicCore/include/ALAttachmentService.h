@@ -28,23 +28,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// Instance method of `ALAttachmentService`.
 + (ALAttachmentService *)sharedInstance;
 
-/// This method is used for sending an attachment message in chat.
+/// Sends an attachment message in chat.
 /// @param attachmentMessage Pass the `ALMessage` object.
 /// @param delegate Sets the `ApplozicUpdatesDelegate` for real time update of the message status like sent.
 /// @param attachmentProgressDelegate Sets the `ApplozicAttachmentDelegate` for the upload and download events.
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
-           withDelegate:(id<ApplozicUpdatesDelegate>)delegate
-      withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+           withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
-/// This method is used for downloading an attachment message.
-/// @param alMessage Pass the `ALMessage` object.
+/// Downloads an attachment for given `ALMessage` object.
+/// @param message Pass the `ALMessage` object.
 /// @param attachmentProgressDelegate Sets the `ApplozicAttachmentDelegate` for real-time updates for download events.
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadMessageAttachment:(ALMessage *)message withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
-/// This method is used for downloading an thumbnail image.
-/// @param alMessage Pass the `ALMessage` object.
+/// Downloads an thumbnail image for attachment.
+/// @param message Pass the `ALMessage` object.
 /// @param attachmentProgressDelegate Sets the `ApplozicAttachmentDelegate` for real-time updates for download events.
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadImageThumbnail:(ALMessage *)message withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
 @end
 

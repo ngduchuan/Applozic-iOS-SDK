@@ -162,27 +162,6 @@
     }];
 }
 
--(void)checkUserContact:(NSString *)userId displayName:(NSString *)displayName withCompletion:(void(^)(ALContact * contact))completion
-{
-    ALContactService *contactService = [ALContactService new];
-    ALContactDBService *contacDB = [ALContactDBService new];
-    ALContact * contact = [contactService loadOrAddContactByKeyWithDisplayName:userId value: displayName];
-    ALUserService *userService = [[ALUserService alloc] init];
-    if(![contacDB getContactByKey:@"userId" value:userId])
-    {
-        [userService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
-            
-            [contacDB updateUserDetail:alUserDetail];
-            ALContact * alContact = [contacDB loadContactByKey:@"userId" value:userId];
-            completion(alContact);
-        }];
-    }
-    else
-    {
-        completion(contact);
-    }
-}
-
 //===============================================================================
 // Multi-Reciever API
 //===============================================================================

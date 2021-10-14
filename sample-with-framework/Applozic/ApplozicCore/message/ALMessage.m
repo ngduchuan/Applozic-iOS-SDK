@@ -254,13 +254,13 @@ static NSString * const AL_TRUE = @"true";
 }
 
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
 
-    if (string == nil) {
+    if (jsonString == nil) {
         return nil;
     }
 
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metaDataDictionary;
 
