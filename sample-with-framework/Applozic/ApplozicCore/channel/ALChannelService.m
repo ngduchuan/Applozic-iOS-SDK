@@ -47,7 +47,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 
 #pragma mark - Setup services
 
--(void)setupServices {
+- (void)setupServices {
     self.channelClientService = [[ALChannelClientService alloc] init];
     self.channelDBService = [[ALChannelDBService alloc] init];
 }
@@ -579,7 +579,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                     andUserId:(NSString *)userId
            orClientChannelKey:(NSString *)clientChannelKey
                  withResponse:(ALAPIResponse *)response
-                    withError:(NSError*)error {
+                    withError:(NSError *)error {
     
     if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
         if (clientChannelKey != nil) {

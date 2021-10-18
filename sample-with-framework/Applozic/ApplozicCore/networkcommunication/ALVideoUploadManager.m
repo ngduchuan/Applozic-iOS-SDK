@@ -26,7 +26,7 @@
     return self;
 }
 
--(void)setupServices {
+- (void)setupServices {
     self.messageDatabaseService  = [[ALMessageDBService alloc]init];
     self.clientService = [[ALMessageClientService alloc] init];
     self.responseHandler = [[ALResponseHandler alloc] init];

@@ -6,8 +6,14 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-// NEW CODES FOR VERSION CODE 105...
+#import "ALMessage.h"
+#import "ALMQTTConversationService.h"
+#import "ALRealTimeUpdate.h"
+#import "ALSyncCallService.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
 
+// NEW CODES FOR VERSION CODE 105...
 typedef enum
 {
     AL_SYNC = 0,
@@ -45,13 +51,6 @@ typedef enum
     AL_USER_ACTIVATED,
     AL_USER_DEACTIVATED
 } AL_PUSH_NOTIFICATION_TYPE;
-
-#import "ALMessage.h"
-#import "ALMQTTConversationService.h"
-#import "ALRealTimeUpdate.h"
-#import "ALSyncCallService.h"
-#import "ALUserDetail.h"
-#import <Foundation/Foundation.h>
 
 /// Applozic notifications key name.
 static NSString *const APPLOZIC_PREFIX = @"APPLOZIC_";

@@ -16,7 +16,7 @@
 
 @implementation ALPushAssist
 // WHEN NON-APPLOZIC VIEWs OPENED
-- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString*)userId {
+- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"showNotificationAndLaunchChat"
                                                         object:notiMsg

@@ -57,16 +57,7 @@
 /// Fetching users whose last seen is updated recently.
 /// @param lastSeenAtTime Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
 /// @param completionMark In case of a successful fetch, it will have a list of `ALUserDetail` array. Otherwise, in case of failure, the error will not be nil.
-- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *))completionMark;
-
-/// Fetching the user detail from server.
-/// @param userId Pass the userId for fetching.
-/// @param completionMark Will have `ALUserDetail` in case of successfull fetch otherwise nil.
-- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark DEPRECATED_MSG_ATTRIBUTE("Use getUserDetailFromServer:withCompletion instead");
-
-/// Updating dispaly name of the user who is not registered.
-/// @param contact Pass the `ALContact` object.
-- (void)updateUserDisplayName:(ALContact *)contact;
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *userDetailArray))completionMark;
 
 /// Mark a conversation as read in a one-to-one chat.
 /// @param userId Pass the userId for marking conversation read.
@@ -120,11 +111,6 @@
 /// Total unread count which are fetched from core database.
 - (NSNumber *)getTotalUnreadCount;
 
-/// Used for reseting the unread count.
-/// @param completion Response JSON and Error in case of any error during reset.
-/// @warning Will be removed in future updates.
-- (void)resettingUnreadCountWithCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
-
 /// Updating the display name, image URL, or status of a logged-in user in user.
 /// @param displayName Pass the display name of a user.
 /// @param imageLink Pass the image URL link of the user.
@@ -140,23 +126,25 @@
 /// @param completionMark ALUserDetail in case of a successful fetch or else it will return nil in case of failure.
 - (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
-/// This method is used for updating the phone number, emailId based on ofUserID on the behalf of the user the admin can edit the details.
+/// Updates user details like the phone number, emailId based on ofUserID on the behalf of the user the admin can edit the details.
+///
 /// @param phoneNumber Pass the phone number if update required otherwise pass nil.
 /// @param email Pass the Email ID if update required otherwise pass nil.
 /// @param userId Pass the userId on the behalf update required.
 /// @param completion YES in case of update success otherwise NO in case of any error.
+/// @warning Used only for internal purpose only.
 - (void)updateUser:(NSString *)phoneNumber
              email:(NSString *)email
             ofUser:(NSString *)userId
     withCompletion:(void (^)(BOOL))completion;
 
-/// This method is used for fetching user details by passing an array of users.
+/// Gets array of `ALUserDetail` for given array of userIds.
 /// @param userArray Add the userIds and pass it an array for user details.
 /// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
-- (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray
-                   withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion;
+- (void)getUserDetails:(NSMutableArray *)userArray
+        withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion;
 
-/// This method is used for fetching contact or user details. If a contact exists in the database, it will return from a database, or else it will fetch details from the server and return it.
+/// Gets `ALContact` object if exists in server otherwise, creates contact for given userId in local database and returns.
 /// @param userId Pass the userId for fetching user details.
 /// @param completion `ALContact` on fetch completion.
 - (void)getUserDetail:(NSString *)userId withCompletion:(void(^)(ALContact *contact))completion;
@@ -169,10 +157,6 @@
        withNewPassword:(NSString *)newPassword
         withCompletion:(void(^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
-/// This method is used for resetting the unread count.
-/// @warning This method will be removed in future updates.
-- (void)processResettingUnreadCount;
-
 /// Search the users for given name of user.
 /// @param userName Pass the name of the user to search
 /// @param completion `ALAPIResponse` in the status of this it will have success fetched the data successfully or error in case of any error.
@@ -181,7 +165,7 @@
 /// Posts the conversation read status with notification name `Update_unread_count` and userInfo will have the userId of the user whose conversation has been read from another platform.
 /// @param userId of user that notification to post for read.
 /// @param delegate `ApplozicUpdatesDelegate` for sending callback for read conversation.
-/// @warning This method is used internal for posting notification.
+/// @warning This method is used internal purpose only for posting notification.
 - (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// Gets the muted users from an Applozic server.
@@ -215,7 +199,7 @@
 
 /// Gets the registered contacts from Applozic server and from local database.
 /// @param nextPage If nextPage is NO or false, it will get contacts from starting and return the array of contact.
-/// If nextPage The flag is YES or true, it will return the next older contacts.
+/// If nextPage the flag is YES or true, it will return the next older contacts.
 /// @param completion Array of ALContact in case of successfully fetched, else it will return NSError.
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion;
@@ -229,6 +213,25 @@
 ///
 /// @param userId An receiver userId to fetch the details.
 /// @param completion An `ALContact` object on successful fetch otherwise, an error describing fetch user details.
--(void)getUserDetailFromServer:(NSString *)userId
-                withCompletion:(void(^)(ALContact *contact, NSError *error))completion;
+- (void)getUserDetailFromServer:(NSString *)userId
+                 withCompletion:(void(^)(ALContact *contact, NSError *error))completion;
+
+/// Fetching the user detail from server.
+/// @param userId Pass the userId for fetching.
+/// @param completionMark Will have `ALUserDetail` in case of successfull fetch otherwise nil.
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark DEPRECATED_MSG_ATTRIBUTE("Use getUserDetailFromServer:withCompletion instead");
+
+/// Updates dispaly name of the user who is not registered.
+/// @param contact Pass the `ALContact` object.
+- (void)updateUserDisplayName:(ALContact *)contact DEPRECATED_ATTRIBUTE;
+
+/// This method is used for resetting the unread count.
+/// @warning This method will be removed in future updates.
+- (void)processResettingUnreadCount DEPRECATED_ATTRIBUTE;
+
+/// Used for reseting the unread count.
+/// @param completion Response JSON and Error in case of any error during reset.
+/// @warning Will be removed in future updates.
+- (void)resettingUnreadCountWithCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion DEPRECATED_ATTRIBUTE;
+
 @end

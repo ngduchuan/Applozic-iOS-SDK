@@ -25,7 +25,7 @@
 
 @implementation ALMessageServiceWrapper
 
-- (void)sendTextMessage:(NSString*)text andtoContact:(NSString *)toContactId {
+- (void)sendTextMessage:(NSString *)text andtoContact:(NSString *)toContactId {
     
     ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     

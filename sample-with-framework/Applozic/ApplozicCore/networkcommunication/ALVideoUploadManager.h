@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) ALMessageClientService *clientService;
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
--(void)uploadTheVideo:(ALMessage *)message;
+- (void)uploadTheVideo:(ALMessage *)message;
 @end
 
 NS_ASSUME_NONNULL_END

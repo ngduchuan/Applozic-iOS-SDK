@@ -195,7 +195,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 }
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
-             completion:(void (^)(NSError*error))completion {
+             completion:(void (^)(NSError *error))completion {
     @try {
         NSError *error;
         if (!context) {

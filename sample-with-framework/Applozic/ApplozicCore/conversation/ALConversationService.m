@@ -27,7 +27,7 @@
 
 #pragma mark - Setup service
 
--(void)setupServices {
+- (void)setupServices {
     self.conversationClientService = [[ALConversationClientService alloc] init];
     self.conversationDBService = [[ALConversationDBService alloc] init];
 }

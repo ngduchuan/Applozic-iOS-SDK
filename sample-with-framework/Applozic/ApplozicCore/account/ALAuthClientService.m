@@ -21,7 +21,7 @@ static NSString *const APPLICATIONID = @"applicationId";
 static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/token";
 static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
--(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
+- (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
     if (![ALUserDefaultsHandler isLoggedIn] || ![ALUserDefaultsHandler getApplicationKey]) {
         NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1

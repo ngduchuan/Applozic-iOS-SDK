@@ -218,7 +218,7 @@
             return NO;
         }
         NSError *error = nil;
-        if(result.count > 0) {
+        if (result.count > 0) {
             DB_CONTACT *dbContact = [result objectAtIndex:0];
             dbContact.unreadCount = [NSNumber numberWithInt:0];
             error = [databaseHandler saveContext];
@@ -611,7 +611,7 @@
     return userList;
 }
 
-- (NSMutableArray*)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb {
+- (NSMutableArray *)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb {
     NSMutableArray *contactArray = [NSMutableArray new];
     for (ALUserDetail *userDetail in contactsResponse.userDetailList) {
         userDetail.unreadCount = 0;

@@ -400,7 +400,7 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     return [userDefaults valueForKey:AL_FILTER_CONTACT_START_TIME];
 }
 
-+ (void)setChatWallpaperImageName:(NSString*)imageName {
++ (void)setChatWallpaperImageName:(NSString *)imageName {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     [userDefaults setValue:imageName forKey:AL_WALLPAPER_IMAGE];
     [userDefaults synchronize];
@@ -1339,7 +1339,7 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     return [userDefaults boolForKey:AL_ENABLE_QUICK_AUDIO_RECORDING];
 }
 
-+ (void)setUserRoleName:(NSString*)roleName {
++ (void)setUserRoleName:(NSString *)roleName {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     [userDefaults setValue:roleName forKey:AL_USER_ROLE_NAME];
     [userDefaults synchronize];

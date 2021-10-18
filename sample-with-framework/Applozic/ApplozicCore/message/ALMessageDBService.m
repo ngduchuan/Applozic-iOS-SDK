@@ -38,7 +38,7 @@
 
 #pragma mark - Setup service
 
--(void)setupServices {
+- (void)setupServices {
     self.messageService = [[ALMessageService alloc] init];
 }
 
@@ -348,11 +348,11 @@
 }
 
 - (void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList {
-    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray *theArray) {
+    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray *messages) {
 
         if (success) {
             /// save data into the db
-            [self addMessageList:theArray skipAddingMessageInDb:NO];
+            [self addMessageList:messages skipAddingMessageInDb:NO];
             /// set yes to userdefaults
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             /// add default contacts
@@ -384,7 +384,7 @@
 
 #pragma mark - Helper methods
 
-- (void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray *theArray)) completion {
+- (void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray *messages)) completion {
 
     [self.messageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
 
@@ -410,7 +410,7 @@
     NSFetchRequest *messageRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [messageRequest setResultType:NSDictionaryResultType];
     [messageRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
-    if(received) {
+    if (received) {
         /// Load messages with type received
         [messageRequest setPredicate:[NSPredicate predicateWithFormat:@"type == %@ AND deletedFlag == %@ AND contentType != %i AND msgHidden == %@",@"4",@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
     } else {
@@ -467,18 +467,18 @@
     [messageFetchRequest setReturnsDistinctResults:YES];
 
     NSError *fetchError = nil;
-    NSArray *theArray = [databaseHandler executeFetchRequest:messageFetchRequest withError:&fetchError];
+    NSArray *dbMessages = [databaseHandler executeFetchRequest:messageFetchRequest withError:&fetchError];
     NSMutableArray *messagesArray = [NSMutableArray new];
-    if (theArray.count > 0) {
+    if (dbMessages.count > 0) {
         /// get latest record
-        for (NSDictionary *messageDictionary in theArray) {
+        for (NSDictionary *messageDictionary in dbMessages) {
             NSFetchRequest *dbMessageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
             if ([messageDictionary[@"groupId"] intValue]==0) {
                 continue;
             }
             if ([ALApplozicSettings getCategoryName]) {
                 ALChannel *channel =  [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
-                if(![channel isPartOfCategory:[ALApplozicSettings getCategoryName]]) {
+                if (![channel isPartOfCategory:[ALApplozicSettings getCategoryName]]) {
                     continue;
                 }
             }
@@ -829,7 +829,7 @@
     NSError *fetchError = nil;
     NSArray *messagesArray = [databaseHandler executeFetchRequest:messageFetchRequest withError:&fetchError];
 
-    if(messagesArray.count) {
+    if (messagesArray.count) {
         DB_Message *dbMessage = [messagesArray objectAtIndex:0];
         ALMessage *message = [self createMessageEntity:dbMessage];
         return message;
@@ -935,7 +935,7 @@
 
 #pragma mark - Get message by message key
 
-- (ALMessage*)getMessageByKey:(NSString*)messageKey {
+- (ALMessage*)getMessageByKey:(NSString *)messageKey {
     DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
     return [self createMessageEntity:dbMessage];
 }
@@ -1027,7 +1027,7 @@
 - (void)fetchLatestMesssagesFromServer:(BOOL)isGroupMesssages
                         withCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion {
 
-    if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
+    if (![ALUserDefaultsHandler getFlagForAllConversationFetched]) {
         [self getLatestMessagesWithCompletion:^(NSMutableArray *messages, NSError *error) {
 
             if (!error) {

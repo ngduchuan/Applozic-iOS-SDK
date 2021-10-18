@@ -222,7 +222,7 @@ static NSString * const AL_TRUE = @"true";
             && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
 }
 
-- (NSString*)getLastMessage {
+- (NSString *)getLastMessage {
 
     if (self.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");

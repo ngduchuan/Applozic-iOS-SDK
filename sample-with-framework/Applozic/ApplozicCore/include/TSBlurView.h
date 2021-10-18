@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+/// Notification blur view.
 @interface TSBlurView : UIView
 
 @property (nonatomic, strong) UIColor *blurTintColor;

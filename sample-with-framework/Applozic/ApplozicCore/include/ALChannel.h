@@ -160,7 +160,7 @@ typedef enum {
 - (BOOL)isDeleted;
 
 /// Returns receiver member userId of group of two.
-- (NSString*)getReceiverIdInGroupOfTwo;
+- (NSString *)getReceiverIdInGroupOfTwo;
 
 /// For internal use only.
 - (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString;

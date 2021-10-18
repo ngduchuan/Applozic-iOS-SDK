@@ -256,7 +256,7 @@
 
             if ([flag isEqualToString:@"0"]) {
                 ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
-                if(self.realTimeUpdate){
+                if (self.realTimeUpdate){
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }
             } else if ([flag isEqualToString:@"1"]) {
@@ -342,8 +342,8 @@
     return false;
 }
 
-- (BOOL)processUserBlockNotification:(NSDictionary *)theMessageDict andUserBlockFlag:(BOOL)flag {
-    NSArray *messageArray = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@":"];
+- (BOOL)processUserBlockNotification:(NSDictionary *)messageDictionary andUserBlockFlag:(BOOL)flag {
+    NSArray *messageArray = [[messageDictionary valueForKey:@"message"] componentsSeparatedByString:@":"];
     NSString *blockType = messageArray[0];
     NSString *userId = messageArray[1];
     ALContactDBService *contactDBService = [ALContactDBService new];

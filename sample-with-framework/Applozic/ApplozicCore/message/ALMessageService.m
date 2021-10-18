@@ -244,7 +244,7 @@ static ALMessageClientService *alMsgClientService;
             }
             if (userNotPresentIds.count>0) {
                 ALUserService *userService = [ALUserService new];
-                [userService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+                [userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
                     completion(messages, error, userDetailArray);
                 }];
             } else {
@@ -524,7 +524,7 @@ static ALMessageClientService *alMsgClientService;
 
 + (BOOL)isIncrementRequired:(ALMessage *)message {
 
-    if([message.status isEqualToNumber:[NSNumber numberWithInt:DELIVERED_AND_READ]]
+    if ([message.status isEqualToNumber:[NSNumber numberWithInt:DELIVERED_AND_READ]]
        || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
        || [message.type isEqualToString:@"5"]
        || [message isHiddenMessage]
@@ -716,7 +716,7 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
-+ (ALMessage*)getMessagefromKeyValuePair:(NSString*)key andValue:(NSString*)value {
++ (ALMessage*)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:key value:value];
     return [messageDBService createMessageEntity:dbMessage];
@@ -892,7 +892,7 @@ static ALMessageClientService *alMsgClientService;
             }
             if (userNotPresentIds.count > 0) {
                 ALUserService *userService = [ALUserService new];
-                [userService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+                [userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
                     if (!error) {
                         [[ALMessageService sharedInstance] saveAndPostMessage:message withSkipMessage:YES withDelegate:delegate];
                     }

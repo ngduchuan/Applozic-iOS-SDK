@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 #pragma mark - Setup services
 
--(void)setupServices {
+- (void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         } else {
             NSNumber *generatedAt = [jsonResponse valueForKey:@"generatedAt"];
             [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
-            ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)jsonResponse];
+            ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString *)jsonResponse];
             completionMark(responseFeed);
         }
     }];

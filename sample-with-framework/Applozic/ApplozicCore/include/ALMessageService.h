@@ -70,7 +70,9 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 /// @param keyString Pass the message key from the message object to delete the message.
 /// @param contactId Pass it as nil.
 /// @param completion If success in deleting the message then NSError is nil else on failure in deleting then NSError will not be nil.
-- (void)deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *response, NSError *error))completion;
+- (void)deleteMessage:(NSString *)keyString
+         andContactId:(NSString *)contactId
+       withCompletion:(void (^)(NSString *response, NSError *error))completion;
 
 - (void)processPendingMessages;
 
@@ -93,19 +95,21 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
           withDelegate:(id<ApplozicUpdatesDelegate>)delegate
         withCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
 
-+ (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text;
++ (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString *)text;
 
 - (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList *)messageList
-                                                 withCompletion:(void (^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray))completion;
+                                                 withCompletion:(void (^)(NSMutableArray *messages,
+                                                                          NSError *error,
+                                                                          NSMutableArray *userDetailArray))completion;
 
 - (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion;
 
-+ (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString*)text;
++ (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString *)text;
 
 + (ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData
                           andContentType:(short)contentType
                            andReceiverId:(NSString *)receiverId
-                          andMessageText:(NSString *)msgTxt;
+                          andMessageText:(NSString *)messageText;
 
 - (NSUInteger)getMessagsCountForUser:(NSString *)userId;
 

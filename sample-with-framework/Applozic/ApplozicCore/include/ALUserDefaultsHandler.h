@@ -61,7 +61,7 @@ static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 
 + (void)setUserId:(NSString *)userId;
 
-+ (NSString*)getUserId;
++ (NSString *)getUserId;
 
 + (void)setLastSyncTime:(NSNumber *)lastSyncTime;
 

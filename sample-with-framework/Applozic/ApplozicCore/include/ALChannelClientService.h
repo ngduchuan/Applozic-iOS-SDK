@@ -110,7 +110,7 @@
 - (void)getChannelListForCategory:(NSString *)category
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
-- (void)getAllChannelsForApplications:(NSNumber*)endTime
+- (void)getAllChannelsForApplications:(NSNumber *)endTime
                        withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
@@ -138,7 +138,7 @@
                                 withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
--(void)getMultipleContactGroup:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *channel)) completion;
+- (void)getMultipleContactGroup:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *channel)) completion;
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey

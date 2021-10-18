@@ -29,7 +29,7 @@
     self.createdAtTime = @([[dict objectForKey:@"createdAtTime"] doubleValue]);
     self.key = [dict objectForKey:@"key"];
     self.name = [dict objectForKey:@"name"];
-    if([dict objectForKey:@"size"]) {
+    if ([dict objectForKey:@"size"]) {
         // If the type of size is number then convert to string otherwise it's a string.
         self.size = [[dict objectForKey:@"size"] isKindOfClass:[NSNumber class]]? [[dict objectForKey:@"size"] stringValue]:[dict objectForKey:@"size"];
     } else {

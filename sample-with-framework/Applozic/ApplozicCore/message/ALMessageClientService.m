@@ -37,7 +37,7 @@
     return self;
 }
 
--(void)setupServices {
+- (void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
@@ -134,15 +134,6 @@
     } else {
         completion(url, nil);
     }
-}
-
-- (void)downloadImageThumbnailUrl:(ALMessage *)message
-                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
-    [self downloadImageThumbnailUrl:message.fileMeta.thumbnailUrl
-                            blobKey:message.fileMeta.thumbnailBlobKey
-                         completion:^(NSString *fileURL, NSError *error) {
-        completion(fileURL, error);
-    }];
 }
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey {

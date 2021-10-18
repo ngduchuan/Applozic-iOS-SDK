@@ -58,9 +58,6 @@
                           blobKey:(NSString *)blobKey
                        completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
-- (void)downloadImageThumbnailUrl:(ALMessage *)message
-                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion DEPRECATED_ATTRIBUTE;
-
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
                  withCompletion:(void (^)(ALSyncMessageFeed *syncMessageFeed, NSError *error))completion;

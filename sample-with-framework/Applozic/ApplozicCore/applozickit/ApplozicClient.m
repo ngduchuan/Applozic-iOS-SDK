@@ -189,7 +189,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                 NSLog(@"Error while marking messages as read channel %@",groupId);
                 completion(conversationResponse, error);
             } else {
-                [self->_userService processResettingUnreadCount];
                 completion(conversationResponse, nil);
             }
         }];
@@ -210,7 +209,6 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
                 NSLog(@"Error while marking messages as read for contact %@", userId);
                 completion(nil, error);
             } else {
-                [self->_userService processResettingUnreadCount];
                 completion(conversationResponse, nil);
             }
         }];
@@ -381,7 +379,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - User block
 
-- (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion{
+- (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion {
 
     [_userService blockUser:userId withCompletionHandler:^(NSError *error, BOOL userBlock) {
         completion(error, userBlock);
@@ -390,7 +388,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - User unblock
 
-- (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion{
+- (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion {
 
     [_userService unblockUser:userId withCompletionHandler:^(NSError *error, BOOL userUnblock) {
         completion(error, userUnblock);
@@ -485,7 +483,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Send typing status event for one to one or Channel or Group chat
 
-- (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber*)channelKey withTyping:(BOOL)isTyping {
+- (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber *)channelKey withTyping:(BOOL)isTyping {
     if (channelKey != nil) {
         [self sendTypingStatusForChannelKey:channelKey withTyping:isTyping];
     } else if (userId) {

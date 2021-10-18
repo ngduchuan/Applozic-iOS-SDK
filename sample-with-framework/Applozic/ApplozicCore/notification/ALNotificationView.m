@@ -36,7 +36,7 @@
     return self;
 }
 
-- (NSString*)getNotificationText:(ALMessage *)message {
+- (NSString *)getNotificationText:(ALMessage *)message {
     
     if (message.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"shareadLocationText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Location", @"") ;

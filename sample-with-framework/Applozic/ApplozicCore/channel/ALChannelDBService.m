@@ -145,7 +145,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     if (channelUserX && dbChannelUser) {
         dbChannelUser.channelKey = channelUserX.key;
         dbChannelUser.userId = channelUserX.userKey;
-        if(channelUserX.parentKey != nil) {
+        if (channelUserX.parentKey != nil) {
             dbChannelUser.parentGroupKey = channelUserX.parentKey;
         }
         
@@ -381,7 +381,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 - (void)updateRoleInChannelUserX:(NSNumber *)channelKey
                        andUserId:(NSString *)userId
-                    withRoleType:(NSNumber*)role {
+                    withRoleType:(NSNumber *)role {
     
     DB_CHANNEL_USER_X *channelUserX = [self getChannelUserXByUserId:channelKey andUserId:userId];
 
@@ -556,7 +556,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         
         NSError *error = nil;
         NSArray *array = [databaseHandler executeFetchRequest:fetchRequest withError:&error];
-        if(array.count) {
+        if (array.count) {
             NSManagedObject *managedObject = [array objectAtIndex:0];
             [databaseHandler deleteObject:managedObject];
             [databaseHandler saveContext];
@@ -778,7 +778,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
     
-    if(dbChannel) {
+    if (dbChannel) {
         dbChannel.isLeft = flag;
         [databaseHandler saveContext];
     } else {
@@ -1053,7 +1053,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                     [memberList addObject:dbChannelUserX.userId];
                 }
             }
-        } else{
+        } else {
             ALSLog(ALLoggerSeverityWarn, @"No member found in channel");
         }
         completion(memberList);

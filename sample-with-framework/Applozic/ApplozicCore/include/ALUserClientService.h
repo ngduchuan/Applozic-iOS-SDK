@@ -49,9 +49,6 @@
 
 - (void)subProcessUserDetailServerCall:(NSString *)paramString
                         withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
-
-- (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
-
 - (void)updateUserDisplayName:(NSString *)displayName
              andUserImageLink:(NSString *)imageLink
                    userStatus:(NSString *)status
@@ -77,5 +74,7 @@
 - (void)muteUser:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+
+- (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion DEPRECATED_ATTRIBUTE;
 
 @end

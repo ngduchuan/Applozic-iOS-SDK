@@ -21,7 +21,7 @@
     return self;
 }
 
--(void)setupService {
+- (void)setupService {
     self.authService = [[ALAuthService alloc] init];
 }
 

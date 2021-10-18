@@ -53,7 +53,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Setup services
 
--(void)setupServices {
+- (void)setupServices {
     self.userClientService = [[ALUserClientService alloc] init];
     self.channelService = [[ALChannelService alloc] init];
     self.contactDBService = [[ALContactDBService alloc] init];
@@ -79,14 +79,14 @@ static int CONTACT_PAGE_SIZE = 100;
     }
     
     NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArray array]];
-    [self fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+    [self getUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
         completionMark();
     }];
 }
 
 #pragma mark - Fetch last seen status of users
 
-- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *))completionMark {
+- (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(NSMutableArray *userDetailArray))completionMark {
     
     [self.userClientService userLastSeenDetail:lastSeenAtTime withCompletion:^(ALLastSeenSyncFeed *lastSeenSyncFeed) {
         NSMutableArray *lastSeenUpdateArray = lastSeenSyncFeed.lastSeenArray;
@@ -502,7 +502,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Fetch Users Detail
 
-- (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion {
+- (void)getUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion {
     
     ALUserDetailListFeed *userDetailListFeed = [ALUserDetailListFeed new];
     [userDetailListFeed setArray:userArray];
@@ -630,7 +630,7 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma mark - Muted user list.
 
 - (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
-                      withCompletion:(void (^)(NSMutableArray *, NSError *))completion {
+                      withCompletion:(void (^)(NSMutableArray *userDetailArray, NSError *error))completion {
     
     [self.userClientService getMutedUserListWithCompletion:^(id jsonResponse, NSError *error) {
         
@@ -779,7 +779,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
--(void)getUserDetailFromServer:(NSString *)userId
+- (void)getUserDetailFromServer:(NSString *)userId
                 withCompletion:(void(^)(ALContact *contact, NSError *error))completion {
 
     if (!userId) {

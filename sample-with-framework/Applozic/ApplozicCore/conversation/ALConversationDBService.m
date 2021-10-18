@@ -89,7 +89,7 @@
     return nil;
 }
 
-- (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId {
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId {
     ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
@@ -111,8 +111,8 @@
     return nil;
 }
 
-- (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId
-                                         andTopicId:(NSString*)topicId {
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId
+                                         andTopicId:(NSString *)topicId {
     
     ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];

@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface ALSearchRequest : NSObject
 
 @property(nonatomic,retain) NSNumber *channelKey;
@@ -16,6 +15,6 @@
 @property(nonatomic,retain) NSNumber *groupType;
 @property(nonatomic,retain) NSString *searchText;
 
-- (NSString*)getParamString;
+- (NSString *)getParamString;
 
 @end

@@ -231,7 +231,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @return it will return the NSMutableArray of AlChannel object.
 - (NSMutableArray *)getAllChannelList;
 
-/// Gets child channels under the parent key from the local database.
+/// For internal use only.
 /// @param parentGroupKey Pass parent channelKey to get the channels.
 /// @return It will return the NSMutableArray of AlChannel object.
 - (NSMutableArray *)fetchChildChannelsWithParentKey:(NSNumber *)parentGroupKey;
@@ -286,7 +286,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 - (void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
                                   andMetaData:(NSMutableDictionary *)metaData
                                withCompletion:(void(^)(ALChannel *channel, NSError *error))completion;
-
+/// Returns Channel user for given channel key.
 - (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
 
 /// Gets channel information from channelKeys array or clientChannelKey array.
@@ -306,7 +306,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// Gets the channels from the applications.
 /// @param endTime Pass endTime to to fetch next set of channels.
 /// @param completion If error is nil and channelInfoList count is > 0 then it has channel object in array.
-- (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
+- (void)getAllChannelsForApplications:(NSNumber *)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 /// Adds or create contacts group with a user, type, and name.
 /// @param contactsGroupId Pass the contactsGroupId which will be a unique string.
@@ -434,7 +434,8 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// Creates an channel given `ALChannelInfo`.
 /// @param channelInfo Pass the ALChannelInfo which will have details for creating a channel.
 /// @param completion Once the group/channel is created successful then `ALChannelCreateResponse` else it will have NSError.
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
+                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
 /// This internal method is used for saving channel object in local database.
 /// @param channel Pass the `ALChannel` object.
@@ -449,8 +450,8 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// This method will update mute and unmute time local database.
 /// @param notificationAfterTime Pass the time in milliseconds.
 /// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object.
-- (void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
-               andChnnelKey:(NSNumber*)channelKey;
+- (void)updateMuteAfterTime:(NSNumber *)notificationAfterTime
+               andChnnelKey:(NSNumber *)channelKey;
 
 /// Gets all the channels for the logged-in user.
 /// @param completion will have a channel array of ALChannel or will have an error in case of while fetching channels.

@@ -477,9 +477,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read channel %@",self.channelKey);
-            } else {
-                [self.userService processResettingUnreadCount];
-
             }
         }];
     }
@@ -488,8 +485,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [[ALUserService sharedInstance] markConversationAsRead:self.contactIds withCompletion:^(NSString *string, NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
-            } else {
-                [self.userService processResettingUnreadCount];
             }
         }];
     }

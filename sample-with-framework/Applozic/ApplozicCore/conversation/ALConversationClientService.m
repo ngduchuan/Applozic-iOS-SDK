@@ -25,7 +25,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     return self;
 }
 
--(void)setupServices {
+- (void)setupServices {
    self.responseHandler = [[ALResponseHandler alloc] init];
 }
 

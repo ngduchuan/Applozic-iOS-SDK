@@ -23,6 +23,8 @@
 
 NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
+/// For internal use only.
+static short AL_VERSION_CODE = 112;
 
 @implementation ALRegisterUserClientService
 
@@ -34,7 +36,7 @@ NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
     return self;
 }
 
--(void)setupServices {
+- (void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
 

@@ -12,9 +12,6 @@
 #import "ALResponseHandler.h"
 #import "ALUser.h"
 
-/// For internal use only.
-static short AL_VERSION_CODE = 112;
-
 /// `ALRegisterUserClientService` used for registration and authentication of the user.
 ///
 /// Basic methods it has :
@@ -54,11 +51,6 @@ static short AL_VERSION_CODE = 112;
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update notification failure.
 + (void)updateNotificationMode:(short)notificationMode
                 withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
-/// :nodoc:
-- (void)connect DEPRECATED_ATTRIBUTE;
-
-/// :nodoc:
-- (void)disconnect DEPRECATED_ATTRIBUTE;
 
 /// Logouts the user from Applozic server.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the logout failure.
@@ -68,10 +60,6 @@ static short AL_VERSION_CODE = 112;
 
 /// Used for updating current Applozic App version code to apploizc server.
 + (BOOL)isAppUpdated;
-
-/// Syncs the account status an internal method.
-/// @deprecated Method wil be removed in future.
-- (void)syncAccountStatus DEPRECATED_ATTRIBUTE;
 
 /// Syncs the account pricing status of Application.
 /// @param completion An `ALRegistrationResponse` describing a successful account status synced or An error describing the sync account failure.
@@ -96,5 +84,15 @@ static short AL_VERSION_CODE = 112;
 
 /// Accessing currently stored (APN's) or (VOIP) device token.
 - (NSString *)getRegistrationId;
+
+/// :nodoc:
+- (void)connect DEPRECATED_ATTRIBUTE;
+
+/// :nodoc:
+- (void)disconnect DEPRECATED_ATTRIBUTE;
+
+/// Syncs the account status an internal method.
+/// @deprecated Method wil be removed in future.
+- (void)syncAccountStatus DEPRECATED_ATTRIBUTE;
 
 @end

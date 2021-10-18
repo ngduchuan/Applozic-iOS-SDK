@@ -319,8 +319,8 @@
 + (void) enableQuickAudioRecording:(BOOL)flag;
 + (BOOL) isQuickAudioRecordingEnabled;
 
-+ (void)setUserRoleName:(NSString*)roleName;
-+ (NSString*)getUserRoleName;
++ (void)setUserRoleName:(NSString *)roleName;
++ (NSString *)getUserRoleName;
 
 + (void)setDropShadowInNavigationBar:(BOOL)flag;
 + (BOOL)isDropShadowInNavigationBarEnabled;
@@ -336,8 +336,8 @@
 + (BOOL)isTemplateMessageEnabled;
 + (void)enableTeamplateMessage:(BOOL)flag;
 
-+ (void)setCategoryName:(NSString*)categoryName;
-+ (NSString*)getCategoryName;
++ (void)setCategoryName:(NSString *)categoryName;
++ (NSString *)getCategoryName;
 
 + (BOOL)isContactSearchEnabled;
 + (void)enableContactSearch:(BOOL)flag;
