@@ -159,7 +159,7 @@
             if (self.realTimeUpdate) {
                 [self.realTimeUpdate onMessageDeleted:notificationMessage];
             }
-        } else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]]){
+        } else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]]) {
 
             [self.alSyncCallService updateDeliveryStatusForContact:notificationMessage withStatus:DELIVERED_AND_READ];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"report_CONVERSATION_DELIVERED_READ" object:notificationMessage];
@@ -248,7 +248,7 @@
             ALChannelService *channelService = [[ALChannelService alloc] init];
             NSNumber *channelKey = [NSNumber numberWithInt:[[messageDictionary objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
-        } else if([type isEqualToString:self.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]){
+        } else if([type isEqualToString:self.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]) {
 
             NSArray *parts = [[messageDictionary objectForKey:@"message"] componentsSeparatedByString:@":"];
             NSString *userId = parts[0];

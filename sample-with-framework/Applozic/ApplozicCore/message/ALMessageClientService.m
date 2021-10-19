@@ -317,7 +317,7 @@
     } else if (ALApplozicSettings.isS3StorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
-    } else if (ALApplozicSettings.isGoogleCloudServiceEnabled){
+    } else if (ALApplozicSettings.isGoogleCloudServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
     } else {

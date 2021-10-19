@@ -90,7 +90,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     [self.userClientService userLastSeenDetail:lastSeenAtTime withCompletion:^(ALLastSeenSyncFeed *lastSeenSyncFeed) {
         NSMutableArray *lastSeenUpdateArray = lastSeenSyncFeed.lastSeenArray;
-        for (ALUserDetail *userDetail in lastSeenUpdateArray){
+        for (ALUserDetail *userDetail in lastSeenUpdateArray) {
             userDetail.unreadCount = 0;
             [self.contactDBService updateUserDetail:userDetail];
         }
@@ -234,7 +234,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (count == 0) {
         return;
     }
-    [self.userClientService markConversationAsReadforContact:userId withCompletion:^(NSString *response, NSError *error){
+    [self.userClientService markConversationAsReadforContact:userId withCompletion:^(NSString *response, NSError *error) {
         completion(response,error);
     }];
     

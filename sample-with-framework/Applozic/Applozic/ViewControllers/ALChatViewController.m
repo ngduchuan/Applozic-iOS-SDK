@@ -223,6 +223,10 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
 
+    if (@available(iOS 15.0, *)) {
+        self.mTableView.sectionHeaderTopPadding = 0;
+    }
+
     [self.tabBarController.tabBar setHidden: YES];
 
     if ([ALApplozicSettings isTemplateMessageEnabled]) {
@@ -1875,9 +1879,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (UIView *)getHeaderView {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 84)];
     ALConversationService *alconversationService = [[ALConversationService alloc]init];
-    ALConversationProxy *alConversationProxy = [alconversationService getConversationByKey:self.conversationId];
+    ALConversationProxy *conversationProxy = [alconversationService getConversationByKey:self.conversationId];
 
-    ALTopicDetail *topicDetail = alConversationProxy.getTopicDetail;
+    ALTopicDetail *topicDetail = conversationProxy.getTopicDetail;
     if (topicDetail == nil) {
         return  [[UIView alloc]init];
     }

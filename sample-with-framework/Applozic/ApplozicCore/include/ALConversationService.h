@@ -27,9 +27,9 @@
 
 - (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber *)channelKey;
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-            withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
+- (void)createConversation:(ALConversationProxy *)conversationProxy
+            withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion;
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion;
 
 @end

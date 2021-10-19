@@ -19,8 +19,8 @@
 
     ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
-        [self createConversationProxy:proxy];
+    for (ALConversationProxy *conversationProxy in proxyArray) {
+        [self createConversationProxy:conversationProxy];
     }
 
     NSError *error = [databaseaHandler saveContext];
@@ -34,10 +34,10 @@
 
     ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
-        DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:proxy.Id];
+    for (ALConversationProxy *conversationProxy in proxyArray) {
+        DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:conversationProxy.Id];
         if (!dbConversationProxy) {
-            dbConversationProxy.topicDetailJson = proxy.topicDetailJson;
+            dbConversationProxy.topicDetailJson = conversationProxy.topicDetailJson;
         }
     }
     

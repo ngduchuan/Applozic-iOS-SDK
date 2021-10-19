@@ -55,7 +55,7 @@
     DB_Message *dbMessage = [alMessageDbService addAttachmentMessage:attachmentMessage];
     
     if (!dbMessage) {
-        if (attachmentProgressDelegate){
+        if (attachmentProgressDelegate) {
             attachmentMessage.inProgress = NO;
             attachmentMessage.isUploadFailed = YES;
             attachmentMessage.sentToServer = NO;

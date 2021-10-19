@@ -508,7 +508,7 @@ static ALMessageClientService *alMsgClientService;
 
     if (message.conversationId != nil) {
         ALConversationService *conversationService = [[ALConversationService alloc] init];
-        [conversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+        [conversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *conversationProxy) {
         }];
     }
     return YES;

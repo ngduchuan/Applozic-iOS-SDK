@@ -623,7 +623,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:reportMessageRequest
                                                  andTag:@"REPORT_USER"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
-        if (error){
+        if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in reporting  user : %@", error);
             completion(nil, error);
             return;

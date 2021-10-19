@@ -211,7 +211,7 @@ const int REGULAR_CONTACTS = 0;
     [uiViewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 
--(void)launchIndividualContextChat:(ALConversationProxy *)alConversationProxy andViewControllerObject:(UIViewController *)viewController
+-(void)launchIndividualContextChat:(ALConversationProxy *)conversationProxy andViewControllerObject:(UIViewController *)viewController
                    userDisplayName:(NSString *)displayName andWithText:(NSString *)text
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
@@ -220,16 +220,16 @@ const int REGULAR_CONTACTS = 0;
     ALChatViewController * contextChatView = (ALChatViewController*) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     
     contextChatView.displayName      = displayName;
-    contextChatView.conversationId   = alConversationProxy.Id;
+    contextChatView.conversationId   = conversationProxy.Id;
     
-    if(alConversationProxy.userId != nil)
+    if(conversationProxy.userId != nil)
     {
-        contextChatView.contactIds  = alConversationProxy.userId;
+        contextChatView.contactIds  = conversationProxy.userId;
         contextChatView.channelKey   = nil;
     }
     else
     {
-        contextChatView.channelKey   = alConversationProxy.groupId;
+        contextChatView.channelKey   = conversationProxy.groupId;
         contextChatView.contactIds  = nil;
     }
     contextChatView.text             = text;

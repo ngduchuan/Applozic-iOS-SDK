@@ -55,8 +55,8 @@
 - (ALTopicDetail *)getTopicDetail;
 
 /// Gets the dictionary from `ALConversationProxy`.
-/// @param alConversationProxy Pass the `ALConversationProxy` object.
-+ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy;
+/// @param conversationProxy Pass the `ALConversationProxy` object.
++ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)conversationProxy;
 
 /// :nodoc:
 - (void)setSenderSMSFormat:(NSString *)senderFormatString;

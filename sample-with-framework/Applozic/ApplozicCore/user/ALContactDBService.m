@@ -162,7 +162,7 @@
             }
 
             if (contact.unreadCount != nil &&
-                [contact.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
+                [contact.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame) {
                 userContact.unreadCount = contact.unreadCount;
             }
 
@@ -347,7 +347,7 @@
         userDetail.unreadCount = 0;
         [self updateUserDetail:userDetail];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_user_mute_info" object:userDetail];
-        if (delegate){
+        if (delegate) {
             [delegate onUserMuteStatus:userDetail];
         }
         [userDetailArray addObject:userDetail];
@@ -393,7 +393,7 @@
             dbContact.lastSeenAt = userDetail.lastSeenAtTime;
             dbContact.connected = userDetail.connected;
             if (userDetail.unreadCount != nil &&
-                [userDetail.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
+                [userDetail.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame) {
                 dbContact.unreadCount = userDetail.unreadCount;
             }
 

@@ -82,7 +82,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         dbChannelEntity.type = channel.type;
         dbChannelEntity.adminId = channel.adminKey;
         if (channel.unreadCount != nil &&
-            [channel.unreadCount compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
+            [channel.unreadCount compare:[NSNumber numberWithInt:0]] != NSOrderedSame) {
             dbChannelEntity.unreadCount = channel.unreadCount;
         }
         dbChannelEntity.metadata = channel.metadata.description;
@@ -808,7 +808,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     NSMutableDictionary *metadata = [channel getMetaDataDictionary:dbChannel.metadata];
     
     if (metadata &&
-        [metadata valueForKey:AL_CHANNEL_CONVERSATION_STATUS]){
+        [metadata valueForKey:AL_CHANNEL_CONVERSATION_STATUS]) {
         return ([[metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;

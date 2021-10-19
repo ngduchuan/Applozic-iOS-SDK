@@ -46,7 +46,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
         paramString = [paramString stringByAppendingFormat:@"&startTime=%@",self.startTimeStamp.stringValue];
     }
     
-    if (self.conversationId != nil){
+    if (self.conversationId != nil) {
         
         paramString = [paramString stringByAppendingFormat:@"&conversationId=%@",self.conversationId];
     }

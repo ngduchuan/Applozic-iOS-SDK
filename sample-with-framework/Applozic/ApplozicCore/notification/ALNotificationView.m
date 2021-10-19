@@ -79,12 +79,12 @@
                 return;
             }
 
-            [self buildAndShowNotificationWithcompletionHandler:^(BOOL response){
+            [self buildAndShowNotificationWithcompletionHandler:^(BOOL response) {
                 handler(response);
             }];
         }];
     } else {
-        [self buildAndShowNotificationWithcompletionHandler:^(BOOL response){
+        [self buildAndShowNotificationWithcompletionHandler:^(BOOL response) {
             handler(response);
         }];
     }

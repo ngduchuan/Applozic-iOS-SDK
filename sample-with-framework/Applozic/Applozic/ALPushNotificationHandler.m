@@ -61,7 +61,7 @@
 
         if (conversationId != nil) {
             ALConversationService *conversationService = [[ALConversationService alloc]init];
-            [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+            [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *conversationProxy) {
                 if (error == nil) {
                     [self notificationTapped:contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; //
                 } else {
@@ -109,13 +109,13 @@
             } else {
                 if (conversationId != nil) {
                     ALConversationService *conversationService = [[ALConversationService alloc]init];
-                    [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+                    [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *conversationProxy) {
                         if (error == nil) {
                             [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
                                 if (handle) {
                                     [self notificationTapped:contactId
                                                  withGroupId:groupId
-                                          withConversationId:proxy.Id
+                                          withConversationId:conversationProxy.Id
                                 notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
                                 }
                             }];

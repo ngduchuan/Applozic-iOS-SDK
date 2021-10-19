@@ -443,7 +443,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSString *syncChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_SYNC_URL];
     NSString *syncChannelParamString = nil;
 
-    if (updatedAtTime != nil || updatedAtTime != NULL){
+    if (updatedAtTime != nil || updatedAtTime != NULL) {
         syncChannelParamString  = [NSString stringWithFormat:@"updatedAt=%@", updatedAtTime];
     }
 
@@ -466,7 +466,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                     for (ALChannel *channel in response.alChannelArray) {
 
                         for (NSString *userId in channel.membersName) {
-                            if (![contactService isContactExist:userId]){
+                            if (![contactService isContactExist:userId]) {
                                 [userNotPresentIds addObject:userId];
                             }
                         }

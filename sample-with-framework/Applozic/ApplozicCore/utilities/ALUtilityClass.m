@@ -137,7 +137,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
                                           image:appIcon
                                            type:TSMessageNotificationTypeMessage
                                        duration:1.75
-                                       callback:^(void){
+                                       callback:^(void) {
 
         handler(YES);
     }
