@@ -367,11 +367,11 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse))completion {
+                             withCompletion:(void(^)(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse))completion {
 
     [_channelService getChannelInformationByResponse:channelKey
                                   orClientChannelKey:clientChannelKey
-                                      withCompletion:^(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse) {
+                                      withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
         completion(error, channel, channelResponse);
     }];
 

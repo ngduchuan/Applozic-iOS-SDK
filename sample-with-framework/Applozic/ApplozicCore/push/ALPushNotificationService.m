@@ -233,7 +233,9 @@
             if (self.realTimeUpdate) {
                 ALUserService *userService = [[ALUserService alloc] init];
                 [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
-                    [self.realTimeUpdate onUserDetailsUpdate:userDetail];
+                    if (userDetail) {
+                        [self.realTimeUpdate onUserDetailsUpdate:userDetail];
+                    }
                 }];
             }
         } else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_READ)]]) {

@@ -38,7 +38,7 @@
 
     if (self->_uploadTask != nil) {
 
-        DB_Message *dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
+        DB_Message *dbMessage = (DB_Message *)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
         ALMessage *message = [self.messageDatabaseService createMessageEntity:dbMessage];
 
         NSError *jsonError = nil;

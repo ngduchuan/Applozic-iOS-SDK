@@ -554,7 +554,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         NSString *response = [jsonResponse valueForKey: @"response"];
         if (response == nil) {
             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
-            NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
+            NSError *error = [NSError errorWithDomain:@"Search response is nil" code:0 userInfo:nil];
             completion(nil, error);
             return;
         }
@@ -616,7 +616,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         NSString *response = [jsonResponse valueForKey: @"response"];
         if (response == nil) {
             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
-            NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
+            NSError *error = [NSError errorWithDomain:@"Search response is nil" code:0 userInfo:nil];
             completion(nil, error);
             return;
         }

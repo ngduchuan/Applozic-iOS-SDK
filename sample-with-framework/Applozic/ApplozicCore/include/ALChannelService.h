@@ -9,7 +9,7 @@
 #import "ALChannelClientService.h"
 #import "ALChannelDBService.h"
 #import "ALChannelFeed.h"
-#import "AlChannelFeedResponse.h"
+#import "ALChannelFeedResponse.h"
 #import "ALChannelInfo.h"
 #import "ALChannelSyncResponse.h"
 #import "ALRealTimeUpdate.h"
@@ -62,14 +62,6 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// :nodoc:
 - (void)callForChannelServiceForDBInsertion:(id)jsonResponse;
 
-/// Gets information of a channel like a channel name, imageUrl of a channel, type of channel, and other information.
-/// @param channelKey Pass the channelkey or groupId that is required to get the channel information.
-/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
-/// @param completion On successful fetch it will have ALChannel object else on an error in fetching it will be nil.
-- (void)getChannelInformation:(NSNumber *)channelKey
-           orClientChannelKey:(NSString *)clientChannelKey
-               withCompletion:(void (^)(ALChannel *channel)) completion;
-
 /// Gets the information of the channel from the local database.
 /// @param channelKey Pass the channelkey or groupId that is required to get the channel information.
 /// @return it returns ALChannel object it has information of a channel.
@@ -91,7 +83,7 @@ extern NSString *const AL_MESSAGE_SYNC;
                      orClientChannelKey:(NSString *)clientChannelKey
                          withCompletion:(void (^)(NSError *error,
                                                   ALChannel *channel,
-                                                  AlChannelFeedResponse *channelResponse)) completion;
+                                                  ALChannelFeedResponse *channelResponse)) completion;
 /// Adds a member to a channel.
 /// @param userId Pass the userId that wanted to add in a channel.
 /// @param channelKey Pass channelkey or groupId that is required for adding a member in a channel.
@@ -543,5 +535,13 @@ extern NSString *const AL_MESSAGE_SYNC;
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
        withCompletion:(void(^)(ALChannel *channel, NSError *error))completion DEPRECATED_MSG_ATTRIBUTE("Use createChannelWithChannelInfo:withCompletion instead");
+
+/// Gets information of a channel like a channel name, imageUrl of a channel, type of channel, and other information.
+/// @param channelKey Pass the channelkey or groupId that is required to get the channel information.
+/// @param clientChannelKey Pass the clientChannelKey in case if the channelkey is not present else it will be nil.
+/// @param completion On successful fetch it will have ALChannel object else on an error in fetching it will be nil.
+- (void)getChannelInformation:(NSNumber *)channelKey
+           orClientChannelKey:(NSString *)clientChannelKey
+               withCompletion:(void (^)(ALChannel *channel)) completion DEPRECATED_MSG_ATTRIBUTE("Use getChannelInformationByResponse:orClientChannelKey:withCompletion instead");
 
 @end

@@ -232,9 +232,9 @@
 		1896EE2725DBD7070038EBFF /* ALChannelFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE0725DBD7050038EBFF /* ALChannelFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EE2925DBD7070038EBFF /* ALChannelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE0925DBD7050038EBFF /* ALChannelInfo.m */; };
 		1896EE2A25DBD7070038EBFF /* ALChannelUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE0A25DBD7050038EBFF /* ALChannelUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1896EE2B25DBD7070038EBFF /* AlChannelFeedResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE0B25DBD7050038EBFF /* AlChannelFeedResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1896EE2B25DBD7070038EBFF /* ALChannelFeedResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE0B25DBD7050038EBFF /* ALChannelFeedResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EE2C25DBD7070038EBFF /* ALChannelDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE0C25DBD7050038EBFF /* ALChannelDBService.m */; };
-		1896EE2D25DBD7070038EBFF /* AlChannelFeedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE0D25DBD7050038EBFF /* AlChannelFeedResponse.m */; };
+		1896EE2D25DBD7070038EBFF /* ALChannelFeedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE0D25DBD7050038EBFF /* ALChannelFeedResponse.m */; };
 		1896EE2F25DBD7070038EBFF /* ALChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EE0F25DBD7060038EBFF /* ALChannel.m */; };
 		1896EE3025DBD7070038EBFF /* ALChannelClientService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE1025DBD7060038EBFF /* ALChannelClientService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EE3125DBD7070038EBFF /* ALChannelSyncResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EE1125DBD7060038EBFF /* ALChannelSyncResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -781,9 +781,9 @@
 		1896EE0725DBD7050038EBFF /* ALChannelFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALChannelFeed.h; sourceTree = "<group>"; };
 		1896EE0925DBD7050038EBFF /* ALChannelInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALChannelInfo.m; sourceTree = "<group>"; };
 		1896EE0A25DBD7050038EBFF /* ALChannelUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALChannelUser.h; sourceTree = "<group>"; };
-		1896EE0B25DBD7050038EBFF /* AlChannelFeedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlChannelFeedResponse.h; sourceTree = "<group>"; };
+		1896EE0B25DBD7050038EBFF /* ALChannelFeedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALChannelFeedResponse.h; sourceTree = "<group>"; };
 		1896EE0C25DBD7050038EBFF /* ALChannelDBService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALChannelDBService.m; sourceTree = "<group>"; };
-		1896EE0D25DBD7050038EBFF /* AlChannelFeedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlChannelFeedResponse.m; sourceTree = "<group>"; };
+		1896EE0D25DBD7050038EBFF /* ALChannelFeedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALChannelFeedResponse.m; sourceTree = "<group>"; };
 		1896EE0F25DBD7060038EBFF /* ALChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALChannel.m; sourceTree = "<group>"; };
 		1896EE1025DBD7060038EBFF /* ALChannelClientService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALChannelClientService.h; sourceTree = "<group>"; };
 		1896EE1125DBD7060038EBFF /* ALChannelSyncResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALChannelSyncResponse.h; sourceTree = "<group>"; };
@@ -1207,7 +1207,7 @@
 				1896EE0125DBD7040038EBFF /* ALChannelCreateResponse.m */,
 				1896EE0C25DBD7050038EBFF /* ALChannelDBService.m */,
 				1896EE0525DBD7040038EBFF /* ALChannelFeed.m */,
-				1896EE0D25DBD7050038EBFF /* AlChannelFeedResponse.m */,
+				1896EE0D25DBD7050038EBFF /* ALChannelFeedResponse.m */,
 				1896EE0925DBD7050038EBFF /* ALChannelInfo.m */,
 				1896EDFE25DBD7030038EBFF /* ALChannelOfTwoMetaData.m */,
 				1896EDFD25DBD7030038EBFF /* ALChannelService.m */,
@@ -1519,7 +1519,7 @@
 				1896EDE225DBD5510038EBFF /* DB_ConversationProxy.h */,
 				1896EE0625DBD7040038EBFF /* ALChannelDBService.h */,
 				1896EE0725DBD7050038EBFF /* ALChannelFeed.h */,
-				1896EE0B25DBD7050038EBFF /* AlChannelFeedResponse.h */,
+				1896EE0B25DBD7050038EBFF /* ALChannelFeedResponse.h */,
 				1896EE1625DBD7060038EBFF /* ALChannelInfo.h */,
 				1896EE0225DBD7040038EBFF /* ALChannelOfTwoMetaData.h */,
 				1896EE1725DBD7070038EBFF /* ALChannelService.h */,
@@ -2022,7 +2022,7 @@
 				1896EF2B25DBEEF10038EBFF /* ALSearchRequest.h in Headers */,
 				1896EDD025DBD4190038EBFF /* ApplozicClient.h in Headers */,
 				1896EF3525DBEEF10038EBFF /* ALMessageList.h in Headers */,
-				1896EE2B25DBD7070038EBFF /* AlChannelFeedResponse.h in Headers */,
+				1896EE2B25DBD7070038EBFF /* ALChannelFeedResponse.h in Headers */,
 				187361A025DD584300C02F5D /* ALMessageArrayWrapper.h in Headers */,
 				1896EDF425DBD5520038EBFF /* ALConversationDBService.h in Headers */,
 				1896EEEB25DBE95B0038EBFF /* ALRegistrationResponse.h in Headers */,
@@ -2482,7 +2482,7 @@
 				1896EE2425DBD7070038EBFF /* ALChannelUserX.m in Sources */,
 				18E0F07025DCF8A400F6EDE3 /* MQTTSessionManager.m in Sources */,
 				1896EE2F25DBD7070038EBFF /* ALChannel.m in Sources */,
-				1896EE2D25DBD7070038EBFF /* AlChannelFeedResponse.m in Sources */,
+				1896EE2D25DBD7070038EBFF /* ALChannelFeedResponse.m in Sources */,
 				18E0F07F25DCF8B100F6EDE3 /* ALJson.m in Sources */,
 				18E0F05225DCF8A400F6EDE3 /* MQTTCFSocketEncoder.m in Sources */,
 				1896EE6D25DBD84B0038EBFF /* ALContactsResponse.m in Sources */,

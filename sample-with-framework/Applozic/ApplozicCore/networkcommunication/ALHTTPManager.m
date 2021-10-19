@@ -110,7 +110,7 @@ static dispatch_semaphore_t semaphore;
     if (error == nil && [task.response isKindOfClass:[NSHTTPURLResponse class]] && [(NSHTTPURLResponse *)task.response statusCode] == 200) {
         if (self->_downloadTask != nil) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                ALMessage *message = [messageDatabaseService writeDataAndUpdateMessageInDb:self.buffer withMessage:self->_downloadTask.message withFileFlag:!self->_downloadTask.isThumbnail];
+                ALMessage *message = [messageDatabaseService writeDataAndUpdateMessageInDB:self.buffer withMessage:self->_downloadTask.message withFileFlag:!self->_downloadTask.isThumbnail];
 
                 if (self.attachmentProgressDelegate) {
                     [self.attachmentProgressDelegate onDownloadCompleted:message];
@@ -335,7 +335,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                     }
                     ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
 
-                    [self createGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+                    [self createGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *request, NSError *error) {
 
                         if (error) {
                             if (self.attachmentProgressDelegate) {
@@ -351,7 +351,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                             config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                         }
                         NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-                        [self startSession:session withRequest:theRequest];
+                        [self startSession:session withRequest:request];
                     }];
                 }];
             } else {
@@ -471,7 +471,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     DB_Message *messageEntity = nil;
     @try {
         ALMessageDBService *messageDatabase = [[ALMessageDBService alloc] init];
-        messageEntity = (DB_Message*)[messageDatabase getMessageByKey:@"key" value:key];
+        messageEntity = (DB_Message *)[messageDatabase getMessageByKey:@"key" value:key];
         if (isAttachmentDownload) {
             messageEntity.inProgress = [NSNumber numberWithBool:NO];
             messageEntity.isUploadFailed = [NSNumber numberWithBool:NO];

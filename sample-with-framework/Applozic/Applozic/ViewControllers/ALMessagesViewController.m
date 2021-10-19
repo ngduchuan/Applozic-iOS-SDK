@@ -540,10 +540,20 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
             } else {
                 if (msg.groupId) {
                     isreloadRequire = NO;
-                    [channelService getChannelInformation:msg.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+                    [channelService getChannelInformationByResponse:msg.groupId
+                                                 orClientChannelKey:nil
+                                                     withCompletion:^(NSError *error,
+                                                                      ALChannel *channel,
+                                                                      ALChannelFeedResponse *channelResponse) {
 
-                        BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [alChannel.parentKey isEqualToNumber:self.parentGroupKey]);
-                        BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [alChannel isPartOfCategory:[ALApplozicSettings getCategoryName]];
+
+                        if (error ||
+                            !channel) {
+                            return;
+                        }
+
+                        BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [channel.parentKey isEqualToNumber:self.parentGroupKey]);
+                        BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [channel isPartOfCategory:[ALApplozicSettings getCategoryName]];
 
                         if ((channelFlag || categoryFlag) ||
                             !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName])) {

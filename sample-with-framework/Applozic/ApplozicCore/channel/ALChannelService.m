@@ -66,8 +66,8 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 - (void)processChildGroups:(ALChannel *)channel {
     //Get INFO of Child
     for (NSNumber *channelKey in channel.childKeys) {
-        [self getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *channel) {
-            
+        [self getChannelInformationByResponse:channelKey orClientChannelKey:nil withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+
         }];
     }
 }
@@ -1026,7 +1026,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 
 - (void)getChannelInformationByResponse:(NSNumber *)channelKey
                      orClientChannelKey:(NSString *)clientChannelKey
-                         withCompletion:(void (^)(NSError *error, ALChannel *channel, AlChannelFeedResponse *channelResponse)) completion {
+                         withCompletion:(void (^)(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse)) completion {
 
     if (!channelKey
         && !clientChannelKey) {
@@ -1046,11 +1046,11 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
     }
     
     if (channel) {
-        completion(nil,channel,nil);
+        completion(nil, channel, nil);
     } else {
         [self.channelClientService getChannelInformationResponse:channelKey
                                               orClientChannelKey:clientChannelKey
-                                                  withCompletion:^(NSError *error, AlChannelFeedResponse *response) {
+                                                  withCompletion:^(NSError *error, ALChannelFeedResponse *response) {
             
             if (!error && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 [self createChannelEntry:response.alChannel fromMessageList:NO];
@@ -1259,7 +1259,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
         if (delegate) {
             [delegate onChannelUpdated:channel];
         }
-
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channel];
     }
 }

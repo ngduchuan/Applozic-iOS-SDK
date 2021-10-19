@@ -14,14 +14,14 @@
 /// Sending an message in one-to-one chat:
 /// @code
 /// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
-///     messageBuilder.to = @"1234588"; //Pass userId to whom you want to send a message.
+///     messageBuilder.to = @"1234588"; // Pass userId to whom you want to send a message.
 ///     messageBuilder.message = @"Hi How are you?"; // Pass message text here.
 /// }];
 /// @endcode
 /// Sending a message in channel or group chat:
 /// @code
 /// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
-///     messageBuilder.groupId = @47474; //Pass channelKey here to whom you want to send a message.
+///     messageBuilder.groupId = @47474; // Pass channelKey here to whom you want to send a message.
 ///     messageBuilder.message = @"Hi Hpw are you?"; // Pass message text here.
 /// }];
 /// @endcode
@@ -57,14 +57,10 @@
 /// To set the message metadata use below code:
 /// @code
 ///
-/// NSMutableDictionary *userMetaData = [[NSMutableDictionary alloc] init];
+/// NSMutableDictionary *messageMetaData = [[NSMutableDictionary alloc] init];
 /// [messageMetaData setValue:@"Software engineer" forKey:@"designation"];
 /// [messageMetaData setValue:@"Bengaluru" forKey:@"city"];
 /// [messageMetaData setValue:@"India" forKey:@"country"];
-///
-/// // Set the metadata in `ALMessageBuilder` object
-/// [user setMetadata:messageMetaData];
-///
 /// @endcode
 @property (nonatomic,retain) NSMutableDictionary *metadata;
 

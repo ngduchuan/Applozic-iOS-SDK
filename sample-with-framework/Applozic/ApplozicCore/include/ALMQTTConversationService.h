@@ -83,7 +83,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 +(ALMQTTConversationService *)sharedInstance;
 
 /// `ALSyncCallService` instance method.
-@property (nonatomic, strong) ALSyncCallService *alSyncCallService;
+@property (nonatomic, strong) ALSyncCallService *syncCallService;
 
 /// Sets the `ALMQTTConversationDelegate` for listening to the real-time updates from MQTT.
 @property (nonatomic, weak) id<ALMQTTConversationDelegate>mqttConversationDelegate;

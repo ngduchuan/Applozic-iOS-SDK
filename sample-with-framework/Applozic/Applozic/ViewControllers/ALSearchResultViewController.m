@@ -127,10 +127,13 @@
 
     if (message.groupId != nil) {
         chatVC.channelKey = message.groupId;
-        ALChannelService *channelService  =  [ALChannelService new];
-        [channelService getChannelInformation:message.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-
-            if (alChannel && ![pushAssist.topViewController isKindOfClass:ALChatViewController.class]) {
+        ALChannelService *channelService = [ALChannelService new];
+        [channelService getChannelInformationByResponse:message.groupId
+                                     orClientChannelKey:nil
+                                         withCompletion:^(NSError *error,
+                                                          ALChannel *channel,
+                                                          ALChannelFeedResponse *channelResponse) {
+            if (channel && ![pushAssist.topViewController isKindOfClass:ALChatViewController.class]) {
                 [self.presentingViewController.navigationController pushViewController:chatVC animated:YES];
             }
         }];

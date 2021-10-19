@@ -81,14 +81,28 @@
                 return;
             }
             if (groupId) {
+                [[ALChannelService new] getChannelInformationByResponse:groupId
+                                                     orClientChannelKey:nil
+                                                         withCompletion:^(NSError *error,
+                                                                          ALChannel *channel,
+                                                                          ALChannelFeedResponse *channelResponse) {
 
-                [[ALChannelService new] getChannelInformation:groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
-                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
+                    if (error ||
+                        !channel) {
+                        NSLog(@"Failed to get the channel info");
+                        return;
+                    }
+
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue
+                                               andForContactId:contactId
+                                                   withGroupId:groupId
+                                             completionHandler:^(BOOL handle) {
                         if (handle) {
                             [self notificationTapped:contactId
                                          withGroupId:groupId
                                   withConversationId:conversationId
                         notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+                            
                         }
                     }];
                 }];

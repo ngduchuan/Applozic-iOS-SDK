@@ -343,8 +343,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             if (jsonArray.count) {
                 NSMutableArray *userDetailArray = [NSMutableArray new];
                 NSDictionary *JSONDictionary = (NSDictionary *)jsonResponse;
-                for (NSDictionary *theDictionary in JSONDictionary) {
-                    ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                for (NSDictionary *userDetailDictionary in JSONDictionary) {
+                    ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
                     userDetail.unreadCount = 0;
                     [userDetailArray addObject:userDetail];
                 }
@@ -497,8 +497,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         NSMutableArray *userDetailArray = [NSMutableArray new];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSDictionary *JSONDictionary = (NSDictionary *)apiResponse.response;
-            for (NSDictionary *theDictionary in JSONDictionary) {
-                ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+            for (NSDictionary *userDetailDictionary in JSONDictionary) {
+                ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
                 [userDetailArray addObject:userDetail];
             }
             completionMark(userDetailArray, nil);

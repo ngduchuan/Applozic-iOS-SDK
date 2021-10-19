@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 @interface ApplozicClient : NSObject <NSURLConnectionDataDelegate>
 
 /// For real time updates of attachment upload or download status.
-@property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 
 /// Used to make API calls related to conversations.
 @property (nonatomic, retain) ALMessageService *messageService;
@@ -608,15 +608,15 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient getChannelInformationWithChannelKey:@474837
 /// orClientChannelKey:nil
-///  withCompletion:^(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse) {
+///  withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
 ///
 ///     if (error) {
 ///         NSLog(@"Error in fetching a channel :%@", error.localizedDescription);
 ///         return;
 ///     }
 ///
-///     if (alChannel) {
-///         NSLog(@"Channel object is :%@", [alChannel dictionary]);
+///     if (channel) {
+///         NSLog(@"Channel object is :%@", [channel dictionary]);
 ///     }
 ///
 /// }];
@@ -624,7 +624,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///@endcode
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion;
+                             withCompletion:(void(^)(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse))completion;
 
 
 /// Logout the user from Applozic.

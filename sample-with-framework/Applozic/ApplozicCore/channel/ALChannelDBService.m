@@ -614,8 +614,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     int count = 0;
     NSMutableArray *channelArray = [NSMutableArray arrayWithArray:[self getAllChannelKeyAndName]];
     if (channelArray.count) {
-        for (ALChannel *alChannel in channelArray) {
-            count = count + [alChannel.unreadCount intValue];
+        for (ALChannel *channel in channelArray) {
+            count = count + [channel.unreadCount intValue];
         }
         unreadCount = [NSNumber numberWithInt:count];
     }
@@ -931,26 +931,26 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 - (ALChannel *)loadChannelByClientChannelKey:(NSString *)clientChannelKey {
     DB_CHANNEL *dbChannel = [self getChannelByClientChannelKey:clientChannelKey];
-    ALChannel *alChannel = [[ALChannel alloc] init];
+    ALChannel *channel = [[ALChannel alloc] init];
     
     if (!dbChannel) {
         return nil;
     }
     
-    alChannel.parentKey = dbChannel.parentGroupKey;
-    alChannel.parentClientKey = dbChannel.parentClientGroupKey;
-    alChannel.key = dbChannel.channelKey;
-    alChannel.clientChannelKey = dbChannel.clientChannelKey;
-    alChannel.name = dbChannel.channelDisplayName;
-    alChannel.unreadCount = dbChannel.unreadCount;
-    alChannel.adminKey = dbChannel.adminId;
-    alChannel.type = dbChannel.type;
-    alChannel.channelImageURL = dbChannel.channelImageURL;
-    alChannel.deletedAtTime = dbChannel.deletedAtTime;
-    alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
-    alChannel.userCount = dbChannel.userCount;
-    alChannel.category = dbChannel.category;
-    return alChannel;
+    channel.parentKey = dbChannel.parentGroupKey;
+    channel.parentClientKey = dbChannel.parentClientGroupKey;
+    channel.key = dbChannel.channelKey;
+    channel.clientChannelKey = dbChannel.clientChannelKey;
+    channel.name = dbChannel.channelDisplayName;
+    channel.unreadCount = dbChannel.unreadCount;
+    channel.adminKey = dbChannel.adminId;
+    channel.type = dbChannel.type;
+    channel.channelImageURL = dbChannel.channelImageURL;
+    channel.deletedAtTime = dbChannel.deletedAtTime;
+    channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+    channel.userCount = dbChannel.userCount;
+    channel.category = dbChannel.category;
+    return channel;
 }
 
 

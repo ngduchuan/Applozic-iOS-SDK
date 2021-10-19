@@ -75,8 +75,8 @@
     
     ALChannelService *channelService = [[ALChannelService alloc] init];
 
-    [channelService getChannelInformation:nil orClientChannelKey:clientGroupId withCompletion:^(ALChannel *channel) {
-
+    [channelService getChannelInformationByResponse:nil orClientChannelKey:clientGroupId withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+        
         if (channel.key) {
 
             if ((channel.metadata && ![channel.metadata isEqualToDictionary:metadata])) {
@@ -276,9 +276,21 @@
 
 -(void)launchOpenGroupWithKey:(NSNumber *)channelKey fromViewController:(UIViewController *)viewController {
     ALChannelService *service = [ALChannelService new];
-    [service getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *channel) {
-        
-        [self launchChatForUserWithDisplayName:nil withGroupId:channel.key andwithDisplayName:nil andFromViewController:viewController];
+    [service getChannelInformationByResponse:channelKey
+                          orClientChannelKey:nil
+                              withCompletion:^(NSError *error,
+                                               ALChannel *channel,
+                                               ALChannelFeedResponse *channelResponse) {
+
+        if (error) {
+            NSLog(@"Failed to open the channel conversation %@",error.localizedDescription);
+            return;
+        }
+
+        if (channel) {
+            [self launchChatForUserWithDisplayName:nil withGroupId:channel.key andwithDisplayName:nil andFromViewController:viewController];
+        }
+
     }];
 }
 

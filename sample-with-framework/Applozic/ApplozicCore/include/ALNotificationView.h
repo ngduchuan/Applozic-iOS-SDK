@@ -22,7 +22,7 @@
 @property (retain, nonatomic) NSNumber *conversationId;
 
 /// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method it will have `ALMessage` object.
-@property (retain, nonatomic) ALMessage *alMessageObject;
+@property (retain, nonatomic) ALMessage *message;
 
 /// Get the `ALNotificationView` object with `ALMessage` and alert message for showing a notification.
 /// @param message An `ALMessage` object with message details.

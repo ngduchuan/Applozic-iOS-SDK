@@ -93,7 +93,9 @@ static ALMessageClientService *alMsgClientService;
 }
 
 - (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList *)messageList
-                                                 withCompletion:(void (^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray))completion {
+                                                 withCompletion:(void (^)(NSMutableArray *messages,
+                                                                          NSError *error,
+                                                                          NSMutableArray *userDetailArray))completion {
 
     /*____If latest_message of a contact is HIDDEN MESSAGE OR MESSSAGE HIDE = TRUE, then get MessageList of that user from server___*/
 
@@ -180,9 +182,9 @@ static ALMessageClientService *alMsgClientService;
     }
 
     if (messageListRequest.channelKey != nil) {
-        ALChannel *alChannel = [self.channelService getChannelByKey:messageListRequest.channelKey];
-        if (alChannel) {
-            messageListRequest.channelType = alChannel.type;
+        ALChannel *channel = [self.channelService getChannelByKey:messageListRequest.channelKey];
+        if (channel) {
+            messageListRequest.channelType = channel.type;
         }
     }
 
@@ -329,7 +331,7 @@ static ALMessageClientService *alMsgClientService;
         }
     } else {
         ALSLog(ALLoggerSeverityInfo, @"Message found in DB just getting it not inserting new one.");
-        dbMessage = (DB_Message*)[messageDBService getMeesageById:message.msgDBObjectId];
+        dbMessage = (DB_Message *)[messageDBService getMeesageById:message.msgDBObjectId];
     }
     //convert to dic
     NSDictionary *messageDictionary = [message dictionary];
@@ -525,11 +527,11 @@ static ALMessageClientService *alMsgClientService;
 + (BOOL)isIncrementRequired:(ALMessage *)message {
 
     if ([message.status isEqualToNumber:[NSNumber numberWithInt:DELIVERED_AND_READ]]
-       || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
-       || [message.type isEqualToString:@"5"]
-       || [message isHiddenMessage]
-       || [message isVOIPNotificationMessage]
-       || [message.status isEqualToNumber:[NSNumber numberWithInt:READ]]) {
+        || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
+        || [message.type isEqualToString:@"5"]
+        || [message isHiddenMessage]
+        || [message isVOIPNotificationMessage]
+        || [message.status isEqualToNumber:[NSNumber numberWithInt:READ]]) {
         return NO;
     } else {
         return YES;
@@ -620,7 +622,7 @@ static ALMessageClientService *alMsgClientService;
 + (ALMessage *)processFileUploadSucess:(ALMessage *)message {
 
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message *dbMessage = (DB_Message*)[messageDBService getMessageByKey:@"key" value:message.key];
+    DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:@"key" value:message.key];
 
     dbMessage.fileMetaInfo.blobKeyString = message.fileMeta.blobKey;
     dbMessage.fileMetaInfo.thumbnailBlobKeyString = message.fileMeta.thumbnailBlobKey;
@@ -676,7 +678,7 @@ static ALMessageClientService *alMsgClientService;
             }];
         } else if (message.contentType == ALMESSAGE_CONTENT_VCARD) {
             ALSLog(ALLoggerSeverityInfo, @"REACH_PRESENT");
-            DB_Message *dbMessage = (DB_Message*)[messageDBService getMessageByKey:@"key" value:message.key];
+            DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:@"key" value:message.key];
             dbMessage.inProgress = [NSNumber numberWithBool:YES];
             dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
 

@@ -47,7 +47,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
                                                          error:&error];
     
     if (!jsonData) {
-        ALSLog(ALLoggerSeverityError, @"Got an error: %@", error);
+        ALSLog(ALLoggerSeverityError, @"Got an error while conversation to JSON String: %@", error);
     } else {
         jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
@@ -109,8 +109,8 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     }
     //3rd Party View is Opened.........
     ALContact *contact = nil;
-    ALContactDBService *contactDatabase = [[ALContactDBService alloc] init];
-    contact = [contactDatabase loadContactByKey:@"userId" value:contactId];
+    ALContactDBService *contactDatabaseService = [[ALContactDBService alloc] init];
+    contact = [contactDatabaseService loadContactByKey:@"userId" value:contactId];
 
     ALChannel *channel = nil;
     ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc] init];

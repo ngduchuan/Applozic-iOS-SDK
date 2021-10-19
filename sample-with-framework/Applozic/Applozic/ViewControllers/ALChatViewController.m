@@ -1048,6 +1048,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.loadingIndicator startLoadingWithLoadText:NSLocalizedStringWithDefaultValue(@"ChatTitleLoadingText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Loading...", @"")];
 
     [self fetchConversationProfileDetailsWithUserId:self.contactIds withChannelKey:self.channelKey withCompletion:^(ALChannel *channel, ALContact *contact) {
+
+        if (!channel &&
+            !contact) {
+            return;
+        }
+
         self.alChannel = channel;
         self.alContact = contact;
         [self setTitleWithChannel:channel orContact:contact];
@@ -1064,21 +1070,22 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }];
 }
 
-
 - (void)fetchConversationProfileDetailsWithUserId:(NSString *)userId
                                    withChannelKey:(NSNumber *)channelKey
                                    withCompletion:(void (^)( ALChannel *channel, ALContact *contact))completion {
 
     if (channelKey) {
-        [self.channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-            if (alChannel && [alChannel isGroupOfTwo]) {
-                NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
+        [self.channelService getChannelInformationByResponse:channelKey
+                                          orClientChannelKey:nil
+                                              withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+            if (channel && [channel isGroupOfTwo]) {
+                NSString *receiverId = [channel getReceiverIdInGroupOfTwo];
                 [self.userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
-                    completion(alChannel, contact);
+                    completion(channel, contact);
                     return;
                 }];
             } else {
-                completion(alChannel, nil);
+                completion(channel, nil);
             }
         }];
     } else {
@@ -2161,7 +2168,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (self.messageReplyId) {
         NSMutableDictionary *metaData = [NSMutableDictionary new];
-        [metaData  setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
+        [metaData setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
         theMessage.metadata = metaData;
     }
     return theMessage;

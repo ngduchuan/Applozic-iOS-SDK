@@ -16,8 +16,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 
 @implementation ALConversationClientService
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self setupServices];
@@ -26,7 +25,7 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 }
 
 - (void)setupServices {
-   self.responseHandler = [[ALResponseHandler alloc] init];
+    self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
 #pragma mark - Create conversation

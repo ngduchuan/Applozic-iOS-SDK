@@ -72,7 +72,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 - (void)getChannelInfo:(NSNumber *)channelKey
     orClientChannelKey:(NSString *)clientChannelKey
         withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
-    NSString *channelInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
+    NSString *channelInfoURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_INFO_URL];
     NSString *channelInfoParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
     if (clientChannelKey) {
         channelInfoParamString = [NSString stringWithFormat:@"clientGroupId=%@", [clientChannelKey urlEncodeUsingNSUTF8StringEncoding]];
@@ -610,7 +610,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - Mark conversation as read
 
 - (void)markConversationAsRead:(NSNumber *)channelKey
-               withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
+                withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
     NSString *conversationReadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString *conversationReadParamString;
     if (channelKey != nil) {
@@ -634,7 +634,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - Mute/Unmute Channel
 
 - (void)muteChannel:(ALMuteRequest *)muteRequest
-    withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
+     withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
     NSString *muteChannelURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL,UPDATE_GROUP_USER];
     NSError *error;
@@ -658,8 +658,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 }
 
 - (void)getChannelInfoByIdsOrClientIds:(NSMutableArray *)channelIds
-                   orClinetChannelIds:(NSMutableArray *)clientChannelIds
-                       withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
+                    orClinetChannelIds:(NSMutableArray *)clientChannelIds
+                        withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
     
     NSString *channelListURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_INFO_ON_IDS];
     NSString *channelListParamString = nil;
@@ -702,7 +702,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - List of Channel with category
 
 - (void)getChannelListForCategory:(NSString *)category
-                  withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
+                   withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
     
     NSString *channelCategoryURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_SYNC_URL];
     NSString *channelCategoryParamString = nil;
@@ -748,7 +748,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - List of Channels in Application
 
 - (void)getAllChannelsForApplications:(NSNumber *)endTime
-                      withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
+                       withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
     
     NSString *channelFilterURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_FILTER_API];
     NSMutableArray *channelInfoList = [[NSMutableArray alloc] init];
@@ -955,8 +955,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
-                       withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion {
-    NSString *channelInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
+                       withCompletion:(void(^)(NSError *error, ALChannelFeedResponse *response)) completion {
+    NSString *channelInfoURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_INFO_URL];
     NSString *channelInfoParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
     if (clientChannelKey) {
         channelInfoParamString = [NSString stringWithFormat:@"clientGroupId=%@", clientChannelKey];
@@ -970,7 +970,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
-            AlChannelFeedResponse *response = [[AlChannelFeedResponse alloc] initWithJSONString:jsonResponse];
+            ALChannelFeedResponse *response = [[ALChannelFeedResponse alloc] initWithJSONString:jsonResponse];
 
             if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]) {
                 NSMutableArray *members = response.alChannel.membersId;
@@ -999,7 +999,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 #pragma mark - Get members userIds from contacts group
 
 - (void)getMultipleContactGroup:(NSArray *)contactGroupIds
-                withCompletion:(void(^)(NSError *error, NSArray *channel)) completion {
+                 withCompletion:(void(^)(NSError *error, NSArray *channel)) completion {
     
     NSString *multipleContactGroupURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL,CONTACT_FAVOURITE_LIST ];
     

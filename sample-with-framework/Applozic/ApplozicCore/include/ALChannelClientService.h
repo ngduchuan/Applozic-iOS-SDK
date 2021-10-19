@@ -11,7 +11,7 @@
 #import "ALChannelCreateResponse.h"
 #import "ALChannelDBService.h"
 #import "ALChannelFeed.h"
-#import "AlChannelFeedResponse.h"
+#import "ALChannelFeedResponse.h"
 #import "ALChannelSyncResponse.h"
 #import "ALChannelUserX.h"
 #import "ALConstant.h"
@@ -23,10 +23,6 @@
 @interface ALChannelClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
-
-- (void)getChannelInfo:(NSNumber *)channelKey
-    orClientChannelKey:(NSString *)clientChannelKey
-        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
@@ -77,7 +73,7 @@
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
-                       withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
+                       withCompletion:(void(^)(NSError *error, ALChannelFeedResponse *response)) completion;
 
 - (void)syncCallForChannel:(NSNumber *)updatedAtTime
       withFetchUserDetails:(BOOL)fetchUserDetails
@@ -150,5 +146,9 @@
            adminUser :(NSString *)adminUserId
       withGroupUsers :(NSMutableArray *)groupRoleUsers
        withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
+
+- (void)getChannelInfo:(NSNumber *)channelKey
+    orClientChannelKey:(NSString *)clientChannelKey
+        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion DEPRECATED_MSG_ATTRIBUTE("Use getChannelInformationByResponse:orClientChannelKey:withCompletion from ALChannelService instead");
 
 @end

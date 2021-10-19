@@ -1,5 +1,5 @@
 //
-//  AlChannelFeedResponse.m
+//  ALChannelFeedResponse.m
 //  Applozic
 //
 //  Created by Nitin on 20/10/17.
@@ -7,11 +7,11 @@
 //
 
 #import "ALChannelCreateResponse.h"
-#import "AlChannelFeedResponse.h"
+#import "ALChannelFeedResponse.h"
 #import "ALContactDBService.h"
 #import "ALUserDetail.h"
 
-@implementation AlChannelFeedResponse
+@implementation ALChannelFeedResponse
 
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {

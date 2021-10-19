@@ -77,9 +77,9 @@
 - (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)message;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
 - (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
-- (ALMessage*)getMessageByKey:(NSString *)messageKey;
+- (ALMessage *)getMessageByKey:(NSString *)messageKey;
 
-- (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime;
 
 - (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler;
 
@@ -107,7 +107,7 @@
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
 
-- (ALMessage *)writeDataAndUpdateMessageInDb:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
+- (ALMessage *)writeDataAndUpdateMessageInDB:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
 
 /// Returns a list of last messages for group and contact based on the startTime or endTime
 /// @param conversationListRequest Used for passing the startTime or endTime

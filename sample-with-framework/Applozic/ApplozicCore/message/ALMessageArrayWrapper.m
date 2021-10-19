@@ -133,7 +133,7 @@
         return;
     }
     
-    int countX  =((int)self.messageArray.count==0)?1:((int)self.messageArray.count);
+    int countX = ((int)self.messageArray.count==0) ? 1 : ((int)self.messageArray.count);
     for (int i = countX-1 ; i  < (tempArray.count-1) ; i++) {
         
         if (i == 0) {

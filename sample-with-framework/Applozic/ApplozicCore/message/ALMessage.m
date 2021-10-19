@@ -99,11 +99,6 @@ static NSString * const AL_TRUE = @"true";
 
     self.storeOnDevice = [self getBoolFromJsonValue:messageJson[@"storeOnDevice"]];
 
-
-    // read
-
-    //self.read = [self getBoolFromJsonValue:messageJson[@"read"]];
-
     //develired
     self.delivered = [self getBoolFromJsonValue:messageJson[@"delivered"]];
 
