@@ -414,13 +414,16 @@ extern NSString *const AL_MESSAGE_SYNC;
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 /// For internal use only.
+///
 /// @param delegate For real time updates callback will be triggered for channel update
-- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+/// @param completion On successful sync an `ALChannelSyncResponse` will have `alChannelArray` of type `ALChannel` otherwise, an error describing the failure of channel sync.
+-(void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
+                       withCompletion:(void (^)(ALChannelSyncResponse *response, NSError *error))completion;
 
 /// Updates unread count to zero and send notification with name `Update_unread_count` channelKey will be in object of notification and send the call back delegate using`ApplozicUpdatesDelegate`
 /// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object
 /// @param delegate Set the `ApplozicUpdatesDelegate` for conversation read callback update.
-/// @note This is internal method.
+/// @warning This is internal method.
 - (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// Creates an channel given `ALChannelInfo`.
