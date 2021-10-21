@@ -89,7 +89,7 @@
             [self proactivelyConnectMQTT];
             [ALMessageService syncMessages];
 
-            ALMessageService *messageService = [[ALMessageService alloc]init];
+            ALMessageService *messageService = [[ALMessageService alloc] init];
             [messageService processPendingMessages];
 
             ALUserService *userService = [ALUserService new];

@@ -27,7 +27,7 @@
 }
 
 - (void)setupServices {
-    self.messageDatabaseService  = [[ALMessageDBService alloc]init];
+    self.messageDatabaseService  = [[ALMessageDBService alloc] init];
     self.clientService = [[ALMessageClientService alloc] init];
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
@@ -217,7 +217,7 @@
     } else {
         fileParamConstant = @"files[]";
     }
-    NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
+    NSData *imageData = [[NSData alloc] initWithContentsOfFile:filePath];
     ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
     //Assuming data is not nil we add this to the multipart form
     if (imageData) {

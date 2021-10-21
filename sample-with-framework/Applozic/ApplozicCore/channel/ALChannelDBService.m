@@ -852,8 +852,6 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     if (channelKey != nil) {
         messages = [self getUnreadMessagesForGroup:channelKey];
-    } else {
-        ALSLog(ALLoggerSeverityError, @"channelKey null for marking unread");
     }
     
     if (messages.count > 0) {

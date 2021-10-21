@@ -94,7 +94,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// @endcode
 - (instancetype)initWithApplicationKey:(NSString *)appID;
 
@@ -108,7 +108,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and set the delegate.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and set the delegate.
 /// @endcode
 - (instancetype)initWithApplicationKey:(NSString *)appID withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// ALUser *user = [[ALUser alloc] init];
 /// user.userId = @"58935395796"; // User-id is the primary identification for a user and is unique and NOTE : +,*,? are not allowed chars in userId.
@@ -155,7 +155,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// const unsigned *tokenBytes = [deviceToken bytes];
 /// NSString *hexToken = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x",
@@ -199,7 +199,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate`in your class for real time attachment upload status events.
 ///
 /// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
@@ -217,7 +217,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate` in your class for real time attachment upload status events.
 ///
 /// ALMessage *message = [ALMessage build:^(ALMessageBuilder * messageBuilder) {
@@ -240,7 +240,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// ALMessage *message = [ALMessage build:^(ALMessageBuilder *messageBuilder) {
 ///     messageBuilder.message = @"Hi How are you?"; // Pass message text here.
@@ -272,7 +272,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// BOOL loadNextPage = NO; // Pass YES in case of loading next set of 60 old recent messages.
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
 ///
@@ -367,7 +367,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// applozicClient.attachmentProgressDelegate = self; // Implement `ApplozicAttachmentDelegate`in your class for real-time download status events.
 ///
 /// [applozicClient downloadMessageAttachment:message]; // Pass `ALMessage` object to download and make sure message filemeta object is not nil.
@@ -392,7 +392,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// // Channel members.
 /// NSMutableArray *channelMemberArray = [[NSMutableArray alloc] init];
@@ -475,7 +475,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// [applozicClient leaveMemberFromChannelWithUserId:[ALUserDefaultsHandler getUserId]
 ///  andChannelKey:@3738278
@@ -512,7 +512,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// [applozicClient addMemberToChannelWithUserId:@"574839292943"
 /// andChannelKey:@48493839
@@ -552,7 +552,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// // Channel member roles.
 /// ALChannelUser *channelUser = [[ALChannelUser alloc] init];
@@ -604,7 +604,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// [applozicClient getChannelInformationWithChannelKey:@474837
 /// orClientChannelKey:nil
@@ -728,7 +728,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
 /// [applozicClient markConversationReadForGroup:@474837 withCompletion:^(NSString *response, NSError *error) {
 ///
@@ -778,7 +778,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient notificationArrivedToApplication:application withDictionary:userInfo];
 ///
@@ -794,7 +794,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient subscribeToConversation];
 ///
@@ -808,7 +808,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient unsubscribeToConversation];
 ///
@@ -823,7 +823,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient subscribeToTypingStatusForChannel:@474837]; // Pass the Channel key of the `ALChannel`
 ///
@@ -837,7 +837,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient unSubscribeToTypingStatusForOneToOne];
 ///
@@ -854,7 +854,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// // Sending typing status in one-to-one.
 /// [applozicClient sendTypingStatusForUserId:@"38484848" orForGroupId:nil withTyping:typingStarted];
@@ -873,7 +873,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient subscribeToTypingStatusForOneToOne];
 ///
@@ -890,7 +890,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>" withDelegate:self]; // Pass your APP-ID here and `ApplozicUpdatesDelegate` implement in your class.
 ///
 /// [applozicClient subscribeToTypingStatusForChannel:@474837]; // Pass the channel key of the channel conversation.
 ///
@@ -906,7 +906,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @code
 /// @import ApplozicCore;
 ///
-/// ApplozicClient *applozicClient = [[ApplozicClient alloc]initWithApplicationKey:@"<APP_ID>"]; // Pass your APP-ID here
+/// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"<APP_ID>"]; // Pass your APP-ID here
 ///
 /// BOOL loadNextPage = NO; // Pass YES in case of loading next set of 60 old conversations.
 /// BOOL loadGroups = NO; // Pass YES in case of loading group conversations.

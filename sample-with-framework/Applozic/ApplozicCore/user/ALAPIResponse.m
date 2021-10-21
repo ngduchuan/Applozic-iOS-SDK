@@ -24,8 +24,7 @@ NSString *const AL_RESPONSE_ERROR = @"error";
     self.generatedAt = [self getNSNumberFromJsonValue:jsonResponse[@"generatedAt"]];
     self.response =  [jsonResponse valueForKey:@"response"];
     self.actualresponse = jsonResponse;
-    ALSLog(ALLoggerSeverityInfo, @"self.generatedAt : %@",self.generatedAt);
-    ALSLog(ALLoggerSeverityInfo, @"self.status : %@",self.status);
+    ALSLog(ALLoggerSeverityInfo, @"Response status is (%@) and generated At time is (%@)",self.status, self.generatedAt);
 }
 
 @end

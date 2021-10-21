@@ -123,7 +123,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }
 
             ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
-            self.session = [[MQTTSession alloc]init];
+            self.session = [[MQTTSession alloc] init];
             self.session.clientId = [NSString stringWithFormat:@"%@-%f",
                                      [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
 
@@ -242,7 +242,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (void)session:(MQTTSession*)session newMessage:(NSData*)data onTopic:(NSString*)topic {
-    ALSLog(ALLoggerSeverityInfo, @"MQTT: GOT_NEW_MESSAGE");
 }
 
 - (void)newMessage:(MQTTSession *)session
@@ -256,17 +255,15 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         return;
     }
 
-    ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc]init];
+    ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
 
     NSString *fullMessage = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     if ([ALUserDefaultsHandler getUserEncryptionKey] && [topic hasPrefix:MQTT_ENCRYPTION_SUB_KEY]) {
 
-        ALSLog(ALLoggerSeverityInfo, @"Key : %@",  [ALUserDefaultsHandler getUserEncryptionKey]);
         NSData *base64DecodedData = [[NSData alloc] initWithBase64EncodedData:data options:0];
         NSData *decryptedData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getUserEncryptionKey]];
         NSString *dataToString = [NSString stringWithUTF8String:[decryptedData bytes]];
-        ALSLog(ALLoggerSeverityInfo, @"Data to String : %@",  dataToString);
         data = [dataToString dataUsingEncoding:NSUTF8StringEncoding];
 
         ALSLog(ALLoggerSeverityInfo, @"MQTT_GOT_NEW_MESSAGE after decyption : %@", dataToString);
@@ -285,7 +282,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     NSString *notificationId = (NSString*)[notificationMessageDictionary valueForKey:@"id"];
 
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
-        ALSLog(ALLoggerSeverityInfo, @"Returing coz Application State is Background OR Our View is NOT on Top");
+        ALSLog(ALLoggerSeverityInfo, @"Returning because Application State is Background OR Our View is NOT on Top");
         if ([topic hasPrefix:@"typing"]) {
             [self subProcessTyping:fullMessage];
         }
@@ -416,7 +413,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.syncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED_AND_READ];
             if (self.realTimeUpdate) {
-                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
+                ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
                 ALMessage *message = [messageDbService getMessageByKey:pairedKey];
                 if (message) {
                     [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
@@ -524,13 +521,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]) {
             //Conversation read for user
-            ALUserService *channelService = [[ALUserService alloc]init];
+            ALUserService *channelService = [[ALUserService alloc] init];
             NSString *userId = [notificationMessageDictionary objectForKey:@"message"];
             [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
 
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]) {
             //Conversation read for channel
-            ALChannelService *channelService = [[ALChannelService alloc]init];
+            ALChannelService *channelService = [[ALChannelService alloc] init];
             NSNumber *channelKey = [NSNumber numberWithInt:[[notificationMessageDictionary objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]) {
@@ -547,7 +544,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 }
 
             } else if ([flag isEqualToString:@"1"]) {
-                ALUserService *userService = [[ALUserService alloc]init];
+                ALUserService *userService = [[ALUserService alloc] init];
                 [userService getMutedUserListWithDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
 
                 }];

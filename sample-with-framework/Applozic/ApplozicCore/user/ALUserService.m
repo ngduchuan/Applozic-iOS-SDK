@@ -274,12 +274,12 @@ static int CONTACT_PAGE_SIZE = 100;
     [self markConversationReadInDataBaseWithMessage:message];
     //Server Call
     [self.userClientService markMessageAsReadforPairedMessageKey:pairedkeyValue withCompletion:^(NSString *response, NSError *error) {
-        ALSLog(ALLoggerSeverityInfo, @"Response Marking Message :%@",response);
-        
+
         if (error) {
             completion(nil, error);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"Response Marking Message :%@",response);
         
         if ([response isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(response, nil);
@@ -732,7 +732,7 @@ static int CONTACT_PAGE_SIZE = 100;
             [ALUserDefaultsHandler disableChat: disable];
             completion(YES, nil);
         } else {
-            ALSLog(ALLoggerSeverityError, @"Error while disabling chat for user");
+            ALSLog(ALLoggerSeverityError, @"Error while disabling chat for user:%@",error);
             completion(NO, error);
         }
     }];

@@ -138,7 +138,7 @@
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
 
     ALMessage *message = [ALMessage new];
 

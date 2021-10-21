@@ -343,7 +343,7 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     NSMutableArray *mutableArray = [self getProcessedNotificationIds];
     
     if (mutableArray == nil) {
-        mutableArray = [[NSMutableArray alloc]init];
+        mutableArray = [[NSMutableArray alloc] init];
     }
     
     BOOL isTheObjectThere = [mutableArray containsObject:withNotificationId];

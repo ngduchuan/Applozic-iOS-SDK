@@ -450,8 +450,8 @@ static NSString * const AL_TRUE = @"true";
         ALChannelService *channelService = [[ALChannelService alloc] init];
         channel = [channelService getChannelByKey:self.groupId];
     } else {
-        ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-        contact = [alContactDBService loadContactByKey:@"userId" value:self.contactIds];
+        ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+        contact = [contactDBService loadContactByKey:@"userId" value:self.contactIds];
     }
     
     return (([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)

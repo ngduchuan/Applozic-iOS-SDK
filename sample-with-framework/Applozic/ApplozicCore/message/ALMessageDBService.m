@@ -724,7 +724,7 @@
     messageFetchRequest.fetchLimit = 200;
     
     NSArray *messageArray = [databaseHandler executeFetchRequest:messageFetchRequest withError:nil];
-    NSMutableArray *msgArray = [[NSMutableArray alloc]init];
+    NSMutableArray *msgArray = [[NSMutableArray alloc] init];
     if (messageArray.count) {
         for (DB_Message *theEntity in messageArray) {
             ALMessage *message = [self createMessageEntity:theEntity];
@@ -787,7 +787,7 @@
     
     NSArray *messages = [databaseHandler executeFetchRequest:messageFetchRequest withError:nil];
     
-    NSMutableArray *messageArray = [[NSMutableArray alloc]init];
+    NSMutableArray *messageArray = [[NSMutableArray alloc] init];
     
     if (messages.count > 0) {
         for (DB_Message *dbMessage in messages) {

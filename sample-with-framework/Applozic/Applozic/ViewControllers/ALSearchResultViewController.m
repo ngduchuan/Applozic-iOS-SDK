@@ -123,7 +123,7 @@
     chatVC.individualLaunch = YES;
     chatVC.displayName = nil;
     chatVC.isSearch = YES;
-    ALPushAssist *pushAssist = [[ALPushAssist alloc]init];
+    ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
 
     if (message.groupId != nil) {
         chatVC.channelKey = message.groupId;

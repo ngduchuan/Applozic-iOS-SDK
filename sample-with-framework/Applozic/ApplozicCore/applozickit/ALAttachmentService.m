@@ -31,6 +31,7 @@
            withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
     
     if (!attachmentMessage || !attachmentMessage.imageFilePath) {
+        NSLog(@"Failed to send an attachment message image file path is nil.");
         return;
     }
     self.delegate = delegate;
@@ -38,6 +39,7 @@
     
     NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentMessage.imageFilePath];
     if (!mimeType) {
+        NSLog(@"Failed to get the mime type from file attachment.");
         return;
     }
     
@@ -50,9 +52,9 @@
     
     //DB Addition
     
-    ALMessageDBService *alMessageDbService = [[ALMessageDBService alloc]init];
+    ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
     
-    DB_Message *dbMessage = [alMessageDbService addAttachmentMessage:attachmentMessage];
+    DB_Message *dbMessage = [messageDbService addAttachmentMessage:attachmentMessage];
     
     if (!dbMessage) {
         if (attachmentProgressDelegate) {
@@ -72,7 +74,7 @@
     } else {
         NSDictionary *messageDictionary = [attachmentMessage dictionary];
         
-        ALMessageClientService *clientService  = [[ALMessageClientService alloc]init];
+        ALMessageClientService *clientService  = [[ALMessageClientService alloc] init];
         [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *responseUrl, NSError *error) {
             
             if (error) {
@@ -82,29 +84,29 @@
                 return;
             }
             
-            ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+            ALHTTPManager *httpManager = [[ALHTTPManager alloc] init];
             httpManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
             httpManager.delegate = self.delegate;
-            [httpManager processUploadFileForMessage:[alMessageDbService createMessageEntity:dbMessage] uploadURL:responseUrl];
+            [httpManager processUploadFileForMessage:[messageDbService createMessageEntity:dbMessage] uploadURL:responseUrl];
         }];
     }
     
 }
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadMessageAttachment:(ALMessage *)message withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self.attachmentProgressDelegate;
-    [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
+    [manager processDownloadForMessage:message isAttachmentDownload:YES];
 }
 
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadImageThumbnail:(ALMessage *)message withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self.attachmentProgressDelegate;
-    [manager processDownloadForMessage:alMessage isAttachmentDownload:NO];
+    [manager processDownloadForMessage:message isAttachmentDownload:NO];
 }
 
 

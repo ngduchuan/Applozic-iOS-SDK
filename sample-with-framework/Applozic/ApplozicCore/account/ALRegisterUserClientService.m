@@ -466,15 +466,12 @@ static short AL_VERSION_CODE = 112;
     NSString *previousVersion = [userDefaults objectForKey:@"appVersion"];
     
     if (!previousVersion) {
-        ALSLog(ALLoggerSeverityInfo, @"First start after installing the app");
         [userDefaults setObject:currentAppVersion forKey:@"appVersion"];
         [userDefaults synchronize];
         return NO;
     } else if ([previousVersion isEqualToString:currentAppVersion]) {
         return NO;
-    } else {
-        ALSLog(ALLoggerSeverityInfo, @"App was updated since last run");
-        
+    } else {        
         [ALRegisterUserClientService sendServerRequestForAppUpdate];
         [userDefaults setObject:currentAppVersion forKey:@"appVersion"];
         [userDefaults synchronize];
@@ -514,7 +511,7 @@ static short AL_VERSION_CODE = 112;
 }
 
 - (ALRegistrationResponse *)getLoginRegistrationResponse {
-    ALRegistrationResponse *registrationResponse = [[ALRegistrationResponse alloc]init];
+    ALRegistrationResponse *registrationResponse = [[ALRegistrationResponse alloc] init];
     registrationResponse.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     registrationResponse.userKey = [ALUserDefaultsHandler getUserKeyString];
     registrationResponse.message = [ALInternalSettings getRegistrationStatusMessage];

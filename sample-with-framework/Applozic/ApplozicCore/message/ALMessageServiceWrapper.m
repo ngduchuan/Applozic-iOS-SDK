@@ -27,36 +27,36 @@
 
 - (void)sendTextMessage:(NSString *)text andtoContact:(NSString *)toContactId {
     
-    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
+    ALMessage *message = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
-    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:message withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:message];
     }];
 }
 
 
 - (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey {
     
-    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
+    ALMessage *message = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
     
-    alMessage.groupId = channelKey;
+    message.groupId = channelKey;
     
-    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:message withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:message];
     }];
 }
 
-- (void) sendMessage:(ALMessage *)alMessage
+- (void)sendMessage:(ALMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
       andContentType:(short)contentype {
@@ -108,7 +108,7 @@ andWithStatusDelegate:(id)statusDelegate
             [self.messageServiceDelegate uploadDownloadFailed:alMessage];
             return;
         }
-        ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+        ALHTTPManager *httpManager = [[ALHTTPManager alloc] init];
         httpManager.attachmentProgressDelegate = self;
         [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:dbMessageEntity] uploadURL:message];
     }];
@@ -136,25 +136,25 @@ andWithStatusDelegate:(id)statusDelegate
                                        toSendTo:(NSString *)to
                                        withText:(NSString *)text {
     
-    ALMessage *alMessage = [ALMessage new];
+    ALMessage *message = [ALMessage new];
     
-    alMessage.contactIds = to;//1
-    alMessage.to = to;//2
-    alMessage.message = text;//3
-    alMessage.contentType = contentType;//4
+    message.contactIds = to;//1
+    message.to = to;//2
+    message.message = text;//3
+    message.contentType = contentType;//4
     
-    alMessage.type = @"5";
-    alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
-    alMessage.sendToDevice = NO;
-    alMessage.shared = NO;
-    alMessage.fileMeta = nil;
-    alMessage.storeOnDevice = NO;
-    alMessage.key = [[NSUUID UUID] UUIDString];
-    alMessage.delivered = NO;
-    alMessage.fileMetaKey = nil;
+    message.type = @"5";
+    message.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+    message.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+    message.sendToDevice = NO;
+    message.shared = NO;
+    message.fileMeta = nil;
+    message.storeOnDevice = NO;
+    message.key = [[NSUUID UUID] UUIDString];
+    message.delivered = NO;
+    message.fileMetaKey = nil;
     
-    return alMessage;
+    return message;
 }
 
 

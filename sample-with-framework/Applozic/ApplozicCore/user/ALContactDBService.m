@@ -779,7 +779,7 @@
 
             NSString * metadataString = dbContact.metadata;
             if (!metadataString) {
-                NSMutableDictionary *metadata = [[NSMutableDictionary alloc]init];
+                NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
                 [metadata setObject:value forKey:key];
                 dbContact.metadata = metadata.description;
                 NSError *error = nil;

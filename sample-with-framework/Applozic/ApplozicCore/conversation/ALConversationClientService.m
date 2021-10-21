@@ -48,9 +48,9 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CONVERSATION %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"SEVER RESPONSE FROM JSON CREATE_CONVERSATION : %@", jsonResponse);
             response = [[ALConversationCreateResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"SEVER RESPONSE FROM JSON CREATE_CONVERSATION : %@", jsonResponse);
         completion(error, response);
     }];
 }

@@ -65,15 +65,15 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (void)loginUser:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
 
     if (![ALUserDefaultsHandler getApplicationKey]) {
-        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil, its not passed"}];
+        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Passed AppID or ApplicationKey is nil."}];
         completion(nil, applicationKeyNilError);
         return;
     } else if (!user) {
-        NSError *userNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"ALUser object is nil"}];
+        NSError *userNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Passed ALUser object is nil."}];
         completion(nil, userNilError);
         return;
     } else if (!user.userId) {
-        NSError *userIdNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"UserId is nil"}];
+        NSError *userIdNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Passed userId is nil,"}];
         completion(nil, userIdNilError);
         return;
     }
@@ -92,12 +92,12 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     [registerUserClientService initWithCompletion:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
 
         if (error) {
-            NSLog(@"ERROR_USER_REGISTRATION :: %@", error.description);
+            NSLog(@"Error in User registration: %@", error.description);
             completion(nil, error);
             return;
         }
         
-        NSLog(@"USER_REGISTRATION_RESPONSE :: %@", response);
+        NSLog(@"User registration response: %@", response);
 
         if (![response isRegisteredSuccessfully]) {
             NSError *passError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : response.message}];
@@ -128,11 +128,11 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
     if (![ALUserDefaultsHandler getApplicationKey]) {
-        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil its not passed"}];
+        NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Passed AppID or ApplicationKey is nil."}];
         completion(nil, applicationKeyNilError);
         return;
     } else if (!apnDeviceToken) {
-        NSError *apnsTokenError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"APNs device token is nil"}];
+        NSError *apnsTokenError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"APNs device token is nil."}];
         completion(nil, apnsTokenError);
         return;
     }
@@ -141,7 +141,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     [registerUserClientService updateApnDeviceTokenWithCompletion:apnDeviceToken withCompletion:^(ALRegistrationResponse *response, NSError *error) {
 
         if (error) {
-            NSLog(@"REGISTRATION ERROR :: %@",error.description);
+            NSLog(@"Update APNs token error: %@",error.description);
             completion(nil, error);
             return;
         }
@@ -184,18 +184,12 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
     if (groupId != nil && groupId.integerValue != 0) {
         [_channelService markConversationAsRead:groupId withCompletion:^(NSString *conversationResponse, NSError *error) {
-
-            if (error) {
-                NSLog(@"Error while marking messages as read channel %@",groupId);
-                completion(conversationResponse, error);
-            } else {
-                completion(conversationResponse, nil);
-            }
+            completion(conversationResponse, error);
         }];
     } else {
         NSError *nilError = [NSError errorWithDomain:ApplozicClientDomain
                                                 code:0
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Channel key or groupId is nil"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Channel key or groupId is nil."}];
 
         completion(nil, nilError);
     }
@@ -205,17 +199,12 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
     if (userId) {
         [_userService markConversationAsRead:userId withCompletion:^(NSString *conversationResponse, NSError *error) {
-            if (error) {
-                NSLog(@"Error while marking messages as read for contact %@", userId);
-                completion(nil, error);
-            } else {
-                completion(conversationResponse, nil);
-            }
+            completion(conversationResponse, error);
         }];
     }  else {
         NSError *nilError = [NSError errorWithDomain:ApplozicClientDomain
                                                 code:0
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Failed to mark as read userId is nil"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Failed to mark as read userId is nil."}];
 
         completion(nil, nilError);
     }
@@ -228,7 +217,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     if (!message) {
         NSError *messageError = [NSError errorWithDomain:ApplozicClientDomain
                                                     code:MessageNotPresent
-                                                userInfo:@{NSLocalizedDescriptionKey : @"Empty message passed"}];
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Empty message passed."}];
 
         completion(nil, messageError);
         return;
@@ -237,7 +226,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     if (!message.message) {
         NSError *messageTextError = [NSError errorWithDomain:ApplozicClientDomain
                                                         code:MessageNotPresent
-                                                    userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object"}];
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Passed nil message text in ALMessage object."}];
 
         completion(nil, messageTextError);
         return;
@@ -246,7 +235,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
     [_messageService sendMessages:message withCompletion:^(NSString *jsonResponse, NSError *error) {
 
         if (error) {
-            NSLog(@"SEND_MSG_ERROR :: %@",error.description);
+            NSLog(@"Error while sending a message: %@",error.description);
             completion(nil, error);
             return;
         }
@@ -264,7 +253,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (void)sendMessageWithAttachment:(ALMessage *)message {
     
     if (!message || !message.imageFilePath) {
-        NSLog(@"Failed to send attachment the message or imageFilePath it passed as nil");
+        NSLog(@"Failed to send attachment the message or imageFilePath it passed as nil.");
         return;
     }
 
@@ -277,7 +266,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)downloadMessageAttachment:(ALMessage *)message {
     if (!message) {
-        NSLog(@"Failed to download attachment the message passed as nil");
+        NSLog(@"Failed to download attachment the message passed as nil.");
         return;
     }
     [attachmentService downloadMessageAttachment:message withDelegate:self.attachmentProgressDelegate];
@@ -285,7 +274,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)downloadThumbnailImage:(ALMessage *)message {
     if (!message) {
-        NSLog(@"Failed to download Thumbnail Image the message passed as nil");
+        NSLog(@"Failed to download Thumbnail Image the message passed as nil.");
         return;
     }
     [attachmentService downloadImageThumbnail:message withDelegate:self.attachmentProgressDelegate];

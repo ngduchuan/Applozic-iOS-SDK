@@ -373,12 +373,12 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                                  andTag:@"RESETTING_UNREAD_COUNT"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)jsonResponse);
         if (error) {
             completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"ERROR : RESETTING UNREAD COUNT :: %@",error.description);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
     

@@ -55,7 +55,7 @@
 
 - (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy *conversationProxy = [[ALConversationProxy alloc]init];
+    ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] init];
     conversationProxy.groupId = dbConversation.groupId;
     conversationProxy.userId = dbConversation.userId;
     conversationProxy.topicDetailJson = dbConversation.topicDetailJson;

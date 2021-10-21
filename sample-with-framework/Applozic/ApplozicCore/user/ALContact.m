@@ -97,7 +97,7 @@
         NSString *flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
         
         if (!_metadata) {
-            _metadata = [[NSMutableDictionary alloc]init];
+            _metadata = [[NSMutableDictionary alloc] init];
         }
 
         [_metadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];

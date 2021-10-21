@@ -17,8 +17,8 @@
 
 
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
-    ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
-    [alMessageDBService updateMessageDeliveryReport:messageKey withStatus:status];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    [messageDBService updateMessageDeliveryReport:messageKey withStatus:status];
     ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
     //Todo: update ui
 }
@@ -43,10 +43,10 @@
     [self syncCall:alMessage withDelegate:nil];
 }
 
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:alUserDetail];
+- (void)updateConnectedStatus:(ALUserDetail *)userDetail {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:userDetail];
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
-    [contactDBService updateLastSeenDBUpdate:alUserDetail];
+    [contactDBService updateLastSeenDBUpdate:userDetail];
 }
 
 - (void)updateTableAtConversationDeleteForContact:(NSString *)contactID

@@ -103,7 +103,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                     completion(error, response.alChannel);
                 }];
             } else {
-                ALSLog(ALLoggerSeverityWarn, @"No user for userDetails");
                 completion(error, response.alChannel);
             }
         }
@@ -179,9 +178,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CHANNEL :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALChannelCreateResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
 
     }];
@@ -208,9 +207,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN ADD_NEW_MEMBER_TO_CHANNEL :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_NEW_MEMBER_TO_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_NEW_MEMBER_TO_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 }
@@ -235,9 +234,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN REMOVE_MEMBER_FROM_CHANNEL :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_MEMBER_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_MEMBER_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 }
@@ -260,9 +259,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN DELETE_CHANNEL SERVER CALL REQUEST :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_DELETE_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_DELETE_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 }
@@ -286,9 +285,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN LEAVE_FROM_CHANNEL SERVER CALL REQUEST  :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 }
@@ -321,9 +320,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN ADD_MANY_USERS :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_MANY_USERS :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_MANY_USERS :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 }
@@ -385,9 +384,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN UPDATE_CHANNEL :: %@", error);
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)jsonResponse);
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)jsonResponse);
         completion(error, response);
     }];
 
@@ -451,13 +450,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     [self.responseHandler authenticateAndProcessRequest:syncChannelRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)jsonResponse);
         ALChannelSyncResponse *response = nil;
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_SYNCHRONIZATION SERVER CALL REQUEST %@", error);
             completion(error, nil);
             return;
         } else {
+            ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)jsonResponse);
             NSMutableArray *userNotPresentIds = [NSMutableArray new];
             response = [[ALChannelSyncResponse alloc] initWithJSONString:jsonResponse];
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
@@ -515,12 +514,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSMutableURLRequest *addChildKeyRequest = [ALRequestHandler createGETRequestWithUrlString:addChildKeyURLString paramString:addChildKeyParamString];
     [self.responseHandler authenticateAndProcessRequest:addChildKeyRequest andTag:@"ADDING_CHILD_TO_PARENT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR ADDING_CHILD_TO_PARENT :: %@", error);
             completion(nil, error);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -541,12 +540,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSMutableURLRequest *removeChildKeyRequest = [ALRequestHandler createGETRequestWithUrlString:removeChildKeyURLString paramString:removeChildKeyParamString];
     [self.responseHandler authenticateAndProcessRequest:removeChildKeyRequest andTag:@"REMOVE_CHILD_TO_PARENT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR REMOVE_CHILD_TO_PARENT :: %@", error);
             completion(nil, error);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -570,12 +569,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     [self.responseHandler authenticateAndProcessRequest:addChildKeyRequest andTag:@"ADDING_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", error);
             completion(nil, error);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -597,12 +596,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
     [self.responseHandler authenticateAndProcessRequest:removeChildKeyRequest andTag:@"REMOVE_CHILD_TO_PARENT_VIA_CLIENT_KEY" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR REMOVE_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", error);
             completion(nil, error);
             return;
         }
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -812,7 +811,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:addMemberToContactGroupRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER_BY_TYPE" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
         if (error) {
-            ALSLog(ALLoggerSeverityInfo, @"Contcats group :: %@", error);
+            ALSLog(ALLoggerSeverityInfo, @"Add Contcats group with type error :: %@", error);
             completion(nil, error);
             return;
         }
@@ -841,7 +840,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     [self.responseHandler authenticateAndProcessRequest:addMemberToContactGroupRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
         if (error) {
-            ALSLog(ALLoggerSeverityInfo, @"Contcats group :: %@", error);
+            ALSLog(ALLoggerSeverityInfo, @" Add Contcats group error:: %@", error);
             completion(nil, error);
             return;
         }

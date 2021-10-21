@@ -32,7 +32,6 @@
 - (BOOL)processPushNotification:(NSDictionary *)dictionary updateUI:(NSNumber *)updateUI {
 
     ALSLog(ALLoggerSeverityInfo, @"APNS_DICTIONARY :: %@",dictionary.description);
-    ALSLog(ALLoggerSeverityInfo, @"UPDATE UI VALUE :: %@",updateUI);
     ALSLog(ALLoggerSeverityInfo, @"UPDATE UI :: %@", ([updateUI isEqualToNumber:[NSNumber numberWithInt:1]]) ? @"ACTIVE" : @"BACKGROUND/INACTIVE");
 
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
@@ -262,7 +261,7 @@
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }
             } else if ([flag isEqualToString:@"1"]) {
-                ALUserService *userService = [[ALUserService alloc]init];
+                ALUserService *userService = [[ALUserService alloc] init];
                 [userService getMutedUserListWithDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
 
                 }];

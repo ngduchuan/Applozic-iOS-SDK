@@ -56,7 +56,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     
     if (![ALUserDefaultsHandler isServerCallDoneForMSGList:self.userId]) {
         paramString = [paramString stringByAppendingString:@"&conversationReq=true"];
-        ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :theParamString :%@",paramString );
+        ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :paramString :%@",paramString );
     }
     
     if (self.skipRead) {
