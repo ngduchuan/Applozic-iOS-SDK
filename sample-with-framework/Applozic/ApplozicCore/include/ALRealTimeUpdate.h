@@ -57,7 +57,7 @@
 - (void)onUpdateTypingStatus:(NSString *)userId status:(BOOL)status;
 
 /// The callback will be called on the user online or offline update.
-/// @param updatedUserDetail An `ALUserDetail` object of user.
+/// @param updatedUserDetail An updated `ALUserDetail` object of user.
 - (void)onUpdateLastSeenAtStatus:(ALUserDetail *)updatedUserDetail;
 
 /// The callback will be called on the user is blocked or unblocked.
@@ -80,7 +80,7 @@
 - (void)onMqttConnected;
 
 /// The callback will be called the user muted.
-/// @param updatedUserDetail Will have `ALUserDetail` object.
+/// @param updatedUserDetail Will have updated `ALUserDetail` object.
 - (void)onUserMuteStatus:(ALUserDetail *)updatedUserDetail;
 
 /// The callback will be called after a group has muted for logged in user.

@@ -188,7 +188,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     }
     
     NSString *messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-    ALMessage *replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+    ALMessage *replyMessage = [[ALMessageService new] getMessageByKey:messageReplyId];
     
     if (replyMessage == nil){
         return;

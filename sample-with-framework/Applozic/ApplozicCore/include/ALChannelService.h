@@ -136,7 +136,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// This is an internal method for sync channels from the server
 - (void)syncCallForChannel;
 
-/// This method is used to update channel information like name, imageUrl, etc.
+/// Updates the channel information like name, imageUrl, etc.
 /// @param channelKey Pass the channel key can get from ALChannel object as channel.key.
 /// @param newName It's the new channel name of a channel.
 /// @param imageURL Image URL will be channel profile image.
@@ -214,7 +214,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @return It wil return the channel information ALChannel object.
 - (ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey;
 
-/// This method is used to check if the logged-in user is in the channel or not.
+/// To check if the logged-in user is in the channel or not.
 /// @param channelKey Pass the channel key can get from ALChannel object as channel.key.
 /// @return it will return YES OR NO if the user is in a channel or not.
 - (BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
@@ -417,7 +417,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param delegate For real time updates callback will be triggered for channel update
 - (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
-/// This internal method used for updating unread count to zero and send notification with name `Update_unread_count` channelKey will be in object of notification and send the call back delegate using`ApplozicUpdatesDelegate`
+/// Updates unread count to zero and send notification with name `Update_unread_count` channelKey will be in object of notification and send the call back delegate using`ApplozicUpdatesDelegate`
 /// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object
 /// @param delegate Set the `ApplozicUpdatesDelegate` for conversation read callback update.
 /// @note This is internal method.

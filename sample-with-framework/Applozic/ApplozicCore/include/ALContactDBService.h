@@ -118,7 +118,7 @@
 /// Gets all the contacts from the local database and this will have array of `ALContact` objects.
 - (NSMutableArray *)getAllContactsFromDB;
 
-/// Used for get the total unread count of all users.
+/// Used for to get the total unread count of all users.
 - (NSNumber *)getOverallUnreadCountForContactsFromDB;
 
 /// Used for checking if the user is deleted. This will check from the local database which is stored not from the server.

@@ -934,7 +934,7 @@
 
 #pragma mark - Get message by message key
 
-- (ALMessage*)getMessageByKey:(NSString *)messageKey {
+- (ALMessage *)getMessageByKey:(NSString *)messageKey {
     DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
     return [self createMessageEntity:dbMessage];
 }

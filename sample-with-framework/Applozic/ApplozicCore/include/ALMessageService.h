@@ -26,6 +26,7 @@ static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
 /// Notification name for the message metadata update.
 static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNotification";
 
+/// `ALMessageService` class has major methods for message API's
 @interface ALMessageService : NSObject
 
 + (ALMessageService *)sharedInstance;
@@ -36,7 +37,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
-/// This method is used for fetching the one-to-one or group chat messages from the server.
+/// Gets the messages for the one-to-one or group chat from the server.
 /// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
 /// @param completion If messages are fetched successfully, it will have a list of ALMessage objects; else, it will have NSError in case any error comes.
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
@@ -49,7 +50,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                         startIndex:(NSInteger)startIndex
                     withCompletion:(void (^)(NSMutableArray *))completion;
 
-/// This method is used for sending a text message one to one or group conversation.
+/// Sends text message in one to one or group conversation.
 /// @param message Pass the ALMessage object for sending a text message.
 /// @param completion If success in sending a message the NSError will be nil; else, if there is an error in sending a message the NSError will not be nil.
 - (void)sendMessages:(ALMessage *)message withCompletion:(void(^)(NSString *message, NSError *error)) completion;
@@ -58,7 +59,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 + (ALMessage *)processFileUploadSucess:(ALMessage *)message;
 
-/// This method is used for deleting the message thread or conversation in a one-to-one or group chat.
+/// Deletes the conversation thread in a one-to-one or group chat.
 /// @param contactId Pass the userId in case deleting the conversation for one-to-one; otherwise, it will be nil.
 /// @param channelKey Pass the channelKey in case of deleting conversation for group chat, else it will be nil.
 /// @param completion If success in deleting the thread then NSError is nil; else, if failure in deleting then NSError will not be nil.
@@ -66,19 +67,20 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                orChannelKey:(NSNumber *)channelKey
              withCompletion:(void (^)(NSString *response, NSError *error))completion;
 
-/// This method is used for deleting a message
+/// Deletes the message for given message key.
 /// @param keyString Pass the message key from the message object to delete the message.
 /// @param contactId Pass it as nil.
-/// @param completion If success in deleting the message then NSError is nil else on failure in deleting then NSError will not be nil.
+/// @param completion If success in deleting the message then error is nil else on failure in deleting NSError will not be nil.
 - (void)deleteMessage:(NSString *)keyString
          andContactId:(NSString *)contactId
        withCompletion:(void (^)(NSString *response, NSError *error))completion;
 
+/// Sends the pending messages.
 - (void)processPendingMessages;
 
 + (ALMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value;
 
-/// This method is used for fetching the message information which will have delivered and read for users in group chat.
+/// Gets the message information which will have delivered and read for users in group chat.
 /// @param messageKey Pass the message key from the message object.
 /// @param completion If success in fetching the message information then NSError will be nil else on failure in fetching message information then NSError will not be nil.
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
@@ -111,13 +113,14 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                            andReceiverId:(NSString *)receiverId
                           andMessageText:(NSString *)messageText;
 
+
+/// Returns total number of messages.
+/// @param userId Pass the receiver userId.
 - (NSUInteger)getMessagsCountForUser:(NSString *)userId;
 
 - (ALMessage *)getLatestMessageForUser:(NSString *)userId;
 
 - (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
-
-- (ALMessage *)getALMessageByKey:(NSString *)messageReplyId;
 
 + (void)syncMessages;
 
@@ -125,7 +128,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                    withDelegate:(id<ApplozicUpdatesDelegate>)delegate
                  withCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
 
-/// This method is used for getting the latest messages for contact or group.
+/// Gets the recent messages for contact or group.
 /// @param isNextPage If you want to load the next set of messages pass YES or true to load else pass NO or false.
 /// @param isGroup To get groups messages only then pass YES or true it will give group latest messages else
 /// to get only user latest messages then pass NO or false.
@@ -138,14 +141,15 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 - (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 
+/// Returns `ALMessage` object for given message key.
 - (ALMessage *)getMessageByKey:(NSString *)messageKey;
 
-/// Used for sync the messages where meta data is updated.
+/// Syncs the messages where metadata is updated.
 /// @param deviceKeyString Pass the [ALUserDefaultsHandler getDeviceKeyString].
 /// @param completion If error in syncing a updated meta data messages then NSError will be their else a array of messages if their is no error in syncing a updated meta data messages.
 + (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
 
-/// Used for updating message metadata.
+/// Updates message metadata for given message key.
 /// @param messageKey Pass the message key for updating message meta data.
 /// @param metadata Pass the updated message metadata for updating.
 /// @param completion If an error in deleting a message for all then NSError will not be nil else on successful delete error will be nil.
@@ -153,23 +157,26 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                       withMetadata:(NSMutableDictionary *)metadata
                     withCompletion:(void(^)(ALAPIResponse *apiResponse, NSError *error)) completion;
 
-/// Used for fetching messages based on the message keys.
+/// Gets messages by message keys.
 /// @param keys Pass the array of message keys.
 /// @param completion If there is no error in fetching messages, then it will have an array of messages. else it will have nil.
 - (void)fetchReplyMessages:(NSMutableArray<NSString *> *)keys withCompletion: (void(^)(NSMutableArray<ALMessage *> *messages))completion;
 
-/// Used for deleting a message for all.
+/// Deletes the message for all in channel conversation.
 /// @param keyString Pass the message key from ALMessage object.
 /// @param completion If an error in deleting a message for all then NSError will not be nil else on successful delete error will be nil.
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
-/// Used for getting the total unread message count.
+/// Total unread message count.
 /// @param completion will have a total unread message count if there is no error in fetching.
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion;
 
 /// Total unread conversation count.
 /// @param completion will have a total unread conversation count if there is no error in fetching.
 - (void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError *error))completion;
+
+/// Returns `ALMessage` object for given message key.
+- (ALMessage *)getALMessageByKey:(NSString *)messageReplyId DEPRECATED_MSG_ATTRIBUTE("Use getMessageByKey: instead");
 
 @end
