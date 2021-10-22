@@ -17,8 +17,8 @@
 
 
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-    [messageDBService updateMessageDeliveryReport:messageKey withStatus:status];
+    ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
+    [alMessageDBService updateMessageDeliveryReport:messageKey withStatus:status];
     ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
     //Todo: update ui
 }
@@ -27,20 +27,6 @@
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService updateDeliveryReportForContact:contactId withStatus:status];
     //Todo: update ui
-}
-
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
-    
-    if (delegate) {
-        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-            [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
-        }
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
-}
-
-- (void)syncCall:(ALMessage *)alMessage {
-    [self syncCall:alMessage withDelegate:nil];
 }
 
 - (void)updateConnectedStatus:(ALUserDetail *)userDetail {

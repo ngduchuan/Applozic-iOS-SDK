@@ -17,10 +17,6 @@
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
 
-- (void)syncCall:(ALMessage *)alMessage;
-
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate;
-
 - (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
 
 - (void)updateTableAtConversationDeleteForContact:(NSString *)contactID

@@ -137,7 +137,9 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
-+ (void)addOpenGroupMessage:(ALMessage *)message withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
++ (void)addOpenGroupMessage:(ALMessage *)message
+               withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+             withCompletion:(void (^)(BOOL success))completion;
 
 - (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 

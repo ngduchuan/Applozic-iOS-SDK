@@ -726,20 +726,27 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 #pragma mark - Channel Sync
 
 - (void)syncCallForChannel {
-    [self syncCallForChannelWithDelegate:nil];
+    [self syncCallForChannelWithDelegate:nil
+                          withCompletion:^(ALChannelSyncResponse *response, NSError *error) {
+
+    }];
 }
 
-- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+-(void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
+                       withCompletion:(void (^)(ALChannelSyncResponse *response, NSError *error))completion {
 
     NSNumber *updateAtTime = [ALUserDefaultsHandler getLastSyncChannelTime];
 
-    [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForChannel:updateAtTime
+                             withFetchUserDetails:YES
+                                    andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (!error) {
             [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
             [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
         }
+        completion(response, error);
     }];
 
 }

@@ -4028,7 +4028,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (void)newMessageHandler:(NSNotification *)notification {
-    ALSLog(ALLoggerSeverityInfo, @" newMessageHandler called ::#### ");
+    ALSLog(ALLoggerSeverityInfo, @"newMessageHandler called ::#### ");
     NSMutableArray *messageArray = notification.object;
 
     [self addMessageToList:messageArray];

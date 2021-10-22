@@ -335,14 +335,18 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                                 return;
                             }
 
-                            [ALMessageService addOpenGroupMessage:message withDelegate:self.realTimeUpdate];
-                            if (!pushAssist.isOurViewOnTop) {
-                                [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
-                                [pushAssist assist:[self getNotificationObjectFromMessage:message] withUserInfo:notificationDictionary ofUser:message.contactIds];
-                            } else {
-                                [self.syncCallService syncCall:message withDelegate:self.realTimeUpdate];
-                                [self.mqttConversationDelegate syncCall:message andMessageList:nil];
-                            }
+                            [ALMessageService addOpenGroupMessage:message
+                                                     withDelegate:self.realTimeUpdate
+                                                   withCompletion:^(BOOL success) {
+                                if (success) {
+                                    if (!pushAssist.isOurViewOnTop) {
+                                        [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
+                                        [pushAssist assist:[self getNotificationObjectFromMessage:message] withUserInfo:notificationDictionary ofUser:message.contactIds];
+                                    } else {
+                                        [self.mqttConversationDelegate syncCall:message andMessageList:nil];
+                                    }
+                                }
+                            }];
                         } else {
                             [self syncReceivedMessage: message withNSMutableDictionary:notificationDictionary];
                         }
@@ -366,7 +370,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [ALMessageService getMessageSENT:message withDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
                 if (messageArray.count > 0) {
-                    [self.syncCallService syncCall:message];
                     [self.mqttConversationDelegate syncCall:message andMessageList:nil];
                 }
             }];
@@ -856,7 +859,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
             [pushAssist assist:[self getNotificationObjectFromMessage:message] withUserInfo:notificationDictionary ofUser:message.contactIds];
         } else {
-            [self.syncCallService syncCall:message];
             [self.mqttConversationDelegate syncCall:message andMessageList:nil];
         }
 
