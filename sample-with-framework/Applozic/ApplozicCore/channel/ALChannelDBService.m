@@ -660,8 +660,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                     [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
                 }
             }
-            for (NSDictionary *chUserDict in channelUsers) {
-                ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:chUserDict];
+            for (NSDictionary *channelUserDictionary in channelUsers) {
+                ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:channelUserDictionary];
                 if (channelUser.parentGroupKey != nil) {
                     [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
                 }

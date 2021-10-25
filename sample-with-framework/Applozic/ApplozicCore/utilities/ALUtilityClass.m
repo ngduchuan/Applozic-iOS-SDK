@@ -215,16 +215,16 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return stringTime;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage {
-    NSString *latLongArgument = [self formatLocationJson:alMessage];
++ (NSString *)getLocationURL:(ALMessage *)message {
+    NSString *latLongArgument = [self formatLocationJson:message];
     NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize {
++ (NSString *)getLocationURL:(ALMessage *)message size:(CGRect)withSize {
 
-    NSString *latLongArgument = [self formatLocationJson:alMessage];
+    NSString *latLongArgument = [self formatLocationJson:message];
 
     NSString *staticMapURL = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
                               [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];

@@ -59,7 +59,7 @@
 - (void)sendMessage:(ALMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
-      andContentType:(short)contentype {
+     andContentType:(short)contentype {
     
     //Message Creation
     ALMessage *message = alMessage;
@@ -158,36 +158,36 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage {
+- (void)downloadMessageAttachment:(ALMessage *)message {
 
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
-    [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
+    [manager processDownloadForMessage:message isAttachmentDownload:YES];
 
 }
 
-- (void)onDownloadCompleted:(ALMessage *)alMessage {
-    [self.messageServiceDelegate DownloadCompleted:alMessage];
+- (void)onDownloadCompleted:(ALMessage *)message {
+    [self.messageServiceDelegate DownloadCompleted:message];
 }
 
-- (void)onDownloadFailed:(ALMessage *)alMessage {
-    [self.messageServiceDelegate uploadDownloadFailed:alMessage];
+- (void)onDownloadFailed:(ALMessage *)message {
+    [self.messageServiceDelegate uploadDownloadFailed:message];
 }
 
-- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage {
+- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)message {
     [self.messageServiceDelegate updateBytesDownloaded:(NSUInteger)bytesReceived];
 }
 
-- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage {
+- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)message {
     [self.messageServiceDelegate updateBytesUploaded:(NSInteger)bytesSent];
 }
 
-- (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
-    [self.messageServiceDelegate uploadCompleted:alMessage];
+- (void)onUploadCompleted:(ALMessage *)message withOldMessageKey:(NSString *)oldMessageKey {
+    [self.messageServiceDelegate uploadCompleted:message];
 }
 
-- (void)onUploadFailed:(ALMessage *)alMessage {
-    [self.messageServiceDelegate uploadDownloadFailed:alMessage];
+- (void)onUploadFailed:(ALMessage *)message {
+    [self.messageServiceDelegate uploadDownloadFailed:message];
 }
 
 @end

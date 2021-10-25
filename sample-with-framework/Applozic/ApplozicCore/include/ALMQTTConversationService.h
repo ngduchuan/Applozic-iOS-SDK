@@ -26,9 +26,9 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 
 /// This callback will be called once the new message is received.
 ///
-/// @param alMessage This will have `ALMessage` object on new message received
+/// @param message This will have `ALMessage` object on new message received
 /// @param messageArray This will be nil
-- (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
+- (void)syncCall:(ALMessage *)message andMessageList:(NSMutableArray *)messageArray;
 
 /// The callback will be called on message is delivered to the receiver.
 ///

@@ -1081,14 +1081,14 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 
     // In case of just turning off the notifications, only 'Alert' key needs to be false and empty string for action messages.
 
-    NSDictionary *basicMetadata = @{@"CREATE_GROUP_MESSAGE":@"",
-                                    @"REMOVE_MEMBER_MESSAGE":@"",
-                                    @"ADD_MEMBER_MESSAGE":@"",
-                                    @"JOIN_MEMBER_MESSAGE":@"",
-                                    @"GROUP_NAME_CHANGE_MESSAGE":@"",
-                                    @"GROUP_ICON_CHANGE_MESSAGE":@"",
-                                    @"GROUP_LEFT_MESSAGE":@"",
-                                    @"DELETED_GROUP_MESSAGE":@"",
+    NSDictionary *basicMetadata = @{AL_CREATE_GROUP_MESSAGE:@"",
+                                    AL_REMOVE_MEMBER_MESSAGE:@"",
+                                    AL_ADD_MEMBER_MESSAGE:@"",
+                                    AL_JOIN_MEMBER_MESSAGE:@"",
+                                    AL_GROUP_NAME_CHANGE_MESSAGE:@"",
+                                    AL_GROUP_ICON_CHANGE_MESSAGE:@"",
+                                    AL_GROUP_LEFT_MESSAGE:@"",
+                                    AL_DELETED_GROUP_MESSAGE:@"",
                                     @"Alert":@"false"
     };
     NSMutableDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:basicMetadata];

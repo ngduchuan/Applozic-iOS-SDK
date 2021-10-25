@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import <Applozic/Applozic.h>
 #import <OCMock/OCMock.h>
+#import "ALChatManager.h"
 
 @interface ApplozicClientTests : XCTestCase
 
@@ -23,7 +24,7 @@ NSError *testError;
 
 - (void)setUp {
     [super setUp];
-    client = [[ApplozicClient alloc] init];
+    client = [[ApplozicClient alloc] initWithApplicationKey:APPLICATION_ID];
     mockService = OCMClassMock([ALMessageService class]);
     client.messageService = mockService;
 
@@ -37,7 +38,7 @@ NSError *testError;
 - (void)test_whenTextMessageSentSuccessfully_thatErrorIsNil{
 
     OCMStub([mockService sendMessages:testMessage withCompletion:([OCMArg invokeBlockWithArgs:@"message",[OCMArg defaultValue], nil])]);
-    [client sendTextMessage:testMessage withCompletion:^(ALMessage* message, NSError* error) {
+    [client sendTextMessage:testMessage withCompletion:^(ALMessage *message, NSError* error) {
         XCTAssert(error == nil);
         XCTAssert([message.message isEqualToString:@"messageText"]);
     }];
