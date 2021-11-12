@@ -13,14 +13,18 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALSendMessageResponse : ALJson
 
 @property (nonatomic, copy) NSString *messageKey;
 
 @property (nonatomic, copy) NSNumber *createdAt;
 
-@property (nonatomic, copy) NSNumber *conversationId;
+@property (nonatomic, copy) NSNumber * _Nullable conversationId;
 
 - (BOOL)isSuccess;
 
 @end
+
+NS_ASSUME_NONNULL_END

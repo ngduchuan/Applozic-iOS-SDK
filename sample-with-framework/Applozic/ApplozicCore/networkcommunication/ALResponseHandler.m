@@ -157,7 +157,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
 - (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
                                andTag:(NSString *)tag
-                WithCompletionHandler:(void (^)(id, NSError *))completion {
+                WithCompletionHandler:(void (^)(id jsonResponse, NSError *error))completion {
 
     [self authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
         if (error) {

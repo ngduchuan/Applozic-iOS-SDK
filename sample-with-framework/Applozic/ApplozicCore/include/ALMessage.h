@@ -13,6 +13,8 @@
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Default message content type for text messages.
 static int const ALMESSAGE_CONTENT_DEFAULT = 0;
 
@@ -100,16 +102,16 @@ typedef enum {
 @property (nonatomic, copy) NSString *key;
 
 /// Device key is used on the server to identify from which device the message is sent in the conversation.
-@property (nonatomic, copy) NSString *deviceKey;
+@property (nonatomic, copy) NSString * _Nullable deviceKey;
 
 /// User primary key is used on the server to identify from which user the message is sent in the conversation.
-@property (nonatomic, copy) NSString *userKey;
+@property (nonatomic, copy) NSString * _Nullable userKey;
 
 /// UserId of receiver user currently sent a message in one-to-one or channel conversation.
-@property (nonatomic, copy) NSString *to;
+@property (nonatomic, copy) NSString * _Nullable to;
 
 /// Text message.
-@property (nonatomic, copy) NSString *message;
+@property (nonatomic, copy) NSString * _Nullable message;
 
 /// :nodoc:
 @property (nonatomic, assign) BOOL sendToDevice;
@@ -139,22 +141,22 @@ typedef enum {
 @property (nonatomic) short source;
 
 /// Same as `to`
-@property (nonatomic, copy) NSString *contactIds;
+@property (nonatomic, copy) NSString * _Nullable contactIds;
 
 /// :nodoc:
 @property (nonatomic, assign) BOOL storeOnDevice;
 
 /// `ALFileMetaInfo` will have details currently uploaded or download file.
-@property (nonatomic,retain) ALFileMetaInfo *fileMeta;
+@property (nonatomic,retain) ALFileMetaInfo * _Nullable fileMeta;
 
 /// Name of file which is stored on disk.
-@property (nonatomic,retain) NSString *imageFilePath;
+@property (nonatomic,retain) NSString * _Nullable imageFilePath;
 
 /// Used for the set or get the current attachment upload is in progress or not.
 @property (nonatomic,assign) BOOL inProgress;
 
 /// :nodoc:
-@property (nonatomic, strong) NSString *fileMetaKey;
+@property (nonatomic, strong) NSString * _Nullable fileMetaKey;
 
 /// Upload is failed in attachment
 @property (nonatomic, assign) BOOL isUploadFailed;
@@ -166,13 +168,13 @@ typedef enum {
 @property(nonatomic,assign) BOOL sentToServer;
 
 /// :nodoc:
-@property(nonatomic,copy) NSManagedObjectID *msgDBObjectId;
+@property(nonatomic,copy) NSManagedObjectID * _Nullable msgDBObjectId;
 
 /// Paired message key is used for marking the single message as read.
-@property(nonatomic,copy) NSString *pairedMessageKey;
+@property(nonatomic,copy) NSString *_Nullable pairedMessageKey;
 
 /// :nodoc:
-@property(nonatomic,retain) NSString *applicationId;
+@property(nonatomic,retain) NSString * _Nullable applicationId;
 
 /// Used to set or get the content of the message.
 ///
@@ -191,10 +193,10 @@ typedef enum {
 /// Channel key or groupId which is linked to `ALChanel` object.
 ///
 /// If groupId is not nil then its Channel message otherwise it's the one-to-one message.
-@property (nonatomic, copy) NSNumber *groupId;
+@property (nonatomic, copy) NSNumber * _Nullable groupId;
 
 /// Conversation id for context based chat
-@property(nonatomic,copy) NSNumber *conversationId;
+@property(nonatomic,copy) NSNumber * _Nullable conversationId;
 
 /// Gets the status types to know the current message status.
 ///
@@ -203,13 +205,13 @@ typedef enum {
 /// * SENT = 3,
 /// * DELIVERED = 4,
 /// * DELIVERED_AND_READ = 5,
-@property (nonatomic, copy) NSNumber *status;
+@property (nonatomic, copy) NSNumber * _Nullable status;
 
 /// Returns or sets key-value dictionary of message metadata otherwise nil.
-@property (nonatomic,retain) NSMutableDictionary *metadata;
+@property (nonatomic,retain) NSMutableDictionary * _Nullable metadata;
 
 /// Returns or sets reply type of message see `-[ALMessage getReplyType:]`.
-@property (nonatomic,copy) NSNumber *messageReplyType;
+@property (nonatomic,copy) NSNumber * _Nullable messageReplyType;
 
 /// Returns YES if the stored message has been deleted otherwise, NO.
 @property (nonatomic,assign) BOOL deleted;
@@ -221,7 +223,7 @@ typedef enum {
 ///
 /// You need to compare the current date and the created at the time of message to know that is the message is for today.
 /// @param today YES in case of the current day is today otherwise pass NO.
-- (NSString *)getCreatedAtTime:(BOOL)today;
+- (NSString * _Nullable)getCreatedAtTime:(BOOL)today;
 
 /// Gets the `ALMessage` for given dictionary.
 /// @param messageDictonary An dictionary of message data.
@@ -243,20 +245,20 @@ typedef enum {
 ///
 /// You need to compare the current date and the created time of the message to know that is the message is for today.
 /// @param today YES in case of the current day is today otherwise pass NO.
-- (NSString *)getCreatedAtTimeChat:(BOOL)today;
+- (NSString * _Nullable)getCreatedAtTimeChat:(BOOL)today;
 
 /// Returns the channel key or group of the message.
 - (NSNumber *)getGroupId;
 
 /// Returns the text for message to show in notification based on `contentType` of `ALMessage`
-- (NSString *)getLastMessage;
+- (NSString * _Nullable)getLastMessage;
 
 /// Gets the Message metadata for given JSON metadata string.
 /// @param string JSON string of the metadata.
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+- (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString *)string;
 
 /// Gets the Audio video call action text to show in chat.
-- (NSString *)getVOIPMessageText;
+- (NSString * _Nullable )getVOIPMessageText;
 
 /// Returns YES if the `ALMessage` object is hidden message otherwise NO.
 - (BOOL)isMsgHidden;
@@ -334,3 +336,5 @@ typedef enum {
 /// @param messageMetadata Metadata to combine with message metadata.
 - (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata;
 @end
+
+NS_ASSUME_NONNULL_END

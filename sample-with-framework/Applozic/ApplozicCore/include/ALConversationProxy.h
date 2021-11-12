@@ -11,6 +11,7 @@
 #import "DB_ConversationProxy.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /// `ALConversationProxy` class is used parsing JSON response of context based chat.
 @interface ALConversationProxy : ALJson
 
@@ -65,3 +66,5 @@
 - (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -12,13 +12,15 @@
 #import "ApplozicClient.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALHTTPManager : NSObject <NSURLSessionDataDelegate,NSURLSessionDelegate>
 
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate> _Nullable attachmentProgressDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate>delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable delegate;
 
-@property (nonatomic, strong) NSMutableData *buffer;
+@property (nonatomic, strong) NSMutableData * _Nullable buffer;
 
 @property (nonatomic) NSUInteger *length;
 
@@ -33,8 +35,10 @@
 - (void)processUploadFileForMessage:(ALMessage *)message uploadURL:(NSString *)uploadURL;
 
 - (void)uploadProfileImage:(UIImage *)profileImage
-             withFilePath:(NSString *)filePath
-                uploadURL:(NSString *)uploadURL
-           withCompletion:(void(^)(NSData *data, NSError *error)) completion;
+              withFilePath:(NSString *)filePath
+                 uploadURL:(NSString *)uploadURL
+            withCompletion:(void(^)(NSData * _Nullable data, NSError * _Nullable error)) completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -11,6 +11,7 @@
 #import "ALUserDetail.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /// `ALSearchResultCache` class is used for storing the `ALChannel` and `ALUserDetail` object.
 @interface ALSearchResultCache : NSObject
 
@@ -27,10 +28,12 @@
 
 /// Used for fetching the `ALChannel` object from `ALSearchResultCache`.
 /// @param key Pass the channelKey or groupId.
-- (ALChannel *)getChannelWithId:(NSNumber *)key;
+- (ALChannel * _Nullable)getChannelWithId:(NSNumber *)key;
 
 /// Used for fetching the `ALContact` object from `ALSearchResultCache`.
 /// @param key Pass the userId to fetch the contact.
-- (ALContact *)getContactWithId:(NSString *)key;
+- (ALContact * _Nullable)getContactWithId:(NSString *)key;
 
 @end
+
+NS_ASSUME_NONNULL_END

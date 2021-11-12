@@ -11,6 +11,8 @@
 #import "ALUserDetail.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALSyncCallService : NSObject
 
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status;
@@ -19,9 +21,11 @@
 
 - (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
 
-- (void)updateTableAtConversationDeleteForContact:(NSString *)contactID
-                                   ConversationID:(NSString *)conversationID
-                                       ChannelKey:(NSNumber *)channelKey;
+- (void)updateTableAtConversationDeleteForContact:(NSString * _Nullable)contactID
+                                   ConversationID:(NSString * _Nullable)conversationID
+                                       ChannelKey:(NSNumber * _Nullable)channelKey;
 - (void)syncMessageMetadata;
 
 @end
+
+NS_ASSUME_NONNULL_END

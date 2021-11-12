@@ -10,6 +10,7 @@
 #import "ALMessage.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /// `ALMessageArrayWrapper` class is is used for caching the message array data in NSMutableArray used for adding, removing, clearing messages from Array.
 @interface ALMessageArrayWrapper : NSObject
 
@@ -25,7 +26,7 @@
 - (BOOL)checkDateOlder:(NSNumber *)older andNewer:(NSNumber *)newer;
 
 /// Used for fetching the updated Array of messages.
-- (NSMutableArray *)getUpdatedMessageArray;
+- (NSMutableArray * _Nullable)getUpdatedMessageArray;
 
 /// Used for add array of ALMessage` objects to another Array.
 /// @param paramMessageArray An Array of `ALMessage` objects.
@@ -50,10 +51,12 @@
 /// Used for getting date Message.
 /// @param messageText Pass date message text.
 /// @param message Pass the `ALMessage` object.
-- (ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)message;
+- (ALMessage * _Nullable)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)message;
 
 /// Used geeting the date for message.
 /// @param message Pass the `ALMessage` object.
-- (NSString *)msgAtTop:(ALMessage *)message;
+- (NSString * _Nullable )msgAtTop:(ALMessage *)message;
 
 @end
+
+NS_ASSUME_NONNULL_END

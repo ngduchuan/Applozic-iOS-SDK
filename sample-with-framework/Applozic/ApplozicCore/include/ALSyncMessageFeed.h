@@ -9,18 +9,22 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALSyncMessageFeed : ALJson
 
-@property(nonatomic,copy) NSNumber *lastSyncTime;
+@property(nonatomic,copy) NSNumber * _Nullable lastSyncTime;
 
-@property(nonatomic,copy) NSString *currentSyncTime;
+@property(nonatomic,copy) NSString * _Nullable currentSyncTime;
 
-@property(nonatomic) NSMutableArray *messagesList;
+@property(nonatomic) NSMutableArray * _Nullable messagesList;
 
-@property(nonatomic) NSMutableArray *deliveredMessageKeys;
+@property(nonatomic) NSMutableArray * _Nullable deliveredMessageKeys;
 
 @property(nonatomic, assign) BOOL sent;
 
 @property(nonatomic, assign) BOOL isRegisterdIdInvalid;
 
 @end
+
+NS_ASSUME_NONNULL_END

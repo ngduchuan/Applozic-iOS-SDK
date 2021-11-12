@@ -602,7 +602,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                     withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
     if ((channelKey != nil || clientChannelKey != nil) && userId != nil) {
         [self.channelClientService leaveChannel:channelKey orClientChannelKey:clientChannelKey
-                                     withUserId:(NSString *)userId andCompletion:^(NSError *error, ALAPIResponse *response) {
+                                     withUserId:userId andCompletion:^(NSError *error, ALAPIResponse *response) {
             [self proccessLeaveResponse:channelKey andUserId:userId orClientChannelKey:clientChannelKey withResponse:response withError:error];
             completion(error,response);
         }];

@@ -257,7 +257,7 @@
 
             if ([flag isEqualToString:@"0"]) {
                 ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
-                if (self.realTimeUpdate){
+                if (self.realTimeUpdate && userDetail) {
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }
             } else if ([flag isEqualToString:@"1"]) {

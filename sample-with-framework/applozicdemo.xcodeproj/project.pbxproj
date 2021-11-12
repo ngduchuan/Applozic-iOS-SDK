@@ -38,7 +38,6 @@
 		6D7F4C701C314EBD00AE04CF /* ALChatManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D7F4C6F1C314EBD00AE04CF /* ALChatManager.m */; };
 		6DAA09D91BE39FB800CBF133 /* Applozic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAA09D61BE39F6B00CBF133 /* Applozic.framework */; };
 		6DAA09DA1BE39FCB00CBF133 /* Applozic.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAA09D61BE39F6B00CBF133 /* Applozic.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E9593767F7DFCB4CC72D74 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB1ED364E65158421A4DCED3 /* AssetsLibrary.framework */; };
 		842F66858A6423DE9E523B39 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A1266FFF6FF481F4CFF88E7 /* CoreTelephony.framework */; };
 		8B11D376212FD46A0084F74A /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B11D375212FD46A0084F74A /* libOCMock.a */; };
 		8B1461A520DA33DB00785DF2 /* ALRegisterUserClientServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1461A420DA33DB00785DF2 /* ALRegisterUserClientServiceTests.m */; };
@@ -192,7 +191,6 @@
 				187D679225DD9699008BE643 /* ApplozicCore.framework in Frameworks */,
 				462D5B441DA40C7000F5CD73 /* UserNotifications.framework in Frameworks */,
 				6DAA09D91BE39FB800CBF133 /* Applozic.framework in Frameworks */,
-				79E9593767F7DFCB4CC72D74 /* AssetsLibrary.framework in Frameworks */,
 				15102E152CFA927B82CEA1B8 /* CoreText.framework in Frameworks */,
 				842F66858A6423DE9E523B39 /* CoreTelephony.framework in Frameworks */,
 				8FFB428979FD738E5C4A3BD5 /* SystemConfiguration.framework in Frameworks */,
@@ -414,7 +412,7 @@
 		6D6DF1E91BC551FA00EBA00F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 1310;
 				ORGANIZATIONNAME = "applozic Inc";
 				TargetAttributes = {
 					181AED4E2617603F00F77B10 = {
@@ -453,10 +451,9 @@
 			};
 			buildConfigurationList = 6D6DF1EC1BC551FA00EBA00F /* Build configuration list for PBXProject "applozicdemo" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -717,13 +714,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Adarsh Kumar (RN66F37TC5)";
@@ -764,13 +772,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Distribution: Applozic Inc (C25JNDCBM4)";
@@ -813,7 +832,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = applozicdemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -846,7 +865,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = applozicdemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

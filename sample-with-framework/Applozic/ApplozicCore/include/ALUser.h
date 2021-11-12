@@ -9,6 +9,8 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Used to tell the backend what kind of authentication the user wishes to use to be authenticated. See the types for details.
 typedef enum
 {
@@ -33,37 +35,37 @@ typedef enum
 @property NSString *userId;
 
 /// :nodoc:
-@property NSString *email;
+@property NSString * _Nullable email;
 
 /// :nodoc:
-@property NSString *password;
+@property NSString * _Nullable password;
 
 /// Sets the user name.
-@property NSString *displayName;
+@property NSString * _Nullable displayName;
 
 /// An APN's or VOIP device token.
-@property NSString *registrationId;
+@property NSString * _Nullable registrationId;
 
 /// Applozic APP-ID you can get it from [console](https://console.applozic.com/login).
-@property NSString *applicationId;
+@property NSString * _Nullable applicationId;
 
 /// User contact number.
-@property NSString *contactNumber;
+@property NSString * _Nullable contactNumber;
 
 /// Sets the code of the country in which the user resides.
-@property NSString *countryCode;
+@property NSString * _Nullable countryCode;
 
 /// Sets the email verified for this user.
 @property Boolean emailVerified;
 
 /// :nodoc:
-@property NSString *timezone;
+@property NSString * _Nullable timezone;
 
 /// For internal use only.
 @property short appVersionCode;
 
 /// Roles give your user certain privileges.
-@property NSString *roleName;
+@property NSString * _Nullable roleName;
 
 /// Sets the device type for identifying on the applozic server.
 ///
@@ -74,12 +76,12 @@ typedef enum
 @property short deviceType;
 
 /// User profile image URL.
-@property NSString *imageLink;
+@property NSString * _Nullable imageLink;
 
 /// App module name is used when two different apps are communicating with different app modules and the same APP-ID.
 ///
 /// Use this settings `[ALUserDefaultsHandler setAppModuleName:@"NAME-OF-MODULE-HERE"];` to pass the module name`.
-@property NSString *appModuleName;
+@property NSString * _Nullable appModuleName;
 
 /// Internally sets the notification mode.
 ///
@@ -111,10 +113,10 @@ typedef enum
 ///
 /// Features are functionalities that are advanced enough to require added set up for them to work.
 /// In the case of "100" audio calls and "101" video calls you will need to use `ApplozicAudioVideo` Call SDK that works with the Chat SDK.
-@property NSMutableArray *features;
+@property NSMutableArray * _Nullable features;
 
 /// APN's message notification sound name.
-@property NSString *notificationSoundFileName;
+@property NSString * _Nullable notificationSoundFileName;
 
 /// Extra information can be stored in the user.
 ///
@@ -132,7 +134,7 @@ typedef enum
 /// [user setMetadata:userMetaData];
 ///
 /// @endcode
-@property NSMutableDictionary *metadata;
+@property NSMutableDictionary * _Nullable metadata;
 
 /// Get an `ALUser` object with given userId, password, email and display name of user.
 /// @param userId An unique userId to login to applozic server.
@@ -141,8 +143,8 @@ typedef enum
 /// @param displayName Name of the user to show in chat conversation.
 - (instancetype)initWithUserId:(NSString *)userId
                       password:(NSString *)password
-                         email:(NSString *)email
-                andDisplayName:(NSString *)displayName;
+                         email:(NSString * _Nullable)email
+                andDisplayName:(NSString * _Nullable)displayName;
 
 /// :nodoc:
 @property short prefContactAPI DEPRECATED_ATTRIBUTE;
@@ -156,3 +158,4 @@ typedef enum
 
 @end
 
+NS_ASSUME_NONNULL_END

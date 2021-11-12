@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `UIImage` extension utility class for image.
 @interface UIImage (Utility)
 
@@ -15,8 +17,11 @@
 - (double)getImageSizeInMb;
 /// Use the method for geeting compressed image.
 /// @param sizeInMb Pass the size of image.
-- (UIImage *)getCompressedImageLessThanSize:(double)sizeInMb;
+- (UIImage * _Nullable)getCompressedImageLessThanSize:(double)sizeInMb;
 /// Use the method compressed data.
-- (NSData *)getCompressedImageData;
+- (NSData * _Nullable)getCompressedImageData;
 
 @end
+
+NS_ASSUME_NONNULL_END
+

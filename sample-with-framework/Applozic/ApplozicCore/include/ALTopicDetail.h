@@ -17,6 +17,8 @@
  
  */
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALTopicDetail` class is used for context based chat this will have topic details.
 @interface ALTopicDetail : ALJson
 
@@ -24,34 +26,36 @@
 @property (nonatomic, strong) NSString *title;
 
 /// Sets the subtitle of the context based topic chat.
-@property (nonatomic, strong) NSString *subtitle;
+@property (nonatomic, strong) NSString * _Nullable subtitle;
 
 /// Sets the pId.
-@property (nonatomic, strong) NSString *pId;
+@property (nonatomic, strong) NSString * _Nullable pId;
 
 /// Sets the image URL link.
-@property (nonatomic, strong) NSString *link;
+@property (nonatomic, strong) NSString * _Nullable link;
 
 /// Sets the key1 title.
-@property (nonatomic, strong) NSString *key1;
+@property (nonatomic, strong) NSString * _Nullable key1;
 
 /// Sets the value1 .
-@property (nonatomic, strong) NSString *value1;
+@property (nonatomic, strong) NSString * _Nullable value1;
 
 /// Sets the key2 title.
-@property (nonatomic, strong) NSString *key2;
+@property (nonatomic, strong) NSString * _Nullable key2;
 
 /// Sets the value2.
-@property (nonatomic, strong) NSString *value2;
+@property (nonatomic, strong) NSString * _Nullable value2;
 
 /// Sets the Topic id of the product.
-@property (nonatomic, strong) NSString *topicId;
+@property (nonatomic, strong) NSString * _Nullable topicId;
 
 /// :nodoc:
-@property (nonatomic,strong)  NSMutableArray *fallBackTemplateList;
+@property (nonatomic,strong)  NSMutableArray * _Nullable fallBackTemplateList;
 
 /// This method is used parsing topic JSON Dictionary.
 /// @param detailJson Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)detailJson;
 
 @end
+
+NS_ASSUME_NONNULL_END

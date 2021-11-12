@@ -18,7 +18,7 @@ static NSString *const APPLICATION_ID = @"applozic-sample-app";
 
 @property(nonatomic,strong) NSArray * permissableVCList;
 
--(instancetype)initWithApplicationKey:(NSString *)appID;
+-(instancetype)initWithApplicationKey:(NSString *)appId;
 
 -(void)connectUserWithCompletion:(ALUser *)user withHandler:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 

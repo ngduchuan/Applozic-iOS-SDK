@@ -12,6 +12,8 @@
 #define KBASE_FILE_URL ([ALUserDefaultsHandler getFILEURL])
 #define MQTT_PORT ([ALUserDefaultsHandler getMQTTPort])
 
+NS_ASSUME_NONNULL_BEGIN
+
 static NSString *const APPLOGIC_IMAGEDOWNLOAD_BASEURL = @"https://applozic.appspot.com/rest/ws/file";
 
 static NSString *const AL_IMAGE_UPLOAD_URL = @"/rest/ws/upload/file";
@@ -114,3 +116,5 @@ typedef enum {
     /// Call message which will be disaplyed in chat.
     AV_CALL_MESSAGE = 103
 } CALL_CONTENT_TYPE;
+
+NS_ASSUME_NONNULL_END

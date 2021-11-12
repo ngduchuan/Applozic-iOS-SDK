@@ -8,13 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALSearchRequest : NSObject
 
-@property(nonatomic,retain) NSNumber *channelKey;
-@property(nonatomic,retain) NSString *userId;
-@property(nonatomic,retain) NSNumber *groupType;
-@property(nonatomic,retain) NSString *searchText;
+@property(nonatomic,retain) NSNumber * _Nullable channelKey;
+@property(nonatomic,retain) NSString * _Nullable userId;
+@property(nonatomic,retain) NSNumber * _Nullable groupType;
+@property(nonatomic,retain) NSString * searchText;
 
-- (NSString *)getParamString;
+- (NSString * _Nullable)getParamString;
 
 @end
+
+NS_ASSUME_NONNULL_END

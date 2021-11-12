@@ -10,11 +10,13 @@
 #import "ALReachability.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALAppLocalNotifications : NSObject
 
-@property(strong) ALReachability *googleReach;
-@property(strong) ALReachability *localWiFiReach;
-@property(strong) ALReachability *internetConnectionReach;
+@property(strong) ALReachability * _Nullable googleReach;
+@property(strong) ALReachability * _Nullable localWiFiReach;
+@property(strong) ALReachability * _Nullable internetConnectionReach;
 @property (nonatomic) BOOL flag;
 
 + (ALAppLocalNotifications *)appLocalNotificationHandler;
@@ -24,3 +26,4 @@
 - (void)proactivelyDisconnectMQTT;
 
 @end
+NS_ASSUME_NONNULL_END

@@ -9,6 +9,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALMessageBuilder` is an object builder for sending a text or attachment message to the Applozic server.
 ///
 /// Sending an message in one-to-one chat:
@@ -69,3 +71,5 @@
 @property (nonatomic, copy) NSString *imageFilePath;
 
 @end
+
+NS_ASSUME_NONNULL_END

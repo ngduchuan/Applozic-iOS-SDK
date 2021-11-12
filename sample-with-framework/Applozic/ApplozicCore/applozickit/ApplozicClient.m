@@ -22,10 +22,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Init with AppId
 
-- (instancetype)initWithApplicationKey:(NSString *)appID {
+- (instancetype)initWithApplicationKey:(NSString *)appId {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:appID];
+        [ALUserDefaultsHandler setApplicationKey:appId];
         [self setUpServices];
     }
     return self;
@@ -33,10 +33,10 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Init with AppId and delegate
 
-- (instancetype)initWithApplicationKey:(NSString *)appID withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (instancetype)initWithApplicationKey:(NSString *)appId withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:appID];
+        [ALUserDefaultsHandler setApplicationKey:appId];
         pushNotificationService = [[ALPushNotificationService alloc] init];
         self.delegate = delegate;
         pushNotificationService.realTimeUpdate = delegate;

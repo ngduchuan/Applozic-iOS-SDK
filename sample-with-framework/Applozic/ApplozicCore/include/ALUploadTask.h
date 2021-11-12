@@ -9,6 +9,8 @@
 #import "ALMessage.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALUploadTask` is used for uploading the attachment file.
 @interface ALUploadTask : NSObject
 
@@ -28,3 +30,5 @@
 @property (nonatomic, strong) NSString *videoThumbnailName;
 
 @end
+
+NS_ASSUME_NONNULL_END
