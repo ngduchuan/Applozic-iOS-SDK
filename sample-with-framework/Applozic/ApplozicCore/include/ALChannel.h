@@ -82,7 +82,7 @@ typedef enum {
 @property (nonatomic, strong) NSString * _Nullable clientChannelKey;
 
 /// Channel name.
-@property (nonatomic, strong) NSString * _Nullable name;
+@property (nonatomic, strong) NSString *name;
 
 /// Channel image URL.
 @property (nonatomic, strong) NSString * _Nullable channelImageURL;

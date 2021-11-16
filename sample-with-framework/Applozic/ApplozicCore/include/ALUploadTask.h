@@ -15,19 +15,19 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ALUploadTask : NSObject
 
 /// Sets the file name of the attachment.
-@property (nonatomic, copy) NSString *filePath;
+@property (nonatomic, copy) NSString * _Nullable filePath;
 
 /// Name of the file.
-@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString * _Nullable fileName;
 
 /// Sets the key from `ALMessage` object.
-@property (nonatomic, copy) NSString *identifier;
+@property (nonatomic, copy) NSString * _Nullable identifier;
 
 /// Sets the the `ALMessage` object.
 @property (nonatomic, strong) ALMessage *message;
 
 /// Sets the video Thumbnail name.
-@property (nonatomic, strong) NSString *videoThumbnailName;
+@property (nonatomic, strong) NSString * _Nullable videoThumbnailName;
 
 @end
 

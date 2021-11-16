@@ -59,8 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param groupID Pass the groupId in case of group or channel.
 /// @param handler Once the completed showing the notification the handler will be called.
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
-                   andForContactId:(NSString *)contactId
-                       withGroupId:(NSNumber *)groupID
+                   andForContactId:(NSString * _Nullable)contactId
+                       withGroupId:(NSNumber * _Nullable)groupID
                  completionHandler:(void (^)(BOOL))handler;
 
 

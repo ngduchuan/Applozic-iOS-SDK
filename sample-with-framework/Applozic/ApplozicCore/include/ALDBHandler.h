@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Fetching the data from core database this will require `NSFetchRequest` object for Processing.
 /// @param fetchrequest Create a fetch request for fetching array of data.
 /// @param fetchError Pass the `NSError` to check the status of fetch request.
-- (NSArray * _Nullable)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError ** _Nullable)fetchError;
+- (NSArray * _Nullable)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError * _Nullable * _Nullable)fetchError;
 
 /// Entities describe the "types" of objects available.
 /// @param name Pass the name of the entity.
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param updateRequest Pass the batch update request.
 /// @param fetchError Pass the error in case of any error the object will not be nil else it will be nil in case of success update.
 /// @return Returns the NSBatchUpdateResult in case of updated otherwise nil.
-- (NSBatchUpdateResult * _Nullable)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError ** _Nullable)fetchError;
+- (NSBatchUpdateResult * _Nullable)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError * _Nullable * _Nullable)fetchError;
 
 @end
 

@@ -258,7 +258,7 @@ typedef enum {
 - (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString *)string;
 
 /// Gets the Audio video call action text to show in chat.
-- (NSString * _Nullable )getVOIPMessageText;
+- (NSString * _Nullable)getVOIPMessageText;
 
 /// Returns YES if the `ALMessage` object is hidden message otherwise NO.
 - (BOOL)isMsgHidden;

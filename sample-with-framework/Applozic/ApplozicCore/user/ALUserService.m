@@ -171,7 +171,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (contact.userId && contact.displayName) {
         [self.userClientService updateUserDisplayName:contact withCompletion:^(id jsonResponse, NSError *error) {
             
-            if (jsonResponse) {
+            if (error) {
                 ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
             } else {
                 ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];

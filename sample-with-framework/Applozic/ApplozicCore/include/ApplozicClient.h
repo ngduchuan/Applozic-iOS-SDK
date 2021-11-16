@@ -66,7 +66,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 @interface ApplozicClient : NSObject <NSURLConnectionDataDelegate>
 
 /// For real time updates of attachment upload or download status.
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate> _Nullable attachmentProgressDelegate;
 
 /// Used to make API calls related to conversations.
 @property (nonatomic, retain) ALMessageService *messageService;
@@ -82,7 +82,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// Gives callbacks for real-time update events for Messages, channels, Users, and Typing.
 /// @warning Do not assign this property. It won't work properly if you do. Instead, use the `-[ApplozicClient initWithApplicationKey:withDelegate:]` initializer, which assigns this property.
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable delegate;
 
 /// init is not avaliable for accessing.
 - (instancetype)init NS_UNAVAILABLE;

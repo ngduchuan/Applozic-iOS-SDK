@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL isThumbnail;
 
 /// Sets the name of the file.
-@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString * _Nullable fileName;
 
 /// Sets the `ALMessage` object.
 @property (nonatomic, strong) ALMessage *message;

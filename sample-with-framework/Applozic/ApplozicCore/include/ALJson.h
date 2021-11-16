@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Used for getting the NSNumber value from JSON value.
 /// @param jsonValue Pass the JSON value to this method for NSNumber.
 /// @return It returns the NSNumber from JSON value.
-- (NSNumber * _Nullable)getNSNumberFromJsonValue:(id)jsonValue;
+- (NSNumber *)getNSNumberFromJsonValue:(id)jsonValue;
 
 /// Used for getting the int value from JSON value.
 /// @param jsonValue Pass the JSON value to this method for int.
