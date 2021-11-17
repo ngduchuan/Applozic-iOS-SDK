@@ -6,8 +6,8 @@
 //  Copyright © 2020 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
+#import <Foundation/Foundation.h>
 
 /// `ALAuthClientService` class is has methods for JWT token.
 /// @warning `ALAuthClientService` class used only for internal purposes.

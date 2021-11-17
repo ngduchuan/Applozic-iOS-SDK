@@ -6,8 +6,8 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// `ALChannelInfo` class is used for creating new channel conversation.
 ///

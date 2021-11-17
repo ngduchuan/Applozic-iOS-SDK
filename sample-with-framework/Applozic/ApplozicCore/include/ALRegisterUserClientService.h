@@ -5,17 +5,21 @@
 //  Created by devashish on 18/09/2015.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
+#import "ALAPIResponse.h"
+#import "ALConstant.h"
 #import <Foundation/Foundation.h>
 #import "ALRegistrationResponse.h"
-#import "ALUser.h"
-#import "ALConstant.h"
-#import "ALAPIResponse.h"
 #import "ALResponseHandler.h"
+#import "ALUser.h"
 
-/// For internal use only.
-static short AL_VERSION_CODE = 112;
-
-/// `ALRegisterUserClientService` used for registration and authentication of the user, APN's or VOIP device token update to Applozic server, update notification modes, Sync account status of Application, Logout user.
+/// `ALRegisterUserClientService` used for registration and authentication of the user.
+///
+/// Basic methods it has :
+///
+/// * APN's or VOIP device token update to Applozic server,
+/// * Update notification modes.
+/// * Sync account status of Application.
+/// * Logout user.
 @interface ALRegisterUserClientService : NSObject
 
 /// `ALResponseHandler` instance method is used for actual request call to API's. Default instance is created from `init` method of `ALRegisterUserClientService`.
@@ -47,11 +51,6 @@ static short AL_VERSION_CODE = 112;
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update notification failure.
 + (void)updateNotificationMode:(short)notificationMode
                 withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
-/// :nodoc:
-- (void)connect;
-
-/// :nodoc:
-- (void)disconnect;
 
 /// Logouts the user from Applozic server.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the logout failure.
@@ -62,20 +61,16 @@ static short AL_VERSION_CODE = 112;
 /// Used for updating current Applozic App version code to apploizc server.
 + (BOOL)isAppUpdated;
 
-/// Syncs the account status an internal method.
-/// @deprecated Method wil be removed in future.
-- (void)syncAccountStatus DEPRECATED_ATTRIBUTE;
-
 /// Syncs the account pricing status of Application.
 /// @param completion An `ALRegistrationResponse` describing a successful account status synced or An error describing the sync account failure.
 - (void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
 /// Used for updating logged-in user details to Applozic server.
 ///
-/// @warning instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
-/// @param alUser An `ALUser` object.
+/// @warning Instead use  `-[Applozic updateUserDisplayName:andUserImage:userStatus:withCompletion:];` method to update.
+/// @param updatedUser An `ALUser` object.
 /// @param completion An `ALAPIResponse` will have status `AL_RESPONSE_SUCCESS` for successful otherwise an error describing the update user failure.
-- (void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
+- (void)updateUser:(ALUser *)updatedUser withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 
 /// Update's APNs and VOIP token to applozic server.
 ///
@@ -89,5 +84,15 @@ static short AL_VERSION_CODE = 112;
 
 /// Accessing currently stored (APN's) or (VOIP) device token.
 - (NSString *)getRegistrationId;
+
+/// :nodoc:
+- (void)connect DEPRECATED_ATTRIBUTE;
+
+/// :nodoc:
+- (void)disconnect DEPRECATED_ATTRIBUTE;
+
+/// Syncs the account status an internal method.
+/// @deprecated Method wil be removed in future.
+- (void)syncAccountStatus DEPRECATED_ATTRIBUTE;
 
 @end

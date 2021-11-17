@@ -6,10 +6,10 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALConversationProxy.h"
 #import "ALConversationClientService.h"
 #import "ALConversationDBService.h"
+#import "ALConversationProxy.h"
+#import <Foundation/Foundation.h>
 
 @interface ALConversationService : NSObject
 
@@ -27,9 +27,9 @@
 
 - (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber *)channelKey;
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-            withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
+- (void)createConversation:(ALConversationProxy *)conversationProxy
+            withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion;
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion;
 
 @end

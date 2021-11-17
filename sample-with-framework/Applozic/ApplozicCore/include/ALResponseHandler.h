@@ -5,8 +5,8 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAuthService.h"
+#import <Foundation/Foundation.h>
 
 /// `ALResponseHandler`used for handling the URL request for calling the server for all the APIs.
 ///
@@ -17,23 +17,22 @@
 @property (nonatomic, strong) ALAuthService *authService;
 
 /// Calling an API without JWT token.
-/// @param theRequest Create a URLRequest using `ALRequestHandler`.
+/// @param request Create a URLRequest using `ALRequestHandler`.
 /// @param tag An tag of request to identify the request.
 /// @param reponseCompletion An complete JSON response otherwise an error describing the request failure.
 /// @note Internal API request method don't need to call from outside.
-- (void)processRequest:(NSMutableURLRequest *)theRequest
+- (void)processRequest:(NSMutableURLRequest *)request
         andTag:(NSString *)tag
- WithCompletionHandler:(void(^)(id theJson , NSError *theError))reponseCompletion;
+ WithCompletionHandler:(void(^)(id jsonResponse , NSError *error))reponseCompletion;
 
 /// Authenticate to Applozic sever by JWT token validation and proccess the request for API call.
-/// @param theRequest Create a URLRequest using `ALRequestHandler`.
+/// @param request Create a URLRequest using `ALRequestHandler`.
 /// @param tag Pass the tag for request to identify the request.
 /// @param completion An complete JSON response otherwise an error describing the Authenticate failure.
 /// @note Internal API request method don't need to call from outside.
-- (void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
+- (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
                 andTag:(NSString *)tag
         WithCompletionHandler:(void (^)(id, NSError *))completion;
-
 
 /// Authenticate to Applozic sever for JWT token and will have the mutable URL request updated with JWT Token for calling the Applozic sever.
 /// @param request Create a URLRequest using `ALRequestHandler`.

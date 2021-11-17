@@ -5,11 +5,10 @@
 //  Created by Gaurav Nigam on 09/08/15.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
-
-#import "ALDBHandler.h"
-#import "ALUtilityClass.h"
 #import "ALApplozicSettings.h"
+#import "ALDBHandler.h"
 #import "ALLogger.h"
+#import "ALUtilityClass.h"
 
 static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
@@ -196,7 +195,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 }
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
-             completion:(void (^)(NSError*error))completion {
+             completion:(void (^)(NSError *error))completion {
     @try {
         NSError *error;
         if (!context) {

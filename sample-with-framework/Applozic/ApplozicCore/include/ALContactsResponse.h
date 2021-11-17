@@ -17,7 +17,6 @@
 /// :nodoc:
 @property (nonatomic, strong) NSNumber *totalUnreadCount;
 
-
 /// Array of `ALUserDetail` objects.
 @property (nonatomic, strong) NSMutableArray *userDetailList;
 

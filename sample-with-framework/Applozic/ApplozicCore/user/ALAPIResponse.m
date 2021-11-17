@@ -19,14 +19,12 @@ NSString *const AL_RESPONSE_ERROR = @"error";
     return self;
 }
 
-- (void)parseMessage:(id)json {
-    self.status = [self getStringFromJsonValue:json[@"status"]];
-    self.generatedAt = [self getNSNumberFromJsonValue:json[@"generatedAt"]];
-    self.response =  [json valueForKey:@"response"];
-    self.actualresponse = json;
-    ALSLog(ALLoggerSeverityInfo, @"self.generatedAt : %@",self.generatedAt);
-    ALSLog(ALLoggerSeverityInfo, @"self.status : %@",self.status);
+- (void)parseMessage:(id)jsonResponse {
+    self.status = [self getStringFromJsonValue:jsonResponse[@"status"]];
+    self.generatedAt = [self getNSNumberFromJsonValue:jsonResponse[@"generatedAt"]];
+    self.response =  [jsonResponse valueForKey:@"response"];
+    self.actualresponse = jsonResponse;
+    ALSLog(ALLoggerSeverityInfo, @"Response status is (%@) and generated At time is (%@)",self.status, self.generatedAt);
 }
-
 
 @end

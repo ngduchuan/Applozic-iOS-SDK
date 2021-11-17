@@ -6,17 +6,17 @@
 //  Copyright © 2019 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALUploadTask.h"
 #import "ALDownloadTask.h"
 #import "ALMessage.h"
+#import "ALUploadTask.h"
 #import "ApplozicClient.h"
+#import <Foundation/Foundation.h>
 
 @interface ALHTTPManager : NSObject <NSURLSessionDataDelegate,NSURLSessionDelegate>
 
 @property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate>delegate;
 
 @property (nonatomic, strong) NSMutableData *buffer;
 
@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)processDownloadForMessage:(ALMessage *)alMessage isAttachmentDownload:(BOOL)attachmentDownloadFlag;
+- (void)processDownloadForMessage:(ALMessage *)message isAttachmentDownload:(BOOL)attachmentDownloadFlag;
 
 - (void)processUploadFileForMessage:(ALMessage *)message uploadURL:(NSString *)uploadURL;
 

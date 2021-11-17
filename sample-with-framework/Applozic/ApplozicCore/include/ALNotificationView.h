@@ -6,8 +6,8 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "ApplozicCore.h"
+#import <UIKit/UIKit.h>
 
 /// `ALNotificationView` class is used for showing local notification and it is used in Applozic UI.
 @interface ALNotificationView : UILabel
@@ -22,12 +22,12 @@
 @property (retain, nonatomic) NSNumber *conversationId;
 
 /// Sets in `-[ALNotificationView initWithAlMessage:withAlertMessage]` method it will have `ALMessage` object.
-@property (retain, nonatomic) ALMessage *alMessageObject;
+@property (retain, nonatomic) ALMessage *message;
 
 /// Get the `ALNotificationView` object with `ALMessage` and alert message for showing a notification.
-/// @param alMessage An `ALMessage` object with message details.
+/// @param message An `ALMessage` object with message details.
 /// @param alertMessage An alert message to display.
-- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage: (NSString *)alertMessage;
+- (instancetype)initWithAlMessage:(ALMessage *)message withAlertMessage: (NSString *)alertMessage;
 
 /// Shows local notification and handler for the tap event for notification.
 /// @param handler The handler will be called once the tap on the local notification.

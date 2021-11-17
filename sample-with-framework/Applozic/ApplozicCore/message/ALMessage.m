@@ -5,14 +5,14 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALMessage.h"
-#import "ALUtilityClass.h"
 #import "ALChannel.h"
-#import "ALContact.h"
 #import "ALChannelService.h"
+#import "ALContact.h"
 #import "ALContactDBService.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALMessage.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUtilityClass.h"
 
 static NSString * const AL_DELETE_MESSAGE_FOR_KEY = @"AL_DELETE_GROUP_MESSAGE_FOR_ALL";
 static NSString * const AL_TRUE = @"true";
@@ -98,11 +98,6 @@ static NSString * const AL_TRUE = @"true";
     // storeOnDevice
 
     self.storeOnDevice = [self getBoolFromJsonValue:messageJson[@"storeOnDevice"]];
-
-
-    // read
-
-    //self.read = [self getBoolFromJsonValue:messageJson[@"read"]];
 
     //develired
     self.delivered = [self getBoolFromJsonValue:messageJson[@"delivered"]];
@@ -222,7 +217,7 @@ static NSString * const AL_TRUE = @"true";
             && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
 }
 
-- (NSString*)getLastMessage {
+- (NSString *)getLastMessage {
 
     if (self.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");
@@ -254,13 +249,13 @@ static NSString * const AL_TRUE = @"true";
 }
 
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
 
-    if (string == nil) {
+    if (jsonString == nil) {
         return nil;
     }
 
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metaDataDictionary;
 
@@ -443,9 +438,9 @@ static NSString * const AL_TRUE = @"true";
 }
 
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder {
-    ALMessageBuilder *alMessageBuilder = [ALMessageBuilder new];
-    builder(alMessageBuilder);
-    return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
+    ALMessageBuilder *messageBuilder = [ALMessageBuilder new];
+    builder(messageBuilder);
+    return [[ALMessage alloc] initWithBuilder:messageBuilder];
 }
 
 - (BOOL)isNotificationDisabled {
@@ -455,8 +450,8 @@ static NSString * const AL_TRUE = @"true";
         ALChannelService *channelService = [[ALChannelService alloc] init];
         channel = [channelService getChannelByKey:self.groupId];
     } else {
-        ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-        contact = [alContactDBService loadContactByKey:@"userId" value:self.contactIds];
+        ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+        contact = [contactDBService loadContactByKey:@"userId" value:self.contactIds];
     }
     
     return (([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)

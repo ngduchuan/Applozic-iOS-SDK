@@ -10,6 +10,7 @@
 
 /// `ALJWTProtocol` is used in `ALJWT` for decoding the JWT token.
 @protocol ALJWTProtocol <NSObject>
+
 /// token header part contents
 @property (nonatomic) NSDictionary<NSString *, id> * _Nonnull header;
 
@@ -55,7 +56,6 @@
 /// @param jwtValue Value of the token to decode.
 /// @param error Pass NSError to get any error in decoding JWT token.
 /// @return A new instance of `ALJWT` that holds the decode token.
-
 + (ALJWT * _Nullable)decodeWithJwt:(NSString * _Nonnull)jwtValue
                              error:(NSError * _Nullable * _Nullable)error;
 

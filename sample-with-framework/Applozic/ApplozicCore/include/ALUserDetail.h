@@ -6,24 +6,24 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
+#import "ALJson.h"
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
 
 @interface ALUserDetail : ALJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) BOOL connected;
 @property (nonatomic, strong) NSNumber *lastSeenAtTime;
-@property (nonatomic, strong)  NSNumber *unreadCount;
+@property (nonatomic, strong) NSNumber *unreadCount;
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, copy) NSManagedObjectID *userDetailDBObjectId;
 @property (nonatomic, strong) NSString *imageLink;
 @property (nonatomic, strong) NSString *contactNumber;
-@property (nonatomic, strong)  NSString *userStatus;
-@property (nonatomic, strong)  NSArray *keyArray;
-@property (nonatomic, strong)  NSArray *valueArray;
-@property (nonatomic, strong)  NSString *userIdString;
+@property (nonatomic, strong) NSString *userStatus;
+@property (nonatomic, strong) NSArray *keyArray;
+@property (nonatomic, strong) NSArray *valueArray;
+@property (nonatomic, strong) NSString *userIdString;
 @property (nonatomic, strong) NSNumber *userTypeId;
 @property (nonatomic, strong) NSNumber *deletedAtTime;
 @property (nonatomic, strong) NSNumber *roleType;
@@ -44,7 +44,7 @@
 
 - (BOOL)isChatDisabled;
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString;
 - (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString;
 
 @end

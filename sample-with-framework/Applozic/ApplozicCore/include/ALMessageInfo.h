@@ -6,8 +6,8 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// `ALMessageInfo` class is used for parsing the Message information JSON data and mapping it.
 @interface ALMessageInfo : ALJson
@@ -25,9 +25,5 @@
 /// This method is used for parsing the JSON Dictionary of Message information.
 /// @param messageDictonary Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
-
-/// This method is used for parsing the JSON Dictionary of Message information.
-/// @param messageJson Pass JSON data.
-- (void)parseMessage:(id)messageJson;
 
 @end

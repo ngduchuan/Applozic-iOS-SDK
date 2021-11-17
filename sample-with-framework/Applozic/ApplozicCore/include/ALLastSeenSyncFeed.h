@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALUserDetail.h"
 #import "ALJson.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
 
 /// `ALLastSeenSyncFeed` class is used
 @interface ALLastSeenSyncFeed : ALJson

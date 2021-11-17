@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Felix Krause. All rights reserved.
 //
 
-#import "TSMessageView.h"
+#import "ALUtilityClass.h"
 #import "HexColors.h"
 #import "TSBlurView.h"
 #import "TSMessage.h"
-#import "ALUtilityClass.h"
+#import "TSMessageView.h"
 
 #define TSMessageViewMinimumPadding 15.0
 

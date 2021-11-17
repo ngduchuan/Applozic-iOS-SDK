@@ -6,16 +6,16 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //  class for databse actios for group
 
-#import <Foundation/Foundation.h>
+#import "ALApplozicSettings.h"
 #import "ALChannel.h"
-#import "DB_CHANNEL.h"
-#import "DB_CHANNEL_USER_X.h"
-#import "ALDBHandler.h"
 #import "ALChannelUserX.h"
 #import "ALConversationProxy.h"
-#import "DB_ConversationProxy.h"
-#import "ALApplozicSettings.h"
+#import "ALDBHandler.h"
 #import "ALRealTimeUpdate.h"
+#import "DB_CHANNEL.h"
+#import "DB_CHANNEL_USER_X.h"
+#import "DB_ConversationProxy.h"
+#import <Foundation/Foundation.h>
 
 @interface ALChannelDBService : NSObject
 
@@ -25,17 +25,17 @@
 
 - (DB_CHANNEL *)createChannelEntity:(ALChannel *)channel;
 
-- (void)insertChannelUserX:(NSMutableArray *)channelUserX;
+- (void)insertChannelUserX:(NSMutableArray *)channelUserXList;
 
-- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserXList;
+- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX;
 
 - (NSMutableArray *)getChannelMembersList:(NSNumber *)channelKey;
 
-- (ALChannel *)loadChannelByKey:(NSNumber *)key;
+- (ALChannel *)loadChannelByKey:(NSNumber *)channelKey;
 
-- (DB_CHANNEL *)getChannelByKey:(NSNumber *)key;
+- (DB_CHANNEL *)getChannelByKey:(NSNumber *)channelKey;
 
-- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
+- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)channelKey;
 
 - (ALChannel *)checkChannelEntity:(NSNumber *)channelKey;
 
@@ -54,22 +54,23 @@
 
 - (void)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData;
 
-- (NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key;
-//New Added...
-- (NSUInteger)markConversationAsRead:(NSNumber*)channelKey;
+- (NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)channelKey;
 
-- (NSArray *)getUnreadMessagesForGroup:(NSNumber*)groupId;
+- (NSUInteger)markConversationAsRead:(NSNumber *)channelKey;
+
+- (NSArray *)getUnreadMessagesForGroup:(NSNumber *)groupId;
 
 - (void)updateUnreadCountChannel:(NSNumber *)channelKey unreadCount:(NSNumber *)unreadCount;
 
-- (void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)groupId;
+- (void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)channelKey;
 
-- (BOOL)isChannelLeft:(NSNumber *)groupId;
+- (BOOL)isChannelLeft:(NSNumber *)channelKey;
 
-- (BOOL)isChannelDeleted:(NSNumber *)groupId;
-- (BOOL)isConversaionClosed:(NSNumber *)groupId;
+- (BOOL)isChannelDeleted:(NSNumber *)channelKey;
 
-- (BOOL)isAdminBroadcastChannel:(NSNumber *)groupId;
+- (BOOL)isConversaionClosed:(NSNumber *)channelKey;
+
+- (BOOL)isAdminBroadcastChannel:(NSNumber *)channelKey;
 
 - (void)updateChannelParentKey:(NSNumber *)channelKey
               andWithParentKey:(NSNumber *)channelParentKey
@@ -104,9 +105,10 @@
 - (NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
 
 - (DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName;
-- (NSMutableArray *)getGroupUsersInChannel:(NSNumber *)key;
 
-- (void)fetchChannelMembersAsyncWithChannelKey:(NSNumber*)channelKey witCompletion:(void(^)(NSMutableArray *membersArray))completion;
+- (NSMutableArray *)getGroupUsersInChannel:(NSNumber *)channelKey;
+
+- (void)fetchChannelMembersAsyncWithChannelKey:(NSNumber *)channelKey witCompletion:(void(^)(NSMutableArray *membersArray))completion;
 
 - (void)getUserInSupportGroup:(NSNumber *)channelKey withCompletion:(void(^)(NSString *userId)) completion;
 

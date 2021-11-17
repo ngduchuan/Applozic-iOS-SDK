@@ -52,11 +52,10 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
 
     if ([message.groupId intValue]) {
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService getChannelInformation:message.groupId
-                           orClientChannelKey:nil
-                               withCompletion:^(ALChannel *alChannel) {
-            [self updateProfileImageAndUnreadCountWithChannel:alChannel orContact:nil withColourDictionary:colourDictionary];
-        }];
+        ALChannel *channel = [channelService getChannelByKey:message.groupId];
+        if (channel) {
+            [self updateProfileImageAndUnreadCountWithChannel:channel orContact:nil withColourDictionary:colourDictionary];
+        }
     } else {
         ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         ALContact *alContact = [contactDBService loadContactByKey:@"userId" value: message.to];

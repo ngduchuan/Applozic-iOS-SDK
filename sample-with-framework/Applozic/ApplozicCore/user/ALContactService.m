@@ -6,8 +6,8 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import "ALContactService.h"
 #import "ALContactDBService.h"
+#import "ALContactService.h"
 #import "ALDBHandler.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALUserService.h"
@@ -26,12 +26,10 @@
     return [self.alContactDBService purgeContact:contact];
 }
 
-
 //For purgeing multiple contacts
 - (BOOL)purgeListOfContacts:(NSArray *)contacts {
     return [self.alContactDBService purgeListOfContacts:contacts];
 }
-
 
 //For delting all contacts at once
 - (BOOL)purgeAllContact {
@@ -62,12 +60,12 @@
     return [self.alContactDBService getOverallUnreadCountForContactsFromDB];
 }
 
-- (BOOL)isContactExist:(NSString *)value {
+- (BOOL)isContactExist:(NSString *)userId {
 
-    DB_CONTACT *contact= [self.alContactDBService getContactByKey:@"userId" value:value];
+    DB_CONTACT *contact = [self.alContactDBService getContactByKey:@"userId" value:userId];
     return contact != nil && contact.userId != nil;
 }
-#pragma mark update OR insert contact
+#pragma mark Update OR insert contact
 
 - (BOOL)updateOrInsert:(ALContact *)contact {
     return ([self isContactExist:contact.userId]) ? [self updateContact:contact] : [self addContact:contact];
@@ -80,7 +78,7 @@
     }
 }
 
-#pragma mark addition APIS
+#pragma mark Addition APIS
 - (BOOL)addListOfContacts:(NSArray *)contacts {
     return [self.alContactDBService addListOfContacts:contacts];
 }
@@ -95,7 +93,7 @@
 
 }
 
-#pragma mark fetching APIS
+#pragma mark Fetching APIS
 - (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value {
     if (!key || !value) {
         return nil;
@@ -103,8 +101,8 @@
     return [self.alContactDBService loadContactByKey:key value:value];
 }
 
-#pragma mark fetching or save
-- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName {
+#pragma mark Fetching or save
+- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString *)displayName {
     
     DB_CONTACT *dbContact = [self.alContactDBService getContactByKey:@"userId" value:contactId];
     
@@ -157,4 +155,5 @@
 - (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     return  [self.alContactDBService updateMuteAfterTime:notificationAfterTime andUserId:userId];
 }
+
 @end

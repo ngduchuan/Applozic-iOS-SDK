@@ -17,13 +17,13 @@
         return;
     }
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
-        [self createConversationProxy:proxy];
+    for (ALConversationProxy *conversationProxy in proxyArray) {
+        [self createConversationProxy:conversationProxy];
     }
 
-    NSError *error = [alDBHandler saveContext];
+    NSError *error = [databaseaHandler saveContext];
     if (error) {
         ALSLog(ALLoggerSeverityError, @"ERROR: InsertConversationProxy METHOD %@",error);
     }
@@ -32,16 +32,16 @@
 
 - (void)insertConversationProxyTopicDetails:(NSMutableArray*)proxyArray {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
-        DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:proxy.Id];
+    for (ALConversationProxy *conversationProxy in proxyArray) {
+        DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:conversationProxy.Id];
         if (!dbConversationProxy) {
-            dbConversationProxy.topicDetailJson = proxy.topicDetailJson;
+            dbConversationProxy.topicDetailJson = conversationProxy.topicDetailJson;
         }
     }
     
-    NSError *error = [alDBHandler saveContext];
+    NSError *error = [databaseaHandler saveContext];
     if (error) {
         ALSLog(ALLoggerSeverityError, @"ERROR: TopicDetails Insert METHOD %@",error);
     } else {
@@ -51,10 +51,10 @@
 }
 
 - (DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:conversationProxy.Id];
     if (!dbConversationProxy) {
-        dbConversationProxy = (DB_ConversationProxy*)[alDBHandler insertNewObjectForEntityForName:@"DB_ConversationProxy"];
+        dbConversationProxy = (DB_ConversationProxy*)[databaseaHandler insertNewObjectForEntityForName:@"DB_ConversationProxy"];
     }
     if (dbConversationProxy) {
         dbConversationProxy.iD=conversationProxy.Id;
@@ -71,16 +71,16 @@
 
 
 - (DB_ConversationProxy *)getConversationProxyByKey:(NSNumber *)Id {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
+    NSEntityDescription *conversationEntity = [databaseaHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
     if (conversationEntity) {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iD = %@",Id];
         [fetchRequest setEntity:conversationEntity];
         [fetchRequest setPredicate:predicate];
         NSError *fetchError = nil;
-        NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        NSArray *result = [databaseaHandler executeFetchRequest:fetchRequest withError:&fetchError];
         if (result.count) {
             DB_ConversationProxy *proxy = [result objectAtIndex:0];
             return proxy;
@@ -89,11 +89,11 @@
     return nil;
 }
 
-- (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId {
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
+    NSEntityDescription *conversationEntity = [databaseaHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 
     if (conversationEntity) {
         NSPredicate *predicate;
@@ -102,7 +102,7 @@
             [fetchRequest setEntity:conversationEntity];
             [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
             NSError *fetchError = nil;
-            NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            NSArray *result = [databaseaHandler executeFetchRequest:fetchRequest withError:&fetchError];
             if (result.count) {
                 return result;
             }
@@ -111,12 +111,12 @@
     return nil;
 }
 
-- (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId
-                                         andTopicId:(NSString*)topicId {
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId
+                                         andTopicId:(NSString *)topicId {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
+    NSEntityDescription *conversationEntity = [databaseaHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 
     if (conversationEntity) {
         NSPredicate *predicate;
@@ -126,7 +126,7 @@
             [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
             NSError *fetchError = nil;
 
-            NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            NSArray *result = [databaseaHandler executeFetchRequest:fetchRequest withError:&fetchError];
             if (result.count) {
                 return result;
             }
@@ -137,9 +137,9 @@
 
 - (NSArray*)getConversationProxyListFromDBWithChannelKey:(NSNumber *)channelKey {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *databaseaHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
+    NSEntityDescription *conversationEntity = [databaseaHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 
     if (conversationEntity) {
         NSPredicate *predicate;
@@ -148,7 +148,7 @@
             [fetchRequest setEntity:conversationEntity];
             [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]]];
             NSError *fetchError = nil;
-            NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+            NSArray *result = [databaseaHandler executeFetchRequest:fetchRequest withError:&fetchError];
             if (result.count) {
                 return result;
             }

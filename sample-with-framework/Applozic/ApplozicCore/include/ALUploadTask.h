@@ -6,8 +6,8 @@
 //  Copyright © 2019 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALMessage.h"
+#import <Foundation/Foundation.h>
 
 /// `ALUploadTask` is used for uploading the attachment file.
 @interface ALUploadTask : NSObject

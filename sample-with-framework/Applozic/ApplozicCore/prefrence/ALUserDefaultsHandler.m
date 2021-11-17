@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
 #import "ALPasswordQueryable.h"
+#import "ALUserDefaultsHandler.h"
 #import "ALUtilityClass.h"
 
 static NSString *const AL_APPLICATION_KEY = @"com.applozic.userdefault.APPLICATION_KEY";
@@ -193,8 +193,6 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     [userDefaults boolForKey: AL_EMAIL_VERIFIED];
 }
 
-// isConversationDbSynced
-
 + (void)setBoolForKey_isConversationDbSynced:(BOOL)value {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     [userDefaults setBool:value forKey:AL_CONVERSATION_DB_SYNCED];
@@ -345,7 +343,7 @@ static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVI
     NSMutableArray *mutableArray = [self getProcessedNotificationIds];
     
     if (mutableArray == nil) {
-        mutableArray = [[NSMutableArray alloc]init];
+        mutableArray = [[NSMutableArray alloc] init];
     }
     
     BOOL isTheObjectThere = [mutableArray containsObject:withNotificationId];

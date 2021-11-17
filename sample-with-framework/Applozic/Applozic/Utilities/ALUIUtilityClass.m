@@ -12,6 +12,10 @@
 #import "ALUIImage+animatedGIF.h"
 #import <AVFoundation/AVFoundation.h>
 
+static NSString *const APPLOZIC_TOPBAR_COLOR = @"ApplozicTopbarColor";
+static NSString *const APPLOZIC_CHAT_FONTNAME = @"ApplozicChatFontName";
+static NSString *const APPLOGIC_TOPBAR_TITLE_COLOR = @"ApplozicTopbarTitleColor";
+
 @implementation ALUIUtilityClass
 
 + (UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName {

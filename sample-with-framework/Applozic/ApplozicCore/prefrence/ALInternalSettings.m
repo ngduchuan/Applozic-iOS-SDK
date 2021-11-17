@@ -20,7 +20,7 @@ static NSString *const AL_REGISTERED = @"AL_REGISTERED";
     [userDefaults synchronize];
 }
 
-+ (NSString*)getRegistrationStatusMessage {
++ (NSString *)getRegistrationStatusMessage {
     NSUserDefaults *userDefaults = [ALInternalSettings getUserDefaults];
     NSString *pushRegistrationStatusMessage  =  [userDefaults valueForKey:AL_REGISTRATION_STATUS_MESSAGE];
     return pushRegistrationStatusMessage  != nil ? pushRegistrationStatusMessage : AL_REGISTERED;

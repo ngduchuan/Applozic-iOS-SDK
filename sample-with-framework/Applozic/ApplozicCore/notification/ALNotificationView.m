@@ -22,38 +22,38 @@
  *********************/
 
 
-- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage:(NSString *)alertMessage {
+- (instancetype)initWithAlMessage:(ALMessage *)message withAlertMessage:(NSString *)alertMessage {
     self = [super init];
-    self.text =[self getNotificationText:alMessage];
+    self.text =[self getNotificationText:message];
     self.textColor = [UIColor whiteColor];
     self.textAlignment = NSTextAlignmentCenter;
     self.layer.cornerRadius = 0;
     self.userInteractionEnabled = YES;
-    self.contactId = alMessage.contactIds;
-    self.groupId = alMessage.groupId;
-    self.conversationId = alMessage.conversationId;
-    self.alMessageObject = alMessage;
+    self.contactId = message.contactIds;
+    self.groupId = message.groupId;
+    self.conversationId = message.conversationId;
+    self.message = message;
     return self;
 }
 
-- (NSString*)getNotificationText:(ALMessage *)alMessage {
+- (NSString *)getNotificationText:(ALMessage *)message {
     
-    if (alMessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
+    if (message.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"shareadLocationText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Location", @"") ;
-    } else if (alMessage.contentType == ALMESSAGE_CONTENT_VCARD) {
+    } else if (message.contentType == ALMESSAGE_CONTENT_VCARD) {
         return NSLocalizedStringWithDefaultValue(@"shareadContactText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Contact", @"");
-    } else if (alMessage.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING) {
+    } else if (message.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING) {
         return NSLocalizedStringWithDefaultValue(@"shareadVideoText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Video", @"");
-    } else if (alMessage.contentType == ALMESSAGE_CONTENT_AUDIO) {
+    } else if (message.contentType == ALMESSAGE_CONTENT_AUDIO) {
         return NSLocalizedStringWithDefaultValue(@"shareadAudioText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared an Audio", @"");
-    } else if (alMessage.contentType == AV_CALL_MESSAGE) {
-        return [alMessage getVOIPMessageText];
-    } else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
-               [alMessage.message isEqualToString:@""] ||
-               alMessage.fileMeta != NULL) {
+    } else if (message.contentType == AV_CALL_MESSAGE) {
+        return [message getVOIPMessageText];
+    } else if (message.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
+               [message.message isEqualToString:@""] ||
+               message.fileMeta != NULL) {
         return NSLocalizedStringWithDefaultValue(@"shareadAttachmentText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared an Attachment", @"");
     } else {
-        return alMessage.message;
+        return message.message;
     }
 }
 
@@ -67,13 +67,24 @@
 
 - (void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler {
     if (self.groupId != nil) {
-        [[ALChannelService new] getChannelInformation:self.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
-            [self buildAndShowNotificationWithcompletionHandler:^(BOOL response){
+        [[ALChannelService new] getChannelInformationByResponse:self.groupId
+                                             orClientChannelKey:nil
+                                                 withCompletion:^(NSError *error,
+                                                                  ALChannel *channel,
+                                                                  ALChannelFeedResponse *channelResponse) {
+
+            if (error ||
+                !channel) {
+                handler(NO);
+                return;
+            }
+
+            [self buildAndShowNotificationWithcompletionHandler:^(BOOL response) {
                 handler(response);
             }];
         }];
     } else {
-        [self buildAndShowNotificationWithcompletionHandler:^(BOOL response){
+        [self buildAndShowNotificationWithcompletionHandler:^(BOOL response) {
             handler(response);
         }];
     }
@@ -81,7 +92,7 @@
 
 - (void)buildAndShowNotificationWithcompletionHandler:(void (^)(BOOL))handler {
 
-    if ([self.alMessageObject isNotificationDisabled]) {
+    if ([self.message isNotificationDisabled]) {
         return;
     }
     
@@ -91,33 +102,33 @@
     ALPushAssist *top = [[ALPushAssist alloc] init];
 
     ALContactDBService * contactDbService = [[ALContactDBService alloc] init];
-    ALContact *alContact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
+    ALContact *contact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
 
-    ALChannel *alChannel = nil;
+    ALChannel *channel = nil;
     ALChannelDBService *channelDbService = [[ALChannelDBService alloc] init];
 
     if (self.groupId && self.groupId.intValue != 0) {
         NSString *contactName;
         NSString *groupName;
 
-        alChannel = [channelDbService loadChannelByKey:self.groupId];
-        alContact.userId = (alContact.userId != nil ? alContact.userId:@"");
+        channel = [channelDbService loadChannelByKey:self.groupId];
+        contact.userId = (contact.userId != nil ? contact.userId:@"");
 
-        groupName = [NSString stringWithFormat:@"%@",(alChannel.name != nil ? alChannel.name : self.groupId)];
+        groupName = [NSString stringWithFormat:@"%@",(channel.name != nil ? channel.name : self.groupId)];
 
-        if (alChannel.type == GROUP_OF_TWO) {
-            ALContact * groupContact = [contactDbService loadContactByKey:@"userId" value:[alChannel getReceiverIdInGroupOfTwo]];
+        if (channel.type == GROUP_OF_TWO) {
+            ALContact *groupContact = [contactDbService loadContactByKey:@"userId" value:[channel getReceiverIdInGroupOfTwo]];
             groupName = [groupContact getDisplayName];
         }
 
-        NSArray *notificationComponents = [alContact.getDisplayName componentsSeparatedByString:@":"];
+        NSArray *notificationComponents = [contact.getDisplayName componentsSeparatedByString:@":"];
         if (notificationComponents.count > 1) {
             contactName = [[contactDbService loadContactByKey:@"userId" value:[notificationComponents lastObject]] getDisplayName];
         } else {
-            contactName = alContact.getDisplayName;
+            contactName = contact.getDisplayName;
         }
 
-        if (self.alMessageObject.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+        if (self.message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
             title = self.text;
             subtitle = @"";
         } else {
@@ -125,12 +136,12 @@
             subtitle = [NSString stringWithFormat:@"%@:%@",contactName,subtitle];
         }
     } else {
-        title = alContact.getDisplayName;
+        title = contact.getDisplayName;
         subtitle = self.text;
     }
 
     // ** Attachment ** //
-    if (self.alMessageObject.contentType == ALMESSAGE_CONTENT_LOCATION) {
+    if (self.message.contentType == ALMESSAGE_CONTENT_LOCATION) {
         subtitle = [NSString stringWithFormat:@"Shared location"];
     }
 

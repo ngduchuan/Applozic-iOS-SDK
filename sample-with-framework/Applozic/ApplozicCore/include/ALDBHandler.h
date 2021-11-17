@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
 /// `ALDBHandler` has all the methods for core data operations like inserting, fetching, deleting and updating in core data ManagedObject.
 /// @warning `ALDBHandler` class used only for internal purposes.

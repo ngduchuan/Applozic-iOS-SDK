@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
+#import <Foundation/Foundation.h>
 
 /// Logged in user disable the chat key.
 static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
@@ -61,7 +61,7 @@ static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 
 + (void)setUserId:(NSString *)userId;
 
-+ (NSString*)getUserId;
++ (NSString *)getUserId;
 
 + (void)setLastSyncTime:(NSNumber *)lastSyncTime;
 

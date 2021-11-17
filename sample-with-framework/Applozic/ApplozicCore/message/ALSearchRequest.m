@@ -11,7 +11,7 @@
 
 @implementation ALSearchRequest
 
--(NSString*)getParamString {
+-(NSString *)getParamString {
     NSString *paramString;
     if (self.channelKey != nil) {
         paramString = [NSString stringWithFormat:@"groupId=%@&content=%@",self.channelKey,[self.searchText urlEncodeUsingNSUTF8StringEncoding]];

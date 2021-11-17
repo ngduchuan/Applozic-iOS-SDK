@@ -6,11 +6,11 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "MessageListRequest.h"
-#import "ALUserDefaultsHandler.h"
-#import "NSString+Encode.h"
 #import "ALChannel.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "MessageListRequest.h"
+#import "NSString+Encode.h"
 
 static NSString *const DEFAULT_PAGE_SIZE = @"50";
 static NSString *const DEFAULT_START_INDEX = @"0";
@@ -46,7 +46,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
         paramString = [paramString stringByAppendingFormat:@"&startTime=%@",self.startTimeStamp.stringValue];
     }
     
-    if (self.conversationId != nil){
+    if (self.conversationId != nil) {
         
         paramString = [paramString stringByAppendingFormat:@"&conversationId=%@",self.conversationId];
     }
@@ -56,7 +56,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     
     if (![ALUserDefaultsHandler isServerCallDoneForMSGList:self.userId]) {
         paramString = [paramString stringByAppendingString:@"&conversationReq=true"];
-        ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :theParamString :%@",paramString );
+        ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :paramString :%@",paramString );
     }
     
     if (self.skipRead) {

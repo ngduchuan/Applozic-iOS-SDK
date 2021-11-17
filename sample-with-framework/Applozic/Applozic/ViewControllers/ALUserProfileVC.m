@@ -74,7 +74,7 @@
     [self.activityIndicator startAnimating];
 
     [userService updateUserDetail:loginUserId
-                     withCompletion:^(ALUserDetail *userDetail) {
+                   withCompletion:^(ALUserDetail *userDetail) {
         self->myContact = [self->alContactService loadContactByKey:@"userId" value:loginUserId];
         [self setupViewWithContact:self->myContact];
         [self.activityIndicator stopAnimating];
@@ -139,7 +139,7 @@
 - (void)addNotificationObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showMQTTNotification:)
-                                                 name:@"MQTT_APPLOZIC_01"
+                                                 name:NEW_MESSAGE_NOTIFICATION
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -155,7 +155,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
 
@@ -193,25 +193,35 @@
 }
 
 - (void)showMQTTNotification:(NSNotification *)notifyObject {
-    ALMessage *alMessage = (ALMessage *)notifyObject.object;
-    
-    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
-    
-    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage isMsgHidden]) {
-        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                          withAlertMessage:alMessage.message];
 
-        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+    NSMutableArray *messageArray = notifyObject.object;
 
-            ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
-
-            if ([helper isApplozicViewControllerOnTop]) {
-
-                [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
-            }
-
-        }];
+    if (!messageArray) {
+        return;
     }
+
+    for (ALMessage *message in messageArray) {
+        if (![message.type isEqualToString:@"5"] && ![message isNotificationDisabled]) {
+
+            ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:message
+                                                                              withAlertMessage:message.message];
+
+            [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+                ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
+
+                if ([helper isApplozicViewControllerOnTop]) {
+
+                    [helper handlerNotificationClick:message.contactIds
+                                         withGroupId:message.groupId
+                                  withConversationId:message.conversationId
+                        notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+                }
+
+            }];
+        }
+    }
+
 }
 
 - (void)handleAPNS:(NSNotification *)notification {

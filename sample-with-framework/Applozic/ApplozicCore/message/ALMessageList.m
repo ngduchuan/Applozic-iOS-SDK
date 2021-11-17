@@ -6,12 +6,12 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import "ALMessageList.h"
-#import "ALMessage.h"
-#import "ALUserDetail.h"
 #import "ALChannel.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALMessage.h"
+#import "ALMessageList.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
 
 @implementation ALMessageList
 
@@ -29,35 +29,37 @@
     return self;
 }
 
-- (void)parseMessagseArray:(id)messagejson {
+- (void)parseMessagseArray:(id)messageJson {
     NSMutableArray *messagesArray = [NSMutableArray new];
     NSMutableArray *userDetailArray = [NSMutableArray new];
     NSMutableArray *conversationProxyList = [NSMutableArray new];
 
-    NSDictionary *messageDictionary = [messagejson valueForKey:@"message"];
-    ALSLog(ALLoggerSeverityInfo, @"MESSAGES_DICT_COUNT :: %lu",(unsigned long)messageDictionary.count);
-    if (messageDictionary.count == 0) {
+    NSDictionary *messagesDictionary = [messageJson valueForKey:@"message"];
+    ALSLog(ALLoggerSeverityInfo, @"MESSAGES_DICT_COUNT :: %lu",(unsigned long)messagesDictionary.count);
+    if (messagesDictionary.count == 0 &&
+        !self.userId &&
+        !self.groupId) {
         ALSLog(ALLoggerSeverityInfo, @"NO_MORE_MESSAGES");
         [ALUserDefaultsHandler setFlagForAllConversationFetched: YES];
     }
     
-    for (NSDictionary *theDictionary in messageDictionary) {
-        ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary];
+    for (NSDictionary *messageDictionary in messagesDictionary) {
+        ALMessage *message = [[ALMessage alloc] initWithDictonary:messageDictionary];
         [messagesArray addObject:message];
     }
     self.messageList = messagesArray;
     
-    NSDictionary *userDetailsDictionary = [messagejson valueForKey:@"userDetails"];
+    NSDictionary *userDetailsDictionary = [messageJson valueForKey:@"userDetails"];
 
-    for (NSDictionary *theDictionary in userDetailsDictionary) {
-        ALUserDetail *alUserDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
-        [userDetailArray addObject:alUserDetail];
+    for (NSDictionary *userDetailDictionary in userDetailsDictionary) {
+        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
+        [userDetailArray addObject:userDetail];
     }
     
-    NSDictionary *conversationProxyDictionary = [messagejson valueForKey:@"conversationPxys"];
+    NSDictionary *conversationsProxyDictionary = [messageJson valueForKey:@"conversationPxys"];
     
-    for (NSDictionary *theDictionary in conversationProxyDictionary) {
-        ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:theDictionary];
+    for (NSDictionary *conversationProxyDictionary in conversationsProxyDictionary) {
+        ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:conversationProxyDictionary];
         conversationProxy.userId = self.userId;
         conversationProxy.groupId = self.groupId;
         [conversationProxyList addObject:conversationProxy];

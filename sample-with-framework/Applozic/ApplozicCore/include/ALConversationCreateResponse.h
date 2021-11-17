@@ -6,9 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
 #import "ALConversationProxy.h"
+#import <Foundation/Foundation.h>
 
 /// `ALConversationCreateResponse` class is used for context based conversation create response parsing.
 @interface ALConversationCreateResponse : ALAPIResponse

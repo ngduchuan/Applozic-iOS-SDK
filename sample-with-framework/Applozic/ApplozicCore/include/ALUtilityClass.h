@@ -5,9 +5,9 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
+#import "ALMessage.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
 
 /// `ALUtilityClass` has utility methods releated to date, file, notification showing, image compression and other.
 @interface ALUtilityClass : NSObject
@@ -43,13 +43,13 @@
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
 /// This method used for geeting location URL.
-/// @param alMessage Pass the `ALMessage` object.
-+ (NSString *)getLocationURL:(ALMessage *)alMessage;
+/// @param message Pass the `ALMessage` object.
++ (NSString *)getLocationURL:(ALMessage *)message;
 
 /// This method used for geeting location URL.
-/// @param alMessage Pass the `ALMessage` object.
+/// @param message Pass the `ALMessage` object.
 /// @param withSize Pass the size of the image that you want to for location.
-+ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize;
++ (NSString *)getLocationURL:(ALMessage *)message size:(CGRect)withSize;
 
 /// This method is used for showing the notification for if not in screen.
 /// @param toastMessage Pass the notification title.

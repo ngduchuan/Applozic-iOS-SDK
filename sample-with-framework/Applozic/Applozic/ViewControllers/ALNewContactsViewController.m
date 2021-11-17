@@ -188,7 +188,7 @@ static const int SHOW_GROUP = 102;
     if (groupRegular) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(showMQTTNotification:)
-                                                     name:@"MQTT_APPLOZIC_01"
+                                                     name:NEW_MESSAGE_NOTIFICATION
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -243,19 +243,28 @@ static const int SHOW_GROUP = 102;
 }
 
 - (void)showMQTTNotification:(NSNotification *)notifyObject {
-    ALMessage *alMessage = (ALMessage *)notifyObject.object;
     
-    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
+    NSMutableArray *messageArray = notifyObject.object;
     
-    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage isMsgHidden]) {
-        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                          withAlertMessage:alMessage.message];
-        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
-
-            ALNotificationHelper *helper = [[ALNotificationHelper alloc] init];
-
-            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
-        }];
+    if (!messageArray) {
+        return;
+    }
+    
+    for (ALMessage *message in messageArray) {
+        if (![message.type isEqualToString:@"5"] && ![message isNotificationDisabled]) {
+            ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:message
+                                                                              withAlertMessage:message.message];
+            [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+                
+                ALNotificationHelper *helper = [[ALNotificationHelper alloc] init];
+                
+                [helper handlerNotificationClick:message.contactIds
+                                     withGroupId:message.groupId
+                              withConversationId:message.conversationId
+                    notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+            }];
+        }
+        
     }
 }
 
@@ -348,7 +357,7 @@ static const int SHOW_GROUP = 102;
     [self.tabBarController.tabBar setHidden: NO];
     self.forGroup = [NSNumber numberWithInt:0];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
 }
 
 - (void)updateUser:(NSNotification *)notifyObj {
@@ -1023,8 +1032,8 @@ static const int SHOW_GROUP = 102;
         }];
     } else if (isForBroadCast) {
         [self.channelService createBroadcastChannelWithMembersList:memberList
-                                                        andMetaData:nil
-                                                     withCompletion:^(ALChannel *alChannel, NSError *error) {
+                                                       andMetaData:nil
+                                                    withCompletion:^(ALChannel *alChannel, NSError *error) {
             if (alChannel) {
                 NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                 for (UIViewController *aViewController in allViewControllers) {

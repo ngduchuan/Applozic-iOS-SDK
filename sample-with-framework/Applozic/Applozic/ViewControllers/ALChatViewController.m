@@ -223,6 +223,10 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
 
+    if (@available(iOS 15.0, *)) {
+        self.mTableView.sectionHeaderTopPadding = 0;
+    }
+
     [self.tabBarController.tabBar setHidden: YES];
 
     if ([ALApplozicSettings isTemplateMessageEnabled]) {
@@ -477,9 +481,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read channel %@",self.channelKey);
-            } else {
-                [self.userService processResettingUnreadCount];
-
             }
         }];
     }
@@ -488,8 +489,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [[ALUserService sharedInstance] markConversationAsRead:self.contactIds withCompletion:^(NSString *string, NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
-            } else {
-                [self.userService processResettingUnreadCount];
             }
         }];
     }
@@ -1053,6 +1052,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.loadingIndicator startLoadingWithLoadText:NSLocalizedStringWithDefaultValue(@"ChatTitleLoadingText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Loading...", @"")];
 
     [self fetchConversationProfileDetailsWithUserId:self.contactIds withChannelKey:self.channelKey withCompletion:^(ALChannel *channel, ALContact *contact) {
+
+        if (!channel &&
+            !contact) {
+            return;
+        }
+
         self.alChannel = channel;
         self.alContact = contact;
         [self setTitleWithChannel:channel orContact:contact];
@@ -1069,21 +1074,22 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }];
 }
 
-
 - (void)fetchConversationProfileDetailsWithUserId:(NSString *)userId
                                    withChannelKey:(NSNumber *)channelKey
                                    withCompletion:(void (^)( ALChannel *channel, ALContact *contact))completion {
 
     if (channelKey) {
-        [self.channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-            if (alChannel && [alChannel isGroupOfTwo]) {
-                NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
+        [self.channelService getChannelInformationByResponse:channelKey
+                                          orClientChannelKey:nil
+                                              withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+            if (channel && [channel isGroupOfTwo]) {
+                NSString *receiverId = [channel getReceiverIdInGroupOfTwo];
                 [self.userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
-                    completion(alChannel, contact);
+                    completion(channel, contact);
                     return;
                 }];
             } else {
-                completion(alChannel, nil);
+                completion(channel, nil);
             }
         }];
     } else {
@@ -1873,9 +1879,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (UIView *)getHeaderView {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 84)];
     ALConversationService *alconversationService = [[ALConversationService alloc]init];
-    ALConversationProxy *alConversationProxy = [alconversationService getConversationByKey:self.conversationId];
+    ALConversationProxy *conversationProxy = [alconversationService getConversationByKey:self.conversationId];
 
-    ALTopicDetail *topicDetail = alConversationProxy.getTopicDetail;
+    ALTopicDetail *topicDetail = conversationProxy.getTopicDetail;
     if (topicDetail == nil) {
         return  [[UIView alloc]init];
     }
@@ -2166,7 +2172,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (self.messageReplyId) {
         NSMutableDictionary *metaData = [NSMutableDictionary new];
-        [metaData  setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
+        [metaData setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
         theMessage.metadata = metaData;
     }
     return theMessage;
@@ -3518,17 +3524,18 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (!receiverId) {
         return;
     }
-    [self.userService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail) {
-        if (alUserDetail) {
-            [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
-            alUserDetail.unreadCount = 0;
-            [[[ALContactDBService alloc] init] updateUserDetail:alUserDetail];
-            [self updateConversationProfileDetails];
-            [self updateLastSeenAtStatus:alUserDetail];
-            [self setCallButtonInNavigationBar];
-        } else {
-            ALSLog(ALLoggerSeverityInfo, @"CHECK LAST_SEEN_SERVER CALL");
+
+    [self.userService getUserDetailFromServer:receiverId
+                               withCompletion:^(ALContact *contact, NSError *error) {
+        if (error) {
+            return;
         }
+
+        [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:contact.userId];
+        [self updateConversationProfileDetails];
+        ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
+        [self updateLastSeenAtStatus:userDetail];
+        [self setCallButtonInNavigationBar];
     }];
 }
 
@@ -4021,7 +4028,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (void)newMessageHandler:(NSNotification *)notification {
-    ALSLog(ALLoggerSeverityInfo, @" newMessageHandler called ::#### ");
+    ALSLog(ALLoggerSeverityInfo, @"newMessageHandler called ::#### ");
     NSMutableArray *messageArray = notification.object;
 
     [self addMessageToList:messageArray];

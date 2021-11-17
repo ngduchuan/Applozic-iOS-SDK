@@ -344,7 +344,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         }
         [self.mBubleImageView setUserInteractionEnabled:YES];
         [self.frontView addGestureRecognizer:self.tapper];
-        fileSourceURL = [NSURL fileURLWithPath:filePath];
         [self.mImageView setHidden:NO];
     }
     

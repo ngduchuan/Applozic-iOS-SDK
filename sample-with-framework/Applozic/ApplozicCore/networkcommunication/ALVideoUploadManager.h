@@ -6,10 +6,10 @@
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALUploadTask.h"
 #import "ALMessage.h"
+#import "ALUploadTask.h"
 #import "ApplozicClient.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) ALMessageClientService *clientService;
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
--(void)uploadTheVideo:(ALMessage *)message;
+- (void)uploadTheVideo:(ALMessage *)message;
 @end
 
 NS_ASSUME_NONNULL_END

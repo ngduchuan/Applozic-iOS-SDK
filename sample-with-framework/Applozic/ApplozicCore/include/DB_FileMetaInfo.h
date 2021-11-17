@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
-/// `DB_FileMetaInfo` is DB class is used for storing the attachment details in core data base.
+/// `DB_FileMetaInfo` is DB class is used for storing the attachment details in core database.
 @interface DB_FileMetaInfo : NSManagedObject
 
 /// File attachment blob key used for identifying the file this blob key need to be added in File base URL.

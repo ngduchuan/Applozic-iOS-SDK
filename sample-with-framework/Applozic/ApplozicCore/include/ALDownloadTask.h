@@ -6,8 +6,8 @@
 //  Copyright © 2019 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALMessage.h"
+#import <Foundation/Foundation.h>
 
 /// `ALDownloadTask` is class used for creating an download task.
 @interface ALDownloadTask : NSObject

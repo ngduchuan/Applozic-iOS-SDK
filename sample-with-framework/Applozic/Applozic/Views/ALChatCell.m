@@ -687,7 +687,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     }
 
     NSString *messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-    ALMessage *replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+    ALMessage *replyMessage = [[ALMessageService new] getMessageByKey:messageReplyId];
 
     if (replyMessage == nil) {
         return;

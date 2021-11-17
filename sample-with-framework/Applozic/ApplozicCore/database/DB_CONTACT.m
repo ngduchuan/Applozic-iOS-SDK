@@ -8,7 +8,6 @@
 
 #import "DB_CONTACT.h"
 
-
 @implementation DB_CONTACT
 
 @dynamic userId;

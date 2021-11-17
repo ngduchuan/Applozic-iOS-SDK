@@ -6,8 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
+
 /*
  
  topicDetail = "{\"title\":\"Product on demand\",\"subtitle\":\"PID : 4398343dsjhsjdhsdj9\",\"link\":\"http://www.msupply.com/media/catalog/product/cache/1/image/400x492/9df78eab33525d08d6e5fb8d27136e95/E/L/ELEL10014724_1.jpg\",\"key1\":\"Qty\",\"value1\":\"50\",\"key2\":\"Price\",\"value2\":\"Rs.90\"}";
@@ -52,10 +53,5 @@
 /// This method is used parsing topic JSON Dictionary.
 /// @param detailJson Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)detailJson;
-
-/// This method used for parsing the JSON.
-/// @param detailJson Pass the JSON Dictionary.
-- (void)parseMessage:(id)detailJson;
-
 
 @end

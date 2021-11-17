@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
 
 /// Used to tell the backend what kind of authentication the user wishes to use to be authenticated. See the types for details.
 typedef enum
@@ -17,16 +16,7 @@ typedef enum
     CLIENT = 0,
     /// Tells Applozic to handle the authentication itself. Use this if you do not know what you should be using.
     APPLOZIC = 1,
-    /// Deprecated will be removed in next updates.
-    FACEBOOK DEPRECATED_ATTRIBUTE = 2,
 } AuthenticationType;
-
-/// APNs types are deprecated will be removed in the future.
-typedef enum
-{
-    AL_DEVELOPMENT DEPRECATED_ATTRIBUTE = 0,
-    AL_DISTRIBUTION DEPRECATED_ATTRIBUTE = 1,
-} deviceApnsType DEPRECATED_ATTRIBUTE;
 
 /// `ALUser` is an authenticated entity that can use chat functionality.
 ///
@@ -63,9 +53,6 @@ typedef enum
 /// Sets the code of the country in which the user resides.
 @property NSString *countryCode;
 
-/// :nodoc:
-@property short prefContactAPI;
-
 /// Sets the email verified for this user.
 @property Boolean emailVerified;
 
@@ -92,12 +79,7 @@ typedef enum
 /// App module name is used when two different apps are communicating with different app modules and the same APP-ID.
 ///
 /// Use this settings `[ALUserDefaultsHandler setAppModuleName:@"NAME-OF-MODULE-HERE"];` to pass the module name`.
-/// @note This is set internally not required to set using appModuleName.
 @property NSString *appModuleName;
-
-/// To identify the user type.
-/// @note This is not used currently will be removed in future.
-@property short userTypeId;
 
 /// Internally sets the notification mode.
 ///
@@ -119,14 +101,11 @@ typedef enum
 /// @note This is set internally not required to set.
 @property short deviceApnsType;
 
-/// :nodoc:
-@property short pushNotificationFormat;
-
 /// Enables the message encryption user.
 @property BOOL enableEncryption;
 
 /// :nodoc:
-@property NSNumber *contactType;
+@property short pushNotificationFormat;
 
 /// Sets the added features that Applozic provides.
 ///
@@ -165,4 +144,15 @@ typedef enum
                          email:(NSString *)email
                 andDisplayName:(NSString *)displayName;
 
+/// :nodoc:
+@property short prefContactAPI DEPRECATED_ATTRIBUTE;
+
+/// :nodoc:
+@property NSNumber *contactType DEPRECATED_ATTRIBUTE;
+
+/// To identify the user type.
+/// @note This is not used currently will be removed in future.
+@property short userTypeId DEPRECATED_ATTRIBUTE;
+
 @end
+

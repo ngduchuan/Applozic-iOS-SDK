@@ -14,9 +14,6 @@
 /// Seter method for array of userIds.
 @property (nonatomic, strong) NSMutableArray *userIdList;
 
-/// :nodoc:
-@property (nonatomic) BOOL contactSync;
-
 /// Setter method of array of userIds.
 /// @param array Array of string userIds.
 - (void)setArray:(NSMutableArray *)array;

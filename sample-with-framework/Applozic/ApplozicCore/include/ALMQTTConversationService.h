@@ -6,13 +6,12 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "MQTTClient.h"
 #import "ALMessage.h"
-#import "ALUserDetail.h"
+#import "ALRealTimeUpdate.h"
 #import "ALSyncCallService.h"
 #import "ALUserDetail.h"
-#import "ALRealTimeUpdate.h"
+#import "MQTTClient.h"
+#import <Foundation/Foundation.h>
 
 /// Notification name for channel mute or unmuted.
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
@@ -27,9 +26,9 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 
 /// This callback will be called once the new message is received.
 ///
-/// @param alMessage This will have `ALMessage` object on new message received
+/// @param message This will have `ALMessage` object on new message received
 /// @param messageArray This will be nil
-- (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
+- (void)syncCall:(ALMessage *)message andMessageList:(NSMutableArray *)messageArray;
 
 /// The callback will be called on message is delivered to the receiver.
 ///
@@ -84,7 +83,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 +(ALMQTTConversationService *)sharedInstance;
 
 /// `ALSyncCallService` instance method.
-@property (nonatomic, strong) ALSyncCallService *alSyncCallService;
+@property (nonatomic, strong) ALSyncCallService *syncCallService;
 
 /// Sets the `ALMQTTConversationDelegate` for listening to the real-time updates from MQTT.
 @property (nonatomic, weak) id<ALMQTTConversationDelegate>mqttConversationDelegate;
@@ -137,9 +136,9 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 - (void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
 
 /// Syncs the message and post an notification request, used for internal purposes only .
-/// @param alMessage Pass the `ALMessage` object.
-/// @param nsMutableDictionary Notification dictionary.
-- (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary;
+/// @param message Pass the `ALMessage` object.
+/// @param notificationDictionary Notification dictionary.
+- (void)syncReceivedMessage:(ALMessage *)message withNSMutableDictionary:(NSMutableDictionary *)notificationDictionary;
 
 /// Used for subscribe to conversation with topic.
 /// @param topic Pass the name of topic to subscribe.

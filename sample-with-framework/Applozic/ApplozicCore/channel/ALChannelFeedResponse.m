@@ -1,17 +1,17 @@
 //
-//  AlChannelFeedResponse.m
+//  ALChannelFeedResponse.m
 //  Applozic
 //
 //  Created by Nitin on 20/10/17.
 //  Copyright © 2017 applozic Inc. All rights reserved.
 //
 
-#import "AlChannelFeedResponse.h"
 #import "ALChannelCreateResponse.h"
-#import "ALUserDetail.h"
+#import "ALChannelFeedResponse.h"
 #import "ALContactDBService.h"
+#import "ALUserDetail.h"
 
-@implementation AlChannelFeedResponse
+@implementation ALChannelFeedResponse
 
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
@@ -36,8 +36,8 @@
     for (NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
         ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
         userDetail.unreadCount = 0;
-        ALContactDBService * contactDB = [ALContactDBService new];
-        [contactDB updateUserDetail: userDetail];
+        ALContactDBService *contactDBService = [ALContactDBService new];
+        [contactDBService updateUserDetail: userDetail];
     }
 }
 
