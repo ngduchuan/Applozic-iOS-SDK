@@ -256,7 +256,7 @@
             ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
 
             if ([flag isEqualToString:@"0"]) {
-                ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
+                ALUserDetail *userDetail = [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
                 if (self.realTimeUpdate && userDetail) {
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }

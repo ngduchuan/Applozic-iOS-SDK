@@ -31,6 +31,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <objc/runtime.h>
 #include <tgmath.h>
+#import "ALVerification.h"
 
 @interface ALMessageService  ()<ApplozicAttachmentDelegate>
 
@@ -77,6 +78,8 @@ static ALMessageClientService *alMsgClientService;
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:messageList.messageList != nil withErrorMessage:@"Get Messages list is nil."];
 
         if (messageList.messageList.count == 0) {
             completion(messageList.messageList, nil);

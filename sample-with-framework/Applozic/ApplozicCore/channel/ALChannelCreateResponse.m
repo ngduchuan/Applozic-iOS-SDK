@@ -19,13 +19,8 @@
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
         self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
         [self pasreUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
-
-        return self;
-    } else {
-        self.response = JSONString;
-        return self;
     }
-    
+    return self;
 }
 
 - (void)pasreUserDetails:(NSMutableArray *)userDetailJsonArray {

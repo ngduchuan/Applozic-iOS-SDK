@@ -60,7 +60,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if (httpURLResponse.statusCode != 200 && httpURLResponse.statusCode != 201) {
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            ALSLog(ALLoggerSeverityError, @"api error : %@ - %@",tag,errorString);
+            ALSLog(ALLoggerSeverityError, @"API request failed with status code: %ld response:%@",(long)httpURLResponse.statusCode, errorString);
             dispatch_async(dispatch_get_main_queue(), ^{
                 reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
             });
@@ -71,7 +71,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             dispatch_async(dispatch_get_main_queue(), ^{
                 reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
             });
-            ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+            ALSLog(ALLoggerSeverityError, @"API Response body is empty for TAG :%@", tag);
             return;
         }
 
@@ -91,7 +91,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
                 });
-                ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+                ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data for TAG : %@", tag);
                 return;
             }
 
@@ -105,7 +105,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
                 });
-                ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+                ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data is empty for TAG : %@", tag);
                 return;
             }
         }

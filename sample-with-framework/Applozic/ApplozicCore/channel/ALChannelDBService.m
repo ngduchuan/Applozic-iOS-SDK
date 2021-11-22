@@ -25,7 +25,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 #pragma mark - Add member in Channel
 
-- (void)addMemberToChannel:(NSString *)userId
+- (NSError *)addMemberToChannel:(NSString *)userId
              andChannelKey:(NSNumber *)channelKey {
     ALChannelUserX *channelUser = [[ALChannelUserX alloc] init];
     channelUser.key = channelKey;
@@ -33,14 +33,12 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     DB_CHANNEL_USER_X *dbChannelUser =  [self createChannelUserXEntity: channelUser];
-    NSError *error = nil;
-    if (dbChannelUser) {
-        error = [databaseHandler saveContext];
+    if (!dbChannelUser) {
+        return [NSError errorWithDomain:@"Applozic"
+                                                 code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to save the member in database channel user entity is nil." forKey:NSLocalizedDescriptionKey]];
     }
-
-    if (error) {
-        ALSLog(ALLoggerSeverityError, @"ERROR IN Add member to channel  %@",error);
-    }
+    return [databaseHandler saveContext];
 }
 
 #pragma mark - Insert Channel in Database
@@ -515,29 +513,39 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 #pragma mark - Remove member from channel in Database
 
-- (void)removeMemberFromChannel:(NSString *)userId
-                  andChannelKey:(NSNumber *)channelKey {
+- (NSError *)removeMemberFromChannel:(NSString *)userId
+                       andChannelKey:(NSNumber *)channelKey {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *userEntity = [databaseHandler entityDescriptionWithEntityForName:@"DB_CHANNEL_USER_X"];
-    
-    if (userEntity) {
-        [fetchRequest setEntity:userEntity];
-        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
-        NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"userId = %@", userId];
-        NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
-        [fetchRequest setPredicate: combinePredicate];
-        
-        NSError *error = nil;
-        NSArray *memberArray = [databaseHandler executeFetchRequest:fetchRequest withError:&error];
-        if (memberArray.count) {
-            NSManagedObject *managedObject = [memberArray objectAtIndex:0];
-            [databaseHandler deleteObject:managedObject];
-            [databaseHandler saveContext];
-        } else {
-            ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping removing member from channel for channelKey :%@", channelKey);
-        }
+
+    if (!userEntity) {
+        return [NSError errorWithDomain:@"Applozic"
+                                   code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel entity does not exist in database."
+                                                                    forKey:NSLocalizedDescriptionKey]];
     }
+
+    [fetchRequest setEntity:userEntity];
+    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
+    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"userId = %@", userId];
+    NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
+    [fetchRequest setPredicate: combinePredicate];
+
+    NSError *error = nil;
+    NSArray *memberArray = [databaseHandler executeFetchRequest:fetchRequest withError:&error];
+
+    if (memberArray.count == 0) {
+        ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping removing member from channel for channelKey :%@", channelKey);
+        return [NSError errorWithDomain:@"Applozic"
+                                   code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel user does not exist in database."
+                                                                    forKey:NSLocalizedDescriptionKey]];
+    }
+
+    NSManagedObject *managedObject = [memberArray objectAtIndex:0];
+    [databaseHandler deleteObject:managedObject];
+    return [databaseHandler saveContext];
 }
 
 #pragma mark - Delete Channel
@@ -624,89 +632,90 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 #pragma mark - Update Channel
 
-- (void)updateChannel:(NSNumber *)channelKey
-           andNewName:(NSString *)newName
-           orImageURL:(NSString *)imageURL
-          orChildKeys:(NSMutableArray *)childKeysList
-   isUpdatingMetaData:(BOOL)flag
-       orChannelUsers:(NSMutableArray *)channelUsers {
+- (NSError *)updateChannel:(NSNumber *)channelKey
+                andNewName:(NSString *)newName
+                orImageURL:(NSString *)imageURL
+               orChildKeys:(NSMutableArray *)childKeysList
+        isUpdatingMetaData:(BOOL)flag
+            orChannelUsers:(NSMutableArray *)channelUsers {
     
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     NSEntityDescription *channelEntity = [databaseHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
-    
-    if (channelEntity) {
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-        [fetchRequest setEntity:channelEntity];
-        [fetchRequest setPredicate:predicate];
-        
-        NSError *fetchError = nil;
-        NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        
-        if (result.count) {
-            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-            if (newName.length) {
-                dbChannel.channelDisplayName = newName;
-            }
-            
-            if (!flag) {
-                dbChannel.channelImageURL = imageURL;
-            }
-            
-            if (childKeysList.count) {
-                for (NSNumber *childKey in childKeysList) {
-                    [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
-                }
-            }
-            for (NSDictionary *channelUserDictionary in channelUsers) {
-                ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:channelUserDictionary];
-                if (channelUser.parentGroupKey != nil) {
-                    [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
-                }
-                
-                if (channelUser.role != nil) {
-                    [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
-                }
-            }
-            [databaseHandler saveContext];
-        } else {
-            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update channel with chnnelKey : %@", channelKey);
+
+    if (!channelEntity) {
+        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel entity does not exist." forKey:NSLocalizedDescriptionKey]];
+    }
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+    [fetchRequest setEntity:channelEntity];
+    [fetchRequest setPredicate:predicate];
+
+    NSError *fetchError = nil;
+    NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
+
+    if (result.count == 0) {
+        ALSLog(ALLoggerSeverityError, @"Channel not found in database to update channel with chnnelKey : %@", channelKey);
+        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel does not exist." forKey:NSLocalizedDescriptionKey]];
+    }
+    DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+    if (newName.length) {
+        dbChannel.channelDisplayName = newName;
+    }
+
+    if (!flag) {
+        dbChannel.channelImageURL = imageURL;
+    }
+
+    if (childKeysList.count) {
+        for (NSNumber *childKey in childKeysList) {
+            [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
         }
     }
+    for (NSDictionary *channelUserDictionary in channelUsers) {
+        ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:channelUserDictionary];
+        if (channelUser.parentGroupKey != nil) {
+            [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
+        }
+
+        if (channelUser.role != nil) {
+            [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
+        }
+    }
+    return [databaseHandler saveContext];
 }
 
-- (void)updateChannelMetaData:(NSNumber *)channelKey
-                     metaData:(NSMutableDictionary *)newMetaData {
-    
+- (NSError *)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData {
+
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     NSEntityDescription *channelEntity = [databaseHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
-    
-    if (channelEntity) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
-        [fetchRequest setEntity:channelEntity];
-        [fetchRequest setPredicate:predicate];
-        
-        NSError *fetchError = nil;
-        NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        
-        if (result.count) {
-            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-            if (newMetaData != nil) {
-                dbChannel.metadata = newMetaData.description;
-                
-                // Update conversation status from metadata
-                dbChannel.category = [ALChannel getConversationCategory:newMetaData];
-            }
-            
-            [databaseHandler saveContext];
-        } else {
-            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update metadata with channelKey : %@", channelKey);
-        }
+
+    if (!channelEntity) {
+        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel entity the channel does not exist." forKey:NSLocalizedDescriptionKey]];
     }
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+    [fetchRequest setEntity:channelEntity];
+    [fetchRequest setPredicate:predicate];
+
+    NSError *fetchError = nil;
+    NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
+
+    if (result.count == 0) {
+        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel metadata the channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+    }
+
+    DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+    if (newMetaData != nil) {
+        dbChannel.metadata = newMetaData.description;
+
+        // Update conversation status from metadata
+        dbChannel.category = [ALChannel getConversationCategory:newMetaData];
+    }
+    return [databaseHandler saveContext];
 }
 
 - (void)updateChannelParentKey:(NSNumber *)channelKey
@@ -994,15 +1003,18 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     return childArray;
 }
 
-- (void)updateMuteAfterTime:(NSNumber *)notificationAfterTime
-               andChnnelKey:(NSNumber *)channelKey {
+- (NSError *)updateMuteAfterTime:(NSNumber *)notificationAfterTime
+                    andChnnelKey:(NSNumber *)channelKey {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
-    if (dbChannel) {
-        dbChannel.notificationAfterTime = notificationAfterTime;
-        [databaseHandler saveContext];
+    if (!dbChannel) {
+        return [NSError errorWithDomain:@"Applozic"
+                                   code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
     }
+    dbChannel.notificationAfterTime = notificationAfterTime;
+    return [databaseHandler saveContext];
 }
 
 - (NSMutableArray *)getGroupUsersInChannel:(NSNumber *)channelKey {

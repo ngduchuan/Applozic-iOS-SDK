@@ -636,12 +636,16 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
         
         if (![apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            NSError *error = [NSError errorWithDomain:ApplozicDomain
-                                                 code:MessageKeyNotPresent
-                                             userInfo:@{NSLocalizedDescriptionKey : @"Failed to report message api error occurred"}];
-            completion(nil, error);
+
+            NSString *errorMessage = [apiResponse.errorResponse errorDescriptionMessage];
+            NSError *reponseError = [NSError errorWithDomain:ApplozicDomain code:1
+                                                    userInfo:[NSDictionary dictionaryWithObject:errorMessage == nil ? @"Failed to report message api error occurred.": errorMessage
+                                                                                         forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, reponseError);
             return;
         }
+
         completion(apiResponse, error);
     }];
 }

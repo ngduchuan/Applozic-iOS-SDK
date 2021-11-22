@@ -18,9 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// `ALChannel` will be set once the channel is fetched successfully.
 @property (nonatomic, strong) ALChannel * _Nullable alChannel;
 
-/// In case of any error the errorResponse will be set can be accessed using `errorResponse`.
-@property (nonatomic, strong) NSDictionary * _Nullable errorResponse;
-
 /// Used for parsing a JSON string.
 /// @param JSONString Pass the JSON String.
 - (instancetype)initWithJSONString:(NSString *)JSONString;

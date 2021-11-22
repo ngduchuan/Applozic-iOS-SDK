@@ -330,7 +330,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 /// This method is for internal purpose to get the members by channel name.
 /// @param channelName Pass the client channel id or channel name to fetch the users from contacts group.
-- (NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
+- (NSMutableArray * _Nullable)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
 
 /// Removes a member from the contacts group.
 /// @param contactsGroupId Pass contactsGroupId which will be unique string.
@@ -447,8 +447,8 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// This method will update mute and unmute time local database.
 /// @param notificationAfterTime Pass the time in milliseconds.
 /// @param channelKey Pass the channelKey or groupId you can get the key from `ALChannel` object.
-- (void)updateMuteAfterTime:(NSNumber *)notificationAfterTime
-               andChnnelKey:(NSNumber *)channelKey;
+- (NSError * _Nullable)updateMuteAfterTime:(NSNumber *)notificationAfterTime
+                              andChnnelKey:(NSNumber *)channelKey;
 
 /// Gets all the channels for the logged-in user.
 /// @param completion will have a channel array of ALChannel or will have an error in case of while fetching channels.

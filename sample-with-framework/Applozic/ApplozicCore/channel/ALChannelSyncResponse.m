@@ -22,12 +22,8 @@
             ALChannel *channel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
             [self.alChannelArray addObject:channel];
         }
-        
-        return self;
-    } else {
-        return nil;
     }
-    
+    return self;
 }
 
 @end

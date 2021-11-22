@@ -203,7 +203,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.view endEditing:YES];
     [self.loadEarlierAction setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.loadEarlierAction setBackgroundColor:[UIColor grayColor]];
-    [self markConversationRead];
     [self.loadEarlierAction setTitle:NSLocalizedStringWithDefaultValue(@"loadEarlierMessagesText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Load Earlier Messages", @"") forState:UIControlStateNormal];
     [[[self navigationController] interactivePopGestureRecognizer] setEnabled:NO];
     [UIView animateWithDuration:0.3 animations:^{
@@ -4424,6 +4423,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     self.contactIds = alMessage.contactIds;
     [self reloadView];
     [self.mTableView reloadData];
+    [self markConversationRead];
     [self handleMessageForwardForChatView:alMessage];
 }
 

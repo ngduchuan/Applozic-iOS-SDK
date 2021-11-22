@@ -6,6 +6,7 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
+#import "ALErrorResponse.h"
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
@@ -30,6 +31,11 @@ extern NSString *const AL_RESPONSE_ERROR;
 
 /// Actual JSON response string.
 @property (nonatomic, strong) NSString * _Nullable actualresponse;
+
+/// An error response in case of any error.
+@property (nonatomic, strong) ALErrorResponse * _Nullable errorResponse;
+
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 
 @end
 

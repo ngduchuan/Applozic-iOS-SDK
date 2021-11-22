@@ -27,6 +27,7 @@ static int CONTACT_PAGE_SIZE = 100;
 #import "ALUserService.h"
 #import "ALUtilityClass.h"
 #import "NSString+Encode.h"
+#import "ALVerification.h"
 
 @implementation ALUserService
 {
@@ -159,8 +160,11 @@ static int CONTACT_PAGE_SIZE = 100;
             if (phoneNumber) {
                 [contact setContactNumber:phoneNumber];
             }
-            [self.contactDBService updateContactInDatabase:contact];
-            completion(YES);
+            BOOL updateStatus = [self.contactDBService updateContactInDatabase:contact];
+
+            [ALVerification verify:updateStatus withErrorMessage:@"Failed to update user details got some error saving in database."];
+
+            completion(updateStatus);
             return;
         }
         completion(NO);
@@ -232,6 +236,11 @@ static int CONTACT_PAGE_SIZE = 100;
     ALSLog(ALLoggerSeverityInfo, @"Found %ld messages for marking as read.", (unsigned long)count);
     
     if (count == 0) {
+        NSError *error = [NSError
+                          errorWithDomain:@"Applozic"
+                          code:1
+                          userInfo:[NSDictionary dictionaryWithObject:@"Nothing to mark as read for user" forKey:NSLocalizedDescriptionKey]];
+        completion(nil, error);
         return;
     }
     [self.userClientService markConversationAsReadforContact:userId withCompletion:^(NSString *response, NSError *error) {
@@ -413,7 +422,18 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(error);
             return;
         }
-        
+
+        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil"];
+
+        if (!response.userDetailList) {
+            NSError *apiError = [NSError
+                                 errorWithDomain:@"Applozic"
+                                 code:1
+                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the registered users user detail list response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(apiError);
+            return;
+        }
+
         [ALApplozicSettings setStartTime:response.lastFetchTime];
         [self.contactDBService updateFilteredContacts:response withLoadContact:NO];
         completion(error);
@@ -558,17 +578,25 @@ static int CONTACT_PAGE_SIZE = 100;
     }
     
     [self.userClientService updatePassword:oldPassword withNewPassword:newPassword withCompletion:^(ALAPIResponse *alAPIResponse, NSError *error) {
-        
-        if (!error) {
-            if ([alAPIResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
-                NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                        userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN UPDATING PASSWORD"
-                                                                                             forKey:NSLocalizedDescriptionKey]];
-                completion(alAPIResponse, reponseError);
-                return;
-            }
-            [ALUserDefaultsHandler setPassword:newPassword];
+
+
+        if (error) {
+            completion(nil, error);
+            return;
         }
+
+        if ([alAPIResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
+            NSString *errorMessage = [alAPIResponse.errorResponse errorDescriptionMessage];
+            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                    userInfo:[NSDictionary dictionaryWithObject: errorMessage == nil ? @"Failed to change the user password an API error occurred.": errorMessage forKey:NSLocalizedDescriptionKey]];
+
+
+
+            completion(nil, reponseError);
+            return;
+        }
+        [ALUserDefaultsHandler setPassword:newPassword];
+
         completion(alAPIResponse, error);
     }];
 }
@@ -599,21 +627,25 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(response, error);
             return;
         }
-        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            
-            NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
-            for (NSDictionary *userDeatils in userDetailArray) {
-                ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
-                userDeatil.unreadCount = 0;
-                [self.contactDBService updateUserDetail:userDeatil];
-            }
-            completion(response, error);
+
+
+        if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+            NSString *errorMessage = [response.errorResponse errorDescriptionMessage];
+            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                    userInfo:[NSDictionary dictionaryWithObject: errorMessage == nil ? @"Failed to get users by name an API error occurred.": errorMessage forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, reponseError);
             return;
         }
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"Failed to fetch users due to api error occurred" forKey:NSLocalizedDescriptionKey]];
-        
-        completion(nil, reponseError);
+
+
+        NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
+        for (NSDictionary *userDeatils in userDetailArray) {
+            ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
+            userDeatil.unreadCount = 0;
+            [self.contactDBService updateUserDetail:userDeatil];
+        }
+        completion(response, error);
     }];
 }
 
@@ -676,16 +708,26 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(nil, error);
             return;
         }
-        
-        if (response && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            [self.contactService updateMuteAfterTime:muteRequest.notificationAfterTime andUserId:muteRequest.userId];
-            completion(response, error);
+
+        if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+            NSString *errorMessage = [response.errorResponse errorDescriptionMessage];
+            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                    userInfo:[NSDictionary dictionaryWithObject:errorMessage == nil ? @"Failed to mute user an api error occurred.": errorMessage forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, reponseError);
             return;
         }
-        
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user an api error occurred" forKey:NSLocalizedDescriptionKey]];
-        completion(nil, reponseError);
+
+        ALUserDetail *userDetail = [self.contactService updateMuteAfterTime:muteRequest.notificationAfterTime andUserId:muteRequest.userId];
+        [ALVerification verify:userDetail != nil withErrorMessage:@"Failed to update the mute time as user does not exist in database."];
+
+        if (!userDetail) {
+            NSError *updateUserDetailError = [NSError errorWithDomain:@"Applozic" code:1
+                                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user an error in saving in database." forKey:NSLocalizedDescriptionKey]];
+            completion(nil, updateUserDetailError);
+            return;
+        }
+        completion(response, error);
     }];
 }
 
@@ -766,6 +808,17 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil"];
+
+        if (!response.userDetailList) {
+            NSError *apiError = [NSError
+                                 errorWithDomain:@"Applozic"
+                                 code:1
+                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the registered users user detail list response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, apiError);
+            return;
+        }
         
         [ALApplozicSettings setStartTime:response.lastFetchTime];
         NSMutableArray *nextPageContactArray = [self.contactDBService updateFilteredContacts:response
@@ -780,12 +833,12 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 
 - (void)getUserDetailFromServer:(NSString *)userId
-                withCompletion:(void(^)(ALContact *contact, NSError *error))completion {
+                 withCompletion:(void(^)(ALContact *contact, NSError *error))completion {
 
-    if (!userId) {
+    if (userId.length == 0) {
         NSError *error = [NSError errorWithDomain:@"Applozic"
                                              code:1
-                                         userInfo:@{NSLocalizedDescriptionKey : @"Passed UserId is nil"}];
+                                         userInfo:@{NSLocalizedDescriptionKey : @"Passed UserId is empty"}];
         completion(nil, error);
         return;
     }

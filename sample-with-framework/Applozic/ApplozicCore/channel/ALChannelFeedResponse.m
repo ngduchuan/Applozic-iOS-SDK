@@ -21,14 +21,8 @@
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
         self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
         [self parseUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
-        return self;
-    } else {
-        NSArray *errorResponseList = [JSONString valueForKey:@"errorResponse"];
-        if (errorResponseList != nil && errorResponseList.count > 0) {
-            self.errorResponse = errorResponseList.firstObject;
-        }
-        return self;
     }
+    return self;
 }
 
 - (void)parseUserDetails:(NSMutableArray *)userDetailJsonArray {

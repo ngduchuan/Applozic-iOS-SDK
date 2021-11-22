@@ -737,8 +737,12 @@
     return [self getUserDetailFromDbContact:dbContact];
 }
 
-- (ALUserDetail *)getUserDetailFromDbContact:(DB_CONTACT *)dbContact{
-    
+- (ALUserDetail *)getUserDetailFromDbContact:(DB_CONTACT *)dbContact {
+
+    if (!dbContact) {
+        return nil;
+    }
+
     ALUserDetail *userDetail = [[ALUserDetail alloc] init];
     userDetail.userId = dbContact.userId;
     userDetail.contactNumber = dbContact.contactNumber;

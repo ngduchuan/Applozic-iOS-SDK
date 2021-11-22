@@ -70,7 +70,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     return hasValidAuthTokenTime && hasValidUptoTokenTime && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
 }
 
-- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
+- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError *error))completion {
     if ([self isAuthTokenValid]) {
         completion(nil);
         return;

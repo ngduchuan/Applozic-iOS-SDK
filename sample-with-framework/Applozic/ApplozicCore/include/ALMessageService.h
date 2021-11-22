@@ -91,7 +91,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 + (void)multiUserSendMessage:(ALMessage *)message
                   toContacts:(NSMutableArray *)contactIdsArray
                     toGroups:(NSMutableArray *)channelKeysArray
-              withCompletion:(void(^)(NSString *jsonResponse, NSError *error)) completion;
+              withCompletion:(void(^)(NSString * _Nullable jsonResponse, NSError * _Nullable error)) completion;
 
 + (void)getMessageSENT:(ALMessage *)message withCompletion:(void (^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
@@ -151,7 +151,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 /// Syncs the messages where metadata is updated.
 /// @param deviceKeyString Pass the [ALUserDefaultsHandler getDeviceKeyString].
 /// @param completion If error in syncing a updated meta data messages then NSError will be their else a array of messages if their is no error in syncing a updated meta data messages.
-+ (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
++ (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
 /// Updates message metadata for given message key.
 /// @param messageKey Pass the message key for updating message meta data.

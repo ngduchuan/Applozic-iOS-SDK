@@ -20,11 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Used for storing the array of `ALChannel` objects.
 /// @param channels Pass the array of `ALChannel` objects.
-- (void)saveChannels:(NSMutableArray<ALChannel *> *)channels;
+- (void)saveChannels:(NSMutableArray<ALChannel *> * _Nullable)channels;
 
 /// Used for storing the array of `ALUserDetail` objects.
 /// @param userDetails Pass the array of `ALUserDetail` objects.
-- (void)saveUserDetails:(NSMutableArray<ALUserDetail *> *)userDetails;
+- (void)saveUserDetails:(NSMutableArray<ALUserDetail *> * _Nullable)userDetails;
 
 /// Used for fetching the `ALChannel` object from `ALSearchResultCache`.
 /// @param key Pass the channelKey or groupId.

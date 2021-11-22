@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Updates user mute time in local database.
 /// @param notificationAfterTime Time in milliseconds.
 /// @param userId Pass the userId for updating time stamp in database.
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
+- (ALUserDetail * _Nullable)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
 @end
 
 NS_ASSUME_NONNULL_END
