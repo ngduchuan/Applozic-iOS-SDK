@@ -275,8 +275,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:registeredUserRequest andTag:@"FETCH_REGISTERED_CONTACT_WITH_PAGE_SIZE" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"ERROR_IN_FETCH_CONTACT_WITH_PAGE_SIZE : %@", error);
+            completion(nil, error);
             return;
         }
         
@@ -310,8 +310,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:onlineUserRequest andTag:@"CONTACT_FETCH_WITH_LIMIT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR_IN_FETCH_CONTACT_WITH_PAGE_SIZE : %@", error);
             completion(nil, error);
-            ALSLog(ALLoggerSeverityError, @"ERROR_IN_CONTACT_FETCH_WITH_LIMIT : %@",error);
             return;
         }
         
@@ -333,8 +333,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                       WithCompletionHandler:^(id jsonResponse, NSError *error) {
             
             if (error) {
-                completionMark(nil, error);
                 ALSLog(ALLoggerSeverityError, @"ERROR_IN_USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT : %@", error);
+                completionMark(nil, error);
                 return;
             }
             
@@ -374,8 +374,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"ERROR : RESETTING UNREAD COUNT :: %@",error.description);
+            completion(nil, error);
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)jsonResponse);
@@ -548,8 +548,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"Error in list of users api call : %@", error);
+            completion(nil, error);
             return;
         }
         
@@ -571,8 +571,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"Error in mute user list api  call : %@", error);
+            completion(nil, error);
             return;
         }
         

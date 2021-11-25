@@ -26,7 +26,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 #pragma mark - Add member in Channel
 
 - (NSError *)addMemberToChannel:(NSString *)userId
-             andChannelKey:(NSNumber *)channelKey {
+                  andChannelKey:(NSNumber *)channelKey {
     ALChannelUserX *channelUser = [[ALChannelUserX alloc] init];
     channelUser.key = channelKey;
     channelUser.userKey = userId;
@@ -35,8 +35,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     DB_CHANNEL_USER_X *dbChannelUser =  [self createChannelUserXEntity: channelUser];
     if (!dbChannelUser) {
         return [NSError errorWithDomain:@"Applozic"
-                                                 code:1
-                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to save the member in database channel user entity is nil." forKey:NSLocalizedDescriptionKey]];
+                                   code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to save the member in database channel user entity is nil." forKey:NSLocalizedDescriptionKey]];
     }
     return [databaseHandler saveContext];
 }
@@ -92,7 +92,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 #pragma mark - Delete member from channel
 
-- (void)deleteMembers:(NSNumber *)key {
+- (NSError *)deleteMembers:(NSNumber *)key {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *channelUserFetchRequest = [[NSFetchRequest alloc] init];
     
@@ -110,9 +110,15 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             for (NSManagedObject *managedObject in result) {
                 [databaseHandler deleteObject:managedObject];
             }
-            [databaseHandler saveContext];
+            return [databaseHandler saveContext];
         }
+        return nil;
     }
+
+    return [NSError errorWithDomain:@"Applozic"
+                               code:1
+                           userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete the member in database from channel user entity is nil." forKey:NSLocalizedDescriptionKey]];
+
 }
 
 - (void)insertChannelUserX:(NSMutableArray *)channelUserXList {
@@ -550,31 +556,43 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 #pragma mark - Delete Channel
 
-- (void)deleteChannel:(NSNumber *)channelKey {
+- (NSError *)deleteChannel:(NSNumber *)channelKey {
     //Delete channel
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *channelEntity = [databaseHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
-    
+    NSError *error = nil;
     if (channelEntity) {
         [fetchRequest setEntity:channelEntity];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
         [fetchRequest setPredicate: predicate];
         
-        NSError *error = nil;
         NSArray *array = [databaseHandler executeFetchRequest:fetchRequest withError:&error];
+
+        if (error) {
+            return error;
+        }
+
         if (array.count) {
             NSManagedObject *managedObject = [array objectAtIndex:0];
-            [databaseHandler deleteObject:managedObject];
-            [databaseHandler saveContext];
-            
-            // Delete all members
-            [self deleteMembers:channelKey];
+            NSError *saveError = [databaseHandler deleteObject:managedObject];
+
+            if (saveError) {
+                return saveError;
+            }
+
+            saveError = [databaseHandler saveContext];
+
+            if (!saveError) {
+                saveError = [self deleteMembers:channelKey];
+            }
+            return saveError;
         } else {
             ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping delete channel for channelKey :%@", channelKey);
         }
     }
+    return error;
 }
 
 #pragma mark- Fetch All Channels

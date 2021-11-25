@@ -40,14 +40,14 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             ALSLog(ALLoggerSeverityError, @"Authentication error: HTTP 401 : ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code,  failingURL);
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:@"Authentication error: 401"]);
+                reponseCompletion(nil, [self errorWithDescription:@"Authentication error: 401"]);
             });
             return;
         } else if (connectionError.code == kCFURLErrorNotConnectedToInternet) {
             NSString *failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
             ALSLog(ALLoggerSeverityError, @"NO INTERNET CONNECTIVITY, ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code, failingURL);
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:@"No Internet connectivity"]);
+                reponseCompletion(nil, [self errorWithDescription:@"No Internet connectivity"]);
             });
             return;
         } else if (connectionError) {
@@ -62,14 +62,14 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             ALSLog(ALLoggerSeverityError, @"API request failed with status code: %ld response:%@",(long)httpURLResponse.statusCode, errorString);
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
             });
             return;
         }
 
         if (data == nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
             });
             ALSLog(ALLoggerSeverityError, @"API Response body is empty for TAG :%@", tag);
             return;
@@ -89,7 +89,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
             if (decryptedData == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                    reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
                 });
                 ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data for TAG : %@", tag);
                 return;
@@ -103,7 +103,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                    reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
                 });
                 ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data is empty for TAG : %@", tag);
                 return;
@@ -141,7 +141,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                     return;
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        reponseCompletion(responseString,nil);
+                        reponseCompletion(responseString, nil);
                     });
                     return;
                 }

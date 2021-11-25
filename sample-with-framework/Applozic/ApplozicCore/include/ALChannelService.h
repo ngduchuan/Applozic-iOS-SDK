@@ -280,9 +280,6 @@ extern NSString *const AL_MESSAGE_SYNC;
 - (void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
                                   andMetaData:(NSMutableDictionary * _Nullable)metaData
                                withCompletion:(void(^)(ALChannel * _Nullable channel, NSError * _Nullable error))completion;
-/// Returns Channel user for given channel key.
-- (ALChannelUserX * _Nullable)loadChannelUserX:(NSNumber *)channelKey;
-
 /// Gets channel information from channelKeys array or clientChannelKey array.
 /// @param channelIds Pass channelKeys array to get the list of channel information.
 /// @param clientChannelIds If you have list of clientChannelKey then pass to get channel information.
@@ -548,6 +545,9 @@ extern NSString *const AL_MESSAGE_SYNC;
 - (void)getChannelInformation:(NSNumber * _Nullable)channelKey
            orClientChannelKey:(NSString * _Nullable)clientChannelKey
                withCompletion:(void (^)(ALChannel * _Nullable channel)) completion DEPRECATED_MSG_ATTRIBUTE("Use getChannelInformationByResponse:orClientChannelKey:withCompletion instead");
+
+/// Returns Channel user for given channel key.
+- (ALChannelUserX * _Nullable)loadChannelUserX:(NSNumber *)channelKey DEPRECATED_ATTRIBUTE;
 
 @end
 

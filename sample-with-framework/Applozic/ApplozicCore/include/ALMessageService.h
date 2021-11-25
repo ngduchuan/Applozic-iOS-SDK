@@ -59,7 +59,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 + (void)getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void(^)(NSMutableArray * _Nullable messages, NSError * _Nullable error)) completion;
 
-+ (ALMessage *)processFileUploadSucess:(ALMessage *)message;
++ (ALMessage * _Nullable)processFileUploadSucess:(ALMessage *)message;
 
 /// Deletes the conversation thread in a one-to-one or group chat.
 /// @param contactId Pass the userId in case deleting the conversation for one-to-one; otherwise, it will be nil.
@@ -80,7 +80,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 /// Sends the pending messages.
 - (void)processPendingMessages;
 
-+ (ALMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value;
++ (ALMessage * _Nullable)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value;
 
 /// Gets the message information which will have delivered and read for users in group chat.
 /// @param messageKey Pass the message key from the message object.
@@ -99,7 +99,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
           withDelegate:(id<ApplozicUpdatesDelegate> _Nullable)delegate
         withCompletion:(void (^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
-+ (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString *)text;
++ (ALMessage * _Nullable)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString *)text;
 
 - (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList *)messageList
                                                  withCompletion:(void (^)(NSMutableArray * _Nullable messages,
@@ -108,21 +108,21 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 - (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
-+ (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString *)text;
++ (ALMessage * _Nullable)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString *)text;
 
-+ (ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData
-                          andContentType:(short)contentType
-                           andReceiverId:(NSString *)receiverId
-                          andMessageText:(NSString *)messageText;
++ (ALMessage * _Nullable)createMessageWithMetaData:(NSMutableDictionary *)metaData
+                                    andContentType:(short)contentType
+                                     andReceiverId:(NSString *)receiverId
+                                    andMessageText:(NSString *)messageText;
 
 
 /// Returns total number of messages.
 /// @param userId Pass the receiver userId.
 - (NSUInteger)getMessagsCountForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForUser:(NSString *)userId;
+- (ALMessage * _Nullable)getLatestMessageForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
+- (ALMessage * _Nullable)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
 + (void)syncMessages;
 
@@ -143,10 +143,10 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                withDelegate:(id<ApplozicUpdatesDelegate> _Nullable )delegate
              withCompletion:(void (^)(BOOL success))completion;
 
-- (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
+- (ALMessage * _Nullable)handleMessageFailedStatus:(ALMessage *)message;
 
 /// Returns `ALMessage` object for given message key.
-- (ALMessage *)getMessageByKey:(NSString *)messageKey;
+- (ALMessage * _Nullable)getMessageByKey:(NSString *)messageKey;
 
 /// Syncs the messages where metadata is updated.
 /// @param deviceKeyString Pass the [ALUserDefaultsHandler getDeviceKeyString].
@@ -181,7 +181,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 - (void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError * _Nullable error))completion;
 
 /// Returns `ALMessage` object for given message key.
-- (ALMessage *)getALMessageByKey:(NSString *)messageReplyId DEPRECATED_MSG_ATTRIBUTE("Use getMessageByKey: instead");
+- (ALMessage * _Nullable)getALMessageByKey:(NSString *)messageReplyId DEPRECATED_MSG_ATTRIBUTE("Use getMessageByKey: instead");
 
 @end
 

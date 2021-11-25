@@ -200,29 +200,39 @@
 
 #pragma mark - Delete message by messagekey
 
-- (void)deleteMessageByKey:(NSString *)keyString {
+- (NSError *)deleteMessageByKey:(NSString *)keyString {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSManagedObject *message = [self getMessageByKey:@"key" value:keyString];
     
     if (message) {
-        [databaseHandler deleteObject:message];
+        NSError *deleteError = [databaseHandler deleteObject:message];
+
+        if (deleteError) {
+            return deleteError;
+        }
         NSError *error = [databaseHandler saveContext];
         if (error) {
             ALSLog(ALLoggerSeverityInfo, @"Failed to delete the message got some error: %@", error);
+            return error;
         }
     } else {
         ALSLog(ALLoggerSeverityInfo, @"Failed to delete the Message not found with this key: %@", keyString);
+        return [NSError errorWithDomain:@"Applozic"
+                                   code:1
+                               userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete single message from database as it does not exist."}];
     }
+    return nil;
 }
 
 #pragma mark - Delete all messages for user or group
 
-- (void)deleteAllMessagesByContact:(NSString *)contactId
-                      orChannelKey:(NSNumber *)key {
+- (NSError *)deleteAllMessagesByContact:(NSString *)contactId
+                           orChannelKey:(NSNumber *)key {
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *dbMessageEntity = [databaseHandler entityDescriptionWithEntityForName:@"DB_Message"];
-    
+
+    NSError *deleteError = nil;
     if (dbMessageEntity) {
         NSPredicate *predicate;
         if (key != nil) {
@@ -239,21 +249,35 @@
         [fetchRequest setPredicate:predicate];
         
         NSError *fetchError = nil;
-        NSArray *result =  [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
-        
+        NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
+
+        if (fetchError) {
+            return fetchError;
+        }
+
         if (result.count > 0) {
             
             for (DB_Message *message in result) {
                 [databaseHandler deleteObject:message];
             }
             
-            NSError *deleteError = [databaseHandler saveContext];
+            deleteError = [databaseHandler saveContext];
             
             if (deleteError) {
                 ALSLog(ALLoggerSeverityError, @"Unable to save managed object context %@, %@", deleteError, deleteError.localizedDescription);
+                return deleteError;
             }
+        } else {
+            return [NSError errorWithDomain:@"Applozic"
+                                       code:1
+                                   userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete message for all from database as it does not exist."}];
         }
+    } else {
+        return [NSError errorWithDomain:@"Applozic"
+                                   code:1
+                               userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete message for all from database message Entity Description is nil"}];
     }
+    return deleteError;
 }
 
 #pragma mark - Message table is empty
@@ -1248,9 +1272,8 @@
 }
 
 #pragma mark - Update message metadata
-
-- (void)updateMessageMetadataOfKey:(NSString *)messageKey
-                      withMetadata:(NSMutableDictionary *)metadata {
+- (NSError *)updateMessageMetadataOfKey:(NSString *)messageKey
+                           withMetadata:(NSMutableDictionary *)metadata {
     ALSLog(ALLoggerSeverityInfo, @"Updating message metadata in local db for key : %@", messageKey);
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
     
@@ -1264,10 +1287,15 @@
         NSError *error = [databaseHandler saveContext];
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Unable to save metadata in local db : %@", error);
+            return error;
         } else {
             ALSLog(ALLoggerSeverityInfo, @"Message metadata has been updated successfully in local db");
+            return nil;
         }
     }
+    return [NSError errorWithDomain:@"Applozic"
+                               code:1
+                           userInfo:@{NSLocalizedDescriptionKey : @"Failed to update message metadata Entity is nil"}];
 }
 
 @end

@@ -142,7 +142,7 @@ typedef enum
 /// @param email Email id of the user.
 /// @param displayName Name of the user to show in chat conversation.
 - (instancetype)initWithUserId:(NSString *)userId
-                      password:(NSString *)password
+                      password:(NSString * _Nullable)password
                          email:(NSString * _Nullable)email
                 andDisplayName:(NSString * _Nullable)displayName;
 

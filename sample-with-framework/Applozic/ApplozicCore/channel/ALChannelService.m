@@ -341,8 +341,16 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
        withGroupUsers:(NSMutableArray *)groupRoleUsers
        withCompletion:(void(^)(ALChannel *channel, NSError *error))completion {
     if (channelName != nil) {
-        [self.channelClientService createChannel:channelName andParentChannelKey:nil orClientChannelKey:(NSString *)clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:(short)type
-                                     andMetaData:metaData adminUser:adminUserId withGroupUsers:groupRoleUsers withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+        [self.channelClientService createChannel:channelName
+                             andParentChannelKey:nil
+                              orClientChannelKey:(NSString *)clientChannelKey
+                                  andMembersList:memberArray
+                                    andImageLink:imageLink
+                                     channelType:(short)type
+                                     andMetaData:metaData
+                                       adminUser:adminUserId
+                                  withGroupUsers:groupRoleUsers
+                                  withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
@@ -364,6 +372,17 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             }
 
             response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
+
+            if (!response.alChannel) {
+
+                NSError *createChannelError =  [NSError errorWithDomain:@"Applozic" code:1
+                                                               userInfo:[NSDictionary dictionaryWithObject:@"API error failed to create channel response is nil."
+
+                                                                                                    forKey:NSLocalizedDescriptionKey]];
+
+                completion(nil, createChannelError);
+                return;
+            }
 
             [self createChannelEntry:response.alChannel fromMessageList:NO];
             completion(response.alChannel, error);
@@ -439,7 +458,6 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 return;
             }
             completion(response.alChannel, nil);
-
         }];
     } else {
         ALSLog(ALLoggerSeverityError, @"EMPTY_BROADCAST_MEMBER_LIST");
@@ -491,9 +509,15 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             adminUser:(NSString *)adminUserId
        withCompletion:(void(^)(ALChannel *channel, NSError *error))completion {
     if (channelName != nil) {
-        [self.channelClientService createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey
-                                  andMembersList:memberArray andImageLink:imageLink channelType:(short)type
-                                     andMetaData:metaData adminUser:adminUserId withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+        [self.channelClientService createChannel:channelName
+                             andParentChannelKey:parentChannelKey
+                              orClientChannelKey:clientChannelKey
+                                  andMembersList:memberArray
+                                    andImageLink:imageLink
+                                     channelType:(short)type
+                                     andMetaData:metaData
+                                       adminUser:adminUserId
+                                  withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
@@ -573,7 +597,13 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (clientChannelKey != nil) {
                     ALChannel *channel = [weakSelf.channelDBService loadChannelByClientChannelKey:clientChannelKey];
-                    updateAddMemberError = [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:channel.key];
+                    if (!channel) {
+                        updateAddMemberError = [NSError errorWithDomain:@"Applozic"
+                                                                   code:1
+                                                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to add member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+                    } else {
+                        updateAddMemberError = [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:channel.key];
+                    }
                 } else {
                     updateAddMemberError = [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:channelKey];
                 }
@@ -600,7 +630,6 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
     if ((channelKey != nil || clientChannelKey != nil) && userId != nil) {
         [self.channelClientService removeMemberFromChannel:userId orClientChannelKey:clientChannelKey
                                              andChannelKey:channelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
-
 
             if (error) {
                 completion(error, nil);
@@ -629,8 +658,9 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                         updateRemoveMemberError = [NSError errorWithDomain:@"Applozic"
                                                                       code:1
                                                                   userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+                    } else {
+                        updateRemoveMemberError = [self.channelDBService removeMemberFromChannel:userId andChannelKey:channel.key];
                     }
-                    updateRemoveMemberError = [self.channelDBService removeMemberFromChannel:userId andChannelKey:channel.key];
                 } else {
                     updateRemoveMemberError = [self.channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
                 }
@@ -677,13 +707,28 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 return;
             }
 
+            NSError *updateRemoveMemberError = nil;
+
             if (clientChannelKey != nil) {
                 ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
-                [self.channelDBService deleteChannel:channel.key];
+
+                if (!channel) {
+                    updateRemoveMemberError = [NSError errorWithDomain:@"Applozic"
+                                                                  code:1
+                                                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+
+                    completion(updateRemoveMemberError, nil);
+                    return;
+                }
+                updateRemoveMemberError = [self.channelDBService deleteChannel:channel.key];
             } else {
-                [self.channelDBService deleteChannel:channelKey];
+                updateRemoveMemberError = [self.channelDBService deleteChannel:channelKey];
             }
 
+            if (updateRemoveMemberError) {
+                completion(updateRemoveMemberError, nil);
+                return;
+            }
             completion(nil, response);
         }];
     } else {
@@ -947,6 +992,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             completion(error);
             return;
         }
+
         NSError *updateMetadataError = nil;
 
         if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
@@ -1042,11 +1088,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
     ALSLog(ALLoggerSeverityInfo, @"Found %ld messages for marking as read.", (unsigned long)count);
     
     if (count == 0) {
-        NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
-                          code:1
-                          userInfo:[NSDictionary dictionaryWithObject:@"Nothing to mark as read for channel" forKey:NSLocalizedDescriptionKey]];
-        completion(nil, error);
+        completion(AL_RESPONSE_SUCCESS, nil);
         return;
     }
     
@@ -1071,9 +1113,9 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
         return;
     }
 
-    if (!muteRequest.notificationAfterTime) {
+    if (!muteRequest.notificationAfterTime || (!muteRequest.id && !muteRequest.clientGroupId)) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
-                                            userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel where notificationAfterTime is nil" forKey:NSLocalizedDescriptionKey]];
+                                            userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel where notificationAfterTime nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
         return;
     }
@@ -1132,10 +1174,10 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 - (void)getChannelListForCategory:(NSString *)category
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
 
-    if (!category) {
+    if (category.length == 0) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Category is nil while fetching list channels under category"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Category is empty while fetching list channels under category"}];
 
         completion(nil, nilError);
         return;
@@ -1170,10 +1212,10 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                         withGroupType:(short) groupType
                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-    if (!contactsGroupId) {
+    if (contactsGroupId.length == 0) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is nil while adding a member to contacts group"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is empty while adding a member to contacts group"}];
 
         completion(nil, nilError);
         return;
@@ -1192,10 +1234,10 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                     withMembers:(NSMutableArray *)membersArray
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-    if (!contactsGroupId) {
+    if (contactsGroupId.length == 0) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is nil while adding a member to contacts group"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is empty while adding a member to contacts group"}];
 
         completion(nil, nilError);
         return;
@@ -1252,10 +1294,10 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                           withUserId:(NSString *)userId
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-    if (!contactsGroupId || !userId) {
+    if (contactsGroupId.length == 0 || userId.length == 0) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is nil while removing a memeber from contacts group"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is empty while removing a memeber from contacts group"}];
 
         completion(nil, nilError);
         return;
@@ -1273,10 +1315,10 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                                 withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-    if (!contactsGroupId || !userId) {
+    if (contactsGroupId.length == 0 || userId.length == 0) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is nil while removing a member from contacts group"}];
+                                            userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is empty while removing a member from contacts group"}];
 
         completion(nil, nilError);
         return;

@@ -24,7 +24,7 @@
 }
 
 +(void)verificationFailure:(NSString *)errorMessage withError:(NSError *)error {
-    ALSLog(ALLoggerSeverityError,@"Error :%@%@", errorMessage,  error.localizedDescription);
+    ALSLog(ALLoggerSeverityError,@"%@%@", errorMessage,  error.localizedDescription);
 }
 
 +(void)verificationFailureWithException:(NSException *)exception {

@@ -121,13 +121,11 @@ static short AL_VERSION_CODE = 112;
 
         NSString *loginAPIResponseJSON = (NSString *)jsonResponse;
 
-        BOOL isValidResponse = loginAPIResponseJSON.length > 0;
-
-        [ALVerification verify:isValidResponse withErrorMessage:@"Registration response object for login is nil"];
+        [ALVerification verify:loginAPIResponseJSON != nil withErrorMessage:@"Registration response object for login is nil"];
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
 
-        if (!isValidResponse) {
+        if (!loginAPIResponseJSON) {
             NSError *nilResponseError = [NSError errorWithDomain:@"Applozic"
                                                             code:1
                                                         userInfo:@{NSLocalizedDescriptionKey : @"Failed to login registration response object is nil."}];
@@ -529,6 +527,7 @@ static short AL_VERSION_CODE = 112;
     [responseHandler authenticateAndProcessRequest:appUpdateRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"error:%@",error);
+            return;
         }
         ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",jsonResponse);
     }];

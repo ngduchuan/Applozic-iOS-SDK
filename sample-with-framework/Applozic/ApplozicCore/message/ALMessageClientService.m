@@ -26,6 +26,7 @@
 #import "ALUtilityClass.h"
 #import "MessageListRequest.h"
 #import "NSString+Encode.h"
+#import "ALVerification.h"
 
 @implementation ALMessageClientService
 
@@ -696,6 +697,18 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Get messages by keys API response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilError = [NSError errorWithDomain:@"Applozic"
+                                                    code:1
+                                                userInfo:[NSDictionary dictionaryWithObject: @"Failed to get messages by keys API response is nil."
+                                                                                     forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully %@", (NSString *)jsonResponse);
         completion(response, nil);
@@ -715,16 +728,35 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Delete message for all response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilError = [NSError errorWithDomain:@"Applozic"
+                                                    code:1
+                                                userInfo:[NSDictionary dictionaryWithObject: @"Failed to Delete message for all response is nil."
+                                                                                     forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"Response for delete message for all: %@", (NSString *)jsonResponse);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
-        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            completion(response, nil);
-        } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
-                                                         code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message for all"}];
-            completion(nil, responseError);
+
+        if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+
+            NSString *errorMessage =  [response.errorResponse errorDescriptionMessage];
+
+            NSError *updateMetadataError =  [NSError errorWithDomain:@"Applozic" code:1
+                                                            userInfo:[NSDictionary dictionaryWithObject: errorMessage == nil ? @"Failed to delete the message for all.": errorMessage
+
+                                                                                                 forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, updateMetadataError);
+            return;
         }
+
+        completion(response, nil);
     }];
 }
 

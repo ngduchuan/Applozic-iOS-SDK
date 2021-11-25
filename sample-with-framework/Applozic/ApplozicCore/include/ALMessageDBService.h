@@ -67,8 +67,8 @@
 - (void)updateFileMetaInfo:(ALMessage *)message;
 
 //Delete Message APIS
-- (void)deleteMessageByKey:(NSString *)keyString;
-- (void)deleteAllMessagesByContact:(NSString *)contactId orChannelKey:(NSNumber *)key;
+- (NSError *)deleteMessageByKey:(NSString *)keyString;
+- (NSError *)deleteAllMessagesByContact:(NSString *)contactId orChannelKey:(NSNumber *)key;
 
 //Generic APIS
 - (BOOL)isMessageTableEmpty;
@@ -105,7 +105,7 @@
 
 - (DB_Message *)addAttachmentMessage:(ALMessage *)message;
 
-- (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
+- (NSError *)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
 
 - (ALMessage *)writeDataAndUpdateMessageInDB:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
 
