@@ -20,10 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ALAttachmentService : NSObject
 
 /// This delegate is used for listening attachment upload or download events.
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate> _Nullable attachmentProgressDelegate;
 
 /// `ApplozicUpdatesDelegate` delegate is used for real time delegate events for message.
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable delegate;
 
 /// Instance method of `ALAttachmentService`.
 + (ALAttachmentService *)sharedInstance;

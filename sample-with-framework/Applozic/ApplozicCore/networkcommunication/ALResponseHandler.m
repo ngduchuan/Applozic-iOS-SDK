@@ -10,6 +10,7 @@
 #import "ALResponseHandler.h"
 #import "ALUserDefaultsHandler.h"
 #import "NSData+AES.h"
+#import "ALVerification.h"
 
 @implementation ALResponseHandler
 
@@ -59,6 +60,11 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         }
 
         if (httpURLResponse.statusCode != 200 && httpURLResponse.statusCode != 201) {
+
+            [ALVerification
+             verify:YES
+             withErrorMessage:[[NSString alloc] initWithFormat:@"Response for :%@ error code: %ld", request.URL.absoluteString, (long)httpURLResponse.statusCode]];
+
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             ALSLog(ALLoggerSeverityError, @"API request failed with status code: %ld response:%@",(long)httpURLResponse.statusCode, errorString);
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -69,7 +75,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if (data == nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:@"API Response body is empty"]);
             });
             ALSLog(ALLoggerSeverityError, @"API Response body is empty for TAG :%@", tag);
             return;

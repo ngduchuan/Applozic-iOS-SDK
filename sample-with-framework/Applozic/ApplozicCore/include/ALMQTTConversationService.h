@@ -54,8 +54,8 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 
 /// The callback will be called on the user's online or offline update.
 ///
-/// @param alUserDetail Will have `ALUserDetail` object of user.
-- (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
+/// @param userDetail Will have `ALUserDetail` object of user.
+- (void)updateLastSeenAtStatus:(ALUserDetail *)userDetail;
 
 /// The callback will be called on MQTT disconnected you can resubscribe to the conversation.
 - (void)mqttConnectionClosed;

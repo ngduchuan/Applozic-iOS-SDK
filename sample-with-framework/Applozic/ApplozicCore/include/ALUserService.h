@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Fetching user details based on the `ALMessage` array.
 /// @param messages An Array of `ALMessage` object.
 /// @param completionMark The handler will be called once the competion is done.
-- (void)processContactFromMessages:(NSArray *)messages withCompletion:(void(^)(void))completionMark;
+- (void)processContactFromMessages:(NSArray * _Nullable)messages withCompletion:(void(^)(void))completionMark;
 
 /// Fetching users whose last seen is updated recently.
 /// @param lastSeenAtTime Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
@@ -104,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// On completion you can fetch the users from `ALContactDBService` method `getAllContactsFromDB`.
 /// @param completion An error describing registered user failure otherwise it will be nil in case of success.
-- (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *_Nullable error))completion;
+- (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError * _Nullable error))completion;
 
 /// Fetching a list of top online users based on the `onlineContactLimit` from `ALApplozicSettings`.
 /// @param completion Array of an `ALContact` object in case of successful fetch otherwise an error describing online user fetch failure.

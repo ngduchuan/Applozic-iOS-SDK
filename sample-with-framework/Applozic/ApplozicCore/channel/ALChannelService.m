@@ -1334,7 +1334,6 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             return;
         }
 
-
         if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
 
             NSString *errorMessage =  [response.errorResponse errorDescriptionMessage];

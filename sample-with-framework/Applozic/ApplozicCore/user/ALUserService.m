@@ -64,7 +64,11 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma mark - Fetch users from messages
 
 - (void)processContactFromMessages:(NSArray *)messages withCompletion:(void(^)(void))completionMark {
-    
+
+    if (messages.count == 0) {
+        completionMark();
+        return;
+    }
     NSMutableOrderedSet *contactIdsArray = [[NSMutableOrderedSet alloc] init ];
     
     for (ALMessage *message in messages) {
@@ -190,7 +194,7 @@ static int CONTACT_PAGE_SIZE = 100;
               withDisplayName:(NSString *)displayName
                withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error)) completion {
     
-    if (!userId || !displayName) {
+    if (userId.length == 0 || displayName.length == 0) {
         NSError *error = [NSError
                           errorWithDomain:@"Applozic"
                           code:1
@@ -325,6 +329,16 @@ static int CONTACT_PAGE_SIZE = 100;
     [self.userClientService userBlockServerCall:userId withCompletion:^(NSString *jsonResponse, NSError *error) {
         
         if (!error) {
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to block user got response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, NO);
+                return;
+            }
+
             ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 
             if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
@@ -379,6 +393,16 @@ static int CONTACT_PAGE_SIZE = 100;
     [self.userClientService userUnblockServerCall:userId withCompletion:^(NSString *jsonResponse, NSError *error) {
         
         if (!error) {
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock user got response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, NO);
+                return;
+            }
+
             ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 
             if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
@@ -421,17 +445,6 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
 
-        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user detail List response is nil"];
-
-        if (!response.userDetailList) {
-            NSError *apiError = [NSError
-                                 errorWithDomain:@"Applozic"
-                                 code:1
-                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the registered users user detail list response is nil" forKey:NSLocalizedDescriptionKey]];
-            completion(apiError);
-            return;
-        }
-
         [ALApplozicSettings setStartTime:response.lastFetchTime];
         [self.contactDBService updateFilteredContacts:response withLoadContact:NO];
         completion(error);
@@ -466,7 +479,9 @@ static int CONTACT_PAGE_SIZE = 100;
                 for (ALUserDetail *userDetail in userDetailArray) {
                     [self.contactDBService updateUserDetail: userDetail];
                     ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:userDetail.userId];
-                    [contactArray addObject:contact];
+                    if (contact) {
+                        [contactArray addObject:contact];
+                    }
                 }
                 completion(contactArray, error);
             }];

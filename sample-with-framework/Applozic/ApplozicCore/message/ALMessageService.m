@@ -610,17 +610,6 @@ static ALMessageClientService *alMsgClientService;
             return;
         }
 
-        [ALVerification verify:response != nil withErrorMessage:@"Failed to delete the single message response is nil"];
-
-        if (!response) {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
-                                                         code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message response is nil"}];
-
-            completion(nil, responseError);
-            return;
-        }
-
         NSError *deleteError = nil;
         //none error then delete from DB.
         if (!isUsedForReply) {
@@ -653,17 +642,6 @@ static ALMessageClientService *alMsgClientService;
 
         if (error) {
             completion(nil, error);
-            return;
-        }
-
-        [ALVerification verify:response != nil withErrorMessage:@"Failed to delete the message thread response is nil"];
-
-        if (!response) {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
-                                                         code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message thread response is nil"}];
-
-            completion(nil, responseError);
             return;
         }
 

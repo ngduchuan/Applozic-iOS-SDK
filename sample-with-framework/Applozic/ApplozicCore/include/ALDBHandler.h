@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Deletes the managed object from core database.
 /// @param managedObject Pass themanaged object that you want to delete from core data.
-- (NSError *)deleteObject:(NSManagedObject *)managedObject;
+- (NSError * _Nullable)deleteObject:(NSManagedObject *)managedObject;
 
 /// Used for performing batch update in core data.
 /// @param updateRequest Pass the batch update request.

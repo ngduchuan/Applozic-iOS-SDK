@@ -97,7 +97,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     @try
     {
         if (![ALUserDefaultsHandler isLoggedIn]) {
-            NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+            NSError *userIsNotLoginErrror = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
             completion(false, userIsNotLoginErrror);
             return;
         }

@@ -8,6 +8,7 @@
 
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 /// `ALMessageList` class is used for parsing the Message list or individual conversation JSON response.

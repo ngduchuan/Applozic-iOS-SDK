@@ -255,7 +255,7 @@ typedef enum {
 
 /// Gets the Message metadata for given JSON metadata string.
 /// @param string JSON string of the metadata.
-- (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString *)string;
+- (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString * _Nullable)string;
 
 /// Gets the Audio video call action text to show in chat.
 - (NSString * _Nullable)getVOIPMessageText;

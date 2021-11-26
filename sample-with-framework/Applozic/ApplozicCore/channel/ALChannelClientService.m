@@ -15,6 +15,7 @@
 #import "ALUserDetailListFeed.h"
 #import "ALUserService.h"
 #import "NSString+Encode.h"
+#import "ALVerification.h"
 
 static NSString *const CHANNEL_INFO_URL = @"/rest/ws/group/info";
 static NSString *const CHANNEL_SYNC_URL = @"/rest/ws/group/v3/list";
@@ -88,6 +89,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channel information response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:jsonResponse];
             NSMutableArray *members = response.alChannel.membersId;
             ALContactService *contactService = [ALContactService new];
@@ -179,6 +192,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CHANNEL :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channel information response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALChannelCreateResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -208,6 +233,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN ADD_NEW_MEMBER_TO_CHANNEL :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_NEW_MEMBER_TO_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channel information response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -235,6 +272,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN REMOVE_MEMBER_FROM_CHANNEL :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_MEMBER_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove the member from channel response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove the member from channel response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -260,6 +309,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN DELETE_CHANNEL SERVER CALL REQUEST :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_DELETE_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete the channel the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete the channel the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -286,6 +347,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN LEAVE_FROM_CHANNEL SERVER CALL REQUEST  :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to leave the channel the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to leave the channel the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -321,6 +393,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN ADD_MANY_USERS :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_MANY_USERS :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member in multiple channels the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to add member in multiple channels the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -385,6 +469,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN UPDATE_CHANNEL :: %@", error);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);
@@ -426,6 +522,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN UPDATE_CHANNEL :: %@", error);
         } else {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)jsonResponse);
         }
@@ -457,6 +565,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         } else {
             ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to sync channel the response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to sync channel the response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             NSMutableArray *userNotPresentIds = [NSMutableArray new];
             response = [[ALChannelSyncResponse alloc] initWithJSONString:jsonResponse];
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
@@ -520,6 +640,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add child channel in parent key the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to add child channel in parent key the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -546,6 +678,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove child from channel parent key the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove child from channel parent key the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -575,6 +719,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add client child key for channel parent key the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to add client child key for channel parent key the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
         completion((NSString *)jsonResponse, nil);
     }];
 }
@@ -601,6 +756,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove client child key from channel parent key the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove client child key from channel parent key the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -622,6 +789,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN MARK_CONVERSATION_AS_READ :: %@", error);
             completion(nil, error);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark channel as read the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark channel as read the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
             return;
         }
 
@@ -650,6 +828,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute channel as read the response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel as read the response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         completion(response, nil);
     }];
@@ -686,6 +876,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to channel information by client keys or channel keys response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to channel information by client keys or channel keys response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
 
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         NSMutableArray *array = (NSMutableArray *)response.response;
@@ -724,6 +925,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channels for Category response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channels for Category response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
 
         ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:jsonResponse];
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
@@ -771,6 +983,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         ALSLog(ALLoggerSeverityInfo, @"Channel response : %@", jsonResponse);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get all channels from application response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get all channels from application response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSNumber *lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
             [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
@@ -815,6 +1039,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group with group type response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to add member to contacts group response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         completion(response, nil);
     }];
@@ -844,6 +1080,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to add member to contacts group response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         completion(response, nil);
     }];
@@ -880,6 +1128,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS :: %@", jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get member from contacts group response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get member from contacts group response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:jsonResponse];
             NSMutableArray *membersUserId = response.alChannel.membersId;
             ALContactService *contactService = [ALContactService new];
@@ -945,6 +1205,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove member from contacts group by type response is nil"];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from contacts group by type response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         completion(response, nil);
     }];
@@ -969,6 +1241,18 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channel information response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             ALChannelFeedResponse *response = [[ALChannelFeedResponse alloc] initWithJSONString:jsonResponse];
 
             if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]) {
@@ -1017,6 +1301,17 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS  :: %@", jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get multiple contacts group response is nil"];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get multiple contacts group response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
 
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 

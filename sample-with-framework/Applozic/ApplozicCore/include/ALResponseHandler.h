@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param completion Will have `NSMutableURLRequest` if success in generating JWT token otherwise an error describing the Authenticate failure.
 /// @note Internal API request method don't need to call from outside.
 - (void)authenticateRequest:(NSMutableURLRequest *)request
-             WithCompletion:(void (^)(NSMutableURLRequest * _Nullable urlRequest, NSError * _Nullable  error))completion;
+             WithCompletion:(void (^)(NSMutableURLRequest * _Nullable urlRequest, NSError * _Nullable error))completion;
 
 @end
 

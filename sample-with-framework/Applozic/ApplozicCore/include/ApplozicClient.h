@@ -588,13 +588,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// }];
 /// @endcode
-- (void)updateChannelWithChannelKey:(NSNumber *)channelKey
-                         andNewName:(NSString *)newName
-                        andImageURL:(NSString *)imageURL
-                 orClientChannelKey:(NSString *)clientChannelKey
+- (void)updateChannelWithChannelKey:(NSNumber * _Nullable)channelKey
+                         andNewName:(NSString * _Nullable)newName
+                        andImageURL:(NSString * _Nullable)imageURL
+                 orClientChannelKey:(NSString * _Nullable)clientChannelKey
                  isUpdatingMetaData:(BOOL)flag
-                           metadata:(NSMutableDictionary *)metaData
-                     orChannelUsers:(NSMutableArray *)channelUsers
+                           metadata:(NSMutableDictionary * _Nullable)metaData
+                     orChannelUsers:(NSMutableArray * _Nullable)channelUsers
                      withCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse * _Nullable response))completion;
 
 /// Gets the channel information for the given channel Key or client channel key.
@@ -624,8 +624,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 ///@endcode
-- (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
-                         orClientChannelKey:(NSString *)clientChannelKey
+- (void)getChannelInformationWithChannelKey:(NSNumber * _Nullable)channelKey
+                         orClientChannelKey:(NSString * _Nullable)clientChannelKey
                              withCompletion:(void(^)(NSError * _Nullable error,
                                                      ALChannel * _Nullable channel,
                                                      ALChannelFeedResponse * _Nullable channelResponse))completion;

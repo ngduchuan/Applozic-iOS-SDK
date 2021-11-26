@@ -74,7 +74,7 @@
     } else {
         NSDictionary *messageDictionary = [attachmentMessage dictionary];
         
-        ALMessageClientService *clientService  = [[ALMessageClientService alloc] init];
+        ALMessageClientService *clientService = [[ALMessageClientService alloc] init];
         [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *responseUrl, NSError *error) {
             
             if (error) {

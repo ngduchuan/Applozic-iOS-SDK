@@ -412,6 +412,18 @@ static short AL_VERSION_CODE = 112;
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:updateUserAPIResponse != nil withErrorMessage:@"Register update user response object is nil."];
+
+        if (!updateUserAPIResponse) {
+            NSError *nilResponseError = [NSError errorWithDomain:@"Applozic"
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey : @"Failed to register update user response object is nil."}];
+
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:updateUserAPIResponse];
         
         if (response && response.isRegisteredSuccessfully) {
@@ -469,8 +481,6 @@ static short AL_VERSION_CODE = 112;
     [self.responseHandler authenticateAndProcessRequest:logoutRequest andTag:@"USER_LOGOUT"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-
-
         BOOL isLogoutResponseNotNil = jsonResponse && error;
         [ALVerification verify:isLogoutResponseNotNil withErrorMessage:@"Logout response is nil."];
 
@@ -526,7 +536,7 @@ static short AL_VERSION_CODE = 112;
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];
     [responseHandler authenticateAndProcessRequest:appUpdateRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"error:%@",error);
+            ALSLog(ALLoggerSeverityError, @"Update version error:%@",error);
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",jsonResponse);

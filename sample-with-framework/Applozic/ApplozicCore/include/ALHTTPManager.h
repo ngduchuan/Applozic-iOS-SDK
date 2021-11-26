@@ -24,9 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSUInteger *length;
 
-@property (nonatomic) ALUploadTask *uploadTask;
+@property (nonatomic) ALUploadTask * _Nullable uploadTask;
 
-@property (nonatomic) ALDownloadTask *downloadTask;
+@property (nonatomic) ALDownloadTask * _Nullable downloadTask;
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
