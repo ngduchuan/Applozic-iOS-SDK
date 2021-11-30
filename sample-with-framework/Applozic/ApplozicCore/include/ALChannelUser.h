@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSNumber * _Nullable role;
 
 /// Sets the member userId.
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString * _Nullable userId;
 
 /// Parent group key is the parent channel key.
 @property (nonatomic, strong) NSNumber * _Nullable parentGroupKey;

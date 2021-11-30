@@ -121,7 +121,7 @@ static short AL_VERSION_CODE = 112;
 
         NSString *loginAPIResponseJSON = (NSString *)jsonResponse;
 
-        [ALVerification verify:loginAPIResponseJSON != nil withErrorMessage:@"Registration response object for login is nil"];
+        [ALVerification verify:loginAPIResponseJSON != nil withErrorMessage:@"Registration response object for login is nil."];
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
 

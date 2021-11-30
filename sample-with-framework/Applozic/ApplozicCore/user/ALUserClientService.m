@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         } else {
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user last seen detail response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user last seen detail response is nil."];
 
             if (!jsonResponse) {
                 completionMark(nil);
@@ -97,7 +97,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update Detail response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update Detail response is nil."];
 
         if (!jsonResponse) {
             completionMark(nil);
@@ -134,7 +134,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         } else {
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update login user display name response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update login user display name response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -168,7 +168,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark converstion read response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark converstion read response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -201,7 +201,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -237,7 +237,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block sync response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block sync response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -271,7 +271,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to unblock the user response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to unblock the user response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -304,7 +304,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark the registered users as response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark the registered users as response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -368,7 +368,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get Registered users response as nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get Registered users response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -414,7 +414,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the online users response as nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the online users response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -448,7 +448,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                 return;
             }
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -542,7 +542,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -591,7 +591,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:userUpdateRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user response as nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -639,7 +639,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user details got response as nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user details got response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -685,7 +685,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALAPIResponse *apiResponse = nil;
         if (!error) {
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update password got response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update password got response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -723,7 +723,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_LIST_OF_USERS_WITH_NAME_JSON : %@",(NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the users by name got response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the users by name got response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -755,7 +755,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the muted users list got response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the muted users list got response is nil."];
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_MUTED_USER_LIST : %@",(NSString *)jsonResponse);
 
@@ -789,7 +789,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute the user got response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute the user got response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -835,7 +835,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
 
-        [ALVerification verify:responseString != nil withErrorMessage:@"Failed to report the user got response as nil"];
+        [ALVerification verify:responseString != nil withErrorMessage:@"Failed to report the user got response as nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError

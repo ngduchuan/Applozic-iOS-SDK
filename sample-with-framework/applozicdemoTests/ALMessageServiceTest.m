@@ -313,7 +313,7 @@
 
 - (void)test_deleteMessageThreadForChannelIsUnsuccessful {
 
-    OCMStub([mockMessageClientService deleteMessageThread:nil orChannelKey:@1234 withCompletion:([OCMArg invokeBlockWithArgs:@"success" ,[OCMArg defaultValue], nil])]);
+    OCMStub([mockMessageClientService deleteMessageThread:nil orChannelKey:@1234 withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue] ,networkError, nil])]);
 
     [messageService deleteMessageThread:nil orChannelKey:@1234  withCompletion:^(NSString *status, NSError *error) {
         XCTAssertNotNil(error);
@@ -324,7 +324,7 @@
 
 // MARK: - Message delete by message key
 
-- (void)test_deleteMessageForMessageKeyIsUnsuccessful {
+- (void)test_deleteMessageForMessageKeyIsSuccessful {
 
     NSString *messageKey = @"messageKey1";
 
@@ -338,8 +338,8 @@
     [messageService deleteMessage:messageKey
                      andContactId:nil
                    withCompletion:^(NSString *status, NSError *error) {
-        XCTAssertNotNil(error);
-        XCTAssertNil(status);
+        XCTAssertNil(error);
+        XCTAssertNotNil(status);
     }];
 }
 

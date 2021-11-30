@@ -813,7 +813,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
 
-        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil"];
+        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil."];
 
         if (!response.userDetailList) {
             NSError *apiError = [NSError

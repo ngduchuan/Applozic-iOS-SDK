@@ -215,11 +215,6 @@
             ALSLog(ALLoggerSeverityInfo, @"Failed to delete the message got some error: %@", error);
             return error;
         }
-    } else {
-        ALSLog(ALLoggerSeverityInfo, @"Failed to delete the Message not found with this key: %@", keyString);
-        return [NSError errorWithDomain:@"Applozic"
-                                   code:1
-                               userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete single message from database as it does not exist."}];
     }
     return nil;
 }
@@ -267,10 +262,6 @@
                 ALSLog(ALLoggerSeverityError, @"Unable to save managed object context %@, %@", deleteError, deleteError.localizedDescription);
                 return deleteError;
             }
-        } else {
-            return [NSError errorWithDomain:@"Applozic"
-                                       code:1
-                                   userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete message for all from database as it does not exist."}];
         }
     } else {
         return [NSError errorWithDomain:@"Applozic"

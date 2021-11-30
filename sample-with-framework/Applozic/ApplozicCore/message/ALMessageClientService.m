@@ -200,7 +200,7 @@
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -254,7 +254,7 @@
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -289,7 +289,7 @@
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -366,7 +366,7 @@
                 return;
             }
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get attachment URL response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get attachment URL response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -405,7 +405,7 @@
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -451,7 +451,7 @@
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message Thread response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message Thread response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -494,7 +494,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to send message response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to send message response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -524,7 +524,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         } else {
             ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -576,7 +576,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -618,7 +618,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
         ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update message metadata response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update message metadata response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -654,7 +654,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search supprt group message response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search supprt group message response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -730,7 +730,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
 
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search message response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search message response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -790,7 +790,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
         }
         ALSLog(ALLoggerSeverityInfo, @"Messages fetched succesfully :: %@", (NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -847,7 +847,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Get messages by keys API response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Get messages by keys API response is nil."];
 
         if (!jsonResponse) {
             NSError *nilError = [NSError errorWithDomain:@"Applozic"
@@ -878,7 +878,7 @@ withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Delete message for all response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Delete message for all response is nil."];
 
         if (!jsonResponse) {
             NSError *nilError = [NSError errorWithDomain:@"Applozic"

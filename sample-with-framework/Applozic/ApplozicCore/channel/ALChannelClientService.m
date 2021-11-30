@@ -90,7 +90,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -193,7 +193,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -234,7 +234,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_NEW_MEMBER_TO_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create channel response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -273,7 +273,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_MEMBER_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove the member from channel response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove the member from channel response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -310,7 +310,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_DELETE_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete the channel the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete the channel the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -348,7 +348,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to leave the channel the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to leave the channel the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -394,7 +394,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADD_MANY_USERS :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member in multiple channels the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member in multiple channels the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -470,7 +470,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -523,7 +523,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             ALSLog(ALLoggerSeverityError, @"ERROR IN UPDATE_CHANNEL :: %@", error);
         } else {
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update channel the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -566,7 +566,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to sync channel the response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to sync channel the response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -641,7 +641,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add child channel in parent key the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add child channel in parent key the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -679,7 +679,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REMOVE_CHILD_TO_PARENT :: %@", (NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove child from channel parent key the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove child from channel parent key the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -720,7 +720,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_ADDING_CHILD_TO_PARENT (VIA CLIENT KEY) :: %@", (NSString *)jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add client child key for channel parent key the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add client child key for channel parent key the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -757,7 +757,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove client child key from channel parent key the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove client child key from channel parent key the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -792,7 +792,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark channel as read the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark channel as read the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -829,7 +829,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute channel as read the response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute channel as read the response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -877,7 +877,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to channel information by client keys or channel keys response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to channel information by client keys or channel keys response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -926,7 +926,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channels for Category response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channels for Category response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -984,7 +984,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         ALSLog(ALLoggerSeverityInfo, @"Channel response : %@", jsonResponse);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get all channels from application response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get all channels from application response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -1040,7 +1040,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group with group type response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group with group type response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -1081,7 +1081,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to add member to contacts group response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -1129,7 +1129,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS :: %@", jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get member from contacts group response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get member from contacts group response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -1206,7 +1206,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         }
 
-        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove member from contacts group by type response is nil"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to remove member from contacts group by type response is nil."];
 
         if (!jsonResponse) {
             NSError *nilResponseError = [NSError
@@ -1242,7 +1242,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get channel information response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
@@ -1302,7 +1302,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS  :: %@", jsonResponse);
 
-            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get multiple contacts group response is nil"];
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get multiple contacts group response is nil."];
 
             if (!jsonResponse) {
                 NSError *nilResponseError = [NSError
