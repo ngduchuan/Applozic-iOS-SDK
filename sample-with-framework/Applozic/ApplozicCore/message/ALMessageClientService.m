@@ -377,7 +377,7 @@
                 return;
             }
 
-            NSString *imagePostingURL = (NSString *)error;
+            NSString *imagePostingURL = (NSString *)jsonResponse;
             ALSLog(ALLoggerSeverityInfo, @"Upload Image or attachment URL : %@",imagePostingURL);
             completion(imagePostingURL, nil);
         }];
