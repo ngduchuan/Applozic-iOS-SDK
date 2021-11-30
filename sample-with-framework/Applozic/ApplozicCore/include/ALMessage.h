@@ -248,7 +248,7 @@ typedef enum {
 - (NSString * _Nullable)getCreatedAtTimeChat:(BOOL)today;
 
 /// Returns the channel key or group of the message.
-- (NSNumber *)getGroupId;
+- (NSNumber * _Nullable)getGroupId;
 
 /// Returns the text for message to show in notification based on `contentType` of `ALMessage`
 - (NSString * _Nullable)getLastMessage;

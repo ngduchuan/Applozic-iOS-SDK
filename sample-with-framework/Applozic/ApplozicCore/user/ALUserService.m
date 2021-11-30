@@ -700,7 +700,7 @@ static int CONTACT_PAGE_SIZE = 100;
 - (void)muteUser:(ALMuteRequest *)muteRequest
   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
-    if (!muteRequest.userId || !muteRequest.notificationAfterTime) {
+    if (!muteRequest.userId || muteRequest.notificationAfterTime == nil) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user where userId or notificationAfterTime is nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
@@ -813,7 +813,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
 
-        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil."];
+        [ALVerification verify:response.userDetailList != nil withErrorMessage:@"Failed to get the registered users user Detail List response is nil"];
 
         if (!response.userDetailList) {
             NSError *apiError = [NSError

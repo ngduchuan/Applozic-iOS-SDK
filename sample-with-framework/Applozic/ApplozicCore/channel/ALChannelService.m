@@ -83,8 +83,8 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
            orClientChannelKey:(NSString *)clientChannelKey
                withCompletion:(void (^)(ALChannel *channel)) completion {
 
-    if (!channelKey
-        && !clientChannelKey) {
+    if (channelKey == nil &&
+        !clientChannelKey) {
         completion(nil);
         return;
     }
@@ -890,7 +890,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    if (!channelKey &&
+    if (channelKey == nil &&
         !clientChannelKey) {
         NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or clientChannelKey is nil while updating channel." forKey:NSLocalizedDescriptionKey]];
         completion(failError, nil);
@@ -972,7 +972,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                      metadata:(NSMutableDictionary *)metaData
                withCompletion:(void(^)(NSError *error))completion {
 
-    if (!channelKey &&
+    if (channelKey == nil &&
         !clientChannelKey) {
 
         NSError *failError = [NSError errorWithDomain:@"Applozic"
@@ -1072,7 +1072,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
 
 - (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *response, NSError *error))completion {
 
-    if (!channelKey) {
+    if (channelKey == nil) {
         NSError *error = [NSError
                           errorWithDomain:@"Applozic"
                           code:1
@@ -1112,7 +1112,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
         return;
     }
 
-    if (!muteRequest.notificationAfterTime || (!muteRequest.id && !muteRequest.clientGroupId)) {
+    if (muteRequest.notificationAfterTime == nil || (muteRequest.id == nil && !muteRequest.clientGroupId)) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel where notificationAfterTime nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
@@ -1385,8 +1385,8 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                      orClientChannelKey:(NSString *)clientChannelKey
                          withCompletion:(void (^)(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse)) completion {
 
-    if (!channelKey
-        && !clientChannelKey) {
+    if (channelKey == nil &&
+        !clientChannelKey) {
         NSError *nilError = [NSError errorWithDomain:@"Applozic"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Channel key or client channel key is nil"}];

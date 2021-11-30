@@ -156,7 +156,7 @@ static ALMessageClientService *alMsgClientService;
         return;
     }
 
-    if (!messageListRequest.userId && !messageListRequest.channelKey) {
+    if (!messageListRequest.userId && messageListRequest.channelKey == nil) {
         NSError *requestParametersError = [NSError errorWithDomain:@"Applozic"
                                                               code:1
                                                           userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];
@@ -355,7 +355,6 @@ static ALMessageClientService *alMsgClientService;
                     if (channel.type != OPEN || (dbMessage != nil && dbMessage.fileMetaInfo != nil)) {
                         message.msgDBObjectId = dbMessage.objectID;
                         [messageDBService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
-
                     }
                 } else {
                     message.msgDBObjectId = dbMessage.objectID;
@@ -630,7 +629,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *response, NSError *error))completion {
 
-    if (!contactId && !channelKey) {
+    if (!contactId && channelKey == nil) {
         NSError *responseError = [NSError errorWithDomain:@"Applozic"
                                                      code:1
                                                  userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];

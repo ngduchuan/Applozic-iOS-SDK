@@ -88,11 +88,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSURL *)getDocumentDirectory;
 
 /// This method is used URL of Apps group directory.
-+ (NSURL *)getAppsGroupDirectory;
++ (NSURL * _Nullable)getAppsGroupDirectory;
 
 /// This method is used for geeting file URL from Apps group directory.
 /// @param path Pass the name of the file.
-+ (NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *)path;
++ (NSURL * _Nullable)getAppsGroupDirectoryWithFilePath:(NSString *)path;
 
 /// This method is used for geeting file URL from application directory if the file exist else it will be nil.
 /// @param path Pass the name of the file.

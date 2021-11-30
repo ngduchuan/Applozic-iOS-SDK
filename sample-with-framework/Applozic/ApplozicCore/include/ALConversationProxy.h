@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 /// Returns the topic detail.
-- (ALTopicDetail *)getTopicDetail;
+- (ALTopicDetail * _Nullable)getTopicDetail;
 
 /// Gets the dictionary from `ALConversationProxy`.
 /// @param conversationProxy Pass the `ALConversationProxy` object.

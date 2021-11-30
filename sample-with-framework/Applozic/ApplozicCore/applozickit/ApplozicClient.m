@@ -119,6 +119,9 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
         [registerUserClientService logoutWithCompletionHandler:^(ALAPIResponse *response, NSError *error) {
             completion(error, response);
         }];
+    } else {
+        NSError *userNotLoggedInError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Failed to logout Applozic user is not logged-in."}];
+        completion(userNotLoggedInError, nil);
     }
 }
 

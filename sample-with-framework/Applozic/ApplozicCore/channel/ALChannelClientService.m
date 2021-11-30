@@ -982,8 +982,6 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         }
 
         ALSLog(ALLoggerSeverityInfo, @"Channel response : %@", jsonResponse);
-        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
-
         [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get all channels from application response is nil."];
 
         if (!jsonResponse) {
@@ -994,6 +992,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             completion(nil, nilResponseError);
             return;
         }
+
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
 
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSNumber *lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
@@ -1324,7 +1324,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             for (NSDictionary *channelDictionary in channelResponse) {
                 ALChannel *channel = [[ALChannel alloc] initWithDictonary:channelDictionary];
                 [channelFeedArray addObject:channel];
-
+                
                 for (NSString *userId in channel.membersId) {
                     if (![contactService isContactExist:userId]) {
                         [userNotPresentIds addObject:userId];

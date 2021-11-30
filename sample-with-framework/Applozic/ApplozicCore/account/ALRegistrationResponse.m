@@ -11,6 +11,7 @@
 @implementation ALRegistrationResponse
 
 - (id)initWithJSONString:(NSString *)registrationResponse {
+    self = [super init];
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
     self.userKey = [registrationResponse valueForKey:@"userKey"];
