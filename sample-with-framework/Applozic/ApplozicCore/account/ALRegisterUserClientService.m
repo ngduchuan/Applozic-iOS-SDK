@@ -481,8 +481,9 @@ static short AL_VERSION_CODE = 112;
     [self.responseHandler authenticateAndProcessRequest:logoutRequest andTag:@"USER_LOGOUT"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        BOOL isLogoutResponseNotNil = jsonResponse && error;
-        [ALVerification verify:isLogoutResponseNotNil withErrorMessage:@"Logout response is nil."];
+        if (error) {
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Logout response is nil."];
+        }
 
         NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
         BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation:userKey];

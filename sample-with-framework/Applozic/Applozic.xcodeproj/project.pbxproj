@@ -152,6 +152,8 @@
 		1814A798252F31C3004E836B /* SDAssociatedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1814A70B252F31C2004E836B /* SDAssociatedObject.h */; };
 		1814A799252F31C3004E836B /* SDMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1814A70C252F31C2004E836B /* SDMemoryCache.m */; };
 		1814A79A252F31C3004E836B /* SDWebImageDownloaderOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1814A70D252F31C2004E836B /* SDWebImageDownloaderOperation.h */; };
+		182609FC27575E3900D69B20 /* ALUserDefaultsUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 182609FA27575E3900D69B20 /* ALUserDefaultsUtility.h */; };
+		182609FD27575E3900D69B20 /* ALUserDefaultsUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 182609FB27575E3900D69B20 /* ALUserDefaultsUtility.m */; };
 		18282E2D25FB87C70000EBD8 /* ALJWT.h in Headers */ = {isa = PBXBuildFile; fileRef = 18282E2B25FB87C70000EBD8 /* ALJWT.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18282E2E25FB87C70000EBD8 /* ALJWT.m in Sources */ = {isa = PBXBuildFile; fileRef = 18282E2C25FB87C70000EBD8 /* ALJWT.m */; };
 		18282E3325FB95060000EBD8 /* ALJWTClaim.h in Headers */ = {isa = PBXBuildFile; fileRef = 18282E3125FB95060000EBD8 /* ALJWTClaim.h */; };
@@ -706,6 +708,8 @@
 		1814A70B252F31C2004E836B /* SDAssociatedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAssociatedObject.h; sourceTree = "<group>"; };
 		1814A70C252F31C2004E836B /* SDMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMemoryCache.m; sourceTree = "<group>"; };
 		1814A70D252F31C2004E836B /* SDWebImageDownloaderOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageDownloaderOperation.h; sourceTree = "<group>"; };
+		182609FA27575E3900D69B20 /* ALUserDefaultsUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALUserDefaultsUtility.h; sourceTree = "<group>"; };
+		182609FB27575E3900D69B20 /* ALUserDefaultsUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALUserDefaultsUtility.m; sourceTree = "<group>"; };
 		18282E2B25FB87C70000EBD8 /* ALJWT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALJWT.h; sourceTree = "<group>"; };
 		18282E2C25FB87C70000EBD8 /* ALJWT.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALJWT.m; sourceTree = "<group>"; };
 		18282E3125FB95060000EBD8 /* ALJWTClaim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALJWTClaim.h; sourceTree = "<group>"; };
@@ -1420,6 +1424,8 @@
 				18E0EFF525DCF85800F6EDE3 /* NSData+AES.m */,
 				18E0EFF125DCF85800F6EDE3 /* NSString+Encode.m */,
 				18E0EFF725DCF85800F6EDE3 /* ALSearchResultCache.m */,
+				182609FA27575E3900D69B20 /* ALUserDefaultsUtility.h */,
+				182609FB27575E3900D69B20 /* ALUserDefaultsUtility.m */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
@@ -2082,6 +2088,7 @@
 				1896EE7225DBD84B0038EBFF /* ALMessageInfo.h in Headers */,
 				1896EDF525DBD5520038EBFF /* ALTopicDetail.h in Headers */,
 				1896EF3625DBEEF10038EBFF /* ALFileMetaInfo.h in Headers */,
+				182609FC27575E3900D69B20 /* ALUserDefaultsUtility.h in Headers */,
 				1896EF3225DBEEF10038EBFF /* ALMessageService.h in Headers */,
 				1896EED425DBE8E40038EBFF /* DB_Message.h in Headers */,
 				1896EE2225DBD7070038EBFF /* ALChannelOfTwoMetaData.h in Headers */,
@@ -2455,6 +2462,7 @@
 				1896EEEC25DBE95B0038EBFF /* ALRegistrationResponse.m in Sources */,
 				1896EE5925DBD84B0038EBFF /* ALMessageInfoResponse.m in Sources */,
 				18E0F05325DCF8A400F6EDE3 /* MQTTCFSocketDecoder.m in Sources */,
+				182609FD27575E3900D69B20 /* ALUserDefaultsUtility.m in Sources */,
 				18282E2E25FB87C70000EBD8 /* ALJWT.m in Sources */,
 				18E0F05825DCF8A400F6EDE3 /* MQTTSessionSynchron.m in Sources */,
 				1896EE6E25DBD84B0038EBFF /* ALAPIResponse.m in Sources */,
