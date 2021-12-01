@@ -64,7 +64,7 @@
                             withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
 
 - (void)updatePassword:(NSString *)oldPassword
-      withNewPassword :(NSString *)newPassword
+      withNewPassword:(NSString *)newPassword
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;

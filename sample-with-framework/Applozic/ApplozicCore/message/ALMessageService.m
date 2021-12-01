@@ -246,8 +246,7 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
             if (userNotPresentIds.count>0) {
-                ALUserService *userService = [ALUserService new];
-                [userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+                [self.userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
                     completion(messages, error, userDetailArray);
                 }];
             } else {
@@ -317,8 +316,7 @@ static ALMessageClientService *alMsgClientService;
 
     ALChannel *channel;
     if (message.groupId != nil) {
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        channel = [channelService getChannelByKey:message.groupId];
+        channel = [self.channelService getChannelByKey:message.groupId];
     }
 
     if (message.msgDBObjectId == nil) {
@@ -342,6 +340,18 @@ static ALMessageClientService *alMsgClientService;
 
         if (!error) {
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+
+            [ALVerification verify:apiResponse.response != nil withErrorMessage:@"Failed to send message API response is nil."];
+
+            if (!apiResponse.response) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to send message API response is nil." forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
+
             ALSendMessageResponse *response = [[ALSendMessageResponse alloc] initWithJSONString:apiResponse.response];
 
             if (!response.isSuccess) {
@@ -1181,7 +1191,6 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Total unread message count
 
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion {
-    ALUserService *userService = [[ALUserService alloc] init];
     if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService getLatestMessages:NO
@@ -1190,11 +1199,11 @@ static ALMessageClientService *alMsgClientService;
                 completion(0, error);
                 return;
             }
-            NSNumber *totalUnreadCount = [userService getTotalUnreadCount];
+            NSNumber *totalUnreadCount = [self.userService getTotalUnreadCount];
             completion(totalUnreadCount.integerValue, nil);
         }];
     } else {
-        NSNumber *totalUnreadCount = [userService getTotalUnreadCount];
+        NSNumber *totalUnreadCount = [self.userService getTotalUnreadCount];
         completion(totalUnreadCount.integerValue, nil);
     }
 }
@@ -1211,13 +1220,12 @@ static ALMessageClientService *alMsgClientService;
         }
         NSUInteger unreadCount = 0;
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
         ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         
         for (ALMessage *message in messages) {
             if (message.groupId &&
                 message.groupId.integerValue != 0) {
-                ALChannel *channel = [channelService getChannelByKey:message.groupId];
+                ALChannel *channel = [self.channelService getChannelByKey:message.groupId];
                 if (channel && channel.unreadCount.integerValue > 0) {
                     unreadCount += 1;
                 }

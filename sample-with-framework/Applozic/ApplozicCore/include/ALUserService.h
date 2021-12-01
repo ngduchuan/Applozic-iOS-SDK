@@ -184,10 +184,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Total unread count which are fetched from core database.
 - (NSNumber * _Nullable)getTotalUnreadCount;
 
-/// Used for set unread count to zero in local database.
-/// @param contactId Receiver userId to reset the count to zero.
-- (void)setUnreadCountZeroForContactId:(NSString *)contactId;
-
 /// Fetching a list of top online users based on the `onlineContactLimit` from `ALApplozicSettings`.
 /// @param completion Array of an `ALContact` object in case of successful fetch otherwise an error describing online user fetch failure.
 - (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray * _Nullable contactArray, NSError * _Nullable error))completion;
@@ -207,6 +203,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param messages An Array of `ALMessage` object.
 /// @param completionMark The handler will be called once the competion is done.
 - (void)processContactFromMessages:(NSArray * _Nullable)messages withCompletion:(void(^)(void))completionMark;
+
+/// Used for set unread count to zero in local database.
+/// @param contactId Receiver userId to reset the count to zero.
+- (void)setUnreadCountZeroForContactId:(NSString *)contactId;
 
 /// Update the block status in local database.
 /// @param userBlockResponse An `ALUserBlockResponse` object parsing JSON.

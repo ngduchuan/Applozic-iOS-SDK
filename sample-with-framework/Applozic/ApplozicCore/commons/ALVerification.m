@@ -20,7 +20,7 @@
 }
 
 +(void)verificationFailure:(NSError *)error {
-    [self verificationFailure:error];
+    [self verificationFailure:nil withError:error];
 }
 
 +(void)verificationFailure:(NSString *)errorMessage withError:(NSError *)error {

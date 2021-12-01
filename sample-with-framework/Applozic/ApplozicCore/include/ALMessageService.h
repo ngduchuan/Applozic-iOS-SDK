@@ -111,6 +111,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 /// Returns `ALMessage` object for given message key.
 - (ALMessage * _Nullable)getMessageByKey:(NSString *)messageKey;
 
+/// Returns an `ALMessage` object for key and value.
 + (ALMessage * _Nullable)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value;
 
 + (void)getMessageListForContactId:(NSString * _Nullable)contactIds

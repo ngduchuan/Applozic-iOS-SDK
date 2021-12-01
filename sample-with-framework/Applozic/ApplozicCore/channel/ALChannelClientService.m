@@ -1324,7 +1324,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             for (NSDictionary *channelDictionary in channelResponse) {
                 ALChannel *channel = [[ALChannel alloc] initWithDictonary:channelDictionary];
                 [channelFeedArray addObject:channel];
-                
+
                 for (NSString *userId in channel.membersId) {
                     if (![contactService isContactExist:userId]) {
                         [userNotPresentIds addObject:userId];

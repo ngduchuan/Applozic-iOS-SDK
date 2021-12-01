@@ -10,8 +10,6 @@
 
 @implementation ALErrorResponse
 
-@synthesize description;
-
 - (id)initWithDictionary:(NSDictionary *)responseDictionary {
     self = [super init];
     if (self) {

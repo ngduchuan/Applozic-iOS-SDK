@@ -837,7 +837,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
         [ALVerification verify:responseString != nil withErrorMessage:@"Failed to report the user got response as nil."];
 
-        if (!jsonResponse) {
+        if (!responseString) {
             NSError *nilResponseError = [NSError
                                          errorWithDomain:@"Applozic"
                                          code:1

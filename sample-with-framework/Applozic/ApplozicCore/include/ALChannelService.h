@@ -276,17 +276,12 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @return NSNumber the total unread count of the channel.
 - (NSNumber * _Nullable)getOverallUnreadCountForChannel;
 
-/// This method is internal, used to set channel unread cout to zero.
-- (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey;
-
-/// To check if the logged-in user is in the channel or not.
-/// @param channelKey Pass the channel key can get from ALChannel object as channel.key.
-/// @return it will return YES OR NO if the user is in a channel or not.
-- (BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
-
 /// Gets all channels for the logged-in user from the local database.
 /// @return it will return the NSMutableArray of AlChannel object.
 - (NSMutableArray * _Nullable)getAllChannelList;
+
+/// This method is internal, used to set channel unread cout to zero.
+- (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey;
 
 /// Gets channel information from channelKeys array or clientChannelKey array.
 /// @param channelIds Pass channelKeys array to get the list of channel information.
@@ -452,6 +447,11 @@ extern NSString *const AL_MESSAGE_SYNC;
 /// @param channel Pass the `ALChannel` object.
 /// @param isFromMessageList Pass YES if the call is made for Message List else pass the NO for the Message thread conversation.
 - (void)createChannelEntry:(ALChannel * _Nullable)channel fromMessageList:(BOOL)isFromMessageList;
+
+/// To check if the logged-in user is in the channel or not.
+/// @param channelKey Pass the channel key can get from ALChannel object as channel.key.
+/// @return it will return YES OR NO if the user is in a channel or not.
+- (BOOL)isLoginUserInChannel:(NSNumber *)channelKey DEPRECATED_ATTRIBUTE;
 
 /// This method is used to create a channel where it needs the below details to pass while creating.
 /// @param channelName Pass the channel name that wanted to be set for the channel.

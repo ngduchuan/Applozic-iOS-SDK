@@ -15,6 +15,7 @@ NSString *const AL_RESPONSE_ERROR = @"error";
 @implementation ALAPIResponse
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
+    self = [super init];
     [self parseMessage:JSONString];
     return self;
 }

@@ -627,9 +627,9 @@ static int CONTACT_PAGE_SIZE = 100;
 
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
-    if (!userName) {
+    if (userName.length == 0) {
         NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"Error search text is nil " forKey:NSLocalizedDescriptionKey]];
+                                                userInfo:[NSDictionary dictionaryWithObject:@"Error search text is empty " forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
         return;
     }
@@ -650,7 +650,6 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(nil, reponseError);
             return;
         }
-
 
         NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
         for (NSDictionary *userDeatils in userDetailArray) {
@@ -723,7 +722,6 @@ static int CONTACT_PAGE_SIZE = 100;
         }
 
         ALUserDetail *userDetail = [self.contactService updateMuteAfterTime:muteRequest.notificationAfterTime andUserId:muteRequest.userId];
-        [ALVerification verify:userDetail != nil withErrorMessage:@"Failed to update the mute time as user does not exist in database."];
 
         if (!userDetail) {
             NSError *updateUserDetailError = [NSError errorWithDomain:@"Applozic" code:1
