@@ -714,7 +714,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 if (!channel) {
                     updateRemoveMemberError = [NSError errorWithDomain:@"Applozic"
                                                                   code:1
-                                                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+                                                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
 
                     completion(updateRemoveMemberError, nil);
                     return;
@@ -1428,6 +1428,17 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 return;
             }
 
+            [ALVerification verify:response.alChannel != nil withErrorMessage:@"Failed to get channel information the channel object is nil."];
+
+            if (!response.alChannel) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get channel information the channel object is nil." forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil, nil);
+                return;
+            }
+
             [self createChannelEntry:response.alChannel fromMessageList:NO];
             completion(nil, response.alChannel, nil);
         }];
@@ -1497,6 +1508,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             completion(nil, error);
             return;
         }
+
         if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
 
             NSString *errorMessage =  [response.errorResponse errorDescriptionMessage];
@@ -1509,6 +1521,18 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
             completion(nil, createChannelError);
             return;
         }
+
+        [ALVerification verify:response.alChannel != nil withErrorMessage:@"Failed to create channel object is nil."];
+
+        if (!response.alChannel) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to create channel object is nil." forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
         [self createChannelEntry:response.alChannel fromMessageList:NO];
         completion(response, error);

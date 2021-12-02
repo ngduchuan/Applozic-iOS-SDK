@@ -177,7 +177,7 @@
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in updating Message Delivery Report %@", error);
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"Update message delivery report in DB update Success %@", messageKeyString);
+            ALSLog(ALLoggerSeverityInfo, @"Update success message delivery report in DB for key: %@", messageKeyString);
         }
     }
 }

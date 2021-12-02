@@ -309,6 +309,15 @@ static ALMessageClientService *alMsgClientService;
         return;
     }
 
+    if (!message.to && message.groupId == nil) {
+        NSError *mesasgeToError = [NSError errorWithDomain:@"Applozic"
+                                                      code:MessageNotPresent
+                                                  userInfo:@{NSLocalizedDescriptionKey : @"The message object to and groupId are nil either one should exist to send a message."}];
+
+        completion(nil, mesasgeToError);
+        return;
+    }
+
     //DB insert if objectID is null
     DB_Message *dbMessage;
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
@@ -374,7 +383,7 @@ static ALMessageClientService *alMsgClientService;
                 message.key = response.messageKey;
                 message.sentToServer = YES;
                 message.inProgress = NO;
-                message.isUploadFailed= NO;
+                message.isUploadFailed = NO;
                 message.status = [NSNumber numberWithInt:SENT];
             }
 
@@ -763,7 +772,7 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
-+ (ALMessage*)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value {
++ (ALMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:key value:value];
     return [messageDBService createMessageEntity:dbMessage];
@@ -1033,7 +1042,8 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Get Message by key
 
 - (ALMessage *)getMessageByKey:(NSString *)messageKey {
-    if (!messageKey) {
+
+    if (messageKey.length == 0) {
         return nil;
     }
 

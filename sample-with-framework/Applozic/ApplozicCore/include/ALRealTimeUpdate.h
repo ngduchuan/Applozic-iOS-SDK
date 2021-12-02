@@ -40,8 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// The callback will be called on the message is read and delivered to the receiver user.
 /// @param updatedMessage An `ALMessage` object which has `status` that are `DELIVERED` or `DELIVERED_AND_READ`.
-/// @param userId An receiver userId which is delivered and read of a message.
-- (void)onMessageDeliveredAndRead:(ALMessage *)updatedMessage withUserId:(NSString *)userId;
+/// @param userId An receiver userId which is delivered and read of a message for one-to-one chat.
+- (void)onMessageDeliveredAndRead:(ALMessage *)updatedMessage withUserId:(NSString * _Nullable)userId;
 
 /// The callback will be called on the conversation is deleted for one-to-one or channel.
 /// @param userId If the conversation is deleted for the receiver user the userId non nil otherwise nil.

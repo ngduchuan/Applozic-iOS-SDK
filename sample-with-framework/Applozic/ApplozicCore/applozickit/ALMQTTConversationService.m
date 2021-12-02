@@ -210,7 +210,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     }
 
                     if (!topic) {
-                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe topic is nil" forKey:NSLocalizedDescriptionKey]];
+                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe to conversation topic is nil" forKey:NSLocalizedDescriptionKey]];
                         completion(false, topicNilError);
                         return;
                     }

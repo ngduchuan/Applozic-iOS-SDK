@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
 
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
+- (void)updateConnectedStatus:(ALUserDetail *)userDetail;
 
 - (void)updateTableAtConversationDeleteForContact:(NSString * _Nullable)contactID
                                    ConversationID:(NSString * _Nullable)conversationID

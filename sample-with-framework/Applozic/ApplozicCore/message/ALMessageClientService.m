@@ -480,8 +480,7 @@
 
 }
 
-- (void)sendMessage:(NSDictionary *)userInfo
-withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
+- (void)sendMessage:(NSDictionary *)userInfo withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
     NSString *messageSendURLString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/send",KBASE_URL];
     NSString *messageSendParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
 

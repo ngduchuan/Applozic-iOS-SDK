@@ -151,7 +151,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if (data == nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:@"API Response body is empty"]);
             });
             ALSLog(ALLoggerSeverityError, @"API Response body is empty for TAG :%@", tag);
             return;
@@ -200,7 +200,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
              it should be proper jason response with errocodes.
              We need to remove this check once fix will be done in server.*/
 
-            NSError *error = [self checkForServerError:jsonResponse];
+            NSError *error = [self checkForServerError:jsonResponse withRequestURL:request.URL.absoluteString];
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil, error);
@@ -215,7 +215,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             if (jsonError) {
                 NSMutableString *responseString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 //CHECK HTML TAG FOR ERROR
-                NSError *error = [self checkForServerError:responseString];
+                NSError *error = [self checkForServerError:jsonResponse withRequestURL:request.URL.absoluteString];
                 if (error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         reponseCompletion(nil, error);
@@ -240,12 +240,19 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
 }
 
-- (NSError *)checkForServerError:(NSString *)response {
-    if ([response hasPrefix:@"<html>"] || [response isEqualToString:[@"error" uppercaseString]]) {
+- (NSError *)checkForServerError:(NSString *)response withRequestURL:(NSString *)url {
+
+    BOOL hasHTMLPrefixInResponse = [response hasPrefix:@"<html>"];
+
+    [ALVerification
+     verify:!hasHTMLPrefixInResponse
+     withErrorMessage:[[NSString alloc] initWithFormat:@"Failed request the response has HTML prefix in it for request URL :%@", url]];
+
+    if (hasHTMLPrefixInResponse || [response isEqualToString:[@"error" uppercaseString]]) {
         NSError *error = [NSError errorWithDomain:@"Internal Error" code:500 userInfo:nil];
         return error;
     }
-    return NULL;
+    return nil;
 }
 
 @end

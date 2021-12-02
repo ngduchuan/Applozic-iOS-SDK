@@ -120,6 +120,15 @@
 
             NSArray *deliveryParts = [[messageDictionary objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString *pairedKey = deliveryParts[0];
+
+            ALMessage *existingMessage = [messageDBService getMessageByKey:pairedKey];
+
+            // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
+            if (existingMessage &&
+                (existingMessage.status.intValue == DELIVERED_AND_READ)) {
+                return true;
+            }
+
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             if (self.realTimeUpdate) {
                 ALMessage *message = [messageDBService getMessageByKey:pairedKey];
@@ -136,17 +145,12 @@
             NSString *contactId = deliveryParts.count>1 ? deliveryParts[1]:nil;
 
             ALMessage *existingMessage = [messageDBService getMessageByKey:pairedKey];
-            // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
-            if (existingMessage &&
-                (existingMessage.status.intValue == DELIVERED_AND_READ)) {
-                return true;
-            }
 
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_DELIVERED_READ" object:deliveryParts[0] userInfo:dictionary];
             if (self.realTimeUpdate) {
                 if (existingMessage) {
-                    existingMessage.status = [NSNumber numberWithInt:DELIVERED];
+                    existingMessage.status = [NSNumber numberWithInt:DELIVERED_AND_READ];
                     [self.realTimeUpdate onMessageDeliveredAndRead:existingMessage withUserId:contactId];
                 }
             }
@@ -167,27 +171,27 @@
             }
         } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_CONNECTED)]]) {
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
-            alUserDetail.userId = notificationMessage;
-            alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-            alUserDetail.connected = YES;
-            [self.alSyncCallService updateConnectedStatus: alUserDetail];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"update_USER_STATUS" object:alUserDetail];
+            ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+            userDetail.userId = notificationMessage;
+            userDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+            userDetail.connected = YES;
+            [self.alSyncCallService updateConnectedStatus: userDetail];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"update_USER_STATUS" object:userDetail];
             if (self.realTimeUpdate) {
-                [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
+                [self.realTimeUpdate onUpdateLastSeenAtStatus: userDetail];
             }
         } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DISCONNECTED)]]) {
 
             NSArray *parts = [notificationMessage componentsSeparatedByString:@","];
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
-            alUserDetail.userId = parts[0];
-            alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
-            alUserDetail.connected = NO;
-            [self.alSyncCallService updateConnectedStatus: alUserDetail];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"update_USER_STATUS" object:alUserDetail];
+            ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+            userDetail.userId = parts[0];
+            userDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
+            userDetail.connected = NO;
+            [self.alSyncCallService updateConnectedStatus: userDetail];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"update_USER_STATUS" object:userDetail];
             if (self.realTimeUpdate) {
-                [self.realTimeUpdate onUpdateLastSeenAtStatus:alUserDetail];
+                [self.realTimeUpdate onUpdateLastSeenAtStatus:userDetail];
             }
         } else if ([type isEqualToString:@"APPLOZIC_15"]) {
             ALChannelService *channelService = [[ALChannelService alloc] init];
