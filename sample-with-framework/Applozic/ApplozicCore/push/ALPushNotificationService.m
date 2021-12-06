@@ -101,7 +101,6 @@
 
             if (state == UIApplicationStateActive) {
 
-                ALSLog(ALLoggerSeverityInfo, @"APNS: APPLOZIC_02 ARRIVED");
                 ALSLog(ALLoggerSeverityInfo, @"\nNotification Message:%@\n\nDeviceString:%@\n", notificationMessage,
                        [ALUserDefaultsHandler getDeviceKeyString]);
 

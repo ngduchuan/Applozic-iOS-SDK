@@ -24,7 +24,11 @@
 }
 
 +(void)verificationFailure:(NSString *)errorMessage withError:(NSError *)error {
-    ALSLog(ALLoggerSeverityError,@"%@%@", errorMessage,  error.localizedDescription);
+    if (errorMessage) {
+        ALSLog(ALLoggerSeverityError,@"%@%@", errorMessage, error.localizedDescription);
+    } else {
+        ALSLog(ALLoggerSeverityError,@"%@", error.localizedDescription);
+    }
 }
 
 +(void)verificationFailureWithException:(NSException *)exception {

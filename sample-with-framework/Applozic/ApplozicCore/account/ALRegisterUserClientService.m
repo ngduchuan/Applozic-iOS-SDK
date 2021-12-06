@@ -200,15 +200,15 @@ static short AL_VERSION_CODE = 112;
                 [contactDBService addContactInDatabase:contact];
                 
             } @catch (NSException *exception) {
-                [ALVerification verificationFailureWithException:exception];
 
-                NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in login: %@", exception.description];
+                NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in login: %@", exception.reason];
 
-                NSError *nilResponseError = [NSError errorWithDomain:@"Applozic"
-                                                                code:1
-                                                            userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+                NSError *exceptionError = [NSError errorWithDomain:@"Applozic"
+                                                              code:1
+                                                          userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
 
-                completion(nil, nilResponseError);
+                [ALVerification verificationFailure:exceptionError];
+                completion(nil, exceptionError);
                 return;
             }
 
