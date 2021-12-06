@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Used geeting the date for message.
 /// @param message Pass the `ALMessage` object.
-- (NSString * _Nullable )msgAtTop:(ALMessage *)message;
+- (NSString * _Nullable)msgAtTop:(ALMessage *)message;
 
 @end
 

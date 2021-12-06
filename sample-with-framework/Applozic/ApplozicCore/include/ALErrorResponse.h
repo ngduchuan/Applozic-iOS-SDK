@@ -13,11 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ALErrorResponse : NSObject
 
-@property (retain ,nonatomic) NSString * _Nullable errorCode;
+@property (nonatomic, strong) NSString * _Nullable errorCode;
 
-@property (retain ,nonatomic) NSString * _Nullable errorDescription;
+@property (nonatomic, strong) NSString * _Nullable errorDescription;
 
-@property (retain ,nonatomic) NSString * _Nullable displayMessage;
+@property (nonatomic, strong) NSString * _Nullable displayMessage;
 
 - (id)initWithDictionary:(NSDictionary *)responseDictionary;
 
