@@ -247,6 +247,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                         }
                         completion(true, nil);
                     }];
+                } else {
+                    NSError *clientNotConnected = [NSError errorWithDomain:@"Applozic"
+                                                                      code:1
+                                                                  userInfo:[NSDictionary dictionaryWithObject:@"MQTT client is not connected." forKey:NSLocalizedDescriptionKey]];
+                    completion(false, clientNotConnected);
+                    return;
                 }
             }];
         } @catch (NSException *e) {
