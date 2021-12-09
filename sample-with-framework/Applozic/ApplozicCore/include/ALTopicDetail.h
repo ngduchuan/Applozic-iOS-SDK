@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ALTopicDetail : ALJson
 
 /// Sets the title of context based topic chat.
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString * _Nullable title;
 
 /// Sets the subtitle of the context based topic chat.
 @property (nonatomic, strong) NSString * _Nullable subtitle;

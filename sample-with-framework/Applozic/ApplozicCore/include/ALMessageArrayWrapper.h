@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)checkDateOlder:(NSNumber *)older andNewer:(NSNumber *)newer;
 
 /// Used for fetching the updated Array of messages.
-- (NSMutableArray * _Nullable)getUpdatedMessageArray;
+- (NSMutableArray *)getUpdatedMessageArray;
 
 /// Used for add array of ALMessage` objects to another Array.
 /// @param paramMessageArray An Array of `ALMessage` objects.

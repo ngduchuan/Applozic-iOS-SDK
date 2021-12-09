@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString * _Nullable thumbnailFilePath;
 
 /// Name of the file attachment.
-@property (nonatomic,copy) NSString *_Nullable name;
+@property (nonatomic,copy) NSString *name;
 
 /// Attachment url.
 @property (nonatomic,copy) NSString * _Nullable url;
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) NSString * _Nullable size;
 
 /// Content type of attachment file.
-@property (nonatomic,copy) NSString * _Nullable contentType;
+@property (nonatomic,copy) NSString * contentType;
 
 /// Thumbnail url
 @property (nonatomic,copy) NSString * _Nullable thumbnailUrl;

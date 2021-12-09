@@ -16,31 +16,31 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ALConversationProxy : ALJson
 
 /// Sets the conversation id.
-@property (nonatomic, strong) NSNumber *Id;
+@property (nonatomic, strong) NSNumber * _Nullable Id;
 
 /// Sets the topicId.
-@property (nonatomic, strong) NSString *topicId;
+@property (nonatomic, strong) NSString * _Nullable topicId;
 
 /// Topic detail json string.
-@property (nonatomic, strong) NSString *topicDetailJson;
+@property (nonatomic, strong) NSString * _Nullable topicDetailJson;
 
 /// Sets the groupId of conversation.
-@property (nonatomic, strong) NSNumber *groupId;
+@property (nonatomic, strong) NSNumber * _Nullable groupId;
 
 /// Sets the userId for the conversation for topic.
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString * _Nullable userId;
 
 /// :nodoc:
-@property (nonatomic, strong) NSArray *supportIds;
+@property (nonatomic, strong) NSArray * _Nullable supportIds;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableArray *fallBackTemplatesListArray;
+@property (nonatomic, strong) NSMutableArray * _Nullable fallBackTemplatesListArray;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForSENDER;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable fallBackTemplateForSENDER;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForRECEIVER;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable fallBackTemplateForRECEIVER;
 
 /// :nodoc:
 @property (nonatomic) BOOL created;

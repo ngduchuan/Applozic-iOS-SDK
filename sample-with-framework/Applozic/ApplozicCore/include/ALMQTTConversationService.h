@@ -37,7 +37,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// @param messageKey Will have messageKey for delivered status
 /// @param contactId UserId of the user message delivered to.
 /// @param status Status are `DELIVERED` or `DELIVERED_AND_READ`.
-- (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
+- (void)delivered:(NSString *)messageKey contactId:(NSString * _Nullable)contactId withStatus:(int)status;
 
 /// The callback will be called on the receiver to read the all messages in the conversation.
 ///

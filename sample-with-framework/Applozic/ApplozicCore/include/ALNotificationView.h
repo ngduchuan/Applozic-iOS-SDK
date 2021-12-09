@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get the `ALNotificationView` object with `ALMessage` and alert message for showing a notification.
 /// @param message An `ALMessage` object with message details.
 /// @param alertMessage An alert message to display.
-- (instancetype)initWithAlMessage:(ALMessage *)message withAlertMessage:(NSString *)alertMessage;
+- (instancetype)initWithAlMessage:(ALMessage *)message withAlertMessage:(NSString * _Nullable)alertMessage;
 
 /// Shows local notification and handler for the tap event for notification.
 /// @param handler The handler will be called once the tap on the local notification.
