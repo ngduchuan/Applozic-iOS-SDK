@@ -167,9 +167,9 @@
 		1855AC75261F2260009EE721 /* ALConversationListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855AC73261F2260009EE721 /* ALConversationListRequest.m */; };
 		18587A7C2177A81E006AA149 /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18587A7A2177A81E006AA149 /* ALImagePreviewController.h */; };
 		18587A7D2177A81E006AA149 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18587A7B2177A81E006AA149 /* ALImagePreviewController.m */; };
-		1858B64825FA12E20095FF81 /* ALSecureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B64625FA12E20095FF81 /* ALSecureStore.h */; };
+		1858B64825FA12E20095FF81 /* ALSecureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B64625FA12E20095FF81 /* ALSecureStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1858B64925FA12E20095FF81 /* ALSecureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1858B64725FA12E20095FF81 /* ALSecureStore.m */; };
-		1858B66525FA239D0095FF81 /* ALPasswordQueryable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */; };
+		1858B66525FA239D0095FF81 /* ALPasswordQueryable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1858B66325FA239D0095FF81 /* ALPasswordQueryable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1858B66625FA239D0095FF81 /* ALPasswordQueryable.m in Sources */ = {isa = PBXBuildFile; fileRef = 1858B66425FA239D0095FF81 /* ALPasswordQueryable.m */; };
 		1859ED1F25E919BD00F1F69B /* ALUIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873618425DD51CA00C02F5D /* ALUIImage+animatedGIF.m */; };
 		1859ED2225E919BF00F1F69B /* ALUIImage+animatedGIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 1873618325DD51C900C02F5D /* ALUIImage+animatedGIF.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -318,7 +318,7 @@
 		1896EEEA25DBE95B0038EBFF /* ALAuthClientService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EEE225DBE95A0038EBFF /* ALAuthClientService.m */; };
 		1896EEEB25DBE95B0038EBFF /* ALRegistrationResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEE325DBE95A0038EBFF /* ALRegistrationResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EEEC25DBE95B0038EBFF /* ALRegistrationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1896EEE425DBE95A0038EBFF /* ALRegistrationResponse.m */; };
-		1896EEFF25DBEA670038EBFF /* TSBlurView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEF025DBEA650038EBFF /* TSBlurView.h */; };
+		1896EEFF25DBEA670038EBFF /* TSBlurView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEF025DBEA650038EBFF /* TSBlurView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EF0025DBEA670038EBFF /* HexColors.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEF125DBEA650038EBFF /* HexColors.h */; };
 		1896EF0125DBEA670038EBFF /* TSMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEF225DBEA650038EBFF /* TSMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1896EF0325DBEA670038EBFF /* ALPushAssist.h in Headers */ = {isa = PBXBuildFile; fileRef = 1896EEF425DBEA660038EBFF /* ALPushAssist.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2758,7 +2758,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 8.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2797,7 +2797,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 8.4.0;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.ApplozicCore;
@@ -2950,7 +2950,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 8.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2987,7 +2987,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.3.0;
+				MARKETING_VERSION = 8.4.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
