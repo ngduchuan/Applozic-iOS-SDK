@@ -7,9 +7,9 @@
 //
 
 #import "ALConversationProxy.h"
-#import "DB_ConversationProxy.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "DB_ConversationProxy.h"
 
 @implementation ALConversationProxy
 
@@ -20,16 +20,16 @@
 
 - (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc] init];
+    ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] init];
     
-    alConversationProxy.created = dbConversation.created.boolValue;
-    alConversationProxy.closed = dbConversation.closed.boolValue;
-    alConversationProxy.Id = dbConversation.iD;
-    alConversationProxy.topicId = dbConversation.topicId;
-    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
-    alConversationProxy.groupId = dbConversation.groupId;
-    alConversationProxy.userId = dbConversation.userId;
-    return alConversationProxy;
+    conversationProxy.created = dbConversation.created.boolValue;
+    conversationProxy.closed = dbConversation.closed.boolValue;
+    conversationProxy.Id = dbConversation.iD;
+    conversationProxy.topicId = dbConversation.topicId;
+    conversationProxy.topicDetailJson = dbConversation.topicDetailJson;
+    conversationProxy.groupId = dbConversation.groupId;
+    conversationProxy.userId = dbConversation.userId;
+    return conversationProxy;
 }
 
 - (void)parseMessage:(id)messageJson {
@@ -54,17 +54,17 @@
     return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:JSONDictionary]: nil;
 }
 
-+ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy {
++ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)conversationProxy {
     
     NSMutableDictionary *requestDictionary = [[NSMutableDictionary alloc] init];
-    [requestDictionary setValue:alConversationProxy.topicId forKey:@"topicId"];
-    [requestDictionary setValue:alConversationProxy.userId forKey:@"userId"];
-    [requestDictionary setValue:alConversationProxy.topicDetailJson forKey:@"topicDetail"];
+    [requestDictionary setValue:conversationProxy.topicId forKey:@"topicId"];
+    [requestDictionary setValue:conversationProxy.userId forKey:@"userId"];
+    [requestDictionary setValue:conversationProxy.topicDetailJson forKey:@"topicDetail"];
     
-    alConversationProxy.fallBackTemplatesListArray = [[NSMutableArray alloc]
-                                                      initWithObjects:alConversationProxy.fallBackTemplateForRECEIVER,alConversationProxy.fallBackTemplateForSENDER, nil];
+    conversationProxy.fallBackTemplatesListArray = [[NSMutableArray alloc]
+                                                      initWithObjects:conversationProxy.fallBackTemplateForRECEIVER,conversationProxy.fallBackTemplateForSENDER, nil];
     
-    [requestDictionary setValue:alConversationProxy.fallBackTemplatesListArray forKey:@"fallBackTemplatesList"];
+    [requestDictionary setValue:conversationProxy.fallBackTemplatesListArray forKey:@"fallBackTemplatesList"];
     return requestDictionary;
 
 }

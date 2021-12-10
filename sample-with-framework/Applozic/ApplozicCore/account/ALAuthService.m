@@ -6,8 +6,8 @@
 //  Copyright © 2020 applozic Inc. All rights reserved.
 //
 
-#import "ALAuthService.h"
 #import "ALAuthClientService.h"
+#import "ALAuthService.h"
 #import "ALJWT.h"
 
 @implementation ALAuthService
@@ -23,7 +23,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     return self;
 }
 
--(void)setupService {
+- (void)setupService {
     self.authClientService = [[ALAuthClientService alloc] init];
 }
 
@@ -70,8 +70,8 @@ static NSString *const VALID_UPTO = @"validUpto";
     return hasValidAuthTokenTime && hasValidUptoTokenTime && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
 }
 
-- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
-    if([self isAuthTokenValid]) {
+- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError *error))completion {
+    if ([self isAuthTokenValid]) {
         completion(nil);
         return;
     } else {

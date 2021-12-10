@@ -6,8 +6,16 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-// NEW CODES FOR VERSION CODE 105...
+#import "ALMessage.h"
+#import "ALMQTTConversationService.h"
+#import "ALRealTimeUpdate.h"
+#import "ALSyncCallService.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+// NEW CODES FOR VERSION CODE 105...
 typedef enum
 {
     AL_SYNC = 0,
@@ -46,19 +54,12 @@ typedef enum
     AL_USER_DEACTIVATED
 } AL_PUSH_NOTIFICATION_TYPE;
 
-#import <Foundation/Foundation.h>
-#import "ALMessage.h"
-#import "ALUserDetail.h"
-#import "ALSyncCallService.h"
-#import "ALMQTTConversationService.h"
-#import "ALRealTimeUpdate.h"
-
+/// Applozic notifications key name.
 static NSString *const APPLOZIC_PREFIX = @"APPLOZIC_";
-static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 @interface ALPushNotificationService : NSObject
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate>realTimeUpdate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable realTimeUpdate;
 @property(nonatomic,strong) ALSyncCallService *alSyncCallService;
 
 - (BOOL)isApplozicNotification:(NSDictionary *)dictionary;
@@ -67,5 +68,7 @@ static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 + (void)applicationEntersForeground;
 + (void)userSync;
 - (BOOL)checkForLaunchNotification:(NSDictionary *)dictionary;
-- (NSDictionary *)notificationTypes;
+- (NSDictionary * _Nullable)notificationTypes;
 @end
+
+NS_ASSUME_NONNULL_END

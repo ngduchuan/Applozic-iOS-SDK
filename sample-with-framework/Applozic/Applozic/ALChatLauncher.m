@@ -71,7 +71,7 @@ const int REGULAR_CONTACTS = 0;
 }
 
 /**
- * Use this to launch individual chat using conversationId. 
+ * Use this to launch individual chat using conversationId.
  */
 -(void)launchIndividualChat:(NSString *)userId withGroupId:(NSNumber*)groupID withConversationId:(NSNumber *)conversationId
     andViewControllerObject:(UIViewController *)viewController andWithText:(NSString *)text
@@ -128,22 +128,35 @@ const int REGULAR_CONTACTS = 0;
     }
 }
 
--(void)launchIndividualChatForGroup:(NSString *)userId withGroupId:(NSNumber*)groupID
+-(void)launchIndividualChatForGroup:(NSString *)userId
+                        withGroupId:(NSNumber *)groupID
                     withDisplayName:(NSString*)displayName
             andViewControllerObject:(UIViewController *)viewController andWithText:(NSString *)text
 {
     
-    ALChannelService * channelService  =  [ALChannelService new];
-    [channelService getChannelInformation:groupID orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-                               //Channel information
-                               
-                               
-       ALSLog(ALLoggerSeverityInfo, @" alChannel ###%@ ", alChannel.name);
-       UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
-                                   
-                                                            bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-       
-       ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+    ALChannelService *channelService = [ALChannelService new];
+
+    [channelService getChannelInformationByResponse:groupID
+                                 orClientChannelKey:nil
+                                     withCompletion:^(NSError *error,
+                                                      ALChannel *channel,
+                                                      ALChannelFeedResponse *channelResponse) {
+
+        if (error) {
+            NSLog(@"Failed to launch the channel conversation %@", error.localizedDescription);
+            return;
+        }
+
+        if (!channel) {
+            NSLog(@"Failed to launch the channel conversation due to some error");
+            return;
+        }
+
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+
+                                                             bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+
+        ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
 
         chatView.channelKey = groupID;
         chatView.text = text;
@@ -153,12 +166,12 @@ const int REGULAR_CONTACTS = 0;
         chatView.chatViewDelegate = self;
         chatView.isSearch = NO;
 
-       UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
         conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
-       conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
-       [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
-       
-   }];
+        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
+        [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+
+    }];
 }
 
 
@@ -198,7 +211,7 @@ const int REGULAR_CONTACTS = 0;
     [uiViewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 
--(void)launchIndividualContextChat:(ALConversationProxy *)alConversationProxy andViewControllerObject:(UIViewController *)viewController
+-(void)launchIndividualContextChat:(ALConversationProxy *)conversationProxy andViewControllerObject:(UIViewController *)viewController
                    userDisplayName:(NSString *)displayName andWithText:(NSString *)text
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
@@ -207,16 +220,16 @@ const int REGULAR_CONTACTS = 0;
     ALChatViewController * contextChatView = (ALChatViewController*) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     
     contextChatView.displayName      = displayName;
-    contextChatView.conversationId   = alConversationProxy.Id;
+    contextChatView.conversationId   = conversationProxy.Id;
     
-    if(alConversationProxy.userId != nil)
+    if(conversationProxy.userId != nil)
     {
-        contextChatView.contactIds  = alConversationProxy.userId;
+        contextChatView.contactIds  = conversationProxy.userId;
         contextChatView.channelKey   = nil;
     }
     else
     {
-        contextChatView.channelKey   = alConversationProxy.groupId;
+        contextChatView.channelKey   = conversationProxy.groupId;
         contextChatView.contactIds  = nil;
     }
     contextChatView.text             = text;
@@ -286,9 +299,19 @@ const int REGULAR_CONTACTS = 0;
     ALMessagesViewController * msgVC = (ALMessagesViewController *)[[navBAR viewControllers] objectAtIndex:0];
     msgVC.messagesViewDelegate = self;
     
-    ALChannelService * channelService = [ALChannelService new];
-    [channelService getChannelInformation:parentKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
-        
+    ALChannelService *channelService = [ALChannelService new];
+
+    [channelService getChannelInformationByResponse:parentKey
+                                 orClientChannelKey:nil
+                                     withCompletion:^(NSError *error,
+                                                      ALChannel *channel,
+                                                      ALChannelFeedResponse *channelResponse) {
+
+        if (error ||
+            !channel) {
+            return;
+        }
+
         msgVC.parentGroupKey = parentKey;
         [msgVC intializeSubgroupMessages];
         theTabBar.modalPresentationStyle = UIModalPresentationFullScreen;

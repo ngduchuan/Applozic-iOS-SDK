@@ -6,31 +6,23 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //  class for server calls
 
-#import <Foundation/Foundation.h>
-#import "ALConstant.h"
-#import "ALRequestHandler.h"
-#import "ALResponseHandler.h"
+#import "ALAPIResponse.h"
 #import "ALChannel.h"
-#import "ALChannelUserX.h"
+#import "ALChannelCreateResponse.h"
 #import "ALChannelDBService.h"
 #import "ALChannelFeed.h"
-#import "ALChannelCreateResponse.h"
+#import "ALChannelFeedResponse.h"
 #import "ALChannelSyncResponse.h"
+#import "ALChannelUserX.h"
+#import "ALConstant.h"
 #import "ALMuteRequest.h"
-#import "ALAPIResponse.h"
-#import "AlChannelFeedResponse.h"
-#import "ALMuteRequest.h"
+#import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-
-static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
+#import <Foundation/Foundation.h>
 
 @interface ALChannelClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
-
-- (void)getChannelInfo:(NSNumber *)channelKey
-    orClientChannelKey:(NSString *)clientChannelKey
-        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
@@ -81,31 +73,31 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
-                       withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
+                       withCompletion:(void(^)(NSError *error, ALChannelFeedResponse *response)) completion;
 
-- (void)syncCallForChannel:(NSNumber *)updatedAt
+- (void)syncCallForChannel:(NSNumber *)updatedAtTime
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
-- (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)addChildKeyList:(NSMutableArray *)childKeyList
            andParentKey:(NSNumber *)parentKey
-         withCompletion:(void (^)(id json, NSError *error))completion;
+         withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)removeChildKeyList:(NSMutableArray *)childKeyList
               andParentKey:(NSNumber *)parentKey
-            withCompletion:(void (^)(id json, NSError *error))completion;
+            withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
            andClientParentKey:(NSString *)clientParentKey
-               withCompletion:(void (^)(id json, NSError *error))completion;
+               withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
               andClientParentKey:(NSString *)clientParentKey
-                  withCompletion:(void (^)(id json, NSError *error))completion;
+                  withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
-- (void)muteChannel:(ALMuteRequest *)ALMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)getChannelInfoByIdsOrClientIds:(NSMutableArray *)channelIds
                     orClinetChannelIds:(NSMutableArray *)clientChannelIds
@@ -114,12 +106,13 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 - (void)getChannelListForCategory:(NSString *)category
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
-- (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
+- (void)getAllChannelsForApplications:(NSNumber *)endTime
+                       withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 - (void)addMemberToContactGroupOfType:(NSString *)contactsGroupId
-                           withMembers:(NSMutableArray *)membersArray
-                         withGroupType:(short)groupType
-                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+                          withMembers:(NSMutableArray *)membersArray
+                        withGroupType:(short)groupType
+                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 
 - (void)addMemberToContactGroup:(NSString *)contactsGroupId
@@ -127,8 +120,8 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
-                            withGroupType:(short)groupType
-                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+                           withGroupType:(short)groupType
+                          withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 - (void)getMembersFromContactGroup:(NSString *)contactGroupId withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
@@ -138,10 +131,10 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 - (void)removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
                              withGroupType:(short)groupType
-                                withUserId:(NSString*)userId
+                                withUserId:(NSString *)userId
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
--(void)getMultipleContactGroup:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *channel)) completion;
+- (void)getMultipleContactGroup:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *channel)) completion;
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
@@ -153,5 +146,9 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
            adminUser :(NSString *)adminUserId
       withGroupUsers :(NSMutableArray *)groupRoleUsers
        withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
+
+- (void)getChannelInfo:(NSNumber *)channelKey
+    orClientChannelKey:(NSString *)clientChannelKey
+        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion DEPRECATED_MSG_ATTRIBUTE("Use getChannelInformationByResponse:orClientChannelKey:withCompletion from ALChannelService instead");
 
 @end

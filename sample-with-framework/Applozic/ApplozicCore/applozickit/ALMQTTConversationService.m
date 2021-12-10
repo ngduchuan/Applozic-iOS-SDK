@@ -6,24 +6,24 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALMQTTConversationService.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALConstant.h"
-#import "ALMessage.h"
-#import "ALMessageDBService.h"
-#import "ALUserDetail.h"
-#import "ALPushAssist.h"
-#import "ALChannelService.h"
-#import "ALContactDBService.h"
-#import "ALMessageService.h"
-#import "ALUserService.h"
-#import "NSData+AES.h"
-#import "ALDataNetworkConnection.h"
-#import "ALPushNotificationService.h"
-#import "ALRegisterUserClientService.h"
 #import "ALAuthService.h"
+#import "ALChannelService.h"
+#import "ALConstant.h"
+#import "ALContactDBService.h"
 #import "ALDataNetworkConnection.h"
 #import "ALLogger.h"
+#import "ALMessage.h"
+#import "ALMessageDBService.h"
+#import "ALMessageService.h"
+#import "ALMQTTConversationService.h"
+#import "ALPushAssist.h"
+#import "ALPushNotificationService.h"
+#import "ALRegisterUserClientService.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
+#import "ALUserService.h"
+#import "NSData+AES.h"
+#import "ALVerification.h"
 
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
@@ -78,7 +78,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[ALMQTTConversationService alloc] init];
-        sharedInstance.alSyncCallService = [[ALSyncCallService alloc] init];
+        sharedInstance.syncCallService = [[ALSyncCallService alloc] init];
     });
     return sharedInstance;
 }
@@ -93,17 +93,17 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 }
 
-- (void)connectToMQTTWithCompletionHandler:(void (^)(BOOL isConnected,NSError *errror))completion {
+- (void)connectToMQTTWithCompletionHandler:(void (^)(BOOL isConnected, NSError *errror))completion {
 
     @try
     {
         if (![ALUserDefaultsHandler isLoggedIn]) {
-            NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+            NSError *userIsNotLoginErrror = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
             completion(false, userIsNotLoginErrror);
             return;
         }
 
-        if (self.session && self.session.status == MQTTSessionStatusConnecting ) {
+        if (self.session && self.session.status == MQTTSessionStatusConnecting) {
             NSError *sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connection in progress" forKey:NSLocalizedDescriptionKey]];
             completion(false, sessionConnectingError);
             return;
@@ -124,15 +124,27 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }
 
             ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
-            self.session = [[MQTTSession alloc]init];
+            self.session = [[MQTTSession alloc] init];
             self.session.clientId = [NSString stringWithFormat:@"%@-%f",
                                      [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
 
-            NSString *willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
+            NSString *willMsg = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString], @"0"];
 
-            if ([ALUserDefaultsHandler getAuthToken]) {
-                self.session.userName = [ALUserDefaultsHandler getApplicationKey];
-                self.session.password = [ALUserDefaultsHandler getAuthToken];
+            NSString *authToken = [ALUserDefaultsHandler getAuthToken];
+
+            [ALVerification verify:authToken != nil withErrorMessage:@"Failed to connect to MQTT as JWT Auth token is nil."];
+
+            if (!authToken) {
+                NSError *authTokenError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to connect to MQTT as auth token is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(false, authTokenError);
+                return;
+            }
+
+            NSString *appId = [ALUserDefaultsHandler getApplicationKey];
+
+            if (authToken && appId) {
+                self.session.userName = appId;
+                self.session.password = authToken;
             }
 
             self.session.willFlag = YES;
@@ -156,7 +168,10 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
                 ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTED");
 
-                NSString *publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"1"];
+                NSString *publishString = [NSString stringWithFormat:@"%@,%@,%@",
+                                           [ALUserDefaultsHandler getUserKeyString],
+                                           [ALUserDefaultsHandler getDeviceKeyString],
+                                           @"1"];
 
                 [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
 
@@ -164,7 +179,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }];
         }];
     } @catch (NSException *e) {
-        ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_CONNECTION :: %@", e.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in MQTT connect:%@",e.reason];
+        NSError *connectError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:connectError];
     }
 }
 
@@ -208,7 +225,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     }
 
                     if (!topic) {
-                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe topic is nil" forKey:NSLocalizedDescriptionKey]];
+                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe to conversation topic is nil" forKey:NSLocalizedDescriptionKey]];
                         completion(false, topicNilError);
                         return;
                     }
@@ -230,17 +247,23 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                         }
                         completion(true, nil);
                     }];
+                } else {
+                    NSError *clientNotConnected = [NSError errorWithDomain:@"Applozic"
+                                                                      code:1
+                                                                  userInfo:[NSDictionary dictionaryWithObject:@"MQTT client is not connected." forKey:NSLocalizedDescriptionKey]];
+                    completion(false, clientNotConnected);
+                    return;
                 }
             }];
-        }
-        @catch (NSException *e) {
-            ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_SUBSCRIBE :: %@", e.description);
+        } @catch (NSException *e) {
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribe to MQTT:%@",e.reason];
+            NSError *connectError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:connectError];
         }
     });
 }
 
 - (void)session:(MQTTSession*)session newMessage:(NSData*)data onTopic:(NSString*)topic {
-    ALSLog(ALLoggerSeverityInfo, @"MQTT: GOT_NEW_MESSAGE");
 }
 
 - (void)newMessage:(MQTTSession *)session
@@ -254,17 +277,15 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         return;
     }
 
-    ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc]init];
+    ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
 
     NSString *fullMessage = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     if ([ALUserDefaultsHandler getUserEncryptionKey] && [topic hasPrefix:MQTT_ENCRYPTION_SUB_KEY]) {
 
-        ALSLog(ALLoggerSeverityInfo, @"Key : %@",  [ALUserDefaultsHandler getUserEncryptionKey]);
         NSData *base64DecodedData = [[NSData alloc] initWithBase64EncodedData:data options:0];
-        NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getUserEncryptionKey]];
-        NSString *dataToString = [NSString stringWithUTF8String:[theData bytes]];
-        ALSLog(ALLoggerSeverityInfo, @"Data to String : %@",  dataToString);
+        NSData *decryptedData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getUserEncryptionKey]];
+        NSString *dataToString = [NSString stringWithUTF8String:[decryptedData bytes]];
         data = [dataToString dataUsingEncoding:NSUTF8StringEncoding];
 
         ALSLog(ALLoggerSeverityInfo, @"MQTT_GOT_NEW_MESSAGE after decyption : %@", dataToString);
@@ -277,13 +298,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 
     NSError *error = nil;
-    NSDictionary *theMessageDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    NSString *type = [theMessageDict objectForKey:@"type"];
+    NSDictionary *notificationMessageDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    NSString *type = [notificationMessageDictionary objectForKey:@"type"];
     ALSLog(ALLoggerSeverityInfo, @"MQTT_NOTIFICATION_TYPE :: %@",type);
-    NSString *notificationId = (NSString*)[theMessageDict valueForKey:@"id"];
+    NSString *notificationId = (NSString *)[notificationMessageDictionary valueForKey:@"id"];
 
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
-        ALSLog(ALLoggerSeverityInfo, @"Returing coz Application State is Background OR Our View is NOT on Top");
+        ALSLog(ALLoggerSeverityInfo, @"Returning because Application State is Background OR Our View is NOT on Top");
         if ([topic hasPrefix:@"typing"]) {
             [self subProcessTyping:fullMessage];
         }
@@ -301,71 +322,88 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_SYNC)]]) {
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
-            ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
+            ALMessage *message = [[ALMessage alloc] initWithDictonary:[notificationMessageDictionary objectForKey:@"message"]];
 
-            if ([alMessage isHiddenMessage]) {
+            if ([message isHiddenMessage]) {
                 ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
                 [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) { }];
             } else {
                 NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-                [notificationDictionary setObject:[alMessage getLastMessage] forKey:@"alertValue"];
+                [notificationDictionary setObject:[message getLastMessage] forKey:@"alertValue"];
                 [notificationDictionary setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
 
-                if (alMessage.groupId != nil) {
+                if (message.groupId != nil) {
                     ALChannelService *channelService = [[ALChannelService alloc] init];
-                    [channelService getChannelInformation:alMessage.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+                    [channelService getChannelInformationByResponse:message.groupId
+                                                 orClientChannelKey:nil
+                                                     withCompletion:^(NSError *error,
+                                                                      ALChannel *channel,
+                                                                      ALChannelFeedResponse *channelResponse) {
 
-                        if (alChannel && alChannel.type == OPEN) {
-                            if (alMessage.deviceKey && [alMessage.deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
+                        if (error) {
+                            ALSLog(ALLoggerSeverityInfo, @"MQTT : Failed to sync the channel info %@", error.localizedDescription);
+                            return;
+                        }
+
+                        if (!channel) {
+                            ALSLog(ALLoggerSeverityInfo, @"MQTT : Failed to sync the channel is nil");
+                            return;
+                        }
+
+                        if (channel && channel.type == OPEN) {
+                            if (message.deviceKey && [message.deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
                                 ALSLog(ALLoggerSeverityInfo, @"MQTT : RETURNING,GOT MY message");
                                 return;
                             }
 
-                            [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
-                            if (!pushAssist.isOurViewOnTop) {
-                                [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
-                                [pushAssist assist:[self getNotificationObjectFromMessage:alMessage] withUserInfo:notificationDictionary ofUser:alMessage.contactIds];
-                            } else {
-                                [self.alSyncCallService syncCall:alMessage withDelegate:self.realTimeUpdate];
-                                [self.mqttConversationDelegate syncCall:alMessage andMessageList:nil];
-                            }
+                            [ALMessageService addOpenGroupMessage:message
+                                                     withDelegate:self.realTimeUpdate
+                                                   withCompletion:^(BOOL success) {
+                                if (success) {
+                                    if (!pushAssist.isOurViewOnTop) {
+                                        [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
+                                        [pushAssist assist:[self getNotificationObjectFromMessage:message] withUserInfo:notificationDictionary ofUser:message.contactIds];
+                                    } else {
+                                        [self.mqttConversationDelegate syncCall:message andMessageList:nil];
+                                    }
+                                }
+                            }];
                         } else {
-                            [self syncReceivedMessage: alMessage withNSMutableDictionary:notificationDictionary];
+                            [self syncReceivedMessage: message withNSMutableDictionary:notificationDictionary];
                         }
                     }];
                 } else {
-                    [self syncReceivedMessage: alMessage withNSMutableDictionary:notificationDictionary];
+                    [self syncReceivedMessage: message withNSMutableDictionary:notificationDictionary];
                 }
             }
         } else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_SENT)]]) {
-            NSDictionary *message = [theMessageDict objectForKey:@"message"];
-            ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
+            NSDictionary *messageDictionary = [notificationMessageDictionary objectForKey:@"message"];
+            ALMessage *message = [[ALMessage alloc] initWithDictonary:messageDictionary];
 
-            ALSLog(ALLoggerSeverityInfo, @"ALMESSAGE's DeviceKey : %@ \n Current DeviceKey : %@", alMessage.deviceKey, [ALUserDefaultsHandler getDeviceKeyString]);
-            if (alMessage.deviceKey && [alMessage.deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
+            ALSLog(ALLoggerSeverityInfo, @"ALMESSAGE's DeviceKey : %@ \n Current DeviceKey : %@", message.deviceKey, [ALUserDefaultsHandler getDeviceKeyString]);
+            if (message.deviceKey && [message.deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT : RETURNING, SENT_BY_SELF_DEVICE");
                 return;
             }
 
-            [[NSNotificationCenter defaultCenter] postNotificationName:observeSupportGroupMessage object:alMessage];
+            [[NSNotificationCenter defaultCenter] postNotificationName:observeSupportGroupMessage object:message];
 
-            [ALMessageService getMessageSENT:alMessage withDelegate: self.realTimeUpdate withCompletion:^(NSMutableArray *messageArray, NSError *error) {
+            [ALMessageService getMessageSENT:message withDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
                 if (messageArray.count > 0) {
-                    [self.alSyncCallService syncCall:alMessage];
-                    [self.mqttConversationDelegate syncCall:alMessage andMessageList:nil];
+                    [self.mqttConversationDelegate syncCall:message andMessageList:nil];
                 }
             }];
 
-            NSString *key = [message valueForKey:@"pairedMessageKey"];
-            NSString *contactID = [message valueForKey:@"contactIds"];
-            [self.alSyncCallService updateMessageDeliveryReport:key withStatus:SENT];
+            NSString *key = [messageDictionary valueForKey:@"pairedMessageKey"];
+            NSString *contactID = [messageDictionary valueForKey:@"contactIds"];
+            [self.syncCallService updateMessageDeliveryReport:key withStatus:SENT];
             [self.mqttConversationDelegate delivered:key contactId:contactID withStatus:SENT];
 
         } else if ([type isEqualToString:@"MESSAGE_DELIVERED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELIVERED)]]) {
 
-            NSArray *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
+            NSArray *deliveryParts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString *pairedKey = deliveryParts[0];
             NSString *contactId = (deliveryParts.count > 1) ? deliveryParts[1] : nil;
 
@@ -377,7 +415,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 return;
             }
 
-            [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
+            [self.syncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED];
 
             if (existingMessage) {
@@ -386,55 +424,55 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }
         } else if ([type isEqualToString:@"MESSAGE_DELETED"] ||
                    [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELETE_MESSAGE)]]) {
-            NSString *messageKey = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@","][0];
+            NSString *messageKey = [[notificationMessageDictionary valueForKey:@"message"] componentsSeparatedByString:@","][0];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NOTIFY_MESSAGE_DELETED" object:messageKey];
             if (self.realTimeUpdate) {
                 [self.realTimeUpdate onMessageDeleted:messageKey];
             }
         } else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"] ||
                    [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_DELIVERED_AND_READ)]]) {
-            NSArray  *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
+            NSArray *deliveryParts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString *pairedKey = deliveryParts[0];
             NSString *contactId = deliveryParts.count>1 ? deliveryParts[1]:nil;
 
-            [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
+            [self.syncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED_AND_READ];
             if (self.realTimeUpdate) {
-                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
-                ALMessage*message = [messageDbService getMessageByKey:pairedKey];
+                ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
+                ALMessage *message = [messageDbService getMessageByKey:pairedKey];
                 if (message) {
                     [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
                 }
             }
         } else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] ||
                    [type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]]) {
-            NSString *contactId = [theMessageDict objectForKey:@"message"];
-            [self.alSyncCallService updateDeliveryStatusForContact: contactId withStatus:DELIVERED_AND_READ];
+            NSString *contactId = [notificationMessageDictionary objectForKey:@"message"];
+            [self.syncCallService updateDeliveryStatusForContact: contactId withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate updateStatusForContact:contactId withStatus:DELIVERED_AND_READ];
             if (self.realTimeUpdate) {
                 [self.realTimeUpdate onAllMessagesRead:contactId];
             }
         } else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_CONNECTED)]]) {
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
-            alUserDetail.userId = [theMessageDict objectForKey:@"message"];
-            alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] *1000];
-            alUserDetail.connected = YES;
-            [self.alSyncCallService updateConnectedStatus: alUserDetail];
-            [self.mqttConversationDelegate updateLastSeenAtStatus: alUserDetail];
+            ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+            userDetail.userId = [notificationMessageDictionary objectForKey:@"message"];
+            userDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] *1000];
+            userDetail.connected = YES;
+            [self.syncCallService updateConnectedStatus: userDetail];
+            [self.mqttConversationDelegate updateLastSeenAtStatus: userDetail];
             if (self.realTimeUpdate) {
-                [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
+                [self.realTimeUpdate onUpdateLastSeenAtStatus: userDetail];
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DISCONNECTED)]]) {
-            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
+            NSArray *parts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@","];
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
-            alUserDetail.userId = parts[0];
-            alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
-            alUserDetail.connected = NO;
-            [self.alSyncCallService updateConnectedStatus: alUserDetail];
-            [self.mqttConversationDelegate updateLastSeenAtStatus: alUserDetail];
+            ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+            userDetail.userId = parts[0];
+            userDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
+            userDetail.connected = NO;
+            [self.syncCallService updateConnectedStatus: userDetail];
+            [self.mqttConversationDelegate updateLastSeenAtStatus: userDetail];
             if (self.realTimeUpdate) {
-                [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
+                [self.realTimeUpdate onUpdateLastSeenAtStatus: userDetail];
             }
         } else if ([type isEqualToString:@"APPLOZIC_15"]) {
             ALChannelService *channelService = [[ALChannelService alloc] init];
@@ -443,13 +481,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] ||
                    [type isEqualToString:@"CONVERSATION_DELETED"]) {
 
-            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
+            NSArray *parts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString *contactID = parts[0];
             NSString *conversationID = parts[1];
 
-            [self.alSyncCallService updateTableAtConversationDeleteForContact:contactID
-                                                               ConversationID:conversationID
-                                                                   ChannelKey:nil];
+            [self.syncCallService updateTableAtConversationDeleteForContact:contactID
+                                                             ConversationID:conversationID
+                                                                 ChannelKey:nil];
             if (self.realTimeUpdate) {
                 [self.realTimeUpdate onConversationDelete:contactID withGroupId:nil];
             }
@@ -457,26 +495,27 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         } else if ([type isEqualToString:@"GROUP_CONVERSATION_DELETED"] ||
                    [type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_DELETED)]]) {
 
-            NSNumber *groupID = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
-            [self.alSyncCallService updateTableAtConversationDeleteForContact:nil
-                                                               ConversationID:nil
-                                                                   ChannelKey:groupID];
+            NSNumber *groupID = [NSNumber numberWithInt:[[notificationMessageDictionary objectForKey:@"message"] intValue]];
+            [self.syncCallService updateTableAtConversationDeleteForContact:nil
+                                                             ConversationID:nil
+                                                                 ChannelKey:groupID];
             if (self.realTimeUpdate) {
                 [self.realTimeUpdate onConversationDelete:nil withGroupId:groupID];
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_BLOCK)]]) {
-            [self processUserBlockNotification:theMessageDict andUserBlockFlag:YES];
+            [self processUserBlockNotification:notificationMessageDictionary andUserBlockFlag:YES];
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_UNBLOCK)]]) {
-            [self processUserBlockNotification:theMessageDict andUserBlockFlag:NO];
+            [self processUserBlockNotification:notificationMessageDictionary andUserBlockFlag:NO];
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DETAIL_CHANGED)]] ||
                    [type isEqualToString: pushNotificationService.notificationTypes[@(AL_USER_DELETE_NOTIFICATION)]]) {
-            //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
-            NSString *userId = [theMessageDict objectForKey:@"message"];
+            NSString *userId = [notificationMessageDictionary objectForKey:@"message"];
             [self.mqttConversationDelegate updateUserDetail:userId];
             if (self.realTimeUpdate) {
                 ALUserService *userService = [[ALUserService alloc] init];
                 [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
-                    [self.realTimeUpdate onUserDetailsUpdate:userDetail];
+                    if (userDetail) {
+                        [self.realTimeUpdate onUserDetailsUpdate:userDetail];
+                    }
                 }];
             }
         } else if ([type isEqualToString:@"APPLOZIC_31"]) {
@@ -485,59 +524,59 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]) { // MESSAGE_METADATA_UPDATE
             @try {
-                NSDictionary *messageDict = [theMessageDict objectForKey:@"message"];
-                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary: messageDict];
-                if (alMessage.groupId != nil) {
+                NSDictionary *messageDictionary = [notificationMessageDictionary objectForKey:@"message"];
+                ALMessage *message = [[ALMessage alloc] initWithDictonary: messageDictionary];
+                if (message.groupId != nil) {
                     ALChannelService *channelService = [[ALChannelService alloc] init];
-                    ALChannel *channel = [channelService getChannelByKey:alMessage.groupId];
+                    ALChannel *channel = [channelService getChannelByKey:message.groupId];
                     if (channel && channel.isOpenGroup) {
-                        if (alMessage.hasAttachment) {
+                        if (message.hasAttachment) {
                             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-                            [messageDBService updateMessageMetadataOfKey:alMessage.key withMetadata:alMessage.metadata];
+                            [messageDBService updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
                         }
-                        [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:alMessage userInfo:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
                     } else {
-                        [self.alSyncCallService syncMessageMetadata];
+                        [self.syncCallService syncMessageMetadata];
                     }
                 } else {
-                    [self.alSyncCallService syncMessageMetadata];
+                    [self.syncCallService syncMessageMetadata];
                 }
             } @catch (NSException *exp) {
-                ALSLog(ALLoggerSeverityError, @"Error while conversating dictionary to message: %@", exp.description);
+                ALSLog(ALLoggerSeverityError, @"Error while conversating dictionary to message: %@", exp.reason);
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]) {
             //Conversation read for user
-            ALUserService *channelService = [[ALUserService alloc]init];
-            NSString *userId = [theMessageDict objectForKey:@"message"];
+            ALUserService *channelService = [[ALUserService alloc] init];
+            NSString *userId = [notificationMessageDictionary objectForKey:@"message"];
             [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
 
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]) {
             //Conversation read for channel
-            ALChannelService *channelService = [[ALChannelService alloc]init];
-            NSNumber *channelKey = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
+            ALChannelService *channelService = [[ALChannelService alloc] init];
+            NSNumber *channelKey = [NSNumber numberWithInt:[[notificationMessageDictionary objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]) {
 
-            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
+            NSArray *parts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@":"];
             NSString *userId = parts[0];
             NSString *flag = parts[1];
             ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
 
             if ([flag isEqualToString:@"0"]) {
                 ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
-                if (self.realTimeUpdate) {
+                if (self.realTimeUpdate && userDetail) {
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }
 
             } else if ([flag isEqualToString:@"1"]) {
-                ALUserService *userService = [[ALUserService alloc]init];
+                ALUserService *userService = [[ALUserService alloc] init];
                 [userService getMutedUserListWithDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
 
                 }];
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
             ALChannelService *channelService = [[ALChannelService alloc] init];
-            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
+            NSArray *parts = [[notificationMessageDictionary objectForKey:@"message"] componentsSeparatedByString:@":"];
             if (parts.count == 2) {
                 NSNumber *channelKey = [NSNumber numberWithInt:[parts[0] intValue]];
                 NSNumber *notificationMuteTillTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
@@ -573,15 +612,15 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 }
 
-- (void)processUserBlockNotification:(NSDictionary *)theMessageDict andUserBlockFlag:(BOOL)flag {
-    NSArray *mqttMessageArray = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@":"];
+- (void)processUserBlockNotification:(NSDictionary *)notificationMessageDictionary andUserBlockFlag:(BOOL)flag {
+    NSArray *mqttMessageArray = [[notificationMessageDictionary valueForKey:@"message"] componentsSeparatedByString:@":"];
     NSString *BlockType = mqttMessageArray[0];
     NSString *userId = mqttMessageArray[1];
-    ALContactDBService *dbService = [ALContactDBService new];
+    ALContactDBService *contactDBService = [ALContactDBService new];
     if ([BlockType isEqualToString:@"BLOCKED_BY"] || [BlockType isEqualToString:@"UNBLOCKED_BY"]) {
-        [dbService setBlockByUser:userId andBlockedByState:flag];
+        [contactDBService setBlockByUser:userId andBlockedByState:flag];
     } else if ([BlockType isEqualToString:@"BLOCKED_TO"] || [BlockType isEqualToString:@"UNBLOCKED_TO"]) {
-        [dbService setBlockUser:userId andBlockedState:flag];
+        [contactDBService setBlockUser:userId andBlockedState:flag];
     } else {
         return;
     }
@@ -614,27 +653,35 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing {
-    if (!self.session) {
-        return;
+    @try {
+        if (!self.session) {
+            ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to sending typing status in conversation make sure to subscribe conversation first.");
+            return;
+        }
+        if (channelKey) {
+            ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to channel: %@", typing, channelKey);
+        } else {
+            ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
+        }
+
+        NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [ALUserDefaultsHandler getApplicationKey],
+                                [ALUserDefaultsHandler getUserId], typing ? 1 : 0];
+
+        NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], userId];
+
+        if (channelKey != nil) {
+            topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+        }
+        ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
+
+        NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
+
+    }  @catch (NSException *exp) {
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in sending typing status MQTT:%@", exp.reason];
+        NSError *typingStatusError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:typingStatusError];
     }
-    if (channelKey) {
-        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to channel: %@", typing, channelKey);
-    } else {
-        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
-    }
-
-    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [ALUserDefaultsHandler getApplicationKey],
-                            [ALUserDefaultsHandler getUserId], typing ? 1 : 0];
-
-    NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], userId];
-
-    if (channelKey != nil) {
-        topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
-    }
-    ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
-
-    NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
-    [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
 }
 
 - (BOOL)publishCustomData:(NSString *)dataString
@@ -657,7 +704,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                               qos:MQTTQosLevelAtMostOnce];
         return YES;
     }  @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in publishCustomData :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in publish custom data MQTT:%@", exp.reason];
+        NSError *publishDataError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:publishDataError];
     }
     return NO;
 }
@@ -707,6 +756,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 - (BOOL)unsubscribeToConversationForUser:(NSString *)userKey WithTopic:(NSString *)topic {
     @try {
         if (self.session == nil) {
+            ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to unsubscribe conversation make sure to subscribe first.");
             return NO;
         }
 
@@ -718,10 +768,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [topicsArray addObject:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
         }
 
+        [ALVerification verify:topic != nil withErrorMessage:@"Unsubscribe to conversation topic name is nil in MQTT for unsubscribeTopics."];
+
         if (topic) {
             [topicsArray addObject:topic];
         }
-
         /// Unsubscribe from both the topics with encr prefix and without encr prefix
         if (topicsArray.count) {
             [self.session unsubscribeTopics: [topicsArray copy]];
@@ -730,12 +781,15 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         [self.session closeWithDisconnectHandler:^(NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"MQTT : ERROR WHIlE DISCONNECTING FROM MQTT %@", error);
+            } else {
+                ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
             }
-            ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
         }];
         return YES;
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribe conversation :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribing to conversation MQTT:%@", exp.reason];
+        NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:subscribeError];
     }
     return NO;
 }
@@ -758,7 +812,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.session subscribeToTopic:topicString atLevel:MQTTQosLevelAtMostOnce];
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_SUBSCRIBING_COMPLETE");
         } @catch (NSException *exp) {
-            ALSLog(ALLoggerSeverityError, @"Exception in subscribing channel :: %@", exp.description);
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribing to typing status MQTT:%@", exp.reason];
+            NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:subscribeError];
         }
     });
 }
@@ -769,7 +825,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         dispatch_async(dispatch_get_main_queue (), ^{
 
             if (!self.session) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to unsubscribe Conversation typing status make sure to subscribe first.");
                 return;
             }
             NSString *topicString = @"";
@@ -783,7 +839,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBED_COMPLETE");
         });
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribing to typing conversation :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribe to channel typing converstaion MQTT:%@", exp.reason];
+        NSError *unsubscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:unsubscribeError];
     }
 }
 
@@ -791,8 +849,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBING");
     dispatch_async(dispatch_get_main_queue (),^{
         @try {
-            if (!self.session && self.session.status == MQTTSessionStatusConnected) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+            if (!self.session) {
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to subscribe open channel Conversation make sure to subscribe first.");
                 return;
             }
             NSString *openGroupString = @"";
@@ -803,7 +861,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.session subscribeToTopic:openGroupString atLevel:MQTTQosLevelAtMostOnce];
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBTION_COMPLETE");
         } @catch (NSException *exp) {
-            ALSLog(ALLoggerSeverityError, @"Exception in subscribing channel :: %@", exp.description);
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribe to open channel MQTT:%@", exp.reason];
+            NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:subscribeError];
         }
     });
 }
@@ -814,7 +874,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         dispatch_async(dispatch_get_main_queue (), ^{
 
             if (!self.session) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil unsubscribe to open channel Conversation make sure to subscribe conversation first.");
                 return;
             }
             NSString *topicString = @"";
@@ -825,50 +885,29 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_UNSUBSCRIBTION_COMPLETE");
         });
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribe Open Channel :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribe to open channel MQTT:%@", exp.reason];
+        NSError *unsubscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:unsubscribeError];
     }
 }
 
-- (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary {
+- (void)syncReceivedMessage:(ALMessage *)message withNSMutableDictionary:(NSMutableDictionary *)notificationDictionary {
 
     ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
 
     [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString]
                                  withDelegate:self.realTimeUpdate
-                               withCompletion:^(NSMutableArray *message, NSError *error) {
+                               withCompletion:^(NSMutableArray *messages, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"ALMQTTConversationService SYNC CALL");
         if (!pushAssist.isOurViewOnTop) {
-            [nsMutableDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
-            [pushAssist assist:[self getNotificationObjectFromMessage:alMessage] withUserInfo:nsMutableDictionary ofUser:alMessage.contactIds];
+            [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
+            [pushAssist assist:[self getNotificationObjectFromMessage:message] withUserInfo:notificationDictionary ofUser:message.contactIds];
         } else {
-            [self.alSyncCallService syncCall:alMessage];
-            [self.mqttConversationDelegate syncCall:alMessage andMessageList:nil];
+            [self.mqttConversationDelegate syncCall:message andMessageList:nil];
         }
 
     }];
-}
-- (BOOL)shouldRetry {
-    BOOL isInBackground = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
-    return !isInBackground && [ALDataNetworkConnection checkDataNetworkAvailable];
-}
-
-- (void)retryConnection {
-    if (![self shouldRetry]) {
-        return;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self subscribeToConversation];
-    });
-}
-
-- (void)retryConnectionWithTopic:(NSString *)topic {
-    if (![self shouldRetry]) {
-        return;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self subscribeToConversationWithTopic: topic];
-    });
 }
 
 @end

@@ -6,10 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-
-#import <Foundation/Foundation.h>
-#import "ALMessage.h"
 #import "ApplozicClient.h"
+#import "ALMessage.h"
+#import <Foundation/Foundation.h>
 
 @protocol MessageServiceWrapperDelegate <NSObject>
 
@@ -17,9 +16,9 @@
 
 - (void)updateBytesDownloaded:(NSUInteger)bytesReceived;
 - (void)updateBytesUploaded:(NSUInteger)bytesSent;
-- (void)uploadDownloadFailed:(ALMessage *)alMessage;
-- (void)uploadCompleted:(ALMessage *)alMessage;
-- (void)DownloadCompleted:(ALMessage *)alMessage;
+- (void)uploadDownloadFailed:(ALMessage *)message;
+- (void)uploadCompleted:(ALMessage *)updatedMessage;
+- (void)DownloadCompleted:(ALMessage *)message;
 
 @end
 
@@ -31,12 +30,12 @@
 
 - (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey;
 
-- (void)sendMessage:(ALMessage *)alMessage
+- (void)sendMessage:(ALMessage *)message
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
      andContentType:(short)contentype;
 
-- (void)downloadMessageAttachment:(ALMessage*)alMessage;
+- (void)downloadMessageAttachment:(ALMessage *)message;
 
 - (ALMessage *)createMessageEntityOfContentType:(int)contentType
                                        toSendTo:(NSString *)to

@@ -9,14 +9,18 @@
 #import "ALAPIResponse.h"
 #import "ALUserBlocked.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ALUserBlockResponse : ALAPIResponse
 
-@property(nonatomic, strong) NSMutableArray *blockedToUserList;
-@property(nonatomic, strong) NSMutableArray *blockedByList;
+@property(nonatomic, strong) NSMutableArray * _Nullable blockedToUserList;
+@property(nonatomic, strong) NSMutableArray * _Nullable blockedByList;
 
-@property(nonatomic, strong) NSMutableArray <ALUserBlocked *> *blockedUserList;
-@property(nonatomic, strong) NSMutableArray <ALUserBlocked *> *blockByUserList;
+@property(nonatomic, strong) NSMutableArray <ALUserBlocked *> * _Nullable blockedUserList;
+@property(nonatomic, strong) NSMutableArray <ALUserBlocked *> * _Nullable blockByUserList;
 
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 
 @end
+
+NS_ASSUME_NONNULL_END

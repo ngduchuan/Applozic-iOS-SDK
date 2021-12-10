@@ -6,14 +6,20 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALJson.h"
 #import "ALChannel.h"
+#import "ALJson.h"
+#import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+/// `ALChannelFeed` class is used for parsing the Channel JSON object.
 @interface ALChannelFeed : ALJson
 
-@property (nonatomic) NSMutableArray <ALChannel *> *channelFeedsList;
+/// This will have array of `ALChannel` objects
+@property (nonatomic) NSMutableArray <ALChannel *> * _Nullable channelFeedsList;
 
-@property (nonatomic) NSMutableArray <ALChannel *> *conversationProxyList;
+/// This will have in case of there are any conversation objects.
+@property (nonatomic) NSMutableArray <ALChannel *> * _Nullable conversationProxyList;
 
 @end
+NS_ASSUME_NONNULL_END

@@ -10,8 +10,10 @@
  
  {"messageKey":"28c47e68-e6a3-4a6d-b0db-4658d6e0aa18","createdAt":1446820801594}
  */
-#import <Foundation/Foundation.h>
 #import "ALJson.h"
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface ALSendMessageResponse : ALJson
 
@@ -19,8 +21,10 @@
 
 @property (nonatomic, copy) NSNumber *createdAt;
 
-@property (nonatomic, copy) NSNumber *conversationId;
+@property (nonatomic, copy) NSNumber * _Nullable conversationId;
 
 - (BOOL)isSuccess;
 
 @end
+
+NS_ASSUME_NONNULL_END

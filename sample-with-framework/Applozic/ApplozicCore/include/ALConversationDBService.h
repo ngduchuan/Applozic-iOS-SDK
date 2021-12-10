@@ -6,9 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "DB_ConversationProxy.h"
 #import "ALConversationProxy.h"
+#import "DB_ConversationProxy.h"
+#import <Foundation/Foundation.h>
 
 @interface ALConversationDBService : NSObject
 

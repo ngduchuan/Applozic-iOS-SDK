@@ -6,12 +6,12 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "ALConversationService.h"
-#import "ALConversationProxy.h"
-#import "ALConversationDBService.h"
-#import "DB_ConversationProxy.h"
 #import "ALConversationClientService.h"
+#import "ALConversationDBService.h"
+#import "ALConversationProxy.h"
+#import "ALConversationService.h"
 #import "ALLogger.h"
+#import "DB_ConversationProxy.h"
 
 @implementation ALConversationService
 
@@ -27,7 +27,7 @@
 
 #pragma mark - Setup service
 
--(void)setupServices {
+- (void)setupServices {
     self.conversationClientService = [[ALConversationClientService alloc] init];
     self.conversationDBService = [[ALConversationDBService alloc] init];
 }
@@ -55,13 +55,13 @@
 
 - (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc]init];
-    alConversationProxy.groupId = dbConversation.groupId;
-    alConversationProxy.userId = dbConversation.userId;
-    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
-    alConversationProxy.topicId = dbConversation.topicId;
-    alConversationProxy.Id = dbConversation.iD;
-    return alConversationProxy;
+    ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] init];
+    conversationProxy.groupId = dbConversation.groupId;
+    conversationProxy.userId = dbConversation.userId;
+    conversationProxy.topicDetailJson = dbConversation.topicDetailJson;
+    conversationProxy.topicId = dbConversation.topicId;
+    conversationProxy.Id = dbConversation.iD;
+    return conversationProxy;
 }
 
 #pragma mark - Get conversation list for UserId
@@ -111,19 +111,19 @@
 
 #pragma mark - Create conversation
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-            withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion {
+- (void)createConversation:(ALConversationProxy *)conversationProxy
+            withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion {
     
     
-    NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:alConversationProxy.userId andTopicId:alConversationProxy.topicId]];
+    NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:conversationProxy.userId andTopicId:conversationProxy.topicId]];
     
     
     if (conversationArray.count != 0) {
-        ALConversationProxy *conversationProxy = conversationArray[0];
-        ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",conversationProxy.topicDetailJson);
+        ALConversationProxy *existingConversationProxy = conversationArray[0];
+        ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",existingConversationProxy.topicDetailJson);
         completion(nil, conversationProxy);
     } else {
-        [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
+        [self.conversationClientService createConversation:conversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
             
             if (!error) {
                 NSMutableArray *proxyArr = [[NSMutableArray alloc] initWithObjects:response.alConversationProxy, nil];
@@ -139,18 +139,18 @@
 
 #pragma mark - Fetch topic detail
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
-           withCompletion:(void(^)(NSError *error, ALConversationProxy *alConversationProxy))completion {
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID
+           withCompletion:(void(^)(NSError *error, ALConversationProxy *conversationProxy))completion {
     
-    ALConversationProxy *alConversationProxy = [self getConversationByKey:alConversationProxyID];
+    ALConversationProxy *conversationProxy = [self getConversationByKey:conversationProxyID];
     
-    if (alConversationProxy != nil){
+    if (conversationProxy != nil) {
         ALSLog(ALLoggerSeverityInfo, @"Conversation/Topic Alerady exists");
-        completion(nil, alConversationProxy);
+        completion(nil, conversationProxy);
         return;
     }
     
-    [self.conversationClientService fetchTopicDetails:alConversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
+    [self.conversationClientService fetchTopicDetails:conversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);

@@ -6,31 +6,32 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
+#import "ALJson.h"
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface ALUserDetail : ALJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) BOOL connected;
-@property (nonatomic, strong) NSNumber *lastSeenAtTime;
-@property (nonatomic, strong)  NSNumber *unreadCount;
-@property (nonatomic, strong) NSString *displayName;
-@property (nonatomic, copy) NSManagedObjectID *userDetailDBObjectId;
-@property (nonatomic, strong) NSString *imageLink;
-@property (nonatomic, strong) NSString *contactNumber;
-@property (nonatomic, strong)  NSString *userStatus;
-@property (nonatomic, strong)  NSArray *keyArray;
-@property (nonatomic, strong)  NSArray *valueArray;
-@property (nonatomic, strong)  NSString *userIdString;
-@property (nonatomic, strong) NSNumber *userTypeId;
-@property (nonatomic, strong) NSNumber *deletedAtTime;
-@property (nonatomic, strong) NSNumber *roleType;
-@property (nonatomic,retain) NSMutableDictionary *metadata;
-@property (nonatomic, strong) NSNumber *notificationAfterTime;
-@property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSNumber *status;
+@property (nonatomic, strong) NSNumber * _Nullable lastSeenAtTime;
+@property (nonatomic, strong) NSNumber * _Nullable unreadCount;
+@property (nonatomic, strong) NSString * _Nullable displayName;
+@property (nonatomic, strong) NSString * _Nullable imageLink;
+@property (nonatomic, strong) NSString * _Nullable contactNumber;
+@property (nonatomic, strong) NSString * _Nullable userStatus;
+@property (nonatomic, strong) NSArray * _Nullable keyArray;
+@property (nonatomic, strong) NSArray * _Nullable valueArray;
+@property (nonatomic, strong) NSString * _Nullable userIdString;
+@property (nonatomic, strong) NSNumber * _Nullable userTypeId;
+@property (nonatomic, strong) NSNumber * _Nullable deletedAtTime;
+@property (nonatomic, strong) NSNumber * _Nullable roleType;
+@property (nonatomic,retain) NSMutableDictionary * _Nullable metadata;
+@property (nonatomic, strong) NSNumber * _Nullable notificationAfterTime;
+@property (nonatomic, strong) NSString * _Nullable email;
+@property (nonatomic, strong) NSNumber * _Nullable status;
 
 - (void)setUserDetails:(NSString *)jsonString;
 
@@ -44,7 +45,9 @@
 
 - (BOOL)isChatDisabled;
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
-- (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString;
+- (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString *)jsonString;
+- (NSMutableDictionary * _Nullable)appendMetadataIn:(NSString *) metadataString;
 
 @end
+
+NS_ASSUME_NONNULL_END

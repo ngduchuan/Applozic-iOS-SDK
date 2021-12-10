@@ -6,21 +6,21 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "ALConversationListRequest.h"
+#import "ALFileMetaInfo.h"
+#import "ALMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "DB_Message.h"
-#import "ALMessage.h"
-#import "ALFileMetaInfo.h"
+#import <Foundation/Foundation.h>
 #import "MessageListRequest.h"
-#import "ALConversationListRequest.h"
 
 @class ALMessageService;
 
 @protocol ALMessagesDelegate <NSObject>
 
-- (void)getMessagesArray:(NSMutableArray*)messagesArray;
+- (void)getMessagesArray:(NSMutableArray *)messagesArray;
 
-- (void)updateMessageList:(NSMutableArray*)messagesArray;
+- (void)updateMessageList:(NSMutableArray *)messagesArray;
 
 @end
 
@@ -31,16 +31,16 @@
 @property(nonatomic, retain) ALMessageService *messageService;
 
 //Add Message APIS
-- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messages skipAddingMessageInDb:(BOOL)skip;
 - (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
-- (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
-- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
-- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
+- (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion;
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion;
+- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID;
-- (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString*) value;
+- (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString *)value;
 
 - (NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest;
 
@@ -64,22 +64,22 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)alMessage;
+- (void)updateFileMetaInfo:(ALMessage *)message;
 
 //Delete Message APIS
-- (void)deleteMessageByKey:(NSString *)keyString;
-- (void)deleteAllMessagesByContact:(NSString *)contactId orChannelKey:(NSNumber *)key;
+- (NSError *)deleteMessageByKey:(NSString *)keyString;
+- (NSError *)deleteAllMessagesByContact:(NSString *)contactId orChannelKey:(NSNumber *)key;
 
 //Generic APIS
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)message;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
 - (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
-- (ALMessage*)getMessageByKey:(NSString *)messageKey;
+- (ALMessage *)getMessageByKey:(NSString *)messageKey;
 
-- (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime;
 
 - (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler;
 
@@ -95,19 +95,19 @@
                withCreatedAtTime:(NSNumber *)createdAtTime
                    withDbMessage:(DB_Message *)dbMessage;
 
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
+    withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
 - (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 
 - (DB_Message *)addAttachmentMessage:(ALMessage *)message;
 
-- (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
+- (NSError *)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
 
-- (ALMessage *)writeDataAndUpdateMessageInDb:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
+- (ALMessage *)writeDataAndUpdateMessageInDB:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
 
 /// Returns a list of last messages for group and contact based on the startTime or endTime
 /// @param conversationListRequest Used for passing the startTime or endTime

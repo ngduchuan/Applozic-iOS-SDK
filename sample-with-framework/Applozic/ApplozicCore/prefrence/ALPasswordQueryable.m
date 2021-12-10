@@ -6,10 +6,10 @@
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
-#import "ALPasswordQueryable.h"
 #import "ALApplozicSettings.h"
+#import "ALPasswordQueryable.h"
 
-NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
+static NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
 
 @implementation ALPasswordQueryable
 

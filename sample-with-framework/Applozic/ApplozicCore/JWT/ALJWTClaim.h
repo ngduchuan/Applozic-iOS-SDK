@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong) NSString * _Nullable string;
 
-@property (nonatomic) NSNumber* _Nullable doubleValue;
+@property (nonatomic) NSNumber * _Nullable doubleValue;
 
 @property (nonatomic) NSInteger integerValue;
 

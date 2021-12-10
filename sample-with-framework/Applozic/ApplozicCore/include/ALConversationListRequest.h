@@ -10,10 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// `ALConversationListRequest` is used for creating a request in fetching a messages from core database based on the start time stamp or end time stamp.
 @interface ALConversationListRequest : NSObject
 
-@property(nonatomic,retain) NSNumber *startTimeStamp;
-@property(nonatomic,retain) NSNumber *endTimeStamp;
+/// The start time can be passed in case if you want to load the new messages based on start time.
+@property(nonatomic,retain) NSNumber * _Nullable startTimeStamp;
+
+/// The end time can be passed in case if you want to load the older messages.
+@property(nonatomic,retain) NSNumber * _Nullable endTimeStamp;
 
 @end
 

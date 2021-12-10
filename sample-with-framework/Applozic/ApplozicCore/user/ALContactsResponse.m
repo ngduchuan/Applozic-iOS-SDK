@@ -6,9 +6,9 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
+#import "ALApplozicSettings.h"
 #import "ALContactsResponse.h"
 #import "ALUserDetail.h"
-#import "ALApplozicSettings.h"
 
 @implementation ALContactsResponse
 

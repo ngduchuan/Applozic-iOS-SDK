@@ -61,7 +61,7 @@
 
         if (conversationId != nil) {
             ALConversationService *conversationService = [[ALConversationService alloc]init];
-            [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+            [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *conversationProxy) {
                 if (error == nil) {
                     [self notificationTapped:contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; //
                 } else {
@@ -81,27 +81,41 @@
                 return;
             }
             if (groupId) {
+                [[ALChannelService new] getChannelInformationByResponse:groupId
+                                                     orClientChannelKey:nil
+                                                         withCompletion:^(NSError *error,
+                                                                          ALChannel *channel,
+                                                                          ALChannelFeedResponse *channelResponse) {
 
-                [[ALChannelService new] getChannelInformation:groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
-                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
+                    if (error ||
+                        !channel) {
+                        NSLog(@"Failed to get the channel info");
+                        return;
+                    }
+
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue
+                                               andForContactId:contactId
+                                                   withGroupId:groupId
+                                             completionHandler:^(BOOL handle) {
                         if (handle) {
                             [self notificationTapped:contactId
                                          withGroupId:groupId
                                   withConversationId:conversationId
                         notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+                            
                         }
                     }];
                 }];
             } else {
                 if (conversationId != nil) {
                     ALConversationService *conversationService = [[ALConversationService alloc]init];
-                    [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+                    [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *conversationProxy) {
                         if (error == nil) {
                             [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
                                 if (handle) {
                                     [self notificationTapped:contactId
                                                  withGroupId:groupId
-                                          withConversationId:proxy.Id
+                                          withConversationId:conversationProxy.Id
                                 notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
                                 }
                             }];

@@ -6,8 +6,8 @@
 //  Copyright © 2019 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALSearchResultCache.h"
+#import <Foundation/Foundation.h>
 
 @implementation ALSearchResultCache
 

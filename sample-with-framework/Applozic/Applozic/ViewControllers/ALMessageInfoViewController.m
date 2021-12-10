@@ -9,6 +9,7 @@
 #import "ALMessageInfoViewController.h"
 #import "UIImageView+WebCache.h"
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 @interface ALMessageInfoViewController () {
     NSMutableArray *arrayList;
@@ -42,14 +43,34 @@
     [super viewWillAppear:animated];
     
     [self.activityIndicator stopAnimating];
-    [self navigationBarColor];
+    [self setupNavigationBar];
 }
 
--(void)navigationBarColor {
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
+-(void)setupNavigationBar {
+
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+
+    if (navigationBarColor && navigationBarTintColor) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
+        
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+            
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
     }
 }
 
@@ -216,7 +237,7 @@
         [self.userImage setBackgroundColor:[ALColorUtility getColorForAlphabet:[alContact getDisplayName] colorCodes:self.colourDictionary]];
         [self.firstAlphabet setText:[ALColorUtility getAlphabetForProfileImage:[alContact getDisplayName]]];
     }
-
+    
 }
 
 
@@ -259,10 +280,10 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.msgHeaderHeight + 20)];
     
     if ([self.almessage.fileMeta.contentType hasPrefix:@"audio"]) {
-
+        
         textSize  =  [ALUtilityClass getSizeForText:self.almessage.fileMeta.name maxWidth:maxWidth + 5 font:textView.font.fontName fontSize:textView.font.pointSize];
         [textView setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-
+        
         [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
         
         bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
@@ -289,7 +310,7 @@
             [view addSubview:textView];
             [textView setText:self.almessage.message];
         }
-
+        
         if (self.almessage.imageFilePath != nil && self.almessage.fileMeta.blobKey) {
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
@@ -329,7 +350,7 @@
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
             
             [imageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
-
+            
             if (self.VCardClass.contactImage)  {
                 [imageView setImage:self.VCardClass.contactImage];
             }
@@ -338,7 +359,7 @@
                 [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCardClass.fullName, self.VCardClass.userPHONE_NO,
                                    self.VCardClass.userEMAIL_ID]];
             }
-
+            
             textView.frame = CGRectMake(imageView.frame.origin.x + imageView.frame.size.width + 10,
                                         bubbleView.frame.origin.y + 5,
                                         bubbleView.frame.size.width - imageView.frame.size.width - 10,

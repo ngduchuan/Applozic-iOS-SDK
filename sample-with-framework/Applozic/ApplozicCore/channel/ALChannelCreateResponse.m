@@ -1,5 +1,5 @@
 //
-//  ALChannelResponse.m
+//  ALChannelCreateResponse.m
 //  Applozic
 //
 //  Created by devashish on 12/02/2016.
@@ -7,8 +7,8 @@
 //
 
 #import "ALChannelCreateResponse.h"
-#import "ALUserDetail.h"
 #import "ALContactDBService.h"
+#import "ALUserDetail.h"
 
 @implementation ALChannelCreateResponse  
 
@@ -19,16 +19,11 @@
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
         self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
         [self pasreUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
-
-        return self;
-    } else {
-        self.response = JSONString;
-        return self;
     }
-    
+    return self;
 }
 
-- (void)pasreUserDetails:(NSMutableArray * ) userDetailJsonArray {
+- (void)pasreUserDetails:(NSMutableArray *)userDetailJsonArray {
     
     for (NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
         ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];

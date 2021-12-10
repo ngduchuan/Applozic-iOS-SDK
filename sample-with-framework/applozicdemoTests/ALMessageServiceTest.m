@@ -311,13 +311,13 @@
 }
 
 
-- (void)test_deleteMessageThreadForChannelIsSuccessful {
+- (void)test_deleteMessageThreadForChannelIsUnsuccessful {
 
-    OCMStub([mockMessageClientService deleteMessageThread:nil orChannelKey:@1234 withCompletion:([OCMArg invokeBlockWithArgs:@"success" ,[OCMArg defaultValue], nil])]);
+    OCMStub([mockMessageClientService deleteMessageThread:nil orChannelKey:@1234 withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue] ,networkError, nil])]);
 
     [messageService deleteMessageThread:nil orChannelKey:@1234  withCompletion:^(NSString *status, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(status);
+        XCTAssertNotNil(error);
+        XCTAssertNil(status);
     }];
 }
 

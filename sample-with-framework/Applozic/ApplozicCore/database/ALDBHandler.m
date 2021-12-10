@@ -5,11 +5,12 @@
 //  Created by Gaurav Nigam on 09/08/15.
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
-
-#import "ALDBHandler.h"
-#import "ALUtilityClass.h"
 #import "ALApplozicSettings.h"
+#import "ALDBHandler.h"
 #import "ALLogger.h"
+#import "ALUtilityClass.h"
+
+static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @implementation ALDBHandler
 
@@ -194,7 +195,7 @@
 }
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
-             completion:(void (^)(NSError*error))completion {
+             completion:(void (^)(NSError *error))completion {
     @try {
         NSError *error;
         if (!context) {
@@ -220,6 +221,11 @@
 
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError {
     if (!self.persistentContainer) {
+        if (fetchError != NULL) {
+            *fetchError = [NSError errorWithDomain:@"Applozic"
+                                              code:1
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Persistent Container is nil"}];
+        }
         return nil;
     }
     NSArray *fetchResultArray = nil;
@@ -228,6 +234,10 @@
     if (context) {
         fetchResultArray = [context executeFetchRequest:fetchrequest
                                                   error:fetchError];
+    } else {
+        if (fetchError != NULL) {
+            *fetchError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil unable to execute Fetch Request"}];
+        }
     }
     return fetchResultArray;
 }
@@ -290,15 +300,21 @@
     return nil;
 }
 
-- (void)deleteObject:(NSManagedObject *)managedObject {
+- (NSError *)deleteObject:(NSManagedObject *)managedObject {
     if (!self.persistentContainer) {
-        return;
+        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Persistent Container is nil"}];
     }
     NSManagedObjectContext *context = self.persistentContainer.viewContext;
     if (context) {
         [context deleteObject:managedObject];
+        return nil;
     }
+
+    return [NSError errorWithDomain:@"Applozic"
+                               code:1
+                           userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil unable to delete the Managed Object."}];
 }
+
 - (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *)context {
     if (context) {
         return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];

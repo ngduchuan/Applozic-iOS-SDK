@@ -6,10 +6,12 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
 #import "ALRealTimeUpdate.h"
+#import "ALUserDetail.h"
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface ALSyncCallService : NSObject
 
@@ -17,15 +19,13 @@
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
 
-- (void)syncCall:(ALMessage *)alMessage;
+- (void)updateConnectedStatus:(ALUserDetail *)userDetail;
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate;
-
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
-
-- (void)updateTableAtConversationDeleteForContact:(NSString *)contactID
-                                   ConversationID:(NSString *)conversationID
-                                       ChannelKey:(NSNumber *)channelKey;
+- (void)updateTableAtConversationDeleteForContact:(NSString * _Nullable)contactID
+                                   ConversationID:(NSString * _Nullable)conversationID
+                                       ChannelKey:(NSNumber * _Nullable)channelKey;
 - (void)syncMessageMetadata;
 
 @end
+
+NS_ASSUME_NONNULL_END

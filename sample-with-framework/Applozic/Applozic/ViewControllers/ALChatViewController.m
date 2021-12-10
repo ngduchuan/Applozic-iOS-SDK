@@ -171,6 +171,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [super viewDidLoad];
     self.mqttRetryCount = 0;
     [self setupServices];
+    self.extendedLayoutIncludesOpaqueBars = true;
     // Setup quick recording if it's enabled in the settings
     if ([ALApplozicSettings isQuickAudioRecordingEnabled]) {
         if ([ALApplozicSettings isNewAudioDesignEnabled]) {
@@ -195,7 +196,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.attachmentOutlet setTintColor:[ALApplozicSettings getAttachmentIconColour]];
     [self.sendButton setTintColor:[ALApplozicSettings getSendIconColour]];
     self.alphabetiColorCodesDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -203,7 +203,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.view endEditing:YES];
     [self.loadEarlierAction setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.loadEarlierAction setBackgroundColor:[UIColor grayColor]];
-    [self markConversationRead];
     [self.loadEarlierAction setTitle:NSLocalizedStringWithDefaultValue(@"loadEarlierMessagesText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Load Earlier Messages", @"") forState:UIControlStateNormal];
     [[[self navigationController] interactivePopGestureRecognizer] setEnabled:NO];
     [UIView animateWithDuration:0.3 animations:^{
@@ -220,9 +219,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.isVisible = YES;
-
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
+
+    if (@available(iOS 15.0, *)) {
+        self.mTableView.sectionHeaderTopPadding = 0;
+    }
 
     [self.tabBarController.tabBar setHidden: YES];
 
@@ -478,9 +480,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read channel %@",self.channelKey);
-            } else {
-                [self.userService processResettingUnreadCount];
-
             }
         }];
     }
@@ -489,8 +488,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [[ALUserService sharedInstance] markConversationAsRead:self.contactIds withCompletion:^(NSString *string, NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
-            } else {
-                [self.userService processResettingUnreadCount];
             }
         }];
     }
@@ -808,7 +805,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self freezeView:deletedFlag];
     [self.label setHidden:deletedFlag];
     if (deletedFlag) {
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getUserDeletedText]];
+        [ALNotificationView showNotification:[ALApplozicSettings getUserDeletedText]];
     }
     return deletedFlag;
 }
@@ -820,14 +817,14 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     UIAlertController *alert = [UIAlertController
                                 alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"OOPS !!!", @"")
                                 message:
-                                NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
+                                    NSLocalizedStringWithDefaultValue(@"userBlockedInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"THIS USER IS BLOCKED BY YOU", @"")
                                 preferredStyle:UIAlertControllerStyleAlert];
 
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
 
     UIAlertAction *ok = [UIAlertAction
                          actionWithTitle:
-                         NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
+                             NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Ok", @"")
                          style:UIAlertActionStyleDefault
                          handler:^(UIAlertAction *action)
                          {
@@ -880,7 +877,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [notification showGroupLeftMessage];
         disableUserInteractionInChannel = YES;
     } else if ([ALChannelService isChannelDeleted:self.channelKey]) {
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        [ALNotificationView showNotification:[ALApplozicSettings getGroupDeletedTitle]];
         disableUserInteractionInChannel = YES;
     } else if ([ALChannelService isConversationClosed:self.channelKey]) {
         disableUserInteractionInChannel = YES;
@@ -1054,6 +1051,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     [self.loadingIndicator startLoadingWithLoadText:NSLocalizedStringWithDefaultValue(@"ChatTitleLoadingText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Loading...", @"")];
 
     [self fetchConversationProfileDetailsWithUserId:self.contactIds withChannelKey:self.channelKey withCompletion:^(ALChannel *channel, ALContact *contact) {
+
+        if (!channel &&
+            !contact) {
+            return;
+        }
+
         self.alChannel = channel;
         self.alContact = contact;
         [self setTitleWithChannel:channel orContact:contact];
@@ -1070,21 +1073,22 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }];
 }
 
-
 - (void)fetchConversationProfileDetailsWithUserId:(NSString *)userId
                                    withChannelKey:(NSNumber *)channelKey
                                    withCompletion:(void (^)( ALChannel *channel, ALContact *contact))completion {
 
     if (channelKey) {
-        [self.channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-            if (alChannel && [alChannel isGroupOfTwo]) {
-                NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
+        [self.channelService getChannelInformationByResponse:channelKey
+                                          orClientChannelKey:nil
+                                              withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+            if (channel && [channel isGroupOfTwo]) {
+                NSString *receiverId = [channel getReceiverIdInGroupOfTwo];
                 [self.userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
-                    completion(alChannel, contact);
+                    completion(channel, contact);
                     return;
                 }];
             } else {
-                completion(alChannel, nil);
+                completion(channel, nil);
             }
         }];
     } else {
@@ -1103,7 +1107,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)channelDeleted {
     if ([ALChannelService isChannelDeleted:self.channelKey]) {
         [self freezeView:YES];
-        [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+        [ALNotificationView showNotification:[ALApplozicSettings getGroupDeletedTitle]];
     }
 }
 
@@ -1158,7 +1162,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
             [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                             ThirdPartyDetailVCNotificationChannelKey : self.channelKey
-            }];
+                                                                                                                          }];
         } else {
 
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
@@ -1874,9 +1878,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (UIView *)getHeaderView {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 84)];
     ALConversationService *alconversationService = [[ALConversationService alloc]init];
-    ALConversationProxy *alConversationProxy = [alconversationService getConversationByKey:self.conversationId];
+    ALConversationProxy *conversationProxy = [alconversationService getConversationByKey:self.conversationId];
 
-    ALTopicDetail *topicDetail = alConversationProxy.getTopicDetail;
+    ALTopicDetail *topicDetail = conversationProxy.getTopicDetail;
     if (topicDetail == nil) {
         return  [[UIView alloc]init];
     }
@@ -2167,7 +2171,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (self.messageReplyId) {
         NSMutableDictionary *metaData = [NSMutableDictionary new];
-        [metaData  setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
+        [metaData setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
         theMessage.metadata = metaData;
     }
     return theMessage;
@@ -3519,17 +3523,18 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (!receiverId) {
         return;
     }
-    [self.userService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail) {
-        if (alUserDetail) {
-            [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
-            alUserDetail.unreadCount = 0;
-            [[[ALContactDBService alloc] init] updateUserDetail:alUserDetail];
-            [self updateConversationProfileDetails];
-            [self updateLastSeenAtStatus:alUserDetail];
-            [self setCallButtonInNavigationBar];
-        } else {
-            ALSLog(ALLoggerSeverityInfo, @"CHECK LAST_SEEN_SERVER CALL");
+
+    [self.userService getUserDetailFromServer:receiverId
+                               withCompletion:^(ALContact *contact, NSError *error) {
+        if (error) {
+            return;
         }
+
+        [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:contact.userId];
+        [self updateConversationProfileDetails];
+        ALUserDetail *userDetail = [self getUserDetailFromContact:contact];
+        [self updateLastSeenAtStatus:userDetail];
+        [self setCallButtonInNavigationBar];
     }];
 }
 
@@ -4022,7 +4027,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (void)newMessageHandler:(NSNotification *)notification {
-    ALSLog(ALLoggerSeverityInfo, @" newMessageHandler called ::#### ");
+    ALSLog(ALLoggerSeverityInfo, @"newMessageHandler called ::#### ");
     NSMutableArray *messageArray = notification.object;
 
     [self addMessageToList:messageArray];
@@ -4118,7 +4123,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
      object:nil
      userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                 ThirdPartyDetailVCNotificationALContact : userId}
-     ];
+    ];
     BOOL tapFlag = ([ALApplozicSettings isChatOnTapUserProfile] && [self isGroup]);
 
     if (!tapFlag) {
@@ -4372,7 +4377,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
             if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                                 ThirdPartyDetailVCNotificationALContact : contact
-                }];
+                                                                                                                              }];
             } else {
                 [self.mActivityIndicator startAnimating];
 
@@ -4418,6 +4423,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     self.contactIds = alMessage.contactIds;
     [self reloadView];
     [self.mTableView reloadData];
+    [self markConversationRead];
     [self handleMessageForwardForChatView:alMessage];
 }
 

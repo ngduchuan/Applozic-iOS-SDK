@@ -14,6 +14,7 @@
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
 #import "ALNotificationHelper.h"
+#import "ALBaseViewController.h"
 
 @interface ALUserProfileVC ()
 
@@ -73,7 +74,7 @@
     [self.activityIndicator startAnimating];
 
     [userService updateUserDetail:loginUserId
-                     withCompletion:^(ALUserDetail *userDetail) {
+                   withCompletion:^(ALUserDetail *userDetail) {
         self->myContact = [self->alContactService loadContactByKey:@"userId" value:loginUserId];
         [self setupViewWithContact:self->myContact];
         [self.activityIndicator stopAnimating];
@@ -105,10 +106,7 @@
     self.mImagePicker.delegate = self;
     self.mImagePicker.allowsEditing = YES;
     
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        self.navigationController.navigationBar.translucent = NO;
-        [self commonNavBarTheme:self.navigationController];
-    }
+    [self commonNavBarTheme:self.navigationController];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -141,7 +139,7 @@
 - (void)addNotificationObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showMQTTNotification:)
-                                                 name:@"MQTT_APPLOZIC_01"
+                                                 name:NEW_MESSAGE_NOTIFICATION
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -157,22 +155,37 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
 
 }
 
 - (void)commonNavBarTheme:(UINavigationController *)navigationController {
-    [navigationController.navigationBar setTitleTextAttributes: @{
-        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                            size:18]
-    }];
     
-    [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-    [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    self.navigationController.navigationBar.translucent = NO;
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+    if (navigationBarColor && navigationBarTintColor) {
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+
+        [navigationController.navigationBar setTintColor:navigationBarTintColor];
+        [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -180,25 +193,35 @@
 }
 
 - (void)showMQTTNotification:(NSNotification *)notifyObject {
-    ALMessage *alMessage = (ALMessage *)notifyObject.object;
-    
-    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
-    
-    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage isMsgHidden]) {
-        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                          withAlertMessage:alMessage.message];
 
-        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+    NSMutableArray *messageArray = notifyObject.object;
 
-            ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
-
-            if ([helper isApplozicViewControllerOnTop]) {
-
-                [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
-            }
-
-        }];
+    if (!messageArray) {
+        return;
     }
+
+    for (ALMessage *message in messageArray) {
+        if (![message.type isEqualToString:@"5"] && ![message isNotificationDisabled]) {
+
+            ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:message
+                                                                              withAlertMessage:message.message];
+
+            [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+                ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
+
+                if ([helper isApplozicViewControllerOnTop]) {
+
+                    [helper handlerNotificationClick:message.contactIds
+                                         withGroupId:message.groupId
+                                  withConversationId:message.conversationId
+                        notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+                }
+
+            }];
+        }
+    }
+
 }
 
 - (void)handleAPNS:(NSNotification *)notification {
@@ -553,7 +576,7 @@
                     [self.userStatusLabel setText: statusText];
                     [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
                 }
-
+                
                 [self.activityIndicator stopAnimating];
 
             }];

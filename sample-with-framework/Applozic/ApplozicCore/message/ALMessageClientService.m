@@ -6,27 +6,27 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "ALMessageClientService.h"
+#import "ALApplozicSettings.h"
+#import "ALChannelService.h"
+#import "ALConnectionQueueHandler.h"
 #import "ALConstant.h"
+#import "ALConversationService.h"
+#import "ALDBHandler.h"
+#import "ALLogger.h"
+#import "ALMessage.h"
+#import "ALMessageClientService.h"
+#import "ALMessageDBService.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "ALMessage.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALMessageDBService.h"
-#import "ALDBHandler.h"
-#import "ALChannelService.h"
-#import "ALSyncMessageFeed.h"
-#import "ALUtilityClass.h"
-#import "ALConversationService.h"
-#import "MessageListRequest.h"
-#import "ALUserBlockResponse.h"
-#import "ALUserService.h"
-#import "NSString+Encode.h"
-#import "ALApplozicSettings.h"
-#import "ALConnectionQueueHandler.h"
-#import "ALApplozicSettings.h"
 #import "ALSearchResultCache.h"
-#import "ALLogger.h"
+#import "ALSyncMessageFeed.h"
+#import "ALUserBlockResponse.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserService.h"
+#import "ALUtilityClass.h"
+#import "MessageListRequest.h"
+#import "NSString+Encode.h"
+#import "ALVerification.h"
 
 @implementation ALMessageClientService
 
@@ -38,7 +38,7 @@
     return self;
 }
 
--(void)setupServices {
+- (void)setupServices {
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
@@ -58,13 +58,13 @@
         }
 
         if (urlRequest) {
-            [self.responseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+            [self.responseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-                if (theError) {
-                    completion(nil, theError);
+                if (error) {
+                    completion(nil, error);
                     return;
                 }
-                NSString *imageDownloadURL = (NSString *)theJson;
+                NSString *imageDownloadURL = (NSString *)jsonResponse;
                 ALSLog(ALLoggerSeverityInfo, @"Response URL for image or attachment : %@",imageDownloadURL);
                 completion(imageDownloadURL, nil);
             }];
@@ -76,7 +76,7 @@
 }
 
 - (void)getURLRequestForImage:(NSString *)blobKey
-                        withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
+               withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
 
     NSMutableURLRequest *urlRequest = nil;
     if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
@@ -108,7 +108,7 @@
         NSString *fileURLString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
-    } else if([ALApplozicSettings isS3StorageServiceEnabled]) {
+    } else if ([ALApplozicSettings isS3StorageServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
@@ -116,17 +116,19 @@
     return nil;
 }
 
-- (void)downloadImageThumbnailUrl:(NSString *)url blobKey:(NSString *)blobKey completion:(void (^)(NSString *, NSError *))completion {
+- (void)downloadImageThumbnailUrl:(NSString *)url
+                          blobKey:(NSString *)blobKey
+                       completion:(void (^)(NSString *imageDownloadURL, NSError *error))completion {
     NSMutableURLRequest *urlRequest = [self getURLRequestForThumbnail:blobKey];
     if (urlRequest) {
         [self.responseHandler authenticateAndProcessRequest:urlRequest
                                                      andTag:@"FILE DOWNLOAD URL"
-                                      WithCompletionHandler:^(id theJson, NSError *theError) {
-            if (theError) {
-                completion(nil, theError);
+                                      WithCompletionHandler:^(id jsonResponse, NSError *error) {
+            if (error) {
+                completion(nil, error);
                 return;
             }
-            NSString *imageDownloadURL = (NSString *)theJson;
+            NSString *imageDownloadURL = (NSString *)jsonResponse;
             ALSLog(ALLoggerSeverityInfo, @"Response URL For Thumbnail is : %@", imageDownloadURL);
             completion(imageDownloadURL, nil);
         }];
@@ -135,51 +137,42 @@
     }
 }
 
-- (void)downloadImageThumbnailUrl:(ALMessage *)message
-                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
-    [self downloadImageThumbnailUrl:message.fileMeta.thumbnailUrl
-                            blobKey:message.fileMeta.thumbnailBlobKey
-                         completion:^(NSString *fileURL, NSError *error) {
-        completion(fileURL, error);
-    }];
-}
-
 - (void)addWelcomeMessage:(NSNumber *)channelKey {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
+    ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
 
-    ALMessage *alMessage = [ALMessage new];
+    ALMessage *message = [ALMessage new];
 
-    alMessage.contactIds = @"applozic";//1
-    alMessage.to = @"applozic";//2
-    alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
-    alMessage.sendToDevice = NO;
-    alMessage.shared = NO;
-    alMessage.fileMeta = nil;
-    alMessage.status = [NSNumber numberWithInt:READ];
-    alMessage.key = @"welcome-message-temp-key-string";
-    alMessage.delivered=NO;
-    alMessage.fileMetaKey = @"";//4
-    alMessage.contentType = 0;
-    alMessage.status = [NSNumber numberWithInt:DELIVERED_AND_READ];
+    message.contactIds = @"applozic";//1
+    message.to = @"applozic";//2
+    message.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+    message.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    message.sendToDevice = NO;
+    message.shared = NO;
+    message.fileMeta = nil;
+    message.status = [NSNumber numberWithInt:READ];
+    message.key = @"welcome-message-temp-key-string";
+    message.delivered=NO;
+    message.fileMetaKey = @"";//4
+    message.contentType = 0;
+    message.status = [NSNumber numberWithInt:DELIVERED_AND_READ];
     if (channelKey!=nil) {
-        alMessage.type=@"101";
-        alMessage.message=@"You have created a new group, Say something!!";
-        alMessage.groupId = channelKey;
+        message.type=@"101";
+        message.message=@"You have created a new group, Say something!!";
+        message.groupId = channelKey;
     } else {
-        alMessage.type = @"4";
-        alMessage.message = @"Welcome to Applozic! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
-        alMessage.groupId = nil;
+        message.type = @"4";
+        message.message = @"Welcome to Applozic! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
+        message.groupId = nil;
     }
-    [messageDBService createMessageEntityForDBInsertionWithMessage:alMessage];
-    [alDBHandler saveContext];
+    [messageDBService createMessageEntityForDBInsertionWithMessage:message];
+    [databaseHandler saveContext];
 
 }
 
 - (void)getLatestMessageGroupByContact:(NSUInteger)mainPageSize
                              startTime:(NSNumber *)startTime
-                        withCompletion:(void(^)(ALMessageList *alMessageList, NSError *error)) completion {
+                        withCompletion:(void(^)(ALMessageList *messageList, NSError *error)) completion {
     ALSLog(ALLoggerSeverityInfo, @"\nGet Latest Messages \t State:- User Login ");
 
     NSString *messageListURLString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
@@ -198,24 +191,37 @@
 
     NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageListParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageListRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageListRequest
+                                                 andTag:@"GET MESSAGES GROUP BY CONTACT"
+                                  WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            completion(nil, theError);
+        if (error) {
+            completion(nil, error);
             return;
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"Message list response JSON : %@",theJson);
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil."];
 
-        if (theJson) {
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get latest messages response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:jsonResponse];
+        ALSLog(ALLoggerSeverityInfo, @"Message list response JSON : %@",jsonResponse);
+
+        if (jsonResponse) {
             [ALUserDefaultsHandler setInitialMessageListCallDone:YES];
             if (messageListResponse.userDetailsList) {
-                ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-                [alContactDBService addUserDetails:messageListResponse.userDetailsList];
+                ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+                [contactDBService addUserDetails:messageListResponse.userDetailsList];
             }
             ALChannelService *channelService = [[ALChannelService alloc] init];
-            [channelService callForChannelServiceForDBInsertion:theJson];
+            [channelService callForChannelServiceForDBInsertion:jsonResponse];
 
             /// Save the last message created time for calling the message list API.
             /// Next time onwards this saved time will be used. as the start time
@@ -241,17 +247,28 @@
     NSString *messageListParamString = [NSString stringWithFormat:@"startIndex=%@&deletedGroupIncluded=%@",@"0",@(YES)];
 
     NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageListParamString];
-    [self.responseHandler authenticateAndProcessRequest:messageListRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageListRequest andTag:@"GET MESSAGES GROUP BY CONTACT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            completion(nil, theError);
+        if (error) {
+            completion(nil, error);
             return;
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get latest messages response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get latest messages response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:jsonResponse];
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService callForChannelServiceForDBInsertion:theJson];
+        [channelService callForChannelServiceForDBInsertion:jsonResponse];
         completion(messageListResponse.messageList , nil);
     }];
 
@@ -259,16 +276,27 @@
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                 withOpenGroup:(BOOL)isOpenGroup
-               withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
+               withCompletion:(void (^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetails))completion {
     NSString *messageURLString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
 
     NSMutableURLRequest *messageThreadRequest = [ALRequestHandler createGETRequestWithUrlString:messageURLString paramString:messageListRequest.getParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageThreadRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageThreadRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"MSG_LIST ERROR :: %@",theError.description);
-            completion(nil, theError, nil);
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"MSG_LIST ERROR :: %@",error.description);
+            completion(nil, error, nil);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get messages for one-to-one or channel response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError, nil);
             return;
         }
 
@@ -284,30 +312,32 @@
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson
+        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:jsonResponse
                                                                          andWithUserId:messageListRequest.userId
                                                                           andWithGroup:messageListRequest.channelKey];
 
-        ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
-        [alMessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
-        [alConversationService addConversations:messageListResponse.conversationPxyList];
+        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+        [messageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
+        ALConversationService *conversationService = [[ALConversationService alloc] init];
+        [conversationService addConversations:messageListResponse.conversationPxyList];
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService callForChannelServiceForDBInsertion:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"Message thread response : %@",(NSString *)theJson);
+        [channelService callForChannelServiceForDBInsertion:jsonResponse];
+        ALSLog(ALLoggerSeverityInfo, @"Message thread response : %@",(NSString *)jsonResponse);
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
     }];
 }
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
-               withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
+               withCompletion:(void (^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray))completion {
     ALChannel *channel = nil;
     if (messageListRequest.channelKey != nil) {
         channel = [[ALChannelService sharedInstance] getChannelByKey:messageListRequest.channelKey];
     }
 
-    [self getMessageListForUser:messageListRequest withOpenGroup:(channel != nil && channel.type == OPEN) withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+    [self getMessageListForUser:messageListRequest
+                  withOpenGroup:(channel != nil && channel.type == OPEN)
+                 withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
         completion(messages, error, userDetailArray);
 
@@ -321,7 +351,7 @@
     } else if (ALApplozicSettings.isS3StorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
-    } else if (ALApplozicSettings.isGoogleCloudServiceEnabled){
+    } else if (ALApplozicSettings.isGoogleCloudServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
     } else {
@@ -329,14 +359,25 @@
 
         NSMutableURLRequest *fileURLRequest = [ALRequestHandler createGETRequestWithUrlString:fileUploadURLString paramString:nil];
 
-        [self.responseHandler authenticateAndProcessRequest:fileURLRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+        [self.responseHandler authenticateAndProcessRequest:fileURLRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-            if (theError) {
-                completion(nil, theError);
+            if (error) {
+                completion(nil, error);
                 return;
             }
 
-            NSString *imagePostingURL = (NSString *)theJson;
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get attachment URL response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get attachment file URL response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
+
+            NSString *imagePostingURL = (NSString *)jsonResponse;
             ALSLog(ALLoggerSeverityInfo, @"Upload Image or attachment URL : %@",imagePostingURL);
             completion(imagePostingURL, nil);
         }];
@@ -344,27 +385,38 @@
 }
 
 - (void) getLatestMessageForUser:(NSString *)deviceKeyString
-                  withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion {
-    [self getLatestMessageForUser:deviceKeyString withMetaDataSync:NO withCompletion:^(ALSyncMessageFeed *syncResponse, NSError *nsError) {
-        completion(syncResponse,nsError);
+                  withCompletion:(void (^)(ALSyncMessageFeed *syncMessageFeed, NSError *error))completion {
+    [self getLatestMessageForUser:deviceKeyString withMetaDataSync:NO withCompletion:^(ALSyncMessageFeed *syncMessageFeed, NSError *error) {
+        completion(syncMessageFeed,error);
     }];
 }
 
 - (void)deleteMessage:(NSString *)keyString
          andContactId:(NSString *)contactId
-       withCompletion:(void (^)(NSString *, NSError *))completion {
+       withCompletion:(void (^)(NSString *response, NSError *error))completion {
     NSString *deleteMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/message/delete",KBASE_URL];
     NSString *deleteMessageParamString = [NSString stringWithFormat:@"key=%@&userId=%@",keyString,[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest *deleteMessageRequest = [ALRequestHandler createGETRequestWithUrlString:deleteMessageURLString paramString:deleteMessageParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:deleteMessageRequest andTag:@"DELETE_MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:deleteMessageRequest andTag:@"DELETE_MESSAGE" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            completion(nil,theError);
+        if (error) {
+            completion(nil,error);
             return;
         }
 
-        NSString *status = (NSString *)theJson;
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete message response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        NSString *status = (NSString *)jsonResponse;
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message: %@", status);
         if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(status, nil);
@@ -381,7 +433,7 @@
 
 - (void)deleteMessageThread:(NSString *)contactId
                orChannelKey:(NSNumber *)channelKey
-             withCompletion:(void (^)(NSString *, NSError *))completion {
+             withCompletion:(void (^)(NSString *response, NSError *error))completion {
     NSString *deleteThreadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/delete/conversation",KBASE_URL];
     NSString *deleteThreadParamString;
     if (channelKey != nil) {
@@ -391,18 +443,30 @@
     }
     NSMutableURLRequest *deleteThreadRequest = [ALRequestHandler createGETRequestWithUrlString:deleteThreadURLString paramString:deleteThreadParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:deleteThreadRequest andTag:@"DELETE_MESSAGE_THREAD" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:deleteThreadRequest andTag:@"DELETE_MESSAGE_THREAD" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Error in delete message thread: %@", theError.description);
-            completion(nil, theError);
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Error in delete message thread: %@", error.description);
+            completion(nil, error);
             return;
         }
-        NSString *status = (NSString *)theJson;
-        ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)theJson);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to delete message Thread response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete message Thread response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        NSString *status = (NSString *)jsonResponse;
+        ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)jsonResponse);
         if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-            [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
             completion(status, nil);
             return;
         } else {
@@ -416,46 +480,69 @@
 
 }
 
-- (void)sendMessage:(NSDictionary *)userInfo
-withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
+- (void)sendMessage:(NSDictionary *)userInfo withCompletionHandler:(void(^)(id jsonResponse, NSError *error))completion {
     NSString *messageSendURLString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/send",KBASE_URL];
     NSString *messageSendParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
 
     NSMutableURLRequest *messageSendRequest = [ALRequestHandler createPOSTRequestWithUrlString:messageSendURLString paramString:messageSendParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageSendRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageSendRequest andTag:@"SEND MESSAGE" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            completion(nil,theError);
+        if (error) {
+            completion(nil,error);
             return;
         }
-        completion(theJson,nil);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to send message response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to send message response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        completion(jsonResponse,nil);
     }];
 }
 
 - (void)getCurrentMessageInformation:(NSString *)messageKey
-               withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion {
+               withCompletionHandler:(void(^)(ALMessageInfoResponse *messageInfoResponse, NSError *error))completion {
     NSString *messageInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/message/info", KBASE_URL];
     NSString *messageKeyParamString = [NSString stringWithFormat:@"key=%@", messageKey];
 
     NSMutableURLRequest *messageInfoRequest = [ALRequestHandler createGETRequestWithUrlString:messageInfoURLString paramString:messageKeyParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageInfoRequest andTag:@"MESSSAGE_INFORMATION" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageInfoRequest andTag:@"MESSSAGE_INFORMATION" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Error in message information API: %@", theError);
-            completion(nil, theError);
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Error in message information API: %@", error);
+            completion(nil, error);
         } else {
-            ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)theJson);
-            ALMessageInfoResponse *messageInfoObject = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)theJson];
-            completion(messageInfoObject, theError);
+            ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)jsonResponse);
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to get message information response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
+
+            ALMessageInfoResponse *messageInfoResponse = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)jsonResponse];
+            completion(messageInfoResponse, error);
         }
     }];
 }
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
-                 withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion {
+                 withCompletion:(void (^)(ALSyncMessageFeed *syncMessageFeed, NSError *error))completion {
     if (!deviceKeyString) {
         NSError *deviceKeyNilError = [NSError
                                       errorWithDomain:@"Applozic"
@@ -480,24 +567,35 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
 
     NSMutableURLRequest *messageSyncRequest = [ALRequestHandler createGETRequestWithUrlString:messageSyncURLString paramString:messageSyncParamString];
-    [self.responseHandler authenticateAndProcessRequest:messageSyncRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageSyncRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
+        if (error) {
             [ALUserDefaultsHandler setMsgSyncRequired:YES];
-            completion(nil,theError);
+            completion(nil,error);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get message information response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get message information response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
             return;
         }
 
         [ALUserDefaultsHandler setMsgSyncRequired:NO];
-        ALSyncMessageFeed *syncResponse = [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
-        completion(syncResponse,nil);
+        ALSyncMessageFeed *syncMessageFeed = [[ALSyncMessageFeed alloc] initWithJSONString:jsonResponse];
+        ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)jsonResponse);
+        completion(syncMessageFeed,nil);
     }];
 }
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata
-                    withCompletion:(void (^)(id, NSError *))completion {
+                    withCompletion:(void (^)(id, NSError *error))completion {
     ALSLog(ALLoggerSeverityInfo, @"Updating message metadata for message : %@", messageKey);
     NSString *metadataURLString = [NSString stringWithFormat:@"%@/rest/ws/message/update/metadata",KBASE_URL];
     NSMutableDictionary *messageMetadata = [NSMutableDictionary new];
@@ -511,19 +609,31 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
     NSMutableURLRequest *metadataUpdateRequest = [ALRequestHandler createPOSTRequestWithUrlString:metadataURLString paramString:metadataParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:metadataUpdateRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError,@"Error while updating message metadata: %@", theError);
-            completion(nil, theError);
+    [self.responseHandler authenticateAndProcessRequest:metadataUpdateRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id jsonResponse, NSError *error) {
+        if (error) {
+            ALSLog(ALLoggerSeverityError,@"Error while updating message metadata: %@", error);
+            completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", theJson);
-        completion(theJson, nil);
+        ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update message metadata response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to update message metadata response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        completion(jsonResponse, nil);
     }];
 }
 
 - (void)searchMessage:(NSString *)key
-       withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+       withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion {
     ALSLog(ALLoggerSeverityInfo, @"Search messages with %@", key);
     NSString *messageSearchURLString = [NSString stringWithFormat:@"%@/rest/ws/group/support", KBASE_URL];
     NSString *messageSearchParamString = [NSString stringWithFormat:@"search=%@", [key urlEncodeUsingNSUTF8StringEncoding]];
@@ -533,16 +643,29 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
                                               paramString: messageSearchParamString];
 
     [self.responseHandler
-     authenticateAndProcessRequest: messageURLRequest
+     authenticateAndProcessRequest:messageURLRequest
      andTag: @"Search messages"
-     WithCompletionHandler: ^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
-            completion(nil, theError);
+     WithCompletionHandler: ^(id jsonResponse, NSError *error) {
+
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
+            completion(nil, error);
             return;
         }
-        if (![[theJson valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search supprt group message response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to search supprt group message response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        if (![[jsonResponse valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
+            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
             NSError *error = [NSError
                               errorWithDomain:@"Applozic"
                               code:1
@@ -552,18 +675,19 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             completion(nil, error);
             return;
         }
-        NSString *response = [theJson valueForKey: @"response"];
+
+        NSString *response = [jsonResponse valueForKey: @"response"];
         if (response == nil) {
             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
-            NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
+            NSError *error = [NSError errorWithDomain:@"Search response is nil" code:0 userInfo:nil];
             completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)jsonResponse);
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        NSDictionary *messageDictionary = [response valueForKey: @"message"];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+        NSDictionary *messagesDictionary = [response valueForKey: @"message"];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary: messageDictionary];
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
@@ -574,7 +698,7 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 }
 
 - (void)searchMessageWith:(ALSearchRequest *)request
-           withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+           withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion {
 
     if (!request.searchText || request.searchText.length == 0 ) {
         NSError *error = [NSError
@@ -597,14 +721,27 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     [self.responseHandler
      authenticateAndProcessRequest: messageURLRequest
      andTag: @"Search messages"
-     WithCompletionHandler: ^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
-            completion(nil, theError);
+     WithCompletionHandler: ^(id jsonResponse, NSError *error) {
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
+            completion(nil, error);
             return;
         }
-        if (![[theJson valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
+
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to search message response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to search message response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        if (![[jsonResponse valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
+            ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",error.description);
             NSError *error = [NSError
                               errorWithDomain:@"Applozic"
                               code:1
@@ -614,18 +751,18 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             completion(nil, error);
             return;
         }
-        NSString *response = [theJson valueForKey: @"response"];
+        NSString *response = [jsonResponse valueForKey: @"response"];
         if (response == nil) {
             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
-            NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
+            NSError *error = [NSError errorWithDomain:@"Search response is nil" code:0 userInfo:nil];
             completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)jsonResponse);
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        NSDictionary *messageDictionary = [response valueForKey: @"message"];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+        NSDictionary *messagesDictionary = [response valueForKey: @"message"];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary: messageDictionary];
             [messages addObject: message];
         }
         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
@@ -637,48 +774,59 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                      isSearch:(BOOL)flag
-               withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+               withCompletion:(void (^)(NSMutableArray<ALMessage *> *messages, NSError *error))completion {
     NSString *messageThreadURLString = [NSString stringWithFormat: @"%@/rest/ws/message/list", KBASE_URL];
     NSMutableURLRequest *messageThreadRequest = [ALRequestHandler
                                                  createGETRequestWithUrlString: messageThreadURLString
                                                  paramString: messageListRequest.getParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageThreadRequest andTag:@"Messages for searched conversation" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:messageThreadRequest andTag:@"Messages for searched conversation" WithCompletionHandler:^(id jsonResponse, NSError *error) {
 
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Error while getting messages :: %@", theError.description);
-            completion(nil, theError);
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Error while getting messages :: %@", error.description);
+            completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Messages fetched succesfully :: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Messages fetched succesfully :: %@", (NSString *)jsonResponse);
 
-        NSDictionary *messageDictionary = [theJson valueForKey:@"message"];
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get messages for one-to-one or channel response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get messages for one-to-one or channel response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
+        NSDictionary *messagesDictionary = [jsonResponse valueForKey:@"message"];
         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
-        for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary:dict];
+        for (NSDictionary *messageDictionary in messagesDictionary) {
+            ALMessage *message = [[ALMessage alloc] initWithDictonary:messageDictionary];
             [messages addObject: message];
         }
 
-        NSDictionary *userDetailDictionary = [theJson valueForKey:@"userDetails"];
+        NSDictionary *userDetailsDictionary = [jsonResponse valueForKey:@"userDetails"];
         NSMutableArray<ALUserDetail *> *userDetails = [NSMutableArray new];
-        for (NSDictionary *dict in userDetailDictionary) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: dict];
+        for (NSDictionary *userDetailDictionary in userDetailsDictionary) {
+            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: userDetailDictionary];
             [userDetails addObject: userDetail];
         }
         [[ALSearchResultCache shared] saveUserDetails: userDetails];
 
-        ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:theJson];
+        ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString:jsonResponse];
 
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
-        [alConversationService addConversations:alChannelFeed.conversationProxyList];
+        ALConversationService *conversationService = [[ALConversationService alloc] init];
+        [conversationService addConversations:channelFeed.conversationProxyList];
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
+        [channelService saveChannelUsersAndChannelDetails:channelFeed.channelFeedsList calledFromMessageList:YES];
         completion(messages, nil);
     }];
 }
 
-- (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+- (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys withCompletion:(void (^)(ALAPIResponse *response, NSError *error))completion {
     NSString *messageInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/message/detail", KBASE_URL];
     NSMutableString *paramMessageKeyString = [[NSMutableString alloc] init];
     for (NSString *key in keys) {
@@ -691,14 +839,26 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     }
     NSMutableURLRequest *messageInfoRequest = [ALRequestHandler createGETRequestWithUrlString: messageInfoURLString paramString: paramMessageKeyString];
 
-    [self.responseHandler authenticateAndProcessRequest:messageInfoRequest andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if (theError) {
-            ALSLog(ALLoggerSeverityError, @"Fetching message error %@", (NSString *)theJson);
-            completion(nil, theError);
+    [self.responseHandler authenticateAndProcessRequest:messageInfoRequest andTag:@"Get hidden messages" WithCompletionHandler:^(id jsonResponse, NSError *error) {
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"Fetching message error %@", (NSString *)jsonResponse);
+            completion(nil, error);
             return;
         }
-        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully %@", (NSString *)theJson);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Get messages by keys API response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilError = [NSError errorWithDomain:@"Applozic"
+                                                    code:1
+                                                userInfo:[NSDictionary dictionaryWithObject: @"Failed to get messages by keys API response is nil."
+                                                                                     forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilError);
+            return;
+        }
+
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+        ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully %@", (NSString *)jsonResponse);
         completion(response, nil);
     }];
 }
@@ -710,22 +870,41 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 
     NSMutableURLRequest *deleteAllRequest = [ALRequestHandler createGETRequestWithUrlString:deleteAllURLString paramString:deleteAllParamString];
 
-    [self.responseHandler authenticateAndProcessRequest:deleteAllRequest andTag:@"DELETE_MESSAGE_FOR_ALL" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [self.responseHandler authenticateAndProcessRequest:deleteAllRequest andTag:@"DELETE_MESSAGE_FOR_ALL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
-        if (theError) {
-            completion(nil, theError);
+        if (error) {
+            completion(nil, error);
             return;
         }
-        ALSLog(ALLoggerSeverityInfo, @"Response for delete message for all: %@", (NSString *)theJson);
-        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            completion(response, nil);
-        } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
-                                                         code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message for all"}];
-            completion(nil, responseError);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Delete message for all response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilError = [NSError errorWithDomain:@"Applozic"
+                                                    code:1
+                                                userInfo:[NSDictionary dictionaryWithObject: @"Failed to Delete message for all response is nil."
+                                                                                     forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilError);
+            return;
         }
+
+        ALSLog(ALLoggerSeverityInfo, @"Response for delete message for all: %@", (NSString *)jsonResponse);
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+
+        if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+
+            NSString *errorMessage =  [response.errorResponse errorDescriptionMessage];
+
+            NSError *updateMetadataError =  [NSError errorWithDomain:@"Applozic" code:1
+                                                            userInfo:[NSDictionary dictionaryWithObject: errorMessage == nil ? @"Failed to delete the message for all.": errorMessage
+
+                                                                                                 forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, updateMetadataError);
+            return;
+        }
+
+        completion(response, nil);
     }];
 }
 

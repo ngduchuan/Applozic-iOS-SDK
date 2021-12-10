@@ -11,7 +11,7 @@
 
 #define TSMessageViewAlpha 0.95
 
-
+/// `TSMessageView` used for creating an local notification view can be used in `ALNotificationView`.
 @interface TSMessageView : UIView
 
 /** The displayed title of this message */
