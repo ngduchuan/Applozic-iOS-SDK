@@ -15,6 +15,8 @@
 #import "DB_CONTACT.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALContactService` class used for adding, fetching, updating, deleting `ALContact` or user details.
 @interface ALContactService : NSObject
 
@@ -54,7 +56,7 @@
 /// Ex: to fetch based on the userId key, then pass the string as userId.
 /// @param value Pass the value of the userId of the user to get the details.
 /// @return Returns a `ALContact` object.
-- (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value;
+- (ALContact * _Nullable)loadContactByKey:(NSString *)key value:(NSString *)value;
 
 /// Gets the contact from local database if contact exist otherwise it will create new contact with userId and display name.
 /// @param contactId Pass the userId of the reciever.
@@ -67,7 +69,7 @@
 - (BOOL)setUnreadCountInDB:(ALContact *)contact;
 
 /// Gets the total unread count of all the contacts or user.
-- (NSNumber *)getOverallUnreadCountForContact;
+- (NSNumber * _Nullable)getOverallUnreadCountForContact;
 
 /// Returns YES if contact exist otherwise NO.
 /// @param userId Pass the userId of the user for checking if the contact exists in the database.
@@ -88,5 +90,7 @@
 /// Updates user mute time in local database.
 /// @param notificationAfterTime Time in milliseconds.
 /// @param userId Pass the userId for updating time stamp in database.
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
+- (ALUserDetail * _Nullable)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
 @end
+
+NS_ASSUME_NONNULL_END

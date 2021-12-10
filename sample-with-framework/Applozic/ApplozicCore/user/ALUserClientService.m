@@ -16,6 +16,7 @@
 #import "ALUserDetailListFeed.h"
 #import <Foundation/Foundation.h>
 #import "NSString+Encode.h"
+#import "ALVerification.h"
 
 NSString * const ApplozicDomain = @"Applozic";
 
@@ -62,6 +63,14 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completionMark(nil);
             return;
         } else {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user last seen detail response is nil."];
+
+            if (!jsonResponse) {
+                completionMark(nil);
+                return;
+            }
+
             NSNumber *generatedAt = [jsonResponse valueForKey:@"generatedAt"];
             [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
             ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString *)jsonResponse];
@@ -84,6 +93,13 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error while fetching user detail : %@", error);
+            completionMark(nil);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update Detail response is nil."];
+
+        if (!jsonResponse) {
             completionMark(nil);
             return;
         }
@@ -117,6 +133,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         } else {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update login user display name response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update login user display name response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
+
             ALSLog(ALLoggerSeverityInfo, @"Response of USER_DISPLAY_NAME_UPDATE : %@", (NSString *)jsonResponse);
             completion((NSString *)jsonResponse, nil);
         }
@@ -139,6 +167,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark converstion read response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark converstion read response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"Response for mark conversation: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -160,6 +200,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to user block response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"USER_BLOCKED RESPONSE JSON: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -184,6 +236,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to user block sync response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to user block sync response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"USER_BLOCKED SYNC RESPONSE JSON: %@", (NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -206,6 +270,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to unblock the user response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock the user response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"Response USER_UNBLOCKED:%@",(NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -214,7 +290,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 #pragma mark - Mark message as read
 
 - (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey
-                              withCompletion:(void (^)(NSString *, NSError *))completion {
+                              withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion {
     
     NSString *messageReadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/read",KBASE_URL];
     NSString *messageReadParamString = [NSString stringWithFormat:@"key=%@",pairedMessageKey];
@@ -227,6 +303,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mark the registered users as response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark the registered users as response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALSLog(ALLoggerSeverityInfo, @"Response of mark message as read: %@", jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -275,8 +363,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:registeredUserRequest andTag:@"FETCH_REGISTERED_CONTACT_WITH_PAGE_SIZE" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"ERROR_IN_FETCH_CONTACT_WITH_PAGE_SIZE : %@", error);
+            completion(nil, error);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get Registered users response as nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get Registered users response as nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
             return;
         }
         
@@ -310,8 +409,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     [self.responseHandler authenticateAndProcessRequest:onlineUserRequest andTag:@"CONTACT_FETCH_WITH_LIMIT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR_IN_FETCH_CONTACT_WITH_PAGE_SIZE : %@", error);
             completion(nil, error);
-            ALSLog(ALLoggerSeverityError, @"ERROR_IN_CONTACT_FETCH_WITH_LIMIT : %@",error);
+            return;
+        }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the online users response as nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the online users response as nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
             return;
         }
         
@@ -333,8 +443,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                       WithCompletionHandler:^(id jsonResponse, NSError *error) {
             
             if (error) {
-                completionMark(nil, error);
                 ALSLog(ALLoggerSeverityError, @"ERROR_IN_USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT : %@", error);
+                completionMark(nil, error);
+                return;
+            }
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update user display response as nil" forKey:NSLocalizedDescriptionKey]];
+                completionMark(nil, nilResponseError);
                 return;
             }
             
@@ -374,10 +495,11 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"ERROR : RESETTING UNREAD COUNT :: %@",error.description);
+            completion(nil, error);
             return;
         }
+
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE RESETTING_UNREAD_COUNT :: %@",(NSString *)jsonResponse);
         completion((NSString *)jsonResponse, nil);
     }];
@@ -419,6 +541,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user display response as nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to update user display response as nil" forKey:NSLocalizedDescriptionKey]];
+            completionHandler(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
@@ -456,6 +590,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     [self.responseHandler authenticateAndProcessRequest:userUpdateRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)jsonResponse);
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update user response as nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to update user response as nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *reponseError =
@@ -475,7 +621,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 
 - (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)userDetailListFeed
                             withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark {
-    NSString *theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/v2/detail",KBASE_URL];
+    NSString *userDetailUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/v2/detail",KBASE_URL];
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:userDetailListFeed.dictionary options:0 error:&error];
@@ -483,7 +629,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     
     ALSLog(ALLoggerSeverityInfo, @"PARAM_POST_CALL : %@",userDetailParamString);
     
-    NSMutableURLRequest *userDetailRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:userDetailParamString];
+    NSMutableURLRequest *userDetailRequest = [ALRequestHandler createPOSTRequestWithUrlString:userDetailUrlString paramString:userDetailParamString];
     [self.responseHandler authenticateAndProcessRequest:userDetailRequest
                                                  andTag:@"USERS_DETAILS_POST"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
@@ -492,7 +638,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completionMark(nil, error);
             return;
         }
-        
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get user details got response as nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get user details got response as nil" forKey:NSLocalizedDescriptionKey]];
+            completionMark(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         NSMutableArray *userDetailArray = [NSMutableArray new];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
@@ -527,6 +684,17 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         ALAPIResponse *apiResponse = nil;
         if (!error) {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to update password got response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update password got response is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
             apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         }
         completion(apiResponse, error);
@@ -548,13 +716,24 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"Error in list of users api call : %@", error);
+            completion(nil, error);
             return;
         }
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_LIST_OF_USERS_WITH_NAME_JSON : %@",(NSString *)jsonResponse);
-        
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the users by name got response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the users by name got response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *alAPIResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)jsonResponse];
         completion(alAPIResponse, error);
     }];
@@ -571,13 +750,24 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
         if (error) {
-            completion(nil, error);
             ALSLog(ALLoggerSeverityError, @"Error in mute user list api  call : %@", error);
+            completion(nil, error);
             return;
         }
-        
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to get the muted users list got response is nil."];
+
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_MUTED_USER_LIST : %@",(NSString *)jsonResponse);
-        
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to get the muted users list got response is nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         completion(jsonResponse, error);
     }];
 }
@@ -598,6 +788,18 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to mute the user got response is nil."];
+
+        if (!jsonResponse) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute the user got response as nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         completion(response, nil);
     }];
@@ -632,16 +834,31 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         NSString *responseString = (NSString *)jsonResponse;
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
-        
+
+        [ALVerification verify:responseString != nil withErrorMessage:@"Failed to report the user got response as nil."];
+
+        if (!responseString) {
+            NSError *nilResponseError = [NSError
+                                         errorWithDomain:@"Applozic"
+                                         code:1
+                                         userInfo:[NSDictionary dictionaryWithObject:@"Failed to report the user got response as nil" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
         
         if (![apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            NSError *error = [NSError errorWithDomain:ApplozicDomain
-                                                 code:MessageKeyNotPresent
-                                             userInfo:@{NSLocalizedDescriptionKey : @"Failed to report message api error occurred"}];
-            completion(nil, error);
+
+            NSString *errorMessage = [apiResponse.errorResponse errorDescriptionMessage];
+            NSError *reponseError = [NSError errorWithDomain:ApplozicDomain code:1
+                                                    userInfo:[NSDictionary dictionaryWithObject:errorMessage == nil ? @"Failed to report message api error occurred.": errorMessage
+                                                                                         forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, reponseError);
             return;
         }
+
         completion(apiResponse, error);
     }];
 }

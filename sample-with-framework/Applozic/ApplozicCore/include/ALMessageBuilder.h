@@ -9,6 +9,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALMessageBuilder` is an object builder for sending a text or attachment message to the Applozic server.
 ///
 /// Sending an message in one-to-one chat:
@@ -37,20 +39,20 @@
 
 /// Sets the userId of the receiver to send a message in one-to-one chat.
 /// @warning This has to be nil in case of channel or group message.
-@property (nonatomic, copy) NSString *to;
+@property (nonatomic, copy) NSString * _Nullable to;
 
 /// Sets the message text.
-@property (nonatomic, copy) NSString *message;
+@property (nonatomic, copy) NSString * _Nullable message;
 
 /// Sets the content type of message list of content types can be found in `ALMessage` class static constants.
 @property(nonatomic) short contentType;
 
 /// Sets the channel key or groupId to send a message to the channel otherwise it will be nil.
 /// @warning This has to be nil in case of one-to-one message.
-@property (nonatomic, copy) NSNumber *groupId;
+@property (nonatomic, copy) NSNumber * _Nullable groupId;
 
 /// :nodoc:
-@property(nonatomic,copy) NSNumber *conversationId;
+@property(nonatomic,copy) NSNumber * _Nullable conversationId;
 
 /// Sets the extra information as metadata which will be in key-value Dictionary in each message that can be sent.
 ///
@@ -62,10 +64,12 @@
 /// [messageMetaData setValue:@"Bengaluru" forKey:@"city"];
 /// [messageMetaData setValue:@"India" forKey:@"country"];
 /// @endcode
-@property (nonatomic,retain) NSMutableDictionary *metadata;
+@property (nonatomic,retain) NSMutableDictionary * _Nullable metadata;
 
 /// Sets the name of the attachment file that you want to upload in chat.
 /// @note Make sure that the file exists in the document directory if the file does not exist make sure to save it and set it.
-@property (nonatomic, copy) NSString *imageFilePath;
+@property (nonatomic, copy) NSString * _Nullable imageFilePath;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -8,6 +8,8 @@
 
 #import "ALJson.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALUserDetailListFeed` request for fetching User detail.
 @interface ALUserDetailListFeed : ALJson
 
@@ -19,3 +21,5 @@
 - (void)setArray:(NSMutableArray *)array;
 
 @end
+
+NS_ASSUME_NONNULL_END

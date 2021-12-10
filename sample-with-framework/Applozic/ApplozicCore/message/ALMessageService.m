@@ -31,6 +31,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <objc/runtime.h>
 #include <tgmath.h>
+#import "ALVerification.h"
 
 @interface ALMessageService  ()<ApplozicAttachmentDelegate>
 
@@ -78,6 +79,8 @@ static ALMessageClientService *alMsgClientService;
             return;
         }
 
+        [ALVerification verify:messageList.messageList != nil withErrorMessage:@"Get Messages list is nil."];
+
         if (messageList.messageList.count == 0) {
             completion(messageList.messageList, nil);
             return;
@@ -85,7 +88,6 @@ static ALMessageClientService *alMsgClientService;
 
         [self getMessageListForUserIfLastIsHiddenMessageinMessageList:messageList
                                                        withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
-
             completion(messages, error);
         }];
     }];
@@ -154,7 +156,7 @@ static ALMessageClientService *alMsgClientService;
         return;
     }
 
-    if (!messageListRequest.userId && !messageListRequest.channelKey) {
+    if (!messageListRequest.userId && messageListRequest.channelKey == nil) {
         NSError *requestParametersError = [NSError errorWithDomain:@"Applozic"
                                                               code:1
                                                           userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];
@@ -244,8 +246,7 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
             if (userNotPresentIds.count>0) {
-                ALUserService *userService = [ALUserService new];
-                [userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+                [self.userService getUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
                     completion(messages, error, userDetailArray);
                 }];
             } else {
@@ -308,6 +309,15 @@ static ALMessageClientService *alMsgClientService;
         return;
     }
 
+    if (!message.to && message.groupId == nil) {
+        NSError *mesasgeToError = [NSError errorWithDomain:@"Applozic"
+                                                      code:MessageNotPresent
+                                                  userInfo:@{NSLocalizedDescriptionKey : @"The message object to and groupId are nil either one should exist to send a message."}];
+
+        completion(nil, mesasgeToError);
+        return;
+    }
+
     //DB insert if objectID is null
     DB_Message *dbMessage;
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
@@ -315,8 +325,7 @@ static ALMessageClientService *alMsgClientService;
 
     ALChannel *channel;
     if (message.groupId != nil) {
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        channel = [channelService getChannelByKey:message.groupId];
+        channel = [self.channelService getChannelByKey:message.groupId];
     }
 
     if (message.msgDBObjectId == nil) {
@@ -340,6 +349,18 @@ static ALMessageClientService *alMsgClientService;
 
         if (!error) {
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+
+            [ALVerification verify:apiResponse.response != nil withErrorMessage:@"Failed to send message API response is nil."];
+
+            if (!apiResponse.response) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to send message API response is nil." forKey:NSLocalizedDescriptionKey]];
+                completion(nil, nilResponseError);
+                return;
+            }
+
             ALSendMessageResponse *response = [[ALSendMessageResponse alloc] initWithJSONString:apiResponse.response];
 
             if (!response.isSuccess) {
@@ -353,7 +374,6 @@ static ALMessageClientService *alMsgClientService;
                     if (channel.type != OPEN || (dbMessage != nil && dbMessage.fileMetaInfo != nil)) {
                         message.msgDBObjectId = dbMessage.objectID;
                         [messageDBService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
-
                     }
                 } else {
                     message.msgDBObjectId = dbMessage.objectID;
@@ -363,7 +383,7 @@ static ALMessageClientService *alMsgClientService;
                 message.key = response.messageKey;
                 message.sentToServer = YES;
                 message.inProgress = NO;
-                message.isUploadFailed= NO;
+                message.isUploadFailed = NO;
                 message.status = [NSNumber numberWithInt:SENT];
             }
 
@@ -372,7 +392,7 @@ static ALMessageClientService *alMsgClientService;
             }
 
         } else {
-            ALSLog(ALLoggerSeverityError, @"Got error while sending message");
+            ALSLog(ALLoggerSeverityError, @"Got error while sending message: %@", error.localizedDescription);
         }
         completion(responseString,error);
     }];
@@ -383,7 +403,7 @@ static ALMessageClientService *alMsgClientService;
 
 + (void) getLatestMessageForUser:(NSString *)deviceKeyString
                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
-                  withCompletion:(void (^)( NSMutableArray *messages, NSError *error))completion {
+                  withCompletion:(void (^)(NSMutableArray *messages, NSError *error))completion {
     if (!alMsgClientService) {
         alMsgClientService = [[ALMessageClientService alloc] init];
     }
@@ -571,10 +591,10 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *response, NSError *error))completion {
 
-    if (!keyString) {
+    if (keyString.length == 0) {
         NSError *responseError = [NSError errorWithDomain:@"Applozic"
                                                      code:1
-                                                 userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
+                                                 userInfo:@{NSLocalizedDescriptionKey : @"Message key is empty"}];
         completion(nil, responseError);
         return;
     }
@@ -594,18 +614,32 @@ static ALMessageClientService *alMsgClientService;
     NSError *error = [databaseHandler saveContext];
     if (error) {
         ALSLog(ALLoggerSeverityInfo, @"Delete Flag Not Set");
+        completion(nil, error);
+        return;
     }
+
     ALSLog(ALLoggerSeverityInfo, @"Deleting message for key: %@",keyString);
 
     [self.messageClientService deleteMessage:keyString andContactId:contactId
                               withCompletion:^(NSString *response, NSError *error) {
-        if (!error) {
-            //none error then delete from DB.
-            if (!isUsedForReply) {
-                [messageDBService deleteMessageByKey:keyString];
-            }
+
+        if (error) {
+            completion(nil, error);
+            return;
         }
-        completion(response,error);
+
+        NSError *deleteError = nil;
+        //none error then delete from DB.
+        if (!isUsedForReply) {
+            deleteError = [messageDBService deleteMessageByKey:keyString];
+        }
+
+        if (deleteError) {
+            completion(nil, deleteError);
+            return;
+        }
+        completion(response, nil);
+
     }];
 
 }
@@ -614,7 +648,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *response, NSError *error))completion {
 
-    if (!contactId && !channelKey) {
+    if (!contactId && channelKey == nil) {
         NSError *responseError = [NSError errorWithDomain:@"Applozic"
                                                      code:1
                                                  userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];
@@ -624,18 +658,19 @@ static ALMessageClientService *alMsgClientService;
 
     [self.messageClientService deleteMessageThread:contactId orChannelKey:channelKey withCompletion:^(NSString *response, NSError *error) {
 
-        if (!error) {
-            //delete sucessfull
-            ALSLog(ALLoggerSeverityInfo, @"Sucessfully deleted the message thread");
-            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-            [messageDBService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
-
-            if (channelKey != nil) {
-                [self.channelService setUnreadCountZeroForGroupID:channelKey];
-            } else {
-                [self.userService setUnreadCountZeroForContactId:contactId];
-            }
+        if (error) {
+            completion(nil, error);
+            return;
         }
+
+        //delete sucessfull
+        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+        NSError *deleteThreadError = [messageDBService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+        if (deleteThreadError) {
+            completion(nil, deleteThreadError);
+            return;
+        }
+        ALSLog(ALLoggerSeverityInfo, @"Sucessfully deleted the message thread");
         completion(response, error);
     }];
 }
@@ -737,7 +772,7 @@ static ALMessageClientService *alMsgClientService;
     }
 }
 
-+ (ALMessage*)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value {
++ (ALMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString *)value {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:key value:value];
     return [messageDBService createMessageEntity:dbMessage];
@@ -748,10 +783,10 @@ static ALMessageClientService *alMsgClientService;
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
                       withCompletionHandler:(void(^)(ALMessageInfoResponse *messageInfoResponse, NSError *error))completion {
 
-    if (!messageKey) {
+    if (messageKey.length == 0) {
         NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
                                                        code:MessageNotPresent
-                                                   userInfo:@{NSLocalizedDescriptionKey : @"Message key passed is nil"}];
+                                                   userInfo:@{NSLocalizedDescriptionKey : @"Message key passed is empty"}];
         completion(nil, messageKeyError);
         return;
     }
@@ -1007,7 +1042,8 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Get Message by key
 
 - (ALMessage *)getMessageByKey:(NSString *)messageKey {
-    if (!messageKey) {
+
+    if (messageKey.length == 0) {
         return nil;
     }
 
@@ -1049,7 +1085,7 @@ static ALMessageClientService *alMsgClientService;
                       withMetadata:(NSMutableDictionary *)metadata
                     withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
 
-    if (!messageKey || !metadata) {
+    if (messageKey.length == 0 || !metadata) {
         NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
                                                        code:MessageNotPresent
                                                    userInfo:@{NSLocalizedDescriptionKey : @"Message key or meta data passed is nil"}];
@@ -1066,18 +1102,22 @@ static ALMessageClientService *alMsgClientService;
         }
 
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
-        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-            [messageDBService updateMessageMetadataOfKey:messageKey withMetadata:metadata];
-            completion(response, nil);
-            return;
-        } else {
-            NSError *apiError = [NSError errorWithDomain:@"Applozic"
-                                                    code:MessageNotPresent
-                                                userInfo:@{NSLocalizedDescriptionKey : @"Failed to update message meta data due to api error"}];
-            completion(nil, apiError);
+
+        if ([response.status isEqualToString:AL_RESPONSE_ERROR]) {
+
+            NSString *errorMessage = [response.errorResponse errorDescriptionMessage];
+
+            NSError *updateMetadataError = [NSError errorWithDomain:@"Applozic" code:1
+                                                           userInfo:[NSDictionary dictionaryWithObject: errorMessage == nil ? @"Failed to update message meta data due to api error.": errorMessage
+
+                                                                                                forKey:NSLocalizedDescriptionKey]];
+
+            completion(nil, updateMetadataError);
             return;
         }
+        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+        [messageDBService updateMessageMetadataOfKey:messageKey withMetadata:metadata];
+        completion(response, nil);
     }];
 }
 
@@ -1144,7 +1184,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
-    if (!keyString) {
+    if (keyString.length == 0) {
         NSError *messageKeyNilError = [NSError errorWithDomain:@"Applozic"
                                                           code:1
                                                       userInfo:@{NSLocalizedDescriptionKey : @"Passed message key is nil"}];
@@ -1153,6 +1193,7 @@ static ALMessageClientService *alMsgClientService;
     }
 
     [self.messageClientService deleteMessageForAllWithKey:keyString withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+
         completion(apiResponse, error);
     }];
 }
@@ -1160,7 +1201,6 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Total unread message count
 
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion {
-    ALUserService *userService = [[ALUserService alloc] init];
     if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService getLatestMessages:NO
@@ -1169,11 +1209,11 @@ static ALMessageClientService *alMsgClientService;
                 completion(0, error);
                 return;
             }
-            NSNumber *totalUnreadCount = [userService getTotalUnreadCount];
+            NSNumber *totalUnreadCount = [self.userService getTotalUnreadCount];
             completion(totalUnreadCount.integerValue, nil);
         }];
     } else {
-        NSNumber *totalUnreadCount = [userService getTotalUnreadCount];
+        NSNumber *totalUnreadCount = [self.userService getTotalUnreadCount];
         completion(totalUnreadCount.integerValue, nil);
     }
 }
@@ -1190,13 +1230,12 @@ static ALMessageClientService *alMsgClientService;
         }
         NSUInteger unreadCount = 0;
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
         ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         
         for (ALMessage *message in messages) {
             if (message.groupId &&
                 message.groupId.integerValue != 0) {
-                ALChannel *channel = [channelService getChannelByKey:message.groupId];
+                ALChannel *channel = [self.channelService getChannelByKey:message.groupId];
                 if (channel && channel.unreadCount.integerValue > 0) {
                     unreadCount += 1;
                 }

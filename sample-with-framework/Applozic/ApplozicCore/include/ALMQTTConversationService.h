@@ -13,6 +13,8 @@
 #import "MQTTClient.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Notification name for channel mute or unmuted.
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
 
@@ -28,14 +30,14 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 ///
 /// @param message This will have `ALMessage` object on new message received
 /// @param messageArray This will be nil
-- (void)syncCall:(ALMessage *)message andMessageList:(NSMutableArray *)messageArray;
+- (void)syncCall:(ALMessage *)message andMessageList:(NSMutableArray * _Nullable)messageArray;
 
 /// The callback will be called on message is delivered to the receiver.
 ///
 /// @param messageKey Will have messageKey for delivered status
 /// @param contactId UserId of the user message delivered to.
 /// @param status Status are `DELIVERED` or `DELIVERED_AND_READ`.
-- (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
+- (void)delivered:(NSString *)messageKey contactId:(NSString * _Nullable)contactId withStatus:(int)status;
 
 /// The callback will be called on the receiver to read the all messages in the conversation.
 ///
@@ -48,12 +50,12 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// @param applicationKey App-ID of Applozic.
 /// @param userId Will have user's userId who is typing.
 /// @param status If the status flag is YES or true then the user started typing, if the status is NO or false then the user stops typing
-- (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
+- (void)updateTypingStatus:(NSString *)applicationKey userId:(NSString *)userId status:(BOOL)status;
 
 /// The callback will be called on the user's online or offline update.
 ///
-/// @param alUserDetail Will have `ALUserDetail` object of user.
-- (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
+/// @param userDetail Will have `ALUserDetail` object of user.
+- (void)updateLastSeenAtStatus:(ALUserDetail *)userDetail;
 
 /// The callback will be called on MQTT disconnected you can resubscribe to the conversation.
 - (void)mqttConnectionClosed;
@@ -117,15 +119,18 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// @param userId Pass the receiver userId of the user.
 /// @param channelKey Pass the channelKey of `ALChannel`.
 /// @param typing If the logged user is typing pass YES or true in typing else on stop of user typing pass NO or false to stop the typing.
-- (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing;
+- (void)sendTypingStatus:(NSString * _Nullable)applicationKey
+                  userID:(NSString * _Nullable)userId
+           andChannelKey:(NSNumber * _Nullable)channelKey
+                  typing:(BOOL)typing;
 
 /// Unsubscribe to typing status of channel conversation.
 /// @param channelKey Pass the channelKey of `ALChannel`.
-- (void)unSubscribeToChannelConversation:(NSNumber *)channelKey;
+- (void)unSubscribeToChannelConversation:(NSNumber * _Nullable)channelKey;
 
 /// Subscribes to typing status for given channel key.
 /// @param channelKey Pass the channelKey of `ALChannel`.
-- (void)subscribeToChannelConversation:(NSNumber *)channelKey;
+- (void)subscribeToChannelConversation:(NSNumber * _Nullable)channelKey;
 
 /// Subscribes to Open Channel for real-time update events.
 /// @param channelKey Pass the channelKey of `ALChannel`.
@@ -143,7 +148,7 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// Used for subscribe to conversation with topic.
 /// @param topic Pass the name of topic to subscribe.
 /// @param completion completion YES in case of subscribed otherwise NO with an error.
-- (void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError *error))completion;
+- (void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError * _Nullable error))completion;
 
 /// For publishing a read status of the message using MQTT.
 /// @param messageKey Pass the message key which is used for identifying the message.
@@ -154,3 +159,5 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 /// @param topic Pass the topic name to publish on.
 - (BOOL)publishCustomData:(NSString *)dataString withTopicName:(NSString *)topic;
 @end
+
+NS_ASSUME_NONNULL_END

@@ -38,7 +38,7 @@
     ALSLog(ALLoggerSeverityInfo, @"MESSAGES_DICT_COUNT :: %lu",(unsigned long)messagesDictionary.count);
     if (messagesDictionary.count == 0 &&
         !self.userId &&
-        !self.groupId) {
+        self.groupId == nil) {
         ALSLog(ALLoggerSeverityInfo, @"NO_MORE_MESSAGES");
         [ALUserDefaultsHandler setFlagForAllConversationFetched: YES];
     }

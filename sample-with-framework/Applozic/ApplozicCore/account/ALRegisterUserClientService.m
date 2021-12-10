@@ -20,6 +20,7 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALUserService.h"
 #import "ALUtilityClass.h"
+#import "ALVerification.h"
 
 NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
@@ -63,6 +64,16 @@ static short AL_VERSION_CODE = 112;
     } else { // For backward compatibility
         [ALUserDefaultsHandler setApplicationKey: user.applicationId];
     }
+
+    if (user.applicationId.length == 0) {
+        NSError *error = [NSError errorWithDomain:@"Applozic"
+                                             code:1
+                                         userInfo:@{NSLocalizedDescriptionKey : @"Failed to login the user App-Id is nil."}];
+
+        completion(nil, error);
+        return;
+    }
+
     [user setEmailVerified:true];
     [user setDeviceType:4];
     [user setAppVersionCode:AL_VERSION_CODE];
@@ -103,14 +114,26 @@ static short AL_VERSION_CODE = 112;
     
     [self.responseHandler processRequest:loginUserRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         
-        NSString *loginAPIResponseJSON = (NSString *)jsonResponse;
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
-        
         if (error) {
             completion(nil, error);
             return;
         }
-        
+
+        NSString *loginAPIResponseJSON = (NSString *)jsonResponse;
+
+        [ALVerification verify:loginAPIResponseJSON != nil withErrorMessage:@"Registration response object for login is nil."];
+
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", loginAPIResponseJSON);
+
+        if (!loginAPIResponseJSON) {
+            NSError *nilResponseError = [NSError errorWithDomain:@"Applozic"
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey : @"Failed to login registration response object is nil."}];
+
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:loginAPIResponseJSON];
         
         // Only save the UserDefaults for successful register.
@@ -177,13 +200,22 @@ static short AL_VERSION_CODE = 112;
                 [contactDBService addContactInDatabase:contact];
                 
             } @catch (NSException *exception) {
-                ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
+
+                NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in login: %@", exception.reason];
+
+                NSError *exceptionError = [NSError errorWithDomain:@"Applozic"
+                                                              code:1
+                                                          userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+
+                [ALVerification verificationFailure:exceptionError];
+                completion(nil, exceptionError);
+                return;
             }
 
             completion(response, nil);
             
-            ALUserService * alUserService = [ALUserService new];
-            [alUserService getMutedUserListWithDelegate:nil withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+            ALUserService *userService = [ALUserService new];
+            [userService getMutedUserListWithDelegate:nil withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
                 
             }];
         } else {
@@ -380,6 +412,18 @@ static short AL_VERSION_CODE = 112;
             completion(nil, error);
             return;
         }
+
+        [ALVerification verify:updateUserAPIResponse != nil withErrorMessage:@"Register update user response object is nil."];
+
+        if (!updateUserAPIResponse) {
+            NSError *nilResponseError = [NSError errorWithDomain:@"Applozic"
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey : @"Failed to register update user response object is nil."}];
+
+            completion(nil, nilResponseError);
+            return;
+        }
+
         ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:updateUserAPIResponse];
         
         if (response && response.isRegisteredSuccessfully) {
@@ -436,25 +480,29 @@ static short AL_VERSION_CODE = 112;
     
     [self.responseHandler authenticateAndProcessRequest:logoutRequest andTag:@"USER_LOGOUT"
                                   WithCompletionHandler:^(id jsonResponse, NSError *error) {
-        
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)jsonResponse);
-        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
-        
+
+        if (error) {
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Logout response is nil."];
+        }
+
         NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
         BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation:userKey];
         ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
-        
+
         [ALUserDefaultsHandler clearAll];
         [ALApplozicSettings clearAll];
-        
+
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService deleteAllObjectsInCoreData];
-        
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
             [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+            completion(nil, error);
+        } else {
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)jsonResponse);
+            ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
+            completion(response, error);
         }
-        completion(response, error);
     }];
 }
 
@@ -471,7 +519,7 @@ static short AL_VERSION_CODE = 112;
         return NO;
     } else if ([previousVersion isEqualToString:currentAppVersion]) {
         return NO;
-    } else {        
+    } else {
         [ALRegisterUserClientService sendServerRequestForAppUpdate];
         [userDefaults setObject:currentAppVersion forKey:@"appVersion"];
         [userDefaults synchronize];
@@ -489,7 +537,8 @@ static short AL_VERSION_CODE = 112;
     ALResponseHandler *responseHandler = [[ALResponseHandler alloc] init];
     [responseHandler authenticateAndProcessRequest:appUpdateRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id jsonResponse, NSError *error) {
         if (error) {
-            ALSLog(ALLoggerSeverityError, @"error:%@",error);
+            ALSLog(ALLoggerSeverityError, @"Update version error:%@",error);
+            return;
         }
         ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",jsonResponse);
     }];

@@ -10,6 +10,7 @@
 #import "ALLogger.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
+#import "ALVerification.h"
 
 static NSString *const CREATE_CONVERSATION_URL = @"/rest/ws/conversation/id";
 static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topicId";
@@ -48,6 +49,18 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CONVERSATION %@", error);
         } else {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to create conversation the response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to create conversation the response is nil." forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             ALSLog(ALLoggerSeverityInfo, @"SEVER RESPONSE FROM JSON CREATE_CONVERSATION : %@", jsonResponse);
             response = [[ALConversationCreateResponse alloc] initWithJSONString:jsonResponse];
         }
@@ -69,6 +82,18 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN FETCH_TOPIC_DETAILS SERVER CALL REQUEST %@", error);
         } else {
+
+            [ALVerification verify:jsonResponse != nil withErrorMessage:@"Failed to fetch the topic details the response is nil."];
+
+            if (!jsonResponse) {
+                NSError *nilResponseError = [NSError
+                                             errorWithDomain:@"Applozic"
+                                             code:1
+                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to fetch the topic details the response is nil." forKey:NSLocalizedDescriptionKey]];
+                completion(nilResponseError, nil);
+                return;
+            }
+
             response = [[ALAPIResponse alloc] initWithJSONString:jsonResponse];
         }
         completion(error, response);

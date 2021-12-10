@@ -8,6 +8,8 @@
 
 #import "ALJson.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALChannelUser` this class is used for creating channel members with the role during channel creation.
 @interface ALChannelUser : ALJson
 
@@ -17,16 +19,18 @@
 /// ADMIN = 1,
 /// MODERATOR = 2,
 /// MEMBER = 3
-@property (nonatomic, strong) NSNumber *role;
+@property (nonatomic, strong) NSNumber * _Nullable role;
 
 /// Sets the member userId.
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString * _Nullable userId;
 
 /// Parent group key is the parent channel key.
-@property (nonatomic, strong) NSNumber *parentGroupKey;
+@property (nonatomic, strong) NSNumber * _Nullable parentGroupKey;
 
 /// Passing the JSON Dictionary.
 /// @param messageDictonary Pass the JSON Dictionary.
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -10,6 +10,8 @@
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// For internal use only.
 static NSString *const AL_CHANNEL_DEFAULT_MUTE = @"MUTE";
 /// For internal use only.
@@ -77,55 +79,55 @@ typedef enum {
 /// Client channel key is Identifier of Channel.
 ///
 /// If the client channel key is set during channel creation it will have its channel client key otherwise it will be a string of `key`.
-@property (nonatomic, strong) NSString *clientChannelKey;
+@property (nonatomic, strong) NSString * _Nullable clientChannelKey;
 
 /// Channel name.
 @property (nonatomic, strong) NSString *name;
 
 /// Channel image URL.
-@property (nonatomic, strong) NSString *channelImageURL;
+@property (nonatomic, strong) NSString * _Nullable channelImageURL;
 
 /// Admin of the channel.
-@property (nonatomic, strong) NSString *adminKey;
+@property (nonatomic, strong) NSString * _Nullable adminKey;
 
 /// Used for identifying the type of channel the types are `CHANNEL_TYPE`.
 @property (nonatomic) short type;
 
 /// Total number of users in channel.
-@property (nonatomic, strong) NSNumber *userCount;
+@property (nonatomic, strong) NSNumber * _Nullable userCount;
 
 /// Total unread count in channel.
-@property (nonatomic, strong) NSNumber *unreadCount;
+@property (nonatomic, strong) NSNumber * _Nullable unreadCount;
 
 /// For internal use only.
-@property (nonatomic, strong) NSMutableArray *membersName;
+@property (nonatomic, strong) NSMutableArray * _Nullable membersName;
 
 /// For internal use only.
-@property (nonatomic, strong) NSMutableArray *membersId;
+@property (nonatomic, strong) NSMutableArray * _Nullable membersId;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableArray *removeMembers;
+@property (nonatomic, strong) NSMutableArray * _Nullable removeMembers;
 
 /// :nodoc:
-@property (nonatomic, strong) NSNumber *parentKey;
+@property (nonatomic, strong) NSNumber * _Nullable parentKey;
 
 /// :nodoc:
-@property (nonatomic, strong) NSString *parentClientKey;
+@property (nonatomic, strong) NSString * _Nullable parentClientKey;
 
 /// For internal use only.
-@property (nonatomic, strong) NSMutableArray *groupUsers;
+@property (nonatomic, strong) NSMutableArray * _Nullable groupUsers;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableArray *childKeys;
+@property (nonatomic, strong) NSMutableArray * _Nullable childKeys;
 
 /// To know when the channel is muted or unmuted it will have time in milliseconds otherwise nil.
-@property (nonatomic, strong) NSNumber *notificationAfterTime;
+@property (nonatomic, strong) NSNumber * _Nullable notificationAfterTime;
 
 /// If channel is deleted it will be > 0 otherwise nil or 0.
-@property (nonatomic, strong) NSNumber *deletedAtTime;
+@property (nonatomic, strong) NSNumber * _Nullable deletedAtTime;
 
 /// Extra information in channel metadata.
-@property (nonatomic, strong) NSMutableDictionary *metadata;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable metadata;
 
 /// For internal use only.
 ///
@@ -136,7 +138,7 @@ typedef enum {
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 /// :nodoc:
-- (NSNumber *)getChannelMemberParentKey:(NSString *)userId;
+- (NSNumber * _Nullable)getChannelMemberParentKey:(NSString *)userId;
 
 /// Returns YES in case of notification are muted for current channel otherwise NO.
 - (BOOL)isNotificationMuted;
@@ -160,10 +162,10 @@ typedef enum {
 - (BOOL)isDeleted;
 
 /// Returns receiver member userId of group of two.
-- (NSString *)getReceiverIdInGroupOfTwo;
+- (NSString * _Nullable)getReceiverIdInGroupOfTwo;
 
 /// For internal use only.
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString;
+- (NSMutableDictionary * _Nullable)getMetaDataDictionary:(NSString *)jsonString;
 
 /// Returns YES in case of the channel is part of a given category otherwise NO.
 - (BOOL)isPartOfCategory:(NSString *)category;
@@ -178,3 +180,5 @@ typedef enum {
 @property (nonatomic, strong) ALConversationProxy *conversationProxy DEPRECATED_ATTRIBUTE;
 
 @end
+
+NS_ASSUME_NONNULL_END

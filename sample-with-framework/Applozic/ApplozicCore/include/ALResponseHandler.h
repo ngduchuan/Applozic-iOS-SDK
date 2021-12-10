@@ -8,6 +8,8 @@
 #import "ALAuthService.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALResponseHandler`used for handling the URL request for calling the server for all the APIs.
 ///
 /// Has methods for processing requests, JWT authenticates a request before processing.
@@ -22,8 +24,8 @@
 /// @param reponseCompletion An complete JSON response otherwise an error describing the request failure.
 /// @note Internal API request method don't need to call from outside.
 - (void)processRequest:(NSMutableURLRequest *)request
-        andTag:(NSString *)tag
- WithCompletionHandler:(void(^)(id jsonResponse , NSError *error))reponseCompletion;
+                andTag:(NSString *)tag
+ WithCompletionHandler:(void(^)(id _Nullable jsonResponse , NSError  * _Nullable error))reponseCompletion;
 
 /// Authenticate to Applozic sever by JWT token validation and proccess the request for API call.
 /// @param request Create a URLRequest using `ALRequestHandler`.
@@ -31,14 +33,16 @@
 /// @param completion An complete JSON response otherwise an error describing the Authenticate failure.
 /// @note Internal API request method don't need to call from outside.
 - (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
-                andTag:(NSString *)tag
-        WithCompletionHandler:(void (^)(id, NSError *))completion;
+                               andTag:(NSString *)tag
+                WithCompletionHandler:(void (^)(id _Nullable jsonResponse, NSError  * _Nullable error))completion;
 
 /// Authenticate to Applozic sever for JWT token and will have the mutable URL request updated with JWT Token for calling the Applozic sever.
 /// @param request Create a URLRequest using `ALRequestHandler`.
 /// @param completion Will have `NSMutableURLRequest` if success in generating JWT token otherwise an error describing the Authenticate failure.
 /// @note Internal API request method don't need to call from outside.
 - (void)authenticateRequest:(NSMutableURLRequest *)request
-       WithCompletion:(void (^)(NSMutableURLRequest *urlRequest, NSError *error))completion;
+             WithCompletion:(void (^)(NSMutableURLRequest * _Nullable urlRequest, NSError * _Nullable error))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

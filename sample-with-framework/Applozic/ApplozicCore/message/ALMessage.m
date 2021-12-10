@@ -411,7 +411,7 @@ static NSString * const AL_TRUE = @"true";
             _imageFilePath = builder.imageFilePath.lastPathComponent;
             _fileMeta = [self getFileMetaInfo];
             //File Meta Creation
-            _fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", builder.imageFilePath];
+            _fileMeta.name = [NSString stringWithFormat:@"Attachment-5-%@", builder.imageFilePath];
             if (builder.to) {
                 _fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",builder.to, builder.imageFilePath];
             }

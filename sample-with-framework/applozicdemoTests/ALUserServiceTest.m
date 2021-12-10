@@ -59,7 +59,7 @@
 
 
 - (void)test_whenMarkConversationIsSuccessful_thatErrorIsNotPresent {
-    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:(@"success", [OCMArg defaultValue], nil)]);
+    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:([OCMArg invokeBlockWithArgs:@"success", [OCMArg defaultValue], nil])]);
     
     OCMStub([contactDataBaseMock markConversationAsDeliveredAndRead:@"userId"]).andReturn(5);
     
@@ -75,7 +75,7 @@
 
 - (void)test_whenMarkConversationIsUnsuccessful_thatErrorIsPresent {
     
-    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:([OCMArg defaultValue], testError, nil)]);
+    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:([OCMArg invokeBlockWithArgs:[OCMArg defaultValue], testError, nil])]);
     
     OCMStub([contactDataBaseMock markConversationAsDeliveredAndRead:@"userId"]).andReturn(5);
     
@@ -285,7 +285,7 @@
     }];
 }
 
-- (void)test_muteUserIsSuccessful_thatErrorIsNotPresent {
+- (void)test_muteUserIsUnsuccessful_thatDBErrorPresent {
     ALMuteRequest *alMuteRequest = [ALMuteRequest new];
     alMuteRequest.userId = @"userId";
     long currentTimeStemp = [[NSNumber numberWithLong:([[NSDate date] timeIntervalSince1970]*1000)] longValue];
@@ -302,8 +302,8 @@
                                               nil])]);
     [userService muteUser:alMuteRequest
            withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(apiResponse);
+        XCTAssertNotNil(error);
+        XCTAssertNil(apiResponse);
     }];
 }
 

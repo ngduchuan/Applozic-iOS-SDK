@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 @interface ALConnectionQueueHandler : NSObject
 
-@property (nonatomic,retain) NSMutableArray *mConnectionsArray;
+@property (nonatomic,retain) NSMutableArray * _Nullable mConnectionsArray;
 
 + (ALConnectionQueueHandler *)sharedConnectionQueueHandler;
 
-- (NSMutableArray *)getCurrentConnectionQueue;
+- (NSMutableArray *_Nullable)getCurrentConnectionQueue;
 
 @end
+NS_ASSUME_NONNULL_END

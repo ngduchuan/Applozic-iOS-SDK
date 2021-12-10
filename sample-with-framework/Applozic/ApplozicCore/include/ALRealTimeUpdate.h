@@ -11,6 +11,8 @@
 #import "ALUserDetail.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ApplozicUpdatesDelegate` protocol is used for real-time callback events for the message, channel, user, and typing.
 ///
 /// The `ApplozicUpdatesDelegate` is set only from `-[ApplozicClient initWithApplicationKey:withDelegate:]` method for update events.
@@ -38,18 +40,18 @@
 
 /// The callback will be called on the message is read and delivered to the receiver user.
 /// @param updatedMessage An `ALMessage` object which has `status` that are `DELIVERED` or `DELIVERED_AND_READ`.
-/// @param userId An receiver userId which is delivered and read of a message.
-- (void)onMessageDeliveredAndRead:(ALMessage *)updatedMessage withUserId:(NSString *)userId;
+/// @param userId An receiver userId which is delivered and read of a message for one-to-one chat.
+- (void)onMessageDeliveredAndRead:(ALMessage *)updatedMessage withUserId:(NSString * _Nullable)userId;
 
 /// The callback will be called on the conversation is deleted for one-to-one or channel.
 /// @param userId If the conversation is deleted for the receiver user the userId non nil otherwise nil.
 /// @param groupId If the conversation is deleted for the channel the channel key will be non nil otherwise nil.
-- (void)onConversationDelete:(NSString *)userId withGroupId:(NSNumber *)groupId;
+- (void)onConversationDelete:(NSString * _Nullable)userId withGroupId:(NSNumber * _Nullable)groupId;
 
 /// The callback will be called on the conversation read by the same user logged in on different devices or platforms.
 /// @param userId If the conversation is read for the user then userId will be non nil otherwise nil.
 /// @param groupId If conversation raad for channel or group then channel key will be non nil otherwise nil.
-- (void)conversationReadByCurrentUser:(NSString *)userId withGroupId:(NSNumber *)groupId;
+- (void)conversationReadByCurrentUser:(NSString * _Nullable)userId withGroupId:(NSNumber * _Nullable)groupId;
 
 /// The callback will be called on typing status update.
 /// @param userId It will have receiver userId typing started or stoped..
@@ -93,3 +95,5 @@
 @interface ALRealTimeUpdate : NSObject
 
 @end
+
+NS_ASSUME_NONNULL_END

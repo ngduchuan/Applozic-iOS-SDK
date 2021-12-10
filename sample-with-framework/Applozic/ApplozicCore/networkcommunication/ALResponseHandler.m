@@ -10,6 +10,7 @@
 #import "ALResponseHandler.h"
 #import "ALUserDefaultsHandler.h"
 #import "NSData+AES.h"
+#import "ALVerification.h"
 
 @implementation ALResponseHandler
 
@@ -40,14 +41,14 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             ALSLog(ALLoggerSeverityError, @"Authentication error: HTTP 401 : ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code,  failingURL);
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:@"Authentication error: 401"]);
+                reponseCompletion(nil, [self errorWithDescription:@"Authentication error: 401"]);
             });
             return;
         } else if (connectionError.code == kCFURLErrorNotConnectedToInternet) {
             NSString *failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
             ALSLog(ALLoggerSeverityError, @"NO INTERNET CONNECTIVITY, ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code, failingURL);
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:@"No Internet connectivity"]);
+                reponseCompletion(nil, [self errorWithDescription:@"No Internet connectivity"]);
             });
             return;
         } else if (connectionError) {
@@ -59,19 +60,20 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         }
 
         if (httpURLResponse.statusCode != 200 && httpURLResponse.statusCode != 201) {
+
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            ALSLog(ALLoggerSeverityError, @"api error : %@ - %@",tag,errorString);
+            ALSLog(ALLoggerSeverityError, @"API request failed with status code: %ld response:%@",(long)httpURLResponse.statusCode, errorString);
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
             });
             return;
         }
 
         if (data == nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, [self errorWithDescription:@"API Response body is empty"]);
             });
-            ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+            ALSLog(ALLoggerSeverityError, @"API Response body is empty for TAG :%@", tag);
             return;
         }
 
@@ -89,9 +91,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
             if (decryptedData == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                    reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
                 });
-                ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+                ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data for TAG : %@", tag);
                 return;
             }
 
@@ -103,9 +105,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                    reponseCompletion(nil, [self errorWithDescription:message_SomethingWentWrong]);
                 });
-                ALSLog(ALLoggerSeverityError, @"api error - %@",tag);
+                ALSLog(ALLoggerSeverityError, @"API Response body failed to decrypt the data is empty for TAG : %@", tag);
                 return;
             }
         }
@@ -118,7 +120,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
              it should be proper jason response with errocodes.
              We need to remove this check once fix will be done in server.*/
 
-            NSError *error = [self checkForServerError:jsonResponse];
+            NSError *error = [self checkForServerError:jsonResponse withRequestURL:request.URL.absoluteString];
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     reponseCompletion(nil, error);
@@ -133,7 +135,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             if (jsonError) {
                 NSMutableString *responseString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 //CHECK HTML TAG FOR ERROR
-                NSError *error = [self checkForServerError:responseString];
+                NSError *error = [self checkForServerError:jsonResponse withRequestURL:request.URL.absoluteString];
                 if (error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         reponseCompletion(nil, error);
@@ -141,7 +143,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                     return;
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        reponseCompletion(responseString,nil);
+                        reponseCompletion(responseString, nil);
                     });
                     return;
                 }
@@ -157,7 +159,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
 - (void)authenticateAndProcessRequest:(NSMutableURLRequest *)request
                                andTag:(NSString *)tag
-                WithCompletionHandler:(void (^)(id, NSError *))completion {
+                WithCompletionHandler:(void (^)(id jsonResponse, NSError *error))completion {
 
     [self authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
         if (error) {
@@ -194,12 +196,19 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
 }
 
-- (NSError *)checkForServerError:(NSString *)response {
-    if ([response hasPrefix:@"<html>"] || [response isEqualToString:[@"error" uppercaseString]]) {
+- (NSError *)checkForServerError:(NSString *)response withRequestURL:(NSString *)url {
+
+    BOOL hasHTMLPrefixInResponse = [response hasPrefix:@"<html>"];
+
+    [ALVerification
+     verify:!hasHTMLPrefixInResponse
+     withErrorMessage:[[NSString alloc] initWithFormat:@"Failed request the response as HTML prefix in it for request URL :%@", url]];
+
+    if (hasHTMLPrefixInResponse || [response isEqualToString:[@"error" uppercaseString]]) {
         NSError *error = [NSError errorWithDomain:@"Internal Error" code:500 userInfo:nil];
         return error;
     }
-    return NULL;
+    return nil;
 }
 
 @end

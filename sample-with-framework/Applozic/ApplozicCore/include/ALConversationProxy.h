@@ -11,35 +11,36 @@
 #import "DB_ConversationProxy.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /// `ALConversationProxy` class is used parsing JSON response of context based chat.
 @interface ALConversationProxy : ALJson
 
 /// Sets the conversation id.
-@property (nonatomic, strong) NSNumber *Id;
+@property (nonatomic, strong) NSNumber * _Nullable Id;
 
 /// Sets the topicId.
-@property (nonatomic, strong) NSString *topicId;
+@property (nonatomic, strong) NSString * _Nullable topicId;
 
 /// Topic detail json string.
-@property (nonatomic, strong) NSString *topicDetailJson;
+@property (nonatomic, strong) NSString * _Nullable topicDetailJson;
 
 /// Sets the groupId of conversation.
-@property (nonatomic, strong) NSNumber *groupId;
+@property (nonatomic, strong) NSNumber * _Nullable groupId;
 
 /// Sets the userId for the conversation for topic.
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString * _Nullable userId;
 
 /// :nodoc:
-@property (nonatomic, strong) NSArray *supportIds;
+@property (nonatomic, strong) NSArray * _Nullable supportIds;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableArray *fallBackTemplatesListArray;
+@property (nonatomic, strong) NSMutableArray * _Nullable fallBackTemplatesListArray;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForSENDER;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable fallBackTemplateForSENDER;
 
 /// :nodoc:
-@property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForRECEIVER;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable fallBackTemplateForRECEIVER;
 
 /// :nodoc:
 @property (nonatomic) BOOL created;
@@ -52,7 +53,7 @@
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 /// Returns the topic detail.
-- (ALTopicDetail *)getTopicDetail;
+- (ALTopicDetail * _Nullable)getTopicDetail;
 
 /// Gets the dictionary from `ALConversationProxy`.
 /// @param conversationProxy Pass the `ALConversationProxy` object.
@@ -65,3 +66,5 @@
 - (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 
 @end
+
+NS_ASSUME_NONNULL_END

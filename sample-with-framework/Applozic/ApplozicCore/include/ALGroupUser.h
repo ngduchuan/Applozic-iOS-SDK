@@ -8,6 +8,9 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALGroupUser` is used for creating channel members with the role during channel creation.
 @interface ALGroupUser : ALJson
 
@@ -29,3 +32,5 @@
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 @end
+
+NS_ASSUME_NONNULL_END

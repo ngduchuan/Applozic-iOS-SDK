@@ -15,9 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ALVideoUploadManager : NSObject <NSURLSessionDataDelegate>
 
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate> _Nullable attachmentProgressDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable delegate;
 
 @property (nonatomic, strong) ALUploadTask *uploadTask;
 @property (nonatomic, strong) ALMessageDBService *messageDatabaseService;

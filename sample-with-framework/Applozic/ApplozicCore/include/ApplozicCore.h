@@ -50,6 +50,7 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALDataNetworkConnection.h"
 #import "ALDBHandler.h"
 #import "ALDownloadTask.h"
+#import "ALErrorResponse.h"
 #import "ALFileMetaInfo.h"
 #import "ALGroupUser.h"
 #import "ALHTTPManager.h"

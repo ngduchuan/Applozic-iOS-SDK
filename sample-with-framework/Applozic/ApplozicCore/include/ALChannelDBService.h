@@ -19,7 +19,7 @@
 
 @interface ALChannelDBService : NSObject
 
-- (void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
+- (NSError *)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
 
 - (void)insertChannel:(NSMutableArray *)channelList;
 
@@ -39,20 +39,20 @@
 
 - (ALChannel *)checkChannelEntity:(NSNumber *)channelKey;
 
-- (void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
+- (NSError *)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
 
-- (void)deleteChannel:(NSNumber *)channelKey;
+- (NSError *)deleteChannel:(NSNumber *)channelKey;
 
 - (NSMutableArray *)getAllChannelKeyAndName;
 
-- (void)updateChannel:(NSNumber *)channelKey
-           andNewName:(NSString *)newName
-           orImageURL:(NSString *)imageURL
-          orChildKeys:(NSMutableArray *)childKeysList
-   isUpdatingMetaData:(BOOL)flag
-       orChannelUsers:(NSMutableArray *)channelUsers;
+- (NSError *)updateChannel:(NSNumber *)channelKey
+                andNewName:(NSString *)newName
+                orImageURL:(NSString *)imageURL
+               orChildKeys:(NSMutableArray *)childKeysList
+        isUpdatingMetaData:(BOOL)flag
+            orChannelUsers:(NSMutableArray *)channelUsers;
 
-- (void)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData;
+- (NSError *)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData;
 
 - (NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)channelKey;
 
@@ -74,10 +74,10 @@
 
 - (void)updateChannelParentKey:(NSNumber *)channelKey
               andWithParentKey:(NSNumber *)channelParentKey
-                       isAdding:(BOOL)flag;
+                      isAdding:(BOOL)flag;
 
 - (void)updateClientChannelParentKey:(NSString *)clientChildKey
-             andWithClientParentKey:(NSString *)clientParentKey
+              andWithClientParentKey:(NSString *)clientParentKey
                             isAdding:(BOOL)flag;
 
 - (NSNumber *)getOverallUnreadCountForChannelFromDB;
@@ -90,11 +90,7 @@
 
 - (NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey;
 
-- (void)updateMuteAfterTime:(NSNumber *)notificationAfterTime andChnnelKey:(NSNumber *)channelKey;
-
-- (DB_CHANNEL_USER_X *)getChannelUserX:(NSNumber *)channelKey;
-
-- (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
+- (NSError *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andChnnelKey:(NSNumber *)channelKey;
 
 - (ALChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId;
 
@@ -114,6 +110,10 @@
 
 - (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX withContext:(NSManagedObjectContext *)context;
 
-- (void)deleteMembers:(NSNumber *)key;
+- (NSError *)deleteMembers:(NSNumber *)key;
+
+- (DB_CHANNEL_USER_X *)getChannelUserX:(NSNumber *)channelKey DEPRECATED_ATTRIBUTE;
+
+- (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey DEPRECATED_ATTRIBUTE;
 
 @end

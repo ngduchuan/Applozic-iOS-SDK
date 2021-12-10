@@ -14,7 +14,8 @@ NSString *const AL_RESPONSE_ERROR = @"error";
 
 @implementation ALAPIResponse
 
-- (id)initWithJSONString:(NSString *)JSONString {
+- (instancetype)initWithJSONString:(NSString *)JSONString {
+    self = [super init];
     [self parseMessage:JSONString];
     return self;
 }
@@ -24,7 +25,16 @@ NSString *const AL_RESPONSE_ERROR = @"error";
     self.generatedAt = [self getNSNumberFromJsonValue:jsonResponse[@"generatedAt"]];
     self.response =  [jsonResponse valueForKey:@"response"];
     self.actualresponse = jsonResponse;
-    ALSLog(ALLoggerSeverityInfo, @"Response status is (%@) and generated At time is (%@)",self.status, self.generatedAt);
+
+    if ([self.status isEqualToString:AL_RESPONSE_ERROR]) {
+        NSArray *errorResponseList = [jsonResponse valueForKey:@"errorResponse"];
+        if (errorResponseList != nil && errorResponseList.count > 0) {
+            ALErrorResponse *firstError = [[ALErrorResponse alloc] initWithDictionary:errorResponseList.firstObject];
+            self.errorResponse = firstError;
+        }
+    }
+
+    ALSLog(ALLoggerSeverityInfo, @"Response Status : %@ and generated at time : %@",self.status, self.generatedAt);
 }
 
 @end

@@ -22,12 +22,8 @@
             ALMessageInfo *messageInfo = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
             [self.msgInfoList addObject:messageInfo];
         }
-        
-        return self;
-    } else {
-        return nil;
     }
-
+    return self;
 }
 
 @end

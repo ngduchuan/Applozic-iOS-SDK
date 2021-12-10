@@ -9,11 +9,12 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /// `ALMessageInfo` class is used for parsing the Message information JSON data and mapping it.
 @interface ALMessageInfo : ALJson
 
 /// UserId of the User.
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString * _Nullable userId;
 
 /// Status of message.
 ///
@@ -27,3 +28,5 @@
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 @end
+
+NS_ASSUME_NONNULL_END

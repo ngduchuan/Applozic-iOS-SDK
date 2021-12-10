@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALJson` is used for parsing json from server the each class can extend `ALJson` to handle the parsing.
 @interface ALJson : NSObject
 
@@ -16,12 +18,12 @@
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 
 /// JSON dictionary used for printing or converting to JSON data.
-- (NSDictionary *)dictionary;
+- (NSDictionary * _Nullable)dictionary;
 
 /// Used for getting the string value from JSON.
 /// @param jsonValue Pass the JSON value to this method for String.
 /// @return It returns the String from JSON value.
-- (NSString *)getStringFromJsonValue:(id)jsonValue;
+- (NSString * _Nullable)getStringFromJsonValue:(id)jsonValue;
 
 /// Used for getting the BOOL value from JSON value.
 /// @param jsonValue Pass the JSON value to this method for BOOL.
@@ -44,7 +46,7 @@
 /// Used for getting the NSNumber value from JSON value.
 /// @param jsonValue Pass the JSON value to this method for NSNumber.
 /// @return It returns the NSNumber from JSON value.
-- (NSNumber *)getNSNumberFromJsonValue:(id)jsonValue;
+- (NSNumber * _Nullable)getNSNumberFromJsonValue:(id)jsonValue;
 
 /// Used for getting the int value from JSON value.
 /// @param jsonValue Pass the JSON value to this method for int.
@@ -57,3 +59,4 @@
 - (long)getLongFromJsonValue:(id)jsonValue;
 
 @end
+NS_ASSUME_NONNULL_END

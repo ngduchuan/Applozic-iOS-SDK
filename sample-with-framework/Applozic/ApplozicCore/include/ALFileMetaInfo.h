@@ -10,41 +10,43 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALFileMetaInfo` class is used for attachment object.
 @interface ALFileMetaInfo : ALJson
 
 /// File attachment key.
-@property (nonatomic,copy) NSString *key;
+@property (nonatomic,copy) NSString * _Nullable key;
 
 /// User key of the user who set the attachment file.
-@property (nonatomic,copy) NSString *userKey;
+@property (nonatomic,copy) NSString * _Nullable userKey;
 
 /// Blob key of the file attachment.
-@property (nonatomic,copy) NSString *blobKey;
+@property (nonatomic,copy) NSString * _Nullable blobKey;
 
 /// Thumbnail blob key in case of image, video.
-@property (nonatomic,copy) NSString *thumbnailBlobKey;
+@property (nonatomic,copy) NSString * _Nullable thumbnailBlobKey;
 
 /// Local thumbnail file name.
-@property (nonatomic,copy) NSString *thumbnailFilePath;
+@property (nonatomic,copy) NSString * _Nullable thumbnailFilePath;
 
 /// Name of the file attachment.
 @property (nonatomic,copy) NSString *name;
 
 /// Attachment url.
-@property (nonatomic,copy) NSString *url;
+@property (nonatomic,copy) NSString * _Nullable url;
 
 /// Size of the file.
-@property (nonatomic,copy) NSString *size;
+@property (nonatomic,copy) NSString * _Nullable size;
 
 /// Content type of attachment file.
-@property (nonatomic,copy) NSString *contentType;
+@property (nonatomic,copy) NSString * contentType;
 
 /// Thumbnail url
-@property (nonatomic,copy) NSString *thumbnailUrl;
+@property (nonatomic,copy) NSString * _Nullable thumbnailUrl;
 
 /// Time of the attachment created at.
-@property (nonatomic,copy) NSNumber *createdAtTime;
+@property (nonatomic,copy) NSNumber * _Nullable createdAtTime;
 
 /// :nodoc:
 @property (nonatomic, assign) CGFloat progressValue;
@@ -57,3 +59,5 @@
 - (ALFileMetaInfo *)populate:(NSDictionary *)dict;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -19,8 +19,6 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService updateMessageDeliveryReport:messageKey withStatus:status];
-    ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
-    //Todo: update ui
 }
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {

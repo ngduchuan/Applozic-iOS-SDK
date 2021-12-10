@@ -9,14 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALUtilityClass` has utility methods releated to date, file, notification showing, image compression and other.
 @interface ALUtilityClass : NSObject
 
 /// Used in method `getExactDate` access the message date.
-@property (nonatomic, strong) NSString *msgdate;
+@property (nonatomic, strong) NSString * _Nullable msgdate;
 
 /// Used in method `getExactDate` access the message time.
-@property (nonatomic, strong) NSString *msgtime;
+@property (nonatomic, strong) NSString * _Nullable msgtime;
 
 /// This method is used for formate the date in string.
 /// @param timeInterval Time in milliseconds
@@ -25,7 +27,7 @@
 
 /// This method is used for generating a JSON string from dictionary.
 /// @param dictionary Pass the JSON dictionary.
-+ (NSString *)generateJsonStringFromDictionary:(NSDictionary *)dictionary;
++ (NSString * _Nullable)generateJsonStringFromDictionary:(NSDictionary *)dictionary;
 
 /// This method used for checking is current data is today or not.
 /// @param todayDate Pass the date.
@@ -33,7 +35,7 @@
 
 /// This method used for getting file mime type.
 /// @param filePath Pass the name of file.
-+ (NSString *)fileMIMEType:(NSString *)filePath;
++ (NSString * _Nullable)fileMIMEType:(NSString *)filePath;
 
 /// This method used for size of text given the max width, font name and font size.
 /// @param text Pass the message tex.
@@ -57,8 +59,8 @@
 /// @param groupID Pass the groupId in case of group or channel.
 /// @param handler Once the completed showing the notification the handler will be called.
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
-                   andForContactId:(NSString *)contactId
-                       withGroupId:(NSNumber *)groupID
+                   andForContactId:(NSString * _Nullable)contactId
+                       withGroupId:(NSNumber * _Nullable)groupID
                  completionHandler:(void (^)(BOOL))handler;
 
 
@@ -80,17 +82,17 @@
 
 /// This method is used geeting the file extension from file name.
 /// @param fileName Pass the name of the file.
-+ (NSString *)getFileExtensionWithFileName:(NSString *)fileName;
++ (NSString * _Nullable)getFileExtensionWithFileName:(NSString *)fileName;
 
 /// This method is used URL of Application document directory.
 + (NSURL *)getDocumentDirectory;
 
 /// This method is used URL of Apps group directory.
-+ (NSURL *)getAppsGroupDirectory;
++ (NSURL * _Nullable)getAppsGroupDirectory;
 
 /// This method is used for geeting file URL from Apps group directory.
 /// @param path Pass the name of the file.
-+ (NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *)path;
++ (NSURL * _Nullable)getAppsGroupDirectoryWithFilePath:(NSString *)path;
 
 /// This method is used for geeting file URL from application directory if the file exist else it will be nil.
 /// @param path Pass the name of the file.
@@ -98,11 +100,11 @@
 
 /// This method is used for compressing the image 50% for 10MB, 10% for more then 10MB.
 /// @param data Pass image data to compress.
-+ (NSData *)compressImage:(NSData *)data;
++ (NSData * _Nullable)compressImage:(NSData *)data;
 
 /// This method is used for moving a file to documents directory.
 /// @param url Pass the file URL that file you want to move.
-+ (NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
++ (NSURL * _Nullable)moveFileToDocumentsWithFileURL:(NSURL *)url;
 
 /// Used for geeting NSBundle of the Framework if its SPM it will use the dynamic bundle of SPM else it will pick from the Framework class bundle.
 + (NSBundle *)getBundle;
@@ -113,11 +115,11 @@
 
 /// This method used for creating an UIImage using video file path.
 /// @param videoFilePATH Pass the video file dcoument directory path.
-+ (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
++ (UIImage * _Nullable)setVideoThumbnail:(NSString *)videoFilePATH;
 
 /// This method is used for saving a image to dcoument.
 /// @param image Pass the UIImage for saving to dcoument directory.
-+ (NSString *)saveImageToDocDirectory:(UIImage *)image;
++ (NSString * _Nullable)saveImageToDocDirectory:(UIImage *)image;
 
 /// This method is used for getting the App groups name the deatult App group name is `group.com.applozic.share`
 + (NSString *)getAppGroupsName;
@@ -128,3 +130,5 @@
 + (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum;
 
 @end
+
+NS_ASSUME_NONNULL_END

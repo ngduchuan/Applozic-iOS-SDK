@@ -23,6 +23,7 @@
 #import "ALUserDetail.h"
 #import "ALUserService.h"
 #import "NSData+AES.h"
+#import "ALVerification.h"
 
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
@@ -97,12 +98,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     @try
     {
         if (![ALUserDefaultsHandler isLoggedIn]) {
-            NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+            NSError *userIsNotLoginErrror = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
             completion(false, userIsNotLoginErrror);
             return;
         }
 
-        if (self.session && self.session.status == MQTTSessionStatusConnecting ) {
+        if (self.session && self.session.status == MQTTSessionStatusConnecting) {
             NSError *sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connection in progress" forKey:NSLocalizedDescriptionKey]];
             completion(false, sessionConnectingError);
             return;
@@ -127,11 +128,23 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             self.session.clientId = [NSString stringWithFormat:@"%@-%f",
                                      [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
 
-            NSString *willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
+            NSString *willMsg = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString], @"0"];
 
-            if ([ALUserDefaultsHandler getAuthToken]) {
-                self.session.userName = [ALUserDefaultsHandler getApplicationKey];
-                self.session.password = [ALUserDefaultsHandler getAuthToken];
+            NSString *authToken = [ALUserDefaultsHandler getAuthToken];
+
+            [ALVerification verify:authToken != nil withErrorMessage:@"Failed to connect to MQTT as JWT Auth token is nil."];
+
+            if (!authToken) {
+                NSError *authTokenError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to connect to MQTT as auth token is nil" forKey:NSLocalizedDescriptionKey]];
+                completion(false, authTokenError);
+                return;
+            }
+
+            NSString *appId = [ALUserDefaultsHandler getApplicationKey];
+
+            if (authToken && appId) {
+                self.session.userName = appId;
+                self.session.password = authToken;
             }
 
             self.session.willFlag = YES;
@@ -166,7 +179,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }];
         }];
     } @catch (NSException *e) {
-        ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_CONNECTION :: %@", e.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in MQTT connect:%@",e.reason];
+        NSError *connectError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:connectError];
     }
 }
 
@@ -210,7 +225,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     }
 
                     if (!topic) {
-                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe topic is nil" forKey:NSLocalizedDescriptionKey]];
+                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe to conversation topic is nil" forKey:NSLocalizedDescriptionKey]];
                         completion(false, topicNilError);
                         return;
                     }
@@ -232,11 +247,18 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                         }
                         completion(true, nil);
                     }];
+                } else {
+                    NSError *clientNotConnected = [NSError errorWithDomain:@"Applozic"
+                                                                      code:1
+                                                                  userInfo:[NSDictionary dictionaryWithObject:@"MQTT client is not connected." forKey:NSLocalizedDescriptionKey]];
+                    completion(false, clientNotConnected);
+                    return;
                 }
             }];
-        }
-        @catch (NSException *e) {
-            ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_SUBSCRIBE :: %@", e.description);
+        } @catch (NSException *e) {
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribe to MQTT:%@",e.reason];
+            NSError *connectError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:connectError];
         }
     });
 }
@@ -279,7 +301,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     NSDictionary *notificationMessageDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     NSString *type = [notificationMessageDictionary objectForKey:@"type"];
     ALSLog(ALLoggerSeverityInfo, @"MQTT_NOTIFICATION_TYPE :: %@",type);
-    NSString *notificationId = (NSString*)[notificationMessageDictionary valueForKey:@"id"];
+    NSString *notificationId = (NSString *)[notificationMessageDictionary valueForKey:@"id"];
 
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
         ALSLog(ALLoggerSeverityInfo, @"Returning because Application State is Background OR Our View is NOT on Top");
@@ -520,7 +542,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     [self.syncCallService syncMessageMetadata];
                 }
             } @catch (NSException *exp) {
-                ALSLog(ALLoggerSeverityError, @"Error while conversating dictionary to message: %@", exp.description);
+                ALSLog(ALLoggerSeverityError, @"Error while conversating dictionary to message: %@", exp.reason);
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]) {
             //Conversation read for user
@@ -542,7 +564,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             if ([flag isEqualToString:@"0"]) {
                 ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
-                if (self.realTimeUpdate) {
+                if (self.realTimeUpdate && userDetail) {
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }
 
@@ -631,27 +653,35 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing {
-    if (!self.session) {
-        return;
+    @try {
+        if (!self.session) {
+            ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to sending typing status in conversation make sure to subscribe conversation first.");
+            return;
+        }
+        if (channelKey) {
+            ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to channel: %@", typing, channelKey);
+        } else {
+            ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
+        }
+
+        NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [ALUserDefaultsHandler getApplicationKey],
+                                [ALUserDefaultsHandler getUserId], typing ? 1 : 0];
+
+        NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], userId];
+
+        if (channelKey != nil) {
+            topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+        }
+        ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
+
+        NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
+
+    }  @catch (NSException *exp) {
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in sending typing status MQTT:%@", exp.reason];
+        NSError *typingStatusError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:typingStatusError];
     }
-    if (channelKey) {
-        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to channel: %@", typing, channelKey);
-    } else {
-        ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
-    }
-
-    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [ALUserDefaultsHandler getApplicationKey],
-                            [ALUserDefaultsHandler getUserId], typing ? 1 : 0];
-
-    NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], userId];
-
-    if (channelKey != nil) {
-        topicString = [NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
-    }
-    ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
-
-    NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
-    [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
 }
 
 - (BOOL)publishCustomData:(NSString *)dataString
@@ -674,7 +704,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                               qos:MQTTQosLevelAtMostOnce];
         return YES;
     }  @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in publishCustomData :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in publish custom data MQTT:%@", exp.reason];
+        NSError *publishDataError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:publishDataError];
     }
     return NO;
 }
@@ -724,6 +756,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 - (BOOL)unsubscribeToConversationForUser:(NSString *)userKey WithTopic:(NSString *)topic {
     @try {
         if (self.session == nil) {
+            ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to unsubscribe conversation make sure to subscribe first.");
             return NO;
         }
 
@@ -735,10 +768,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [topicsArray addObject:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
         }
 
+        [ALVerification verify:topic != nil withErrorMessage:@"Unsubscribe to conversation topic name is nil in MQTT for unsubscribeTopics."];
+
         if (topic) {
             [topicsArray addObject:topic];
         }
-
         /// Unsubscribe from both the topics with encr prefix and without encr prefix
         if (topicsArray.count) {
             [self.session unsubscribeTopics: [topicsArray copy]];
@@ -747,12 +781,15 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         [self.session closeWithDisconnectHandler:^(NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"MQTT : ERROR WHIlE DISCONNECTING FROM MQTT %@", error);
+            } else {
+                ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
             }
-            ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
         }];
         return YES;
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribe conversation :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribing to conversation MQTT:%@", exp.reason];
+        NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:subscribeError];
     }
     return NO;
 }
@@ -775,7 +812,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.session subscribeToTopic:topicString atLevel:MQTTQosLevelAtMostOnce];
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_SUBSCRIBING_COMPLETE");
         } @catch (NSException *exp) {
-            ALSLog(ALLoggerSeverityError, @"Exception in subscribing channel :: %@", exp.description);
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribing to typing status MQTT:%@", exp.reason];
+            NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:subscribeError];
         }
     });
 }
@@ -786,7 +825,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         dispatch_async(dispatch_get_main_queue (), ^{
 
             if (!self.session) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to unsubscribe Conversation typing status make sure to subscribe first.");
                 return;
             }
             NSString *topicString = @"";
@@ -800,7 +839,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBED_COMPLETE");
         });
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribing to typing conversation :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribe to channel typing converstaion MQTT:%@", exp.reason];
+        NSError *unsubscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:unsubscribeError];
     }
 }
 
@@ -808,8 +849,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBING");
     dispatch_async(dispatch_get_main_queue (),^{
         @try {
-            if (!self.session && self.session.status == MQTTSessionStatusConnected) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+            if (!self.session) {
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil failed to subscribe open channel Conversation make sure to subscribe first.");
                 return;
             }
             NSString *openGroupString = @"";
@@ -820,7 +861,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.session subscribeToTopic:openGroupString atLevel:MQTTQosLevelAtMostOnce];
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBTION_COMPLETE");
         } @catch (NSException *exp) {
-            ALSLog(ALLoggerSeverityError, @"Exception in subscribing channel :: %@", exp.description);
+            NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in subscribe to open channel MQTT:%@", exp.reason];
+            NSError *subscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+            [ALVerification verificationFailure:subscribeError];
         }
     });
 }
@@ -831,7 +874,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         dispatch_async(dispatch_get_main_queue (), ^{
 
             if (!self.session) {
-                ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                ALSLog(ALLoggerSeverityWarn, @"MQTT session is nil unsubscribe to open channel Conversation make sure to subscribe conversation first.");
                 return;
             }
             NSString *topicString = @"";
@@ -842,7 +885,9 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_UNSUBSCRIBTION_COMPLETE");
         });
     } @catch (NSException *exp) {
-        ALSLog(ALLoggerSeverityError, @"Exception in unsubscribe Open Channel :: %@", exp.description);
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"Exception in unsubscribe to open channel MQTT:%@", exp.reason];
+        NSError *unsubscribeError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:errorMessage  forKey:NSLocalizedDescriptionKey]];
+        [ALVerification verificationFailure:unsubscribeError];
     }
 }
 

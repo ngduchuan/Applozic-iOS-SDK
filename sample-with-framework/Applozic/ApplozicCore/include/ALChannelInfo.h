@@ -9,6 +9,8 @@
 #import "ALJson.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALChannelInfo` class is used for creating new channel conversation.
 ///
 /// The groupName, groupMemberList and type are mandatory fields.
@@ -43,22 +45,22 @@
 @property (nonatomic, strong) NSString *groupName;
 
 /// Sets your client group id.
-@property (nonatomic, strong) NSString *clientGroupId;
+@property (nonatomic, strong) NSString * _Nullable clientGroupId;
 
 /// Sets the members userId that you want to add to the channel or group.
 @property (nonatomic, strong) NSMutableArray *groupMemberList;
 
 /// Sets the Image URL for channel or group.
-@property (nonatomic, strong) NSString *imageUrl;
+@property (nonatomic, strong) NSString * _Nullable imageUrl;
 
 /// Sets the admin userId of the channel or group.
-@property (nonatomic, strong) NSString *admin;
+@property (nonatomic, strong) NSString * _Nullable admin;
 
 /// :nodoc:
-@property (nonatomic, strong) NSString *parentClientGroupId;
+@property (nonatomic, strong) NSString * _Nullable parentClientGroupId;
 
 /// :nodoc:
-@property (nonatomic, strong) NSNumber *parentKey;
+@property (nonatomic, strong) NSNumber * _Nullable parentKey;
 
 /// Set the type of the channel.
 ///
@@ -71,9 +73,11 @@
 @property(nonatomic) short type;
 
 /// Sets the channel meta data.
-@property (nonatomic, strong) NSMutableDictionary *metadata;
+@property (nonatomic, strong) NSMutableDictionary * _Nullable metadata;
 
 /// Sets the array of the channel users of type `ALGroupUser`.
-@property (nonatomic, strong) NSMutableArray *groupRoleUsers;
+@property (nonatomic, strong) NSMutableArray * _Nullable groupRoleUsers;
 
 @end
+
+NS_ASSUME_NONNULL_END

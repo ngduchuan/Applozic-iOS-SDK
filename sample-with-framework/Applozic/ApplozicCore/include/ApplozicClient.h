@@ -14,6 +14,8 @@
 #import "ALUserService.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// error types
 typedef NS_ENUM(NSInteger, ApplozicClientError) {
     MessageNotPresent = 1
@@ -64,7 +66,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 @interface ApplozicClient : NSObject <NSURLConnectionDataDelegate>
 
 /// For real time updates of attachment upload or download status.
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<ApplozicAttachmentDelegate> _Nullable attachmentProgressDelegate;
 
 /// Used to make API calls related to conversations.
 @property (nonatomic, retain) ALMessageService *messageService;
@@ -80,14 +82,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 /// Gives callbacks for real-time update events for Messages, channels, Users, and Typing.
 /// @warning Do not assign this property. It won't work properly if you do. Instead, use the `-[ApplozicClient initWithApplicationKey:withDelegate:]` initializer, which assigns this property.
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> _Nullable delegate;
 
 /// init is not avaliable for accessing.
 - (instancetype)init NS_UNAVAILABLE;
 
 /// Returns an `ApplozicClient` object for given App-ID.
 ///
-/// @param appID The unique identifier of APP-ID which you have got from the [console](https://console.applozic.com/login)
+/// @param appId The unique identifier of APP-ID which you have got from the [console](https://console.applozic.com/login)
 ///
 /// Example: Get `ApplozicClient` using below code:
 ///
@@ -96,11 +98,11 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 /// @endcode
-- (instancetype)initWithApplicationKey:(NSString *)appID;
+- (instancetype)initWithApplicationKey:(NSString *)appId;
 
 /// Returns an `ApplozicClient` object for given App-ID and sets the `ApplozicUpdatesDelegate` for real-time updates events.
 ///
-/// @param appID The unique identifier of APP-ID which you have got from the [console](https://console.applozic.com/login).
+/// @param appId The unique identifier of APP-ID which you have got from the [console](https://console.applozic.com/login).
 /// @param delegate For real-time update events for Messages, Channel, User, and Typing.
 ///
 /// Example: Get `ApplozicClient` using below code:
@@ -110,7 +112,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID" withDelegate:self]; // Pass your APP-ID here and set the delegate.
 /// @endcode
-- (instancetype)initWithApplicationKey:(NSString *)appID withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (instancetype)initWithApplicationKey:(NSString *)appId withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// Logs in or registers your `ALUser`. This must be done before using any of our API SDK methods.
 ///
@@ -134,7 +136,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// user.authenticationTypeId = APPLOZIC; // Set Authentication type as APPLOZIC by default.
 /// [ALUserDefaultsHandler setUserAuthenticationTypeId:user.authenticationTypeId];
 ///
-/// [applozicClient loginUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+/// [applozicClient loginUser:user withCompletion:^(ALRegistrationResponse * _Nullable response, NSError * _Nullable error) {
 ///
 ///   if (!error) {
 ///      NSLog(@"User Login success");
@@ -143,7 +145,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)loginUser:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error))completion;
+- (void)loginUser:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse * _Nullable response, NSError * _Nullable error))completion;
 
 /// Enables push notification for real-time updates on messages and other events to the device.
 ///
@@ -171,7 +173,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }
 ///
 /// [applozicClient updateApnDeviceTokenWithCompletion:apnDeviceToken
-///  withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+///  withCompletion:^(ALRegistrationResponse * _Nullable response, NSError * _Nullable error) {
 ///
 ///   if (error) {
 ///       NSLog(@"Failed to update APNs token to Applozic server due to: %@",error.localizedDescription);
@@ -181,7 +183,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 /// @endcode
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
-                            withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error))completion;
+                            withCompletion:(void(^)(ALRegistrationResponse * _Nullable response, NSError * _Nullable error))completion;
 
 /// Sends an attachment message in one-to-one or channel conversation.
 ///
@@ -251,7 +253,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// }];
 ///
-/// [applozicClient sendTextMessage:message withCompletion:^(ALMessage *message, NSError *error) {
+/// [applozicClient sendTextMessage:message withCompletion:^(ALMessage * _Nullable message, NSError * _Nullable error) {
 ///
 ///   if (!error) {
 ///       NSLog(@"Update the UI message is sent to server");
@@ -260,7 +262,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)sendTextMessage:(ALMessage *)message withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
+- (void)sendTextMessage:(ALMessage *)message withCompletion:(void(^)(ALMessage * _Nullable message, NSError * _Nullable error))completion;
 
 /// Gets list of the most recent messages for each conversation.
 ///
@@ -274,7 +276,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
+/// [applozicClient getLatestMessages:loadNextPage withCompletionHandler:^(NSMutableArray * _Nullable messages, NSError * _Nullable error) {
 ///
 ///   if (error) {
 ///       NSLog(@"Error in fetching all recent conversations %@", error.localizedDescription);
@@ -293,7 +295,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///   }
 /// }];
 /// @endcode
-- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error))completion;
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
 /// Gets the list of messages for the given one-to-one or channel conversation.
 ///
@@ -333,7 +335,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///     }
 ///   }];
 /// } else {
-///   [self.applozicClient getMessages: messagelistRequest withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
+///   [self.applozicClient getMessages: messagelistRequest withCompletionHandler:^(NSMutableArray * _Nullable messages, NSError * _Nullable error) {
 ///
 ///     if (!error) {
 ///        // Get the messages
@@ -352,7 +354,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///   }];
 /// }
 /// @endcode
-- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messages, NSError *error))completion;
+- (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray * _Nullable messages, NSError * _Nullable error))completion;
 
 /// Downloads the attachment file for the message.
 ///
@@ -407,7 +409,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// channelInfo.groupMemberList = channelMemberArray; // Channel members userId array.
 /// channelInfo.type = PUBLIC; // Channel type.
 ///
-/// [applozicClient createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+/// [applozicClient createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse * _Nullable response, NSError * _Nullable error) {
 ///
 ///   if (error) {
 ///       NSLog(@"Error in creating a channel : %@", error.localizedDescription);
@@ -427,7 +429,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// @endcode
 - (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
-                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+                      withCompletion:(void(^)(ALChannelCreateResponse * _Nullable response,  NSError * _Nullable error))completion;
 
 /// Removes a member from the channel conversation.
 ///
@@ -444,7 +446,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// [applozicClient removeMemberFromChannelWithUserId:@"12328833838"
 ///  andChannelKey:@74648473
 /// orClientChannelKey:nil
-/// withCompletion:^(NSError *error, ALAPIResponse *response) {
+/// withCompletion:^(NSError * _Nullable error, ALAPIResponse * _Nullable response) {
 ///
 ///   if (error) {
 ///       NSLog(@"Error in removing a member : %@", error.localizedDescription);
@@ -461,9 +463,9 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 /// @endcode
 - (void)removeMemberFromChannelWithUserId:(NSString *)userId
-                            andChannelKey:(NSNumber *)channelKey
-                       orClientChannelKey:(NSString *)clientChannelKey
-                           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+                            andChannelKey:(NSNumber * _Nullable)channelKey
+                       orClientChannelKey:(NSString * _Nullable)clientChannelKey
+                           withCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse * _Nullable response))completion;
 
 /// Used for leaving a member from the channel conversation.
 ///
@@ -480,7 +482,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// [applozicClient leaveMemberFromChannelWithUserId:[ALUserDefaultsHandler getUserId]
 ///  andChannelKey:@3738278
 /// orClientChannelKey:nil
-/// withCompletion:^(NSError *error, ALAPIResponse *response) {
+/// withCompletion:^(NSError * _Nullable error, ALAPIResponse * _Nullable response) {
 ///
 ///   if (error) {
 ///       NSLog(@"Error in leave a member : %@", error.localizedDescription);
@@ -497,10 +499,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)leaveMemberFromChannelWithUserId:(NSString *)userId
-                           andChannelKey:(NSNumber *)channelKey
-                      orClientChannelKey:(NSString *)clientChannelKey
-                          withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)leaveMemberFromChannelWithUserId:(NSString * _Nullable)userId
+                           andChannelKey:(NSNumber * _Nullable)channelKey
+                      orClientChannelKey:(NSString * _Nullable)clientChannelKey
+                          withCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse * _Nullable response))completion;
 
 /// Adds a member to the channel conversation.
 ///
@@ -517,7 +519,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// [applozicClient addMemberToChannelWithUserId:@"574839292943"
 /// andChannelKey:@48493839
 /// orClientChannelKey:nil
-/// withCompletion:^(NSError *error, ALAPIResponse *response) {
+/// withCompletion:^(NSError * _Nullable error, ALAPIResponse * _Nullable response) {
 ///
 ///  if (error) {
 ///      NSLog(@"Error in add member in channel :%@", error.localizedDescription);
@@ -533,10 +535,10 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// }];
 /// @endcode
-- (void)addMemberToChannelWithUserId:(NSString *)userId
-                       andChannelKey:(NSNumber *)channelKey
-                  orClientChannelKey:(NSString *)clientChannelKey
-                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)addMemberToChannelWithUserId:(NSString * _Nullable)userId
+                       andChannelKey:(NSNumber * _Nullable)channelKey
+                  orClientChannelKey:(NSString * _Nullable)clientChannelKey
+                      withCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse *_Nullable response))completion;
 
 /// Used for updating channel information.
 ///
@@ -570,7 +572,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// isUpdatingMetaData:NO
 ///  metadata:nil
 /// orChannelUsers:channelMemberRoleArray
-/// withCompletion:^(NSError *error, ALAPIResponse *response) {
+/// withCompletion:^(NSError * _Nullable error, ALAPIResponse * _Nullable response) {
 ///
 ///     if (error) {
 ///          NSLog(@"Error in channel update : %@", error.localizedDescription);
@@ -586,14 +588,14 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// }];
 /// @endcode
-- (void)updateChannelWithChannelKey:(NSNumber *)channelKey
-                         andNewName:(NSString *)newName
-                        andImageURL:(NSString *)imageURL
-                 orClientChannelKey:(NSString *)clientChannelKey
+- (void)updateChannelWithChannelKey:(NSNumber * _Nullable)channelKey
+                         andNewName:(NSString * _Nullable)newName
+                        andImageURL:(NSString * _Nullable)imageURL
+                 orClientChannelKey:(NSString * _Nullable)clientChannelKey
                  isUpdatingMetaData:(BOOL)flag
-                           metadata:(NSMutableDictionary *)metaData
-                     orChannelUsers:(NSMutableArray *)channelUsers
-                     withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+                           metadata:(NSMutableDictionary * _Nullable)metaData
+                     orChannelUsers:(NSMutableArray * _Nullable)channelUsers
+                     withCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse * _Nullable response))completion;
 
 /// Gets the channel information for the given channel Key or client channel key.
 ///
@@ -608,7 +610,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient getChannelInformationWithChannelKey:@474837
 /// orClientChannelKey:nil
-///  withCompletion:^(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse) {
+///  withCompletion:^(NSError * _Nullable error, ALChannel * _Nullable channel, ALChannelFeedResponse * _Nullable channelResponse) {
 ///
 ///     if (error) {
 ///         NSLog(@"Error in fetching a channel :%@", error.localizedDescription);
@@ -622,10 +624,11 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 ///@endcode
-- (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
-                         orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *channel, ALChannelFeedResponse *channelResponse))completion;
-
+- (void)getChannelInformationWithChannelKey:(NSNumber * _Nullable)channelKey
+                         orClientChannelKey:(NSString * _Nullable)clientChannelKey
+                             withCompletion:(void(^)(NSError * _Nullable error,
+                                                     ALChannel * _Nullable channel,
+                                                     ALChannelFeedResponse * _Nullable channelResponse))completion;
 
 /// Logout the user from Applozic.
 ///
@@ -638,13 +641,13 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient logoutUserWithCompletion:^(NSError *error, ALAPIResponse *response) {
+/// [applozicClient logoutUserWithCompletion:^(NSError * _Nullable error, ALAPIResponse * _Nullable response) {
 ///
 ///     NSLog(@"Applozic logout completed");
 /// }];
 ///
 /// @endcode
-- (void)logoutUserWithCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)logoutUserWithCompletion:(void(^)(NSError * _Nullable error, ALAPIResponse * _Nullable response))completion;
 
 /// Mute or unmute the channel for a given channel key and time (in milliseconds).
 ///
@@ -659,7 +662,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// [applozicClient muteChannelOrUnMuteWithChannelKey:@474837
 ///  andTime:notificationTime
-///  withCompletion:^(ALAPIResponse *response, NSError *error) {
+///  withCompletion:^(ALAPIResponse * _Nullable response, NSError * _Nullable error) {
 ///
 ///     if (error) {
 ///         NSLog(@"Failed to mute or unmute the channel got some error : %@",error.localizedDescription);
@@ -675,7 +678,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @endcode
 - (void)muteChannelOrUnMuteWithChannelKey:(NSNumber *)channelKey
                                   andTime:(NSNumber *)notificationTime
-                           withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+                           withCompletion:(void(^)(ALAPIResponse * _Nullable response, NSError * _Nullable error))completion;
 
 /// Unblocks the user from receiving messages and other updates related to the receiver for given receiver userId.
 ///
@@ -686,7 +689,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @import ApplozicCore;
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient unBlockUserWithUserId:@"38484848" withCompletion:^(NSError *error, BOOL userUnblock) {
+/// [applozicClient unBlockUserWithUserId:@"38484848" withCompletion:^(NSError * _Nullable error, BOOL userUnblock) {
 ///
 ///  if (error) {
 ///      NSLog(@"Failed to unblock the user got some error : %@",error.localizedDescription);
@@ -696,7 +699,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userUnblock))completion;
+- (void)unBlockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError * _Nullable error, BOOL userUnblock))completion;
 
 /// Blocks the user from receiving messages and other updates related to the receiver for given receiver userId.
 ///
@@ -708,7 +711,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient blockUserWithUserId:@"38484848" withCompletion:^(NSError *error, BOOL userBlock) {
+/// [applozicClient blockUserWithUserId:@"38484848" withCompletion:^(NSError * _Nullable error, BOOL userBlock) {
 ///
 ///     if (error) {
 ///         NSLog(@"Failed to block the user got some error : %@",error.localizedDescription);
@@ -718,7 +721,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError *error, BOOL userBlock))completion;
+- (void)blockUserWithUserId:(NSString *)userId withCompletion:(void(^)(NSError * _Nullable error, BOOL userBlock))completion;
 
 /// Mark all the messages of conversation as read in the channel for the given channel key.
 ///
@@ -730,7 +733,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient markConversationReadForGroup:@474837 withCompletion:^(NSString *response, NSError *error) {
+/// [applozicClient markConversationReadForGroup:@474837 withCompletion:^(NSString * _Nullable response, NSError * _Nullable error) {
 ///
 ///     if (error) {
 ///         NSLog(@"Error in conversation read:%@",error);
@@ -742,7 +745,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// }];
 ///
 /// @endcode
-- (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString *response, NSError *error))completion;
+- (void)markConversationReadForGroup:(NSNumber *)groupId withCompletion:(void(^)(NSString * _Nullable response, NSError * _Nullable error))completion;
 
 /// Mark all the messages of conversation as read in the one-to-one conversation for given receiver userId.
 ///
@@ -754,7 +757,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// ApplozicClient *applozicClient = [[ApplozicClient alloc] initWithApplicationKey:@"APP-ID"]; // Pass your APP-ID here.
 ///
-/// [applozicClient markConversationReadForOnetoOne:@"38484848" withCompletion:^(NSString *response, NSError *error) {
+/// [applozicClient markConversationReadForOnetoOne:@"38484848" withCompletion:^(NSString * _Nullable response, NSError * _Nullable error) {
 ///
 ///     if (error) {
 ///         NSLog(@"Error in marking conversation read :%@",error.localizedDescription);
@@ -767,7 +770,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 ///
 /// @endcode
 ///
-- (void)markConversationReadForOnetoOne:(NSString *)userId withCompletion:(void(^)(NSString *response, NSError *error))completion;
+- (void)markConversationReadForOnetoOne:(NSString *)userId withCompletion:(void(^)(NSString * _Nullable response, NSError * _Nullable error))completion;
 
 /// APNs push notification messages handling for given application and userInfo.
 ///
@@ -862,7 +865,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// // Sending typing status in Channel.
 /// [applozicClient sendTypingStatusForUserId:nil orForGroupId:@474837 withTyping:typingStarted];
 /// @endcode
-- (void)sendTypingStatusForUserId:(NSString *)userId orForGroupId:(NSNumber *)channelKey withTyping:(BOOL)isTyping;
+- (void)sendTypingStatusForUserId:(NSString * _Nullable)userId orForGroupId:(NSNumber * _Nullable)channelKey withTyping:(BOOL)isTyping;
 
 /// Subscribe to real-time typing events for one-to-one conversation.
 ///
@@ -911,7 +914,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// BOOL loadNextPage = NO; // Pass YES in case of loading next set of 60 old conversations.
 /// BOOL loadGroups = NO; // Pass YES in case of loading group conversations.
 ///
-/// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray *messages, NSError *error) {
+/// [applozicClient getLatestMessages:loadNextPage withOnlyGroups:loadGroups withCompletionHandler:^(NSMutableArray * _Nullable messages, NSError * _Nullable error) {
 ///
 ///     if (error) {
 ///         NSLog(@"Failed to load the recent conversations :%@",error.localizedDescription);
@@ -926,6 +929,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// @endcode
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
-    withCompletionHandler: (void(^)(NSMutableArray *messages, NSError *error))completion;
+    withCompletionHandler: (void(^)(NSMutableArray *_Nullable messages, NSError * _Nullable error))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

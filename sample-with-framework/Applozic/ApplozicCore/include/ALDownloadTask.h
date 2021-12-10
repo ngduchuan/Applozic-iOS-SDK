@@ -9,6 +9,8 @@
 #import "ALMessage.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// `ALDownloadTask` is class used for creating an download task.
 @interface ALDownloadTask : NSObject
 
@@ -16,9 +18,11 @@
 @property (nonatomic) BOOL isThumbnail;
 
 /// Sets the name of the file.
-@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString * _Nullable fileName;
 
 /// Sets the `ALMessage` object.
 @property (nonatomic, strong) ALMessage *message;
 
 @end
+
+NS_ASSUME_NONNULL_END
