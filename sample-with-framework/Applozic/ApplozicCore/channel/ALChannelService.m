@@ -597,9 +597,8 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 if (clientChannelKey != nil) {
                     ALChannel *channel = [weakSelf.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     if (!channel) {
-                        updateAddMemberError = [NSError errorWithDomain:@"Applozic"
-                                                                   code:1
-                                                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to add member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+                        completion(nil, response);
+                        return;
                     } else {
                         updateAddMemberError = [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:channel.key];
                     }
@@ -654,9 +653,8 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 if (clientChannelKey != nil) {
                     ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     if (!channel) {
-                        updateRemoveMemberError = [NSError errorWithDomain:@"Applozic"
-                                                                      code:1
-                                                                  userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+                        completion(nil, response);
+                        return;
                     } else {
                         updateRemoveMemberError = [self.channelDBService removeMemberFromChannel:userId andChannelKey:channel.key];
                     }
@@ -712,11 +710,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
                 ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
 
                 if (!channel) {
-                    updateRemoveMemberError = [NSError errorWithDomain:@"Applozic"
-                                                                  code:1
-                                                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to delete channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
-
-                    completion(updateRemoveMemberError, nil);
+                    completion(nil, response);
                     return;
                 }
                 updateRemoveMemberError = [self.channelDBService deleteChannel:channel.key];
@@ -776,9 +770,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
     if (clientChannelKey != nil) {
         ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
         if (!channel) {
-            return [NSError errorWithDomain:@"Applozic"
-                                       code:1
-                                   userInfo:[NSDictionary dictionaryWithObject:@"Failed to leave from channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+            return nil;
         }
         updateLeaveError = [self.channelDBService removeMemberFromChannel:userId andChannelKey:channel.key];
         [self.channelDBService setLeaveFlag:YES forChannel:channel.key];
@@ -948,8 +940,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
         }
 
         if (!channel) {
-            NSError *notFoundError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel does not exist." forKey:NSLocalizedDescriptionKey]];
-            return notFoundError;
+            return nil;
         }
 
         return [self.channelDBService updateChannel:channel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
@@ -1008,10 +999,7 @@ NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMP
         if (clientChannelKey != nil) {
             ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
             if (!channel) {
-                updateMetadataError = [NSError errorWithDomain:@"Applozic" code:1
-                                                      userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel metadata channel does not exist in database."
-                                                                                           forKey:NSLocalizedDescriptionKey]];
-                completion(updateMetadataError);
+                completion(nil);
                 return;
             }
             updateMetadataError = [self.channelDBService updateChannelMetaData:channel.key metaData:metaData];

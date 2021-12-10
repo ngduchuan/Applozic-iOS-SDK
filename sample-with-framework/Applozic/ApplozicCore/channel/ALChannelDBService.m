@@ -32,7 +32,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     channelUser.userKey = userId;
     
     ALDBHandler *databaseHandler = [ALDBHandler sharedInstance];
-    DB_CHANNEL_USER_X *dbChannelUser =  [self createChannelUserXEntity: channelUser];
+    DB_CHANNEL_USER_X *dbChannelUser = [self createChannelUserXEntity: channelUser];
     if (!dbChannelUser) {
         return [NSError errorWithDomain:@"Applozic"
                                    code:1
@@ -543,10 +543,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
     if (memberArray.count == 0) {
         ALSLog(ALLoggerSeverityWarn, @"Channel not found in database skipping removing member from channel for channelKey :%@", channelKey);
-        return [NSError errorWithDomain:@"Applozic"
-                                   code:1
-                               userInfo:[NSDictionary dictionaryWithObject:@"Failed to remove member from channel user does not exist in database."
-                                                                    forKey:NSLocalizedDescriptionKey]];
+        return nil;
     }
 
     NSManagedObject *managedObject = [memberArray objectAtIndex:0];
@@ -675,7 +672,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
     if (result.count == 0) {
         ALSLog(ALLoggerSeverityError, @"Channel not found in database to update channel with chnnelKey : %@", channelKey);
-        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel does not exist." forKey:NSLocalizedDescriptionKey]];
+        return nil;
     }
     DB_CHANNEL *dbChannel = [result objectAtIndex:0];
     if (newName.length) {
@@ -723,7 +720,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     NSArray *result = [databaseHandler executeFetchRequest:fetchRequest withError:&fetchError];
 
     if (result.count == 0) {
-        return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to update channel metadata the channel does not exist in database." forKey:NSLocalizedDescriptionKey]];
+        ALSLog(ALLoggerSeverityError, @"Channel not found in database to update channel metadata with chnnelKey skipping update : %@", channelKey);
+        return nil;
     }
 
     DB_CHANNEL *dbChannel = [result objectAtIndex:0];
