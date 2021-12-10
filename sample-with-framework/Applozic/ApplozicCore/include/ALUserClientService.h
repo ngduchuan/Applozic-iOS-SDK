@@ -6,75 +6,75 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ALLastSeenSyncFeed.h"
+#import "ALAPIResponse.h"
 #import "ALContact.h"
 #import "ALContactsResponse.h"
-#import "ALUserDetailListFeed.h"
-#import "ALAPIResponse.h"
+#import "ALLastSeenSyncFeed.h"
 #import "ALMuteRequest.h"
 #import "ALResponseHandler.h"
+#import "ALUserDetailListFeed.h"
+#import <Foundation/Foundation.h>
 
 @interface ALUserClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)userLastSeenDetail:(NSNumber *)lastSeenAt withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark;
+- (void)userLastSeenDetail:(NSNumber *)lastSeenAtTime withCompletion:(void(^)(ALLastSeenSyncFeed *lastSeenSyncFeed))completionMark;
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+- (void)userDetailServerCall:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
-- (void)updateUserDisplayName:(ALContact *)alContact withCompletion:(void(^)(id theJson, NSError *theError))completion;
+- (void)updateUserDisplayName:(ALContact *)contact withCompletion:(void(^)(id jsonResponse, NSError *error))completion;
 
-- (void)markConversationAsReadforContact:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsReadforContact:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
-- (void)userBlockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userBlockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
-- (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
-- (void)userUnblockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userUnblockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
-- (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey
+                              withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)multiUserSendMessage:(NSDictionary *)messageDictionary
                   toContacts:(NSMutableArray *)contactIdsArray
                     toGroups:(NSMutableArray *)channelKeysArray
-              withCompletion:(void (^)(NSString *json, NSError *error))completion;
+              withCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion;
 
 - (void)getListOfRegisteredUsers:(NSNumber *)startTime
                      andPageSize:(NSUInteger)pageSize
                   withCompletion:(void(^)(ALContactsResponse *response, NSError *error))completion;
 
-- (void)fetchOnlineContactFromServer:(NSUInteger)limit withCompletion:(void (^)(id json, NSError *error))completion;
+- (void)fetchOnlineContactFromServer:(NSUInteger)limit withCompletion:(void (^)(id jsonResponse, NSError *error))completion;
 
 - (void)subProcessUserDetailServerCall:(NSString *)paramString
                         withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
-
-- (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion;
-
 - (void)updateUserDisplayName:(NSString *)displayName
              andUserImageLink:(NSString *)imageLink
                    userStatus:(NSString *)status
                      metadata:(NSMutableDictionary *)metadata
-               withCompletion:(void (^)(id theJson, NSError *error))completionHandler;
+               withCompletion:(void (^)(id jsonResponse, NSError *error))completionHandler;
 
 - (void)updateUser:(NSString *)phoneNumber
              email:(NSString *)email
             ofUser: (NSString *)userId
-    withCompletion:(void(^)(id theJson, NSError *theError))completion;
+    withCompletion:(void(^)(id jsonResponse, NSError *error))completion;
 
-- (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob
-                            withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError *theError))completionMark;
+- (void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)userDetailListFeed
+                            withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
 
 - (void)updatePassword:(NSString *)oldPassword
-      withNewPassword :(NSString *)newPassword
+      withNewPassword:(NSString *)newPassword
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-- (void)getMutedUserListWithCompletion:(void(^)(id theJson, NSError *error))completion;
+- (void)getMutedUserListWithCompletion:(void(^)(id jsonResponse, NSError *error))completion;
 
-- (void)muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
+- (void)muteUser:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 - (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+
+- (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *jsonResponse, NSError *error))completion DEPRECATED_ATTRIBUTE;
 
 @end

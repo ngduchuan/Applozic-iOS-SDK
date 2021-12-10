@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
 
 @interface ALUserDetail ()
 
@@ -100,13 +100,13 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
 }
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
 
-    if (string == nil) {
+    if (jsonString == nil) {
         return nil;
     }
 
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metaDataDictionary;
 
@@ -130,7 +130,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
         NSString *flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
 
         if (!_metadata) {
-            _metadata = [[NSMutableDictionary alloc]init];
+            _metadata = [[NSMutableDictionary alloc] init];
         }
 
         [_metadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];

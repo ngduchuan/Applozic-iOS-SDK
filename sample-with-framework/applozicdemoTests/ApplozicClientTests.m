@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import <Applozic/Applozic.h>
 #import <OCMock/OCMock.h>
+#import "ALChatManager.h"
 
 @interface ApplozicClientTests : XCTestCase
 
@@ -23,7 +24,7 @@ NSError *testError;
 
 - (void)setUp {
     [super setUp];
-    client = [[ApplozicClient alloc] init];
+    client = [[ApplozicClient alloc] initWithApplicationKey:APPLICATION_ID];
     mockService = OCMClassMock([ALMessageService class]);
     client.messageService = mockService;
 
@@ -37,7 +38,7 @@ NSError *testError;
 - (void)test_whenTextMessageSentSuccessfully_thatErrorIsNil{
 
     OCMStub([mockService sendMessages:testMessage withCompletion:([OCMArg invokeBlockWithArgs:@"message",[OCMArg defaultValue], nil])]);
-    [client sendTextMessage:testMessage withCompletion:^(ALMessage* message, NSError* error) {
+    [client sendTextMessage:testMessage withCompletion:^(ALMessage *message, NSError* error) {
         XCTAssert(error == nil);
         XCTAssert([message.message isEqualToString:@"messageText"]);
     }];
@@ -119,40 +120,20 @@ NSError *testError;
 
 -(void)test_whenMarkConversationIsSuccessful_thatErrorIsNotPresent {
     id userServiceMock = OCMClassMock([ALUserService class]);
-    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:(@"Success", [OCMArg defaultValue], nil)]);
+    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:(@"success", [OCMArg defaultValue])]);
     [client markConversationReadForOnetoOne: @"userId" withCompletion:^(NSString *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(response);
-    }];
-}
-
--(void)test_whenMarkConversationIsUnsuccessful_thatErrorIsPresent {
-    id userServiceMock = OCMClassMock([ALUserService class]);
-    OCMStub([userServiceMock markConversationAsRead:@"userId" withCompletion:([OCMArg defaultValue], testError, nil)]);
-    [client markConversationReadForOnetoOne: @"userId" withCompletion:^(NSString *response, NSError *error) {
-        XCTAssertNotNil(error);
-        XCTAssertNil(response);
     }];
 }
 
 -(void)test_whenMarkConversationReadForGroupIsSuccessful_thatErrorIsNotPresent {
     id channelServiceMock = OCMClassMock([ALChannelService class]);
     NSNumber *groupId = [[NSNumber alloc] initWithInt:123];
-    OCMStub([channelServiceMock markConversationAsRead:groupId withCompletion:(@"Success", [OCMArg defaultValue], nil)]);
+    OCMStub([channelServiceMock markConversationAsRead:groupId withCompletion:(@"success", [OCMArg defaultValue], nil)]);
     [client markConversationReadForGroup:groupId withCompletion:^(NSString *response, NSError *error){
         XCTAssertNil(error);
         XCTAssertNotNil(response);
-    }];
-}
-
-
--(void)test_whenMarkConversationReadForGroupIsUnsuccessful_thatErrorIsPresent {
-    id channelServiceMock = OCMClassMock([ALChannelService class]);
-    NSNumber *groupId = [[NSNumber alloc] initWithInt:123];
-    OCMStub([channelServiceMock markConversationAsRead:groupId withCompletion:([OCMArg defaultValue], testError, nil)]);
-    [client markConversationReadForGroup:groupId withCompletion:^(NSString *response, NSError *error){
-        XCTAssertNotNil(error);
-        XCTAssertNil(response);
     }];
 }
 

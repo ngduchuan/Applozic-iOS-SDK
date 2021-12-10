@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#import "DB_Message.h"
 #import "DB_FileMetaInfo.h"
-
+#import "DB_Message.h"
 
 @implementation DB_Message
 

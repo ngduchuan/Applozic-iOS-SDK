@@ -10,7 +10,6 @@
 #import "ALChannelUser.h"
 #import "ALUserDefaultsHandler.h"
 
-
 @interface ALChannel ()
 
 @end
@@ -106,12 +105,12 @@
     return nil;
 }
 
-- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)jsonString {
 
-    if (!string) {
+    if (!jsonString) {
         return nil;
     }
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary *metadataDictionary;
 

@@ -40,7 +40,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
     NSString * messageReplyId = [alMessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
     if (messageReplyId) {
         
-        ALMessage * replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+        ALMessage * replyMessage = [[ALMessageService new] getMessageByKey:messageReplyId];
         
         CGRect frame = superView.frame;
         

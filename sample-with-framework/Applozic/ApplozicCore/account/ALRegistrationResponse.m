@@ -11,6 +11,7 @@
 @implementation ALRegistrationResponse
 
 - (id)initWithJSONString:(NSString *)registrationResponse {
+    self = [super init];
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
     self.userKey = [registrationResponse valueForKey:@"userKey"];
@@ -24,7 +25,7 @@
     self.encryptionKey = [registrationResponse valueForKey:@"encryptionKey"];
     self.pricingPackage = [[registrationResponse valueForKey:@"pricingPackage"] shortValue];
     self.notificationSoundFileName = [registrationResponse valueForKey:@"notificationSoundFileName"];
-    self.metadata = [[NSMutableDictionary  alloc] initWithDictionary: [registrationResponse valueForKey:@"metadata"]];
+    self.metadata = [[NSMutableDictionary alloc] initWithDictionary: [registrationResponse valueForKey:@"metadata"]];
     self.roleType = [[registrationResponse valueForKey:@"roleType"] shortValue];
     self.userEncryptionKey = [registrationResponse valueForKey:@"userEncryptionKey"];
     self.authToken = [registrationResponse valueForKey:@"authToken"];

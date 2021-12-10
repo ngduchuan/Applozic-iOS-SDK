@@ -18,16 +18,12 @@
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
-        for(NSDictionary *JSONDictionaryObject in responseArray) {
-            ALMessageInfo *messageInfoObject = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
-            [self.msgInfoList addObject:messageInfoObject];
+        for (NSDictionary *JSONDictionaryObject in responseArray) {
+            ALMessageInfo *messageInfo = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
+            [self.msgInfoList addObject:messageInfo];
         }
-        
-        return self;
-    } else {
-        return nil;
     }
-
+    return self;
 }
 
 @end

@@ -6,21 +6,19 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#import "ALSyncCallService.h"
-#import "ALMessageDBService.h"
-#import "ALContactDBService.h"
 #import "ALChannelService.h"
-#import "ALMessageService.h"
+#import "ALContactDBService.h"
 #import "ALLogger.h"
+#import "ALMessageDBService.h"
+#import "ALMessageService.h"
+#import "ALSyncCallService.h"
 
 @implementation ALSyncCallService
 
 
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
-    ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
-    [alMessageDBService updateMessageDeliveryReport:messageKey withStatus:status];
-    ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
-    //Todo: update ui
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    [messageDBService updateMessageDeliveryReport:messageKey withStatus:status];
 }
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {
@@ -29,24 +27,10 @@
     //Todo: update ui
 }
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
-    
-    if (delegate) {
-        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-            [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
-        }
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
-}
-
-- (void)syncCall:(ALMessage *)alMessage {
-    [self syncCall:alMessage withDelegate:nil];
-}
-
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:alUserDetail];
+- (void)updateConnectedStatus:(ALUserDetail *)userDetail {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:userDetail];
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
-    [contactDBService updateLastSeenDBUpdate:alUserDetail];
+    [contactDBService updateLastSeenDBUpdate:userDetail];
 }
 
 - (void)updateTableAtConversationDeleteForContact:(NSString *)contactID

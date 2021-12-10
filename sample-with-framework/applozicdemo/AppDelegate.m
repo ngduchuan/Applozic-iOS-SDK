@@ -69,13 +69,6 @@
     return YES;
 }
 
-- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)dictionary {
-    
-    NSLog(@"RECEIVED_NOTIFICATION :: %@", dictionary);
-    ALPushNotificationService *pushNotificationService = [[ALPushNotificationService alloc] init];
-    [pushNotificationService notificationArrivedToApplication:application withDictionary:dictionary];
-}
-
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
 
     NSLog(@"RECEIVED_NOTIFICATION_WITH_COMPLETION :: %@", userInfo);

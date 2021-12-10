@@ -8,12 +8,18 @@
 
 #import "ALJson.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
+/// `ALUserDetailListFeed` request for fetching User detail.
 @interface ALUserDetailListFeed : ALJson
 
+/// Seter method for array of userIds.
 @property (nonatomic, strong) NSMutableArray *userIdList;
 
-@property (nonatomic) BOOL contactSync;
-
+/// Setter method of array of userIds.
+/// @param array Array of string userIds.
 - (void)setArray:(NSMutableArray *)array;
 
 @end
+
+NS_ASSUME_NONNULL_END

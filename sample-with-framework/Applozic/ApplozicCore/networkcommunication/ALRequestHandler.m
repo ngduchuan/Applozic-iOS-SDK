@@ -5,14 +5,14 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALRequestHandler.h"
-#import "ALUtilityClass.h"
-#import "ALUserDefaultsHandler.h"
-#import "NSString+Encode.h"
-#import "ALUser.h"
-#import "NSData+AES.h"
 #import "ALAuthService.h"
 #import "ALLogger.h"
+#import "ALRequestHandler.h"
+#import "ALUser.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUtilityClass.h"
+#import "NSData+AES.h"
+#import "NSString+Encode.h"
 
 static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
@@ -32,7 +32,7 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     NSMutableURLRequest *requestGetURL = [[NSMutableURLRequest alloc] init];
     NSURL *requestURL = nil;
     if (paramString != nil) {
-        requestURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
+        requestURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", urlString, paramString]];
     } else {
         requestURL = [NSURL URLWithString:urlString];
     }
@@ -61,7 +61,9 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
     if (paramString != nil) {
         NSData *postData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
-        if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
+        if ([ALUserDefaultsHandler getEncryptionKey] &&
+            ![urlString hasSuffix:REGISTER_USER_STRING] &&
+            ![urlString hasSuffix:@"rest/ws/register/update"]) {
             NSData *encryptedData = [postData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
             NSData *base64Encoded = [encryptedData base64EncodedDataWithOptions:0];
             postData = base64Encoded;
@@ -94,18 +96,17 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
                                              paramString:(NSString *)paramString {
     NSMutableURLRequest *patchURLRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 
-    NSURL *theUrl = nil;
+    NSURL *requestURL = nil;
     if (paramString != nil) {
-        theUrl =
-        [NSURL URLWithString: [NSString stringWithFormat:@"%@?%@", urlString, paramString]];
+        requestURL = [NSURL URLWithString: [NSString stringWithFormat:@"%@?%@", urlString, paramString]];
     } else {
-        theUrl = [NSURL URLWithString: urlString];
+        requestURL = [NSURL URLWithString: urlString];
     }
-    [patchURLRequest setURL:theUrl];
+    [patchURLRequest setURL:requestURL];
     [patchURLRequest setTimeoutInterval:600];
     [patchURLRequest setHTTPMethod:@"PATCH"];
     [self addGlobalHeader:patchURLRequest ofUserId:nil];
-    ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", theUrl);
+    ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", requestURL);
     return patchURLRequest;
 }
 
@@ -114,9 +115,9 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
-    NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
-    if (appMoudle) {
-        [request addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
+    NSString *appModule = [ALUserDefaultsHandler getAppModuleName];
+    if (appModule) {
+        [request addValue:appModule forHTTPHeaderField:@"App-Module-Name"];
     }
     
     NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];

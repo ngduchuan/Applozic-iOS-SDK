@@ -6,18 +6,17 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#import "ALPushAssist.h"
-
-#import "ALPushNotificationService.h"
-#import "ALMessageDBService.h"
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALAppLocalNotifications.h"
 #import "ALLogger.h"
+#import "ALMessageDBService.h"
+#import "ALPushAssist.h"
+#import "ALPushNotificationService.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserDetail.h"
 
 @implementation ALPushAssist
 // WHEN NON-APPLOZIC VIEWs OPENED
-- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString*)userId {
+- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"showNotificationAndLaunchChat"
                                                         object:notiMsg

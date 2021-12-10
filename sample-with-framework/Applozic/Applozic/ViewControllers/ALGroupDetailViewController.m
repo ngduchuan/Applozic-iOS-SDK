@@ -35,8 +35,6 @@ const int GROUP_ADDITION = 2;
 
 @end
 
-static NSString *const updateGroupMembersNotification = @"Updated_Group_Members";
-
 @implementation ALGroupDetailViewController
 
 -(void)setupServices {
@@ -50,15 +48,20 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [self setupServices];
     self.alChannel = [self.channelService getChannelByKey:self.channelKeyID];
     ALSLog(ALLoggerSeverityInfo, @"## self.alChannel :: %@", self.alChannel);
+
+    if (@available(iOS 15.0, *)) {
+        self.tableView.sectionHeaderTopPadding = 0;
+    }
+    [self setNavigationColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setupView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:@"USER_DETAIL_OTHER_VC" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDetailsSyncCall:) name:updateGroupMembersNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDetailsSyncCall:) name:AL_Updated_Group_Members object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAPNS:) name:@"pushNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMQTTNotification:) name:@"MQTT_APPLOZIC_01" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMQTTNotification:) name:NEW_MESSAGE_NOTIFICATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMuteNotification:)
                                                  name:ALChannelDidChangeGroupMuteNotification object:nil];
@@ -68,9 +71,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:updateGroupMembersNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AL_Updated_Group_Members object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
 }
 
 - (void)updateUser:(NSNotification *)notifyObj {
@@ -78,20 +81,29 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 }
 
 - (void)showMQTTNotification:(NSNotification *)notifyObject {
-    ALMessage *alMessage = (ALMessage *)notifyObject.object;
-    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
 
-    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage msgHidden]) {
-        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                          withAlertMessage:alMessage.message];
+    NSMutableArray *messageArray = notifyObject.object;
 
-        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+    if (!messageArray) {
+        return;
+    }
 
-            ALNotificationHelper *helper = [[ALNotificationHelper alloc] init];
+    for (ALMessage *message in messageArray) {
 
-            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
-        }];
-        
+        if (![message.type isEqualToString:@"5"] && ![message isNotificationDisabled]) {
+            ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:message
+                                                                              withAlertMessage:message.message];
+
+            [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+                ALNotificationHelper *helper = [[ALNotificationHelper alloc] init];
+
+                [helper handlerNotificationClick:message.contactIds
+                                     withGroupId:message.groupId
+                              withConversationId:message.conversationId
+                    notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+            }];
+        }
     }
 }
 
@@ -163,16 +175,31 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 }
 
 - (void)setNavigationColor {
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                 size:18]
-        }];
+
+    UIColor *navigationColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationTintColor = [ALApplozicSettings getColorForNavigationItem];
+    if (navigationColor &&
+        navigationTintColor) {
 
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:navigationTintColor,
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+            navigationBarAppearance.backgroundColor = navigationColor;
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationTintColor];
+        }
+
+        [self.navigationController.navigationBar setTintColor:navigationTintColor];
     }
 }
 
@@ -184,7 +211,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     [self.tabBarController.tabBar setHidden:YES];
     [self.tableView setHidden:YES];
-    [self setNavigationColor];
     [self setTitle: NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Details", @"")];
 
     self.alChannel = [self.channelService getChannelByKey:self.channelKeyID];
@@ -320,7 +346,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             [self checkAndconfirm: NSLocalizedStringWithDefaultValue(@"confirmText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirm", @"")
                       withMessage:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?", @"")
                  otherButtonTitle: NSLocalizedStringWithDefaultValue(@"yes", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Yes", @"")
-             ];
+            ];
 
         }break;
 
@@ -728,7 +754,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
      object:nil
      userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                 ThirdPartyDetailVCNotificationALContact : userId}
-     ];
+    ];
 }
 
 #pragma mark Row Height

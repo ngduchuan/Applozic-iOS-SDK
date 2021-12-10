@@ -15,11 +15,11 @@
 #import <Applozic/Applozic-Swift.h>
 #import "ALSearchResultViewController.h"
 #import "ALUIUtilityClass.h"
+#import "ALBaseViewController.h"
 
 static const int LAUNCH_GROUP_OF_TWO = 4;
 static const int REGULAR_CONTACTS = 0;
 static const int BROADCAST_GROUP_CREATION = 5;
-static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -96,7 +96,6 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
     [super viewDidLoad];
     [self setupServices];
     self.extendedLayoutIncludesOpaqueBars = true;
-
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
 
@@ -104,7 +103,6 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
 
     CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
     [UIApplication sharedApplication].statusBarFrame.size.height;
-    
     self.emptyConversationText = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.origin.x,
                                                                            self.view.frame.size.height/2 - navigationHeight,
                                                                            self.view.frame.size.width, 30)];
@@ -119,6 +117,7 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
     }
     [_mTableView setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
+    [self setupNavigationBar];
 }
 
 - (void)setupNavigationButtons {
@@ -179,13 +178,14 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
             ALSLog(ALLoggerSeverityInfo, @"MQTT subscribe to conversation faild in ALMessagesViewController");
         }
     }];
+
     /// Setup the delegate in viewWillAppear
     self.alMqttConversationService.mqttConversationDelegate = self;
     if ([ALApplozicSettings isDropShadowInNavigationBarEnabled]) {
         [self dropShadowInNavigationBar];
     }
 
-    [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
 
     if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
@@ -229,28 +229,37 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
                                                  name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
 
 
-    [self.navigationController.navigationBar setTitleTextAttributes: @{
-        NSForegroundColorAttributeName:[UIColor whiteColor],
-        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                            size:NAVIGATION_TEXT_SIZE]
-    }];
     
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"chatTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForConversationScreen], @"");
-    
-    
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:NAVIGATION_TEXT_SIZE]
-        }];
-        
-        self.navigationController.navigationBar.translucent = NO;
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
-    }
 
     [self callLastSeenStatusUpdate];
+}
+
+-(void)setupNavigationBar {
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
+    [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
+    self.navigationController.navigationBar.backgroundColor = navigationBarColor;
+
+    if (navigationBarColor && navigationBarTintColor) {
+        self.navigationController.navigationBar.translucent = NO;
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:navigationBarTintColor,
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = navigationBarAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
+    }
 }
 
 - (void)prepareViewController {
@@ -531,10 +540,20 @@ static NSInteger const ALMQTT_MAX_RETRY = 3;
             } else {
                 if (msg.groupId) {
                     isreloadRequire = NO;
-                    [channelService getChannelInformation:msg.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+                    [channelService getChannelInformationByResponse:msg.groupId
+                                                 orClientChannelKey:nil
+                                                     withCompletion:^(NSError *error,
+                                                                      ALChannel *channel,
+                                                                      ALChannelFeedResponse *channelResponse) {
 
-                        BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [alChannel.parentKey isEqualToNumber:self.parentGroupKey]);
-                        BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [alChannel isPartOfCategory:[ALApplozicSettings getCategoryName]];
+
+                        if (error ||
+                            !channel) {
+                            return;
+                        }
+
+                        BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [channel.parentKey isEqualToNumber:self.parentGroupKey]);
+                        BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [channel isPartOfCategory:[ALApplozicSettings getCategoryName]];
 
                         if ((channelFlag || categoryFlag) ||
                             !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName])) {

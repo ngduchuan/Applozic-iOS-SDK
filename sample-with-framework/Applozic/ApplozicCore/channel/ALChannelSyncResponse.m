@@ -19,15 +19,11 @@
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
         for (NSDictionary *JSONDictionaryObject in responseArray) {
-            ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
-            [self.alChannelArray addObject:alChannel];
+            ALChannel *channel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
+            [self.alChannelArray addObject:channel];
         }
-        
-        return self;
-    } else {
-        return nil;
     }
-    
+    return self;
 }
 
 @end

@@ -6,9 +6,9 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
+#import "ALLogger.h"
 #import "ALMessageArrayWrapper.h"
 #import "ALUserDefaultsHandler.h"
-#import "ALLogger.h"
 
 @interface ALMessageArrayWrapper ()
 
@@ -29,35 +29,35 @@
     return self.messageArray;
 }
 
-- (void)addALMessageToMessageArray:(ALMessage *)alMessage {
+- (void)addALMessageToMessageArray:(ALMessage *)message {
     if ([self getUpdatedMessageArray].count == 0) {
         ALMessage *dateLabel = [self getDatePrototype:
                                 NSLocalizedStringWithDefaultValue(@"today", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"")
-                                   andAlMessageObject:alMessage];
+                                   andAlMessageObject:message];
         [self.messageArray addObject:dateLabel];
     } else {
         ALMessage *message = [self.messageArray lastObject];
         
-        if ([self checkDateOlder:message.createdAtTime andNewer:alMessage.createdAtTime]) {
-            ALMessage *dateLabel = [self getDatePrototype:self.dateCellText andAlMessageObject:alMessage];
+        if ([self checkDateOlder:message.createdAtTime andNewer:message.createdAtTime]) {
+            ALMessage *dateLabel = [self getDatePrototype:self.dateCellText andAlMessageObject:message];
             [self.messageArray addObject:dateLabel];
         }
     }
     
-    [self.messageArray addObject:alMessage];
+    [self.messageArray addObject:message];
 }
 
-- (void)removeALMessageFromMessageArray:(ALMessage *)alMessage {
+- (void)removeALMessageFromMessageArray:(ALMessage *)message {
     
     ALMessage *lastMessage = [self.messageArray lastObject];
-    if ([lastMessage isEqual:alMessage]) {
-        [self.messageArray removeObject:alMessage];
+    if ([lastMessage isEqual:message]) {
+        [self.messageArray removeObject:message];
         ALMessage *msg = [self.messageArray lastObject];
         if ([msg.type isEqualToString:@"100"]) {
             [self.messageArray removeObject:msg];
         }
     } else {
-        int x = (int)[self.messageArray indexOfObject:alMessage];
+        int x = (int)[self.messageArray indexOfObject:message];
         int length = (int)self.messageArray.count;
         if (x >= 1 && x <= length - 2) {
             ALMessage *prev = [self.messageArray objectAtIndex:x - 1];
@@ -66,7 +66,7 @@
                 [self.messageArray removeObject:prev];
             }
         }
-        [self.messageArray removeObject:alMessage];
+        [self.messageArray removeObject:message];
     }
 }
 
@@ -74,8 +74,8 @@
     
     //remove first object if it a date ..
     if ([self.messageArray firstObject]) {
-        ALMessage *messgae = [self.messageArray firstObject ];
-        if ([messgae.type isEqualToString:@"100"]) {
+        ALMessage *message = [self.messageArray firstObject ];
+        if ([message.type isEqualToString:@"100"]) {
             [self.messageArray removeObjectAtIndex:0];
         }
     }
@@ -133,7 +133,7 @@
         return;
     }
     
-    int countX  =((int)self.messageArray.count==0)?1:((int)self.messageArray.count);
+    int countX = ((int)self.messageArray.count==0) ? 1 : ((int)self.messageArray.count);
     for (int i = countX-1 ; i  < (tempArray.count-1) ; i++) {
         
         if (i == 0) {
@@ -152,14 +152,14 @@
     [tempArray removeAllObjects];
 }
 
-- (ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)almessage {
+- (ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)message {
     ALMessage *dateLabel = [[ALMessage alloc] init];
-    dateLabel.createdAtTime = almessage.createdAtTime;
+    dateLabel.createdAtTime = message.createdAtTime;
     dateLabel.message = messageText;
     dateLabel.type = @"100";
-    dateLabel.contactIds = almessage.contactIds;
+    dateLabel.contactIds = message.contactIds;
     dateLabel.fileMeta.thumbnailUrl = nil;
-    dateLabel.groupId = almessage.groupId;
+    dateLabel.groupId = message.groupId;
     return dateLabel;
 }
 
@@ -202,8 +202,8 @@
     }
 }
 
-- (NSString *)msgAtTop:(ALMessage *)almessage {
-    double old = [almessage.createdAtTime doubleValue];
+- (NSString *)msgAtTop:(ALMessage *)message {
+    double old = [message.createdAtTime doubleValue];
     NSDate *olderDate = [[NSDate alloc] initWithTimeIntervalSince1970:(old/1000)];
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
     [format setDateFormat:@"dd/MM/yyyy"];
@@ -231,7 +231,7 @@
     return actualDate;
 }
 
-- (NSMutableArray*)filterOutDuplicateMessage:(NSMutableArray*)newMessageArray {
+- (NSMutableArray *)filterOutDuplicateMessage:(NSMutableArray *)newMessageArray {
     
     ALMessage *firstInNewMessage = [newMessageArray objectAtIndex:0];
     

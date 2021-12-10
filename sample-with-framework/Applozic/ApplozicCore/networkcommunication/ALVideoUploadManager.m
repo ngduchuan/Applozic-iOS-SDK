@@ -6,15 +6,15 @@
 //  Copyright © 2021 applozic Inc. All rights reserved.
 //
 
-#import "ALVideoUploadManager.h"
 #import "ALConnectionQueueHandler.h"
+#import "ALHTTPManager.h"
+#import "ALLogger.h"
 #import "ALMessage.h"
-#import "ALUtilityClass.h"
+#import "ALMessageClientService.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "ALLogger.h"
-#import "ALMessageClientService.h"
-#import "ALHTTPManager.h"
+#import "ALUtilityClass.h"
+#import "ALVideoUploadManager.h"
 
 @implementation ALVideoUploadManager
 
@@ -26,8 +26,8 @@
     return self;
 }
 
--(void)setupServices {
-    self.messageDatabaseService  = [[ALMessageDBService alloc]init];
+- (void)setupServices {
+    self.messageDatabaseService  = [[ALMessageDBService alloc] init];
     self.clientService = [[ALMessageClientService alloc] init];
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
@@ -38,7 +38,7 @@
 
     if (self->_uploadTask != nil) {
 
-        DB_Message *dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
+        DB_Message *dbMessage = (DB_Message *)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
         ALMessage *message = [self.messageDatabaseService createMessageEntity:dbMessage];
 
         NSError *jsonError = nil;
@@ -217,7 +217,7 @@
     } else {
         fileParamConstant = @"files[]";
     }
-    NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
+    NSData *imageData = [[NSData alloc] initWithContentsOfFile:filePath];
     ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
     //Assuming data is not nil we add this to the multipart form
     if (imageData) {

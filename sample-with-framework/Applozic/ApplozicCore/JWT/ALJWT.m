@@ -96,7 +96,7 @@
     if (!bodyData) {
         NSException* invalidBase64UrlException = [NSException
                                                   exceptionWithName:NSGenericException
-                                                  reason:[NSString stringWithFormat:@" Malformed jwt token, failed to decode base64Url value : %@" , valueString]
+                                                  reason:[NSString stringWithFormat:@"Malformed jwt token, failed to decode base64Url value : %@" , valueString]
                                                   userInfo:nil];
 
         @throw invalidBase64UrlException;
@@ -114,7 +114,7 @@
         } else {
             NSException* jsonException = [NSException
                                           exceptionWithName:NSGenericException
-                                          reason:[NSString stringWithFormat:@" Malformed jwt token, failed to parse JSON value from base64Url : %@" , valueString]
+                                          reason:[NSString stringWithFormat:@"Malformed jwt token, failed to parse JSON value from base64Url : %@" , valueString]
                                           userInfo:nil];
             @throw jsonException;
             return nil;
@@ -147,7 +147,7 @@
 }
 
 + (ALJWT * _Nullable)decodeWithJwt:(NSString *)jwtValue
-                                error:(NSError * *)error {
+                             error:(NSError * *)error {
 
     @try {
         ALJWT *jWTObj = [[ALJWT alloc] initWithJWTString:jwtValue];

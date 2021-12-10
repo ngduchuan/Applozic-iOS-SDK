@@ -18,8 +18,6 @@
 #import "ALUIUtilityClass.h"
 #import "ALUIImage+animatedGIF.h"
 
-static CGFloat NAVIGATION_TEXT_SIZE = 20;
-
 @interface ALMultipleAttachmentView () <UITextFieldDelegate>
 
 @property (nonatomic, retain) ALImagePickerController *mImagePicker;
@@ -63,20 +61,34 @@ static NSString *const reuseIdentifier = @"collectionCell";
     [super viewWillAppear:YES];
 
     [self.navigationItem setRightBarButtonItem:self.sendButton];
-    [self navigationBarColor];
+    [self setupNavigationBar];
 }
 
-- (void)navigationBarColor {
-    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{
-            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                size:NAVIGATION_TEXT_SIZE]
-        }];
+- (void)setupNavigationBar {
+    UIColor *navigationBarColor = [ALApplozicSettings getColorForNavigation];
+    UIColor *navigationBarTintColor = [ALApplozicSettings getColorForNavigationItem];
 
+    if (navigationBarColor && navigationBarTintColor) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+
+        NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+            NSForegroundColorAttributeName:navigationBarTintColor,
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:AL_NAVIGATION_TEXT_SIZE]
+        };
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+            navigationBarAppearance.backgroundColor = navigationBarColor;
+
+            [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+            self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+            self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        } else {
+            [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+            [self.navigationController.navigationBar setBarTintColor:navigationBarColor];
+        }
+        [self.navigationController.navigationBar setTintColor:navigationBarTintColor];
     }
 }
 
@@ -89,13 +101,24 @@ static NSString *const reuseIdentifier = @"collectionCell";
 //====================================================================================================================================
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    [navigationController.navigationBar setTitleTextAttributes: @{
-        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-        NSFontAttributeName: [UIFont fontWithName:@"Helvetica-Bold"
-                                             size:18]
-    }];
 
-    [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+    NSDictionary<NSAttributedStringKey, id> *titleTextAttributes = @{
+        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:AL_NAVIGATION_TEXT_SIZE]
+    };
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+
+        navigationBarAppearance.backgroundColor = [ALApplozicSettings getColorForNavigation];
+
+        [navigationBarAppearance setTitleTextAttributes:titleTextAttributes];
+        self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+    } else {
+        [self.navigationController.navigationBar setTitleTextAttributes:titleTextAttributes];
+        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+    }
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
 }
@@ -291,7 +314,7 @@ static NSString *const reuseIdentifier = @"collectionCell";
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
            viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-
+    
     if (kind == UICollectionElementKindSectionHeader) {
         headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"collectionHeaderView" forIndexPath:indexPath];
 

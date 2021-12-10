@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
 @interface ALPushAssist : NSObject
 
-@property(nonatomic, readonly, strong) UIViewController *topViewController;
+@property(nonatomic, readonly, strong) UIViewController * _Nullable topViewController;
 
-- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId;
-- (UIViewController *)topViewController;
+- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString * _Nullable)userId;
+- (UIViewController * _Nullable)topViewController;
 - (BOOL)isOurViewOnTop;
 - (BOOL)isMessageContainerOnTop;
 - (BOOL)isVOIPViewOnTop;
@@ -22,3 +23,5 @@
 + (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj;
 
 @end
+
+NS_ASSUME_NONNULL_END

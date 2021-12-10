@@ -7,9 +7,9 @@
 //
 
 #import "ALDataNetworkConnection.h"
+#import "ALLogger.h"
 #import <SystemConfiguration/SCNetworkReachability.h>
 #import "TSMessage.h"
-#import "ALLogger.h"
 
 @interface ALDataNetworkConnection ()
 

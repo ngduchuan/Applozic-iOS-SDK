@@ -6,10 +6,8 @@
 //  Copyright © 2015 AppLogic. All rights reserved.
 //
 
-#import "ALSyncMessageFeed.h"
-
 #import "ALMessage.h"
-
+#import "ALSyncMessageFeed.h"
 
 @implementation ALSyncMessageFeed
 
@@ -17,16 +15,16 @@
 - (id)initWithJSONString:(NSString *)syncMessageResponse {
     
     self.lastSyncTime = [syncMessageResponse valueForKey:@"lastSyncTime"];
-    NSMutableArray *messageList = [syncMessageResponse valueForKey:@"messages"];
-    [self parseMessagseArray:messageList];
+    NSMutableArray *messages = [syncMessageResponse valueForKey:@"messages"];
+    [self parseMessagseArray:messages];
     self.deliveredMessageKeys = [syncMessageResponse valueForKey:@"deliveredMessageKeys"];
     return self;
 }
 
-- (void)parseMessagseArray:(id)theMessageDict {
+- (void)parseMessagseArray:(id)messages {
     NSMutableArray *messagesArray = [NSMutableArray new];
-    for (NSDictionary *theDictionary in theMessageDict) {
-        ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary ];
+    for (NSDictionary *messageDictionary in messages) {
+        ALMessage *message = [[ALMessage alloc] initWithDictonary:messageDictionary];
         [messagesArray addObject:message];
     }
     self.messagesList = messagesArray;

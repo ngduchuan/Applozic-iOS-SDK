@@ -5,19 +5,18 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALUtilityClass.h"
+#import "ALAppLocalNotifications.h"
 #import "ALConstant.h"
-#import "ALAppLocalNotifications.h"
-#import "TSMessage.h"
-#import "TSMessageView.h"
-#import "ALPushAssist.h"
-#import "ALAppLocalNotifications.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALContactDBService.h"
 #import "ALContact.h"
+#import "ALContactDBService.h"
 #import "ALLogger.h"
+#import "ALPushAssist.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUtilityClass.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "TSMessage.h"
+#import "TSMessageView.h"
 
 NSString * const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
 NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
@@ -48,7 +47,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
                                                          error:&error];
     
     if (!jsonData) {
-        ALSLog(ALLoggerSeverityError, @"Got an error: %@", error);
+        ALSLog(ALLoggerSeverityError, @"Got an error while conversation to JSON String: %@", error);
     } else {
         jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
@@ -110,8 +109,8 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     }
     //3rd Party View is Opened.........
     ALContact *contact = nil;
-    ALContactDBService *contactDatabase = [[ALContactDBService alloc] init];
-    contact = [contactDatabase loadContactByKey:@"userId" value:contactId];
+    ALContactDBService *contactDatabaseService = [[ALContactDBService alloc] init];
+    contact = [contactDatabaseService loadContactByKey:@"userId" value:contactId];
 
     ALChannel *channel = nil;
     ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc] init];
@@ -138,7 +137,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
                                           image:appIcon
                                            type:TSMessageNotificationTypeMessage
                                        duration:1.75
-                                       callback:^(void){
+                                       callback:^(void) {
 
         handler(YES);
     }
@@ -197,12 +196,6 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return uuid;
 }
 
-+ (BOOL)checkDeviceKeyString:(NSString *)string {
-    NSArray *array = [string componentsSeparatedByString:@":"];
-    NSString *deviceString = (NSString *)[array firstObject];
-    return [deviceString isEqualToString:[ALUtilityClass getDevieUUID]];
-}
-
 + (NSString *)stringFromTimeInterval:(NSTimeInterval)interval {
     NSInteger ti = (NSInteger)interval;
     NSInteger seconds = ti % 60;
@@ -222,16 +215,16 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return stringTime;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage {
-    NSString *latLongArgument = [self formatLocationJson:alMessage];
++ (NSString *)getLocationURL:(ALMessage *)message {
+    NSString *latLongArgument = [self formatLocationJson:message];
     NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize {
++ (NSString *)getLocationURL:(ALMessage *)message size:(CGRect)withSize {
 
-    NSString *latLongArgument = [self formatLocationJson:alMessage];
+    NSString *latLongArgument = [self formatLocationJson:message];
 
     NSString *staticMapURL = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
                               [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
