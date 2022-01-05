@@ -145,9 +145,12 @@ public class ALBaseNavigationViewController: UINavigationController {
                 case .denied, .restricted:
                     break
                 default: break
-                    //whatever
+                //whatever
                 }
             }
+        @unknown default:
+            print("Unknown permission state in PhotoLibrary")
+            break
         }
     }
 
